@@ -1,2 +1,5 @@
 # Personal config — contains private values, never commit
 config.ahk
+Tailscale.ahk
+Status.ahk
+Click.ahk
