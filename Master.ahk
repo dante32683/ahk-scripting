@@ -259,6 +259,52 @@ MoveToDesktop(n) {
     }
 }
 
+FocusDirection(dir) {
+    if !WinExist("A")
+        return
+    WinGetPos(&cx, &cy, &cw, &ch, "A")
+    curX := cx + cw // 2
+    curY := cy + ch // 2
+
+    bestHwnd := 0
+    bestDist := 0x7FFFFFFF
+
+    for hwnd in WinGetList() {
+        if hwnd = WinGetID("A")
+            continue
+        if WinGetMinMax("ahk_id " hwnd) = -1
+            continue
+        if !(WinGetStyle("ahk_id " hwnd) & 0x10000000)   ; must be visible
+            continue
+        if WinGetExStyle("ahk_id " hwnd) & 0x80           ; skip tool windows
+            continue
+
+        WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " hwnd)
+        wX := wx + ww // 2
+        wY := wy + wh // 2
+
+        valid := false
+        dist  := 0
+        if dir = "left" && wX < curX {
+            dist := curX - wX, valid := true
+        } else if dir = "right" && wX > curX {
+            dist := wX - curX, valid := true
+        } else if dir = "up" && wY < curY {
+            dist := curY - wY, valid := true
+        } else if dir = "down" && wY > curY {
+            dist := wY - curY, valid := true
+        }
+
+        if valid && dist < bestDist {
+            bestDist := dist
+            bestHwnd := hwnd
+        }
+    }
+
+    if bestHwnd
+        WinActivate("ahk_id " bestHwnd)
+}
+
 ; ============================================================
 ; EMERGENCY KILL SWITCH
 ; ============================================================
@@ -297,10 +343,15 @@ MoveToDesktop(n) {
 ; NAVIGATION        WINDOW TILING          WINDOW CONTROL
 ;   W = Up            Z  = Left half         F   = Toggle maximize
 ;   A = Left          X  = Right half        G   = Float & center (75%)
-;   S = Down          F1 = Top-left 1/4      J   = Restore / un-max
-;   D = Right         F2 = Top-right 1/4     Q   = Close window
-;                     F3 = Bottom-left 1/4   P   = Pin / unpin (always on top)
-; WORKSPACE           F4 = Bottom-right 1/4
+;   S = Down          F1 = Top-left 1/4      Q   = Close window
+;   D = Right         F2 = Top-right 1/4     P   = Pin / unpin (always on top)
+;                     F3 = Bottom-left 1/4
+; FOCUS               F4 = Bottom-right 1/4
+;   H = Left          WORKSPACE
+;   J = Down            1-9    = Go to virtual desktop
+;   K = Up              Alt+1-9= Move window to virtual desktop
+;   L = Right           Left   = Prev desktop
+;                       Right  = Next desktop
 ;   1-9    = Go to virtual desktop           SYSTEM
 ;   Alt+1-9= Move window to virtual desktop  M   = Task Manager
 ;   Left   = Prev desktop                    T   = Terminal (focus or open)
@@ -353,14 +404,16 @@ Right::Send "^#{Right}"
 *F3::TileBottomLeft()
 *F4::TileBottomRight()
 
+; --- Focus ---
+*h::FocusDirection("left")
+*j::FocusDirection("down")
+*k::FocusDirection("up")
+*l::FocusDirection("right")
+
 ; --- Window control ---
 *f::ToggleMaximize()
 *g::FloatCenter()
 *p::TogglePin()
-*j:: {
-    if WinExist("A")
-        WinRestore("A")
-}
 *q:: {
     if WinExist("A")
         WinClose("A")
@@ -379,7 +432,9 @@ Space::Media_Play_Pause
 *e::Run "explorer.exe"
 
 *t:: {
-    if WinExist("ahk_exe WindowsTerminal.exe") {
+    if WinActive("ahk_exe Code.exe") {
+        Send "^``"
+    } else if WinExist("ahk_exe WindowsTerminal.exe") {
         if WinActive("ahk_exe WindowsTerminal.exe") && WinGetMinMax("ahk_exe WindowsTerminal.exe") != -1
             WinMinimize("ahk_exe WindowsTerminal.exe")
         else {
@@ -497,8 +552,6 @@ WorkspaceLayout() {
 }
 
 ; ── Helper: launch an Edge profile and detect the new window ─
-; Works by snapshotting all existing msedge HWNDs first,
-; then watching for a new one to appear after launching.
 WS_LaunchBrowser(cmd, timeoutMs := 12000) {
     existing := Map()
     for hwnd in WinGetList("ahk_exe msedge.exe")
@@ -510,7 +563,7 @@ WS_LaunchBrowser(cmd, timeoutMs := 12000) {
     while A_TickCount < deadline {
         for hwnd in WinGetList("ahk_exe msedge.exe") {
             if !existing.Has(hwnd) {
-                Sleep(300)  ; let the window finish initializing
+                Sleep(300)
                 return hwnd
             }
         }
@@ -527,9 +580,8 @@ WS_LaunchBrowser(cmd, timeoutMs := 12000) {
         return
     }
 
-    ; ← ADD THESE TWO LINES:
-    DllCall(GoToDesktopNumber, "Int", 0)   ; land on desktop 1 before anything launches
-    Sleep(500)                              ; let the switch animation finish
+    DllCall(GoToDesktopNumber, "Int", 0)
+    Sleep(500)
 
     ToolTip("Launching workspace... (may take ~30s)")
     layout := WorkspaceLayout()
@@ -540,9 +592,6 @@ WS_LaunchBrowser(cmd, timeoutMs := 12000) {
         if app.Type = "browser" {
             hwnd := WS_LaunchBrowser(app.Launch)
         } else {
-            ; PWA or regular app — launch and wait for title match
-            ; If the app is already open, WinWait finds it immediately
-            ; and we just move it — no duplicate opened
             if !WinExist(app.Match)
                 Run(app.Launch)
             hwnd := WinWait(app.Match, , 10)
@@ -560,7 +609,7 @@ WS_LaunchBrowser(cmd, timeoutMs := 12000) {
         }
     }
 
-    DllCall(GoToDesktopNumber, "Int", 0)  ; land back on desktop 1
+    DllCall(GoToDesktopNumber, "Int", 0)
     ToolTip("Workspace ready!")
     SetTimer(() => ToolTip(), -2500)
 }
