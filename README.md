@@ -1,4 +1,4 @@
-# AutoHotkey Master Script
+# AutoHotkey Script
 
 A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock-based hotkey layer, window tiling, virtual desktop management, workspace launcher, text expansion, and camera toggle.
 
