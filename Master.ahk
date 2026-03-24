@@ -594,11 +594,42 @@ WheelDown:: AdjustOpacity(-26)
 Space::Media_Play_Pause
 *c:: Send "#+c"
 
-*v:: Run '"C:\Users\" CFG_Username "\AppData\Local\Programs\Microsoft VS Code\Code.exe"'
+*v:: {
+    if WinExist("ahk_exe Code.exe")
+        WinActivate("ahk_exe Code.exe")
+    else {
+        Run '"C:\Users\' CFG_Username '\AppData\Local\Programs\Microsoft VS Code\Code.exe"'
+        if WinWait("ahk_exe Code.exe", , 10)
+            WinActivate("ahk_exe Code.exe")
+    }
+}
 
 ; --- Apps ---
-*m:: Run "taskmgr.exe"
-*e:: Run "explorer.exe"
+*m:: {
+    if WinExist("ahk_exe Taskmgr.exe")
+        WinActivate("ahk_exe Taskmgr.exe")
+    else {
+        Run "taskmgr.exe"
+        if WinWait("ahk_exe Taskmgr.exe", , 5)
+            WinActivate("ahk_exe Taskmgr.exe")
+    }
+}
+*e:: {
+    existing := Map()
+    for hwnd in WinGetList("ahk_exe explorer.exe")
+        existing[hwnd] := true
+    Run "explorer.exe"
+    deadline := A_TickCount + 5000
+    while A_TickCount < deadline {
+        for hwnd in WinGetList("ahk_exe explorer.exe") {
+            if !existing.Has(hwnd) {
+                WinActivate("ahk_id " hwnd)
+                break 2
+            }
+        }
+        Sleep(100)
+    }
+}
 
 *t:: {
     if WinActive("ahk_exe Code.exe") {
