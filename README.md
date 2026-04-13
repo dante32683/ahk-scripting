@@ -5,7 +5,7 @@ A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock
 ## Requirements
 
 - [AutoHotkey v2](https://www.autohotkey.com/)
-- [VirtualDesktopAccessor.dll](https://github.com/Ciantic/VirtualDesktopAccessor/releases) — place in the same folder as `Master.ahk`
+- [VirtualDesktopAccessor.dll](https://github.com/Ciantic/VirtualDesktopAccessor/releases) — place in the same folder as `Master.ahk` (x64 version recommended)
 - [PowerToys](https://aka.ms/installpowertoys) — for the color picker (`CapsLock + C`)
 
 ## Setup
@@ -15,6 +15,14 @@ A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock
 3. Run `Master.ahk`
 
 `config.ahk` is gitignored and will never be committed.
+
+## Highlights & Optimizations
+
+- **Zero-CPU Focus Tracking**: Replaced polling timers with event-driven system hooks.
+- **Portability**: Uses environment variables and built-in AHK variables for paths.
+- **Instant Toggles**: Pre-initialized WMI objects for lag-free camera toggling.
+- **Buffered State**: Desktop focus memory is buffered in RAM and only written to disk on exit to prevent stutters.
+- **Native Apps**: Optimized for Electron-based desktop apps (Discord, Spotify, Notion, Slack).
 
 ## Hotkeys
 
@@ -32,17 +40,18 @@ Hold CapsLock to activate. CapsLock itself is disabled — use `Shift + CapsLock
 | `F4` | Tile bottom-right quarter |
 | `F` | Toggle maximize |
 | `G` | Float & center (75%) |
-| `J` | Restore / un-maximize |
+| `Tab` | Cycle window layouts |
 | `Q` | Close window |
-| `P` | Pin / unpin (always on top) |
+| `` ` `` | Pin / unpin (always on top) |
 | `1–9` | Go to virtual desktop 1–9 |
 | `Alt + 1–9` | Move window to virtual desktop 1–9 |
 | `Left / Right` | Previous / next virtual desktop |
 | `M` | Task Manager |
 | `T` | Focus or open Windows Terminal |
 | `E` | Open File Explorer |
-| `R` | Restart Explorer |
+| `R` | Restart Explorer (Shell) |
 | `V` | Open VS Code |
+| `N` | Open Notion |
 | `C` | Color picker (PowerToys) |
 | `[` / `]` | Previous / next media track |
 | `Space` | Play / pause media |
@@ -72,9 +81,9 @@ Launches and distributes apps across virtual desktops automatically:
 
 | Desktop | App |
 |---------|-----|
-| 1 | Edge (Personal profile), Claude |
+| 1 | Edge (Personal profile) |
 | 2 | Edge (Work/School profile) |
-| 3 | Discord, Slack, Messages, Instagram, Google Meet |
+| 3 | Discord, Slack, Notion |
 | 4 | Windows Terminal |
 | 5 | Spotify |
 

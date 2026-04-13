@@ -8,8 +8,10 @@
 ; ============================================================
 ListLines 0
 KeyHistory 0
-ProcessSetPriority "Normal"
+ProcessSetPriority "BelowNormal"
 SetTitleMatchMode 2
+InstallKeybdHook
+#UseHook True
 
 ; ============================================================
 ; AUTOMATIC ADMIN RIGHTS
@@ -22,11 +24,11 @@ if not A_IsAdmin {
 ; ============================================================
 ; VIRTUAL DESKTOP ACCESSOR (VDA)
 ; ============================================================
-global hVDA := 0
-global GoToDesktopNumber := 0
+global GoToDesktopNumber        := 0
 global MoveWindowToDesktopNumber := 0
-global GetCurrentDesktopNumber := 0
-global GetWindowDesktopNumber := 0
+global GetCurrentDesktopNumber   := 0
+global GetWindowDesktopNumber    := 0
+global VDA_IsLoaded              := false
 
 VDA_DLL := A_ScriptDir "\VirtualDesktopAccessor.dll"
 if !FileExist(VDA_DLL) {
@@ -34,17 +36,17 @@ if !FileExist(VDA_DLL) {
 } else {
     hVDA := DllCall("LoadLibrary", "Str", VDA_DLL, "Ptr")
     if !hVDA {
-        ShowOSD("VDA DLL failed to load! Bitness mismatch?`nNeed x64 DLL for 64-bit AHK.`nPath: " VDA_DLL, 6000)
+        ShowOSD("VDA DLL failed to load! Bitness mismatch?`nNeed x64 DLL for 64-bit AHK.", 6000)
     } else {
         GoToDesktopNumber        := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GoToDesktopNumber",        "Ptr")
         MoveWindowToDesktopNumber := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "MoveWindowToDesktopNumber", "Ptr")
         GetCurrentDesktopNumber   := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GetCurrentDesktopNumber",   "Ptr")
         GetWindowDesktopNumber    := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GetWindowDesktopNumber",    "Ptr")
-        if !GoToDesktopNumber {
-            ShowOSD(
-                "VDA loaded but functions missing.`nGet the latest release:`ngithub.com/Ciantic/VirtualDesktopAccessor/releases",
-                6000
-            )
+
+        if (GoToDesktopNumber && MoveWindowToDesktopNumber && GetCurrentDesktopNumber) {
+            VDA_IsLoaded := true
+        } else {
+            ShowOSD("VDA loaded but functions missing.`nGet the latest release.", 6000)
         }
     }
 }
@@ -62,24 +64,53 @@ ReleaseModifiers(ExitReason := "", ExitCode := "") {
 
 ; ============================================================
 ; CAMERA TOGGLE — VARIABLES
-; (State is queried live from WMI on each toggle — no stale cache)
 ; ============================================================
-global DeviceID := CFG_CameraID
 global PnPUtilPath := (A_Is64bitOS && A_PtrSize = 4)
     ? A_WinDir "\Sysnative\pnputil.exe"
     : A_WinDir "\System32\pnputil.exe"
 
+; Pre-initialize WMI connection for fast camera toggling
+global WMI_Service := 0
+try {
+    WMI_Service := ComObjGet("winmgmts:")
+} catch {
+    ShowOSD("Warning: Failed to initialize WMI service.`nCamera toggle may not work.", 3000)
+}
+
 ShowOSD("Script started!")
-SetTimer(TrackFocusHistory, 150)
+
+; ============================================================
+; FOCUS EVENT HOOK (Zero-CPU Focus Tracking)
+; ============================================================
+global hFocusHook := DllCall("SetWinEventHook"
+    , "UInt", 0x0003 ; EVENT_SYSTEM_FOREGROUND
+    , "UInt", 0x0003
+    , "Ptr", 0
+    , "Ptr", CallbackCreate(TrackFocusHistory, "F")
+    , "UInt", 0
+    , "UInt", 0
+    , "UInt", 0)
+
+OnExit((*) => DllCall("UnhookWinEvent", "Ptr", hFocusHook))
+OnExit(SaveDesktopMemory)
+
+SaveDesktopMemory(*) {
+    for desk, hwnd in DesktopLastWindow {
+        if hwnd && WinExist("ahk_id " hwnd)
+            IniWrite(hwnd, DesktopMemoryFile, "DesktopLastWindow", "d" desk)
+    }
+}
 
 ; ============================================================
 ; TILING GAP, BORDER & WINDOW HISTORY
 ; ============================================================
-global TileGap    := 4
-global TileBorder := 8      ; invisible Win11 window border compensation
+global TileGap        := 4
 global FocusHistory   := []
 global LayoutCycleIdx := Map()
 global WindowOpacity  := Map()
+global g_KeyLockActive := false
+global g_UnlockBuf     := ""
+global g_WindowLayouts := Map()   ; hwnd → [xf, yf, wf, hf] — remembers last tile per window
 
 ; ============================================================
 ; PER-DESKTOP FOCUS MEMORY
@@ -100,21 +131,118 @@ loop 9 {
 
 ; ============================================================
 ; OSD HELPER
-; ms = 0  →  tooltip stays until the next ShowOSD/ToolTip call
+; ms = 0  →  stays visible until the next ShowOSD call
+; Uses Windows 11 Fluent transient-acrylic material (DWMSBT_TRANSIENTWINDOW).
+; DwmExtendFrameIntoClientArea turns black pixels into DWM glass holes
+; that the acrylic backdrop fills. Click-through, never steals focus.
 ; ============================================================
 ShowOSD(text, ms := 1500) {
-    ToolTip(text)
-    if ms > 0
-        SetTimer(() => ToolTip(), -ms)
+    static g := 0, lbl := 0, hFont := 0, hideTimer := 0
+
+    if !g {
+        g := Gui("-Caption +AlwaysOnTop +ToolWindow +E0x20")
+        g.BackColor := "000000"  ; black = transparent glass hole for DWM
+        g.SetFont("s13 q5 cFFFFFF", "Segoe UI Variable Text")
+        lbl := g.Add("Text", "x20 y14 w400 BackgroundTrans Center")
+        hFont := DllCall("SendMessageW", "Ptr", lbl.Hwnd, "UInt", 0x31, "Ptr", 0, "Ptr", 0, "Ptr")
+
+        hwnd := g.Hwnd
+        ; Extend DWM frame over entire client area — required for system backdrop
+        DllCall("dwmapi\DwmExtendFrameIntoClientArea", "Ptr", hwnd, "Ptr", Buffer(16, 0xFF))
+        ; Dark window chrome (attr 20 = DWMWA_USE_IMMERSIVE_DARK_MODE)
+        DllCall("dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "UInt", 20, "Int*", 1, "UInt", 4)
+        ; Transient acrylic (attr 38 = DWMWA_SYSTEMBACKDROP_TYPE, value 3 = DWMSBT_TRANSIENTWINDOW)
+        try DllCall("dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "UInt", 38, "Int*", 3, "UInt", 4)
+        ; Rounded corners (attr 33 = DWMWA_WINDOW_CORNER_PREFERENCE, value 2 = DWMWCP_ROUND)
+        try DllCall("dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "UInt", 33, "Int*", 2, "UInt", 4)
+    }
+
+    if hideTimer {
+        SetTimer(hideTimer, 0)
+        hideTimer := 0
+    }
+
+    lbl.Value := text
+
+    ; Measure rendered text (DT_CALCRECT|DT_WORDBREAK, max 400px wide)
+    hDC := DllCall("GetDC", "Ptr", g.Hwnd, "Ptr")
+    if hFont
+        DllCall("SelectObject", "Ptr", hDC, "Ptr", hFont)
+    rc := Buffer(16, 0)
+    NumPut("Int", 400, rc, 8), NumPut("Int", 2000, rc, 12)
+    DllCall("DrawTextW", "Ptr", hDC, "WStr", text, "Int", -1, "Ptr", rc, "UInt", 0x410)
+    DllCall("ReleaseDC", "Ptr", g.Hwnd, "Ptr", hDC)
+    tw := NumGet(rc, 8, "Int")
+    th := NumGet(rc, 12, "Int")
+
+    padX := 20, padY := 14
+    gW := tw + padX * 2
+    gH := th + padY * 2
+    lbl.Move(padX, padY, tw, th)
+
+    ; Bottom-center of primary monitor, 50px above taskbar
+    MonitorGetWorkArea(MonitorGetPrimary(), &ml, &mt, &mr, &mb)
+    g.Show("NoActivate w" gW " h" gH " x" (ml + (mr - ml - gW) // 2) " y" (mb - gH - 50))
+
+    if ms > 0 {
+        hideTimer := () => g.Hide()
+        SetTimer(hideTimer, -ms)
+    }
 }
 
 ; ============================================================
 ; WINDOW MANAGEMENT HELPERS
 ; ============================================================
 
+; ============================================================
+; KEYBOARD LOCK HELPERS
+; ============================================================
+_KL_On() {
+    global g_KeyLockActive, g_UnlockBuf
+    g_KeyLockActive := true
+    g_UnlockBuf     := ""
+    BlockInput "On"
+    ShowOSD("⌨ Keyboard Locked", 0)
+}
+
+_KL_Off() {
+    global g_KeyLockActive, g_UnlockBuf
+    g_KeyLockActive := false
+    g_UnlockBuf     := ""
+    BlockInput "Off"
+    ShowOSD("⌨ Keyboard Unlocked", 1500)
+}
+
+_KL_CheckUnlock(ch) {
+    global g_KeyLockActive, g_UnlockBuf
+    if !g_KeyLockActive
+        return
+    g_UnlockBuf .= ch
+    if (StrLen(g_UnlockBuf) > 6)
+        g_UnlockBuf := SubStr(g_UnlockBuf, 2)
+    if (g_UnlockBuf = "unlock")
+        _KL_Off()
+}
+
 GetActiveMonitorWorkArea(&L, &T, &R, &B) {
     try {
         WinGetPos(&wx, &wy, &ww, &wh, "A")
+        cx := wx + ww // 2
+        cy := wy + wh // 2
+        loop MonitorGetCount() {
+            MonitorGetWorkArea(A_Index, &ml, &mt, &mr, &mb)
+            if (cx >= ml && cx < mr && cy >= mt && cy < mb) {
+                L := ml, T := mt, R := mr, B := mb
+                return
+            }
+        }
+    }
+    MonitorGetWorkArea(MonitorGetPrimary(), &L, &T, &R, &B)
+}
+
+_GetMonitorForHwnd(hwnd, &L, &T, &R, &B) {
+    try {
+        WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " hwnd)
         cx := wx + ww // 2
         cy := wy + wh // 2
         loop MonitorGetCount() {
@@ -134,132 +262,110 @@ PrepareWindow() {
         WinRestore("A")
 }
 
-TileLeft() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    half := (R - L) // 2
-    WinMove(L + G - TileBorder, T + G, half + TileBorder*2 - (3 * G) // 2, (B - T) + TileBorder - 2 * G, "A")
+_ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0) {
+    if overrideHwnd {
+        hwnd := overrideHwnd
+        if !WinExist("ahk_id " hwnd)
+            return
+        state := WinGetMinMax("ahk_id " hwnd)
+        if (state = 1 || state = -1)
+            WinRestore("ahk_id " hwnd)
+        _GetMonitorForHwnd(hwnd, &L, &T, &R, &B)
+    } else {
+        if !WinExist("A")
+            return
+        hwnd := WinGetID("A")
+        PrepareWindow()
+        GetActiveMonitorWorkArea(&L, &T, &R, &B)
+    }
+
+    G   := TileGap
+    MW  := R - L
+    MH  := B - T
+
+    ; 1. Define the logical "Slot" on the screen
+    slotL := L + (MW * x_factor // 100)
+    slotR := L + (MW * (x_factor + w_factor) // 100)
+    slotT := T + (MH * y_factor // 100)
+    slotB := T + (MH * (y_factor + h_factor) // 100)
+
+    ; 2. Determine visible boundaries (with halved gaps for internal edges)
+    visL := slotL + (x_factor = 0 ? G : G // 2)
+    visR := slotR - (x_factor + w_factor >= 100 ? G : G // 2)
+    visT := slotT + (y_factor = 0 ? G : G // 2)
+    visB := slotB - (y_factor + h_factor >= 100 ? G : G // 2)
+
+    ; 3. DYNAMIC BORDER COMPENSATION (DWM API)
+    ; Query actual vs visible rect to find invisible border thickness
+    rect := Buffer(16)
+    DllCall("user32\GetWindowRect", "Ptr", hwnd, "Ptr", rect)
+    actualL := NumGet(rect, 0, "Int"), actualT := NumGet(rect, 4, "Int")
+    actualR := NumGet(rect, 8, "Int"), actualB := NumGet(rect, 12, "Int")
+
+    dwmRect := Buffer(16)
+    DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 9, "Ptr", dwmRect, "UInt", 16)
+    visibleL := NumGet(dwmRect, 0, "Int"), visibleT := NumGet(dwmRect, 4, "Int")
+    visibleR := NumGet(dwmRect, 8, "Int"), visibleB := NumGet(dwmRect, 12, "Int")
+
+    ; Calculate current border offsets
+    offL := visibleL - actualL, offT := visibleT - actualT
+    offR := actualR - visibleR, offB := actualB - visibleB
+
+    ; 4. Execute WinMove
+    WinMove(visL - offL, visT - offT, (visR - visL) + offL + offR, (visB - visT) + offT + offB, "ahk_id " hwnd)
+
+    ; 5. OVERFLOW PROTECTION (For Discord/Spotify)
+    ; If window hits min-width, adjust position to respect the "middle" line
+    DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 9, "Ptr", dwmRect, "UInt", 16)
+    vW := NumGet(dwmRect, 8, "Int") - NumGet(dwmRect, 0, "Int")
+    reqW := visR - visL
+    
+    if (vW > reqW) {
+        if (x_factor = 0 && x_factor + w_factor = 50) {
+            newVisL := visR - vW
+            WinMove(newVisL - offL, visT - offT, , , "ahk_id " hwnd)
+        }
+        else if (x_factor = 50 && x_factor + w_factor = 100) {
+            WinMove(visL - offL, visT - offT, , , "ahk_id " hwnd)
+        }
+    }
+
+    ; Remember this layout so we can silently restore it after sleep/desktop switch
+    g_WindowLayouts[hwnd] := [x_factor, y_factor, w_factor, h_factor]
 }
 
-TileRight() {
-    if !WinExist("A")
+; Silently re-tile all tracked windows on desktop n.
+; Called after every desktop switch to fix positions Windows may have
+; corrupted during sleep/wake on non-active desktops.
+_ReTileDesktop(n) {
+    global g_WindowLayouts
+    if !VDA_IsLoaded || !GetWindowDesktopNumber
         return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    half := (R - L) // 2
-    WinMove(L + half + G // 2 - TileBorder, T + G, half + TileBorder*2 - (3 * G) // 2, (B - T) + TileBorder - 2 * G, "A")
+    for hwnd, layout in g_WindowLayouts.Clone() {
+        if !WinExist("ahk_id " hwnd) {
+            g_WindowLayouts.Delete(hwnd)
+            continue
+        }
+        try {
+            deskIdx := DllCall(GetWindowDesktopNumber, "Ptr", hwnd) + 1  ; VDA is 0-indexed
+            if deskIdx = n
+                _ApplyLayout(layout[1], layout[2], layout[3], layout[4], hwnd)
+        }
+    }
 }
 
-TileTopLeft() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    half_w := (R - L) // 2
-    half_h := (B - T) // 2
-    WinMove(L + G - TileBorder, T + G, half_w + TileBorder*2 - (3 * G) // 2, half_h + TileBorder - (3 * G) // 2, "A")
-}
-
-TileTopRight() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    half_w := (R - L) // 2
-    half_h := (B - T) // 2
-    WinMove(L + half_w + G // 2 - TileBorder, T + G, half_w + TileBorder*2 - (3 * G) // 2, half_h + TileBorder - (3 * G) // 2, "A")
-}
-
-TileBottomLeft() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    half_w := (R - L) // 2
-    half_h := (B - T) // 2
-    WinMove(L + G - TileBorder, T + half_h + G // 2, half_w + TileBorder*2 - (3 * G) // 2, half_h + TileBorder - (3 * G) // 2, "A")
-}
-
-TileBottomRight() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    half_w := (R - L) // 2
-    half_h := (B - T) // 2
-    WinMove(L + half_w + G // 2 - TileBorder, T + half_h + G // 2, half_w + TileBorder*2 - (3 * G) // 2, half_h + TileBorder - (3 * G) // 2, "A")
-}
-
-FloatCenter() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    mw := R - L
-    mh := B - T
-    ww := mw * 75 // 100
-    wh := mh * 75 // 100
-    WinMove(L + (mw - ww) // 2, T + (mh - wh) // 2, ww, wh, "A")
-}
-
-TileLeftThird() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    third := (R - L) // 3
-    WinMove(L + G - TileBorder, T + G, third + TileBorder*2 - (3 * G) // 2, (B - T) + TileBorder - 2 * G, "A")
-}
-
-TileCenterThird() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    third := (R - L) // 3
-    WinMove(L + third + G // 2 - TileBorder, T + G, third + TileBorder*2 - G, (B - T) + TileBorder - 2 * G, "A")
-}
-
-TileRightThird() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    third := (R - L) // 3
-    WinMove(L + 2 * third + G // 2 - TileBorder, T + G, third + TileBorder*2 - (3 * G) // 2, (B - T) + TileBorder - 2 * G, "A")
-}
-
-TileLeft60() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    w60 := (R - L) * 60 // 100
-    WinMove(L + G - TileBorder, T + G, w60 + TileBorder*2 - (3 * G) // 2, (B - T) + TileBorder - 2 * G, "A")
-}
-
-TileRight40() {
-    if !WinExist("A")
-        return
-    PrepareWindow()
-    GetActiveMonitorWorkArea(&L, &T, &R, &B)
-    G := TileGap
-    w60 := (R - L) * 60 // 100
-    w40 := (R - L) * 40 // 100
-    WinMove(L + w60 + G // 2 - TileBorder, T + G, w40 + TileBorder*2 - (3 * G) // 2, (B - T) + TileBorder - 2 * G, "A")
-}
+TileLeft()        => _ApplyLayout(0, 0, 50, 100)
+TileRight()       => _ApplyLayout(50, 0, 50, 100)
+TileTopLeft()     => _ApplyLayout(0, 0, 50, 50)
+TileTopRight()    => _ApplyLayout(50, 0, 50, 50)
+TileBottomLeft()  => _ApplyLayout(0, 50, 50, 50)
+TileBottomRight() => _ApplyLayout(50, 50, 50, 50)
+TileLeftThird()   => _ApplyLayout(0, 0, 33, 100)
+TileCenterThird() => _ApplyLayout(33, 0, 34, 100)
+TileRightThird()  => _ApplyLayout(67, 0, 33, 100)
+TileLeft60()      => _ApplyLayout(0, 0, 60, 100)
+TileRight40()     => _ApplyLayout(60, 0, 40, 100)
+FloatCenter()     => _ApplyLayout(12, 12, 75, 75)
 
 ToggleMaximize() {
     if !WinExist("A")
@@ -279,25 +385,24 @@ TogglePin() {
 }
 
 GotoDesktop(n) {
-    if !GoToDesktopNumber {
+    if !VDA_IsLoaded {
         ShowOSD("VDA not loaded — install the DLL first!")
         return
     }
 
-    ; Save the currently focused window to the desktop we're leaving
-    if GetCurrentDesktopNumber {
-        currentDesk := DllCall(GetCurrentDesktopNumber) + 1  ; VDA is 0-indexed
-        if WinExist("A") {
-            hwnd := WinGetID("A")
-            DesktopLastWindow[currentDesk] := hwnd
-            IniWrite(hwnd, DesktopMemoryFile, "DesktopLastWindow", "d" currentDesk)
-        }
-    }
+    ; Update memory for the desktop we're leaving (buffered in Map, written to disk on exit)
+    currentDesk := DllCall(GetCurrentDesktopNumber) + 1  ; VDA is 0-indexed
+    if WinExist("A")
+        DesktopLastWindow[currentDesk] := WinGetID("A")
 
     DllCall(GoToDesktopNumber, "Int", n - 1)
 
     ; After the switch animation, restore focus on the destination desktop
     SetTimer(() => RestoreFocusOnDesktop(n), -150)
+    ; Re-tile any tracked windows on the destination desktop.
+    ; This silently corrects positions Windows corrupts during sleep/wake
+    ; on non-active desktops (snaps them to raw zone coords, stripping TileGap).
+    SetTimer(() => _ReTileDesktop(n), -400)
 }
 
 RestoreFocusOnDesktop(n) {
@@ -313,13 +418,12 @@ RestoreFocusOnDesktop(n) {
         ; Window was closed since we last saw it — forget it
         DesktopLastWindow.Delete(n)
     }
-    ; No memory for this desktop yet — leave Windows to decide naturally
 }
 
 MoveToDesktop(n) {
     if !WinExist("A")
         return
-    if MoveWindowToDesktopNumber {
+    if VDA_IsLoaded {
         hwnd := WinGetID("A")
         DllCall(MoveWindowToDesktopNumber, "Ptr", hwnd, "Int", n - 1)
         GotoDesktop(n)
@@ -345,7 +449,8 @@ AdjustOpacity(delta) {
 FocusDirection(dir) {
     if !WinExist("A")
         return
-    WinGetPos(&cx, &cy, &cw, &ch, "A")
+    curHwnd := WinGetID("A")
+    WinGetPos(&cx, &cy, &cw, &ch, "ahk_id " curHwnd)
     curX := cx + cw // 2
     curY := cy + ch // 2
 
@@ -354,7 +459,7 @@ FocusDirection(dir) {
 
     list := WinGetList()
     for index, hwnd in list {  ; index = Z-order depth
-        if hwnd = WinGetID("A")
+        if hwnd = curHwnd
             continue
         if WinGetMinMax("ahk_id " hwnd) = -1
             continue
@@ -390,17 +495,18 @@ FocusDirection(dir) {
         }
     }
 
-    if bestHwnd
+    if bestHwnd {
         WinActivate("ahk_id " bestHwnd)
+        WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " bestHwnd)
+        DllCall("SetCursorPos", "Int", wx + ww // 2, "Int", wy + wh // 2)
+    }
 }
 
-TrackFocusHistory() {
-    static lastHwnd := 0
+TrackFocusHistory(hHook, event, hwnd, *) {
     try {
-        hwnd := WinGetID("A")
-        if hwnd = 0 || hwnd = lastHwnd
+        if hwnd = 0
             return
-        lastHwnd := hwnd
+        ; Only track actual window changes
         if FocusHistory.Length > 0 && FocusHistory[FocusHistory.Length] = hwnd
             return
         FocusHistory.Push(hwnd)
@@ -425,25 +531,13 @@ FocusJumpBack() {
 CycleLayout() {
     if !WinExist("A")
         return
+    static layouts := [TileLeft, TileRight, TileLeft60, TileRight40, TileLeftThird, TileRightThird, TileCenterThird, FloatCenter]
+    static names   := ["Left Half", "Right Half", "Left 60%", "Right 40%", "Left Third", "Right Third", "Center Third", "Float Center"]
     hwnd := WinGetID("A")
-    idx := LayoutCycleIdx.Has(hwnd) ? Mod(LayoutCycleIdx[hwnd] + 1, 8) : 0
+    idx := LayoutCycleIdx.Has(hwnd) ? Mod(LayoutCycleIdx[hwnd] + 1, layouts.Length) : 0
     LayoutCycleIdx[hwnd] := idx
-    if (idx = 0)
-        TileLeft()
-    else if (idx = 1)
-        TileRight()
-    else if (idx = 2)
-        TileLeft60()
-    else if (idx = 3)
-        TileRight40()
-    else if (idx = 4)
-        TileLeftThird()
-    else if (idx = 5)
-        TileRightThird()
-    else if (idx = 6)
-        TileCenterThird()
-    else if (idx = 7)
-        FloatCenter()
+    layouts[idx + 1]()
+    ShowOSD(names[idx + 1])
 }
 
 ; ============================================================
@@ -467,7 +561,7 @@ CycleLayout() {
 }
 
 ; ============================================================
-; SECTION 2: TEXT EXPANSION
+; SECTION 1: TEXT EXPANSION
 ; ============================================================
 ::@@:: SendText(CFG_Email)
 ::#ph:: SendText(CFG_Phone)
@@ -479,7 +573,7 @@ CycleLayout() {
 ::\sigma::σ
 
 ; ============================================================
-; SECTION 3: THE "HYPER" LAYER  (CapsLock held = Hyper)
+; SECTION 2: THE "HYPER" LAYER  (CapsLock held = Hyper)
 ;
 ; NAVIGATION        WINDOW TILING          WINDOW CONTROL
 ;   W = Up            Z  = Left half         F   = Toggle maximize
@@ -593,14 +687,18 @@ WheelDown:: AdjustOpacity(-26)
 ]::Media_Next
 Space::Media_Play_Pause
 *c:: Send "#+c"
+*!l:: g_KeyLockActive ? _KL_Off() : _KL_On()
 
 *v:: {
+    codePath := EnvGet("LocalAppData") "\Programs\Microsoft VS Code\Code.exe"
     if WinExist("ahk_exe Code.exe")
         WinActivate("ahk_exe Code.exe")
-    else {
-        Run '"C:\Users\' CFG_Username '\AppData\Local\Programs\Microsoft VS Code\Code.exe"'
+    else if FileExist(codePath) {
+        Run '"' codePath '"'
         if WinWait("ahk_exe Code.exe", , 10)
             WinActivate("ahk_exe Code.exe")
+    } else {
+        try Run("Code.exe")
     }
 }
 
@@ -616,25 +714,36 @@ Space::Media_Play_Pause
 }
 *e:: {
     existing := Map()
-    for hwnd in WinGetList("ahk_exe explorer.exe")
+    for hwnd in WinGetList("ahk_exe explorer.exe ahk_class CabinetWClass")
         existing[hwnd] := true
+
     Run "explorer.exe"
+
+    ; Wait for a new window HWND to appear, then focus it
     deadline := A_TickCount + 5000
     while A_TickCount < deadline {
-        for hwnd in WinGetList("ahk_exe explorer.exe") {
+        for hwnd in WinGetList("ahk_exe explorer.exe ahk_class CabinetWClass") {
             if !existing.Has(hwnd) {
                 WinActivate("ahk_id " hwnd)
-                break 2
+                return
             }
         }
-        Sleep(100)
+        Sleep(50)
     }
 }
 
 *t:: {
+    _QuakeTerminal() {
+        WinActivate("ahk_exe WindowsTerminal.exe")
+        _ApplyLayout(0, 0, 100, 40)   ; full width, top 40% of screen
+    }
+
     if WinActive("ahk_exe Code.exe") {
         Send "^``"
-    } else if WinExist("ahk_exe WindowsTerminal.exe") {
+        return
+    }
+
+    if WinExist("ahk_exe WindowsTerminal.exe") {
         wtHwnd := WinGetID("ahk_exe WindowsTerminal.exe")
         ; Only toggle WT if it's on the current desktop — otherwise open a new one
         onCurrentDesk := true
@@ -646,33 +755,30 @@ Space::Media_Play_Pause
         if onCurrentDesk {
             if WinActive("ahk_exe WindowsTerminal.exe") && WinGetMinMax("ahk_exe WindowsTerminal.exe") != -1
                 WinMinimize("ahk_exe WindowsTerminal.exe")
-            else {
-                WinRestore("ahk_exe WindowsTerminal.exe")
-                WinActivate("ahk_exe WindowsTerminal.exe")
-            }
+            else
+                _QuakeTerminal()
         } else {
-            Run 'wt.exe', "C:\Users\" CFG_Username
+            Run 'wt.exe', EnvGet("USERPROFILE")
+            if WinWait("ahk_exe WindowsTerminal.exe", , 10)
+                _QuakeTerminal()
         }
     } else {
-        Run 'wt.exe', "C:\Users\" CFG_Username
+        Run 'wt.exe', EnvGet("USERPROFILE")
+        if WinWait("ahk_exe WindowsTerminal.exe", , 10)
+            _QuakeTerminal()
     }
 }
 
 *n:: {
-    ; Find any Edge window with "Notion" in the title (SetTitleMatchMode 2 is global)
-    notionHwnd := 0
-    for hwnd in WinGetList("ahk_exe msedge.exe") {
-        if InStr(WinGetTitle("ahk_id " hwnd), "Notion") {
-            notionHwnd := hwnd
-            break
-        }
-    }
-    if notionHwnd {
-        if WinGetMinMax("ahk_id " notionHwnd) = -1
-            WinRestore("ahk_id " notionHwnd)
-        WinActivate("ahk_id " notionHwnd)
+    notionPath := EnvGet("LocalAppData") "\Programs\Notion\Notion.exe"
+    if WinExist("ahk_exe Notion.exe") {
+        if WinGetMinMax("ahk_exe Notion.exe") = -1
+            WinRestore("ahk_exe Notion.exe")
+        WinActivate("ahk_exe Notion.exe")
+    } else if FileExist(notionPath) {
+        try Run('"' notionPath '"')
     } else {
-        Run WS_P1 ' --app-id=' CFG_PWA_Notion
+        try Run("Notion.exe")
     }
 }
 
@@ -686,21 +792,62 @@ Space::Media_Play_Pause
     Run A_WinDir "\explorer.exe"   ; full path — starts fresh as the shell (no window)
 }
 
+*\:: {
+    try {
+        service := ComObject("Schedule.Service")
+        service.Connect()
+        folder := service.GetFolder("\")
+        task := folder.GetTask("Tailscale Auto Switch")
+
+        if (task.Enabled) {
+            task.Enabled := false
+            if ProcessExist("v2rayN.exe")
+                RunWait("taskkill.exe /F /IM v2rayN.exe /T", , "Hide")
+            ShowOSD("VPN Auto-Switch: OFF", 2000)
+        } else {
+            task.Enabled := true
+            ShowOSD("VPN Auto-Switch: ON", 2000)
+        }
+    } catch Error as err {
+        ShowOSD("VPN Toggle Error: " err.Message, 3000)
+    }
+}
+
 Esc:: {
     ToolTip("Reloading script...")
-    Sleep(800)
-    ToolTip()
     ReleaseModifiers()
-    Reload()
+    Sleep(200)
+    ; Force-kill this script before reloading to ensure no hung instance remains
+    Run('cmd.exe /c taskkill /F /PID ' DllCall("GetCurrentProcessId") ' & start "" "' A_ScriptFullPath '"', , "Hide")
+    ExitApp()
 }
 
 #HotIf
 
 ; ============================================================
-; SECTION 5: COPILOT KEY REBIND — CAMERA TOGGLE
+; KEYBOARD LOCK — intercept keys while locked
+; Suppresses all key input. Tracks "unlock" sequence to release.
+; Caps+Alt+L also toggles lock off.
+; ============================================================
+#HotIf g_KeyLockActive
+u:: _KL_CheckUnlock("u")
+n:: _KL_CheckUnlock("n")
+l:: _KL_CheckUnlock("l")
+o:: _KL_CheckUnlock("o")
+c:: _KL_CheckUnlock("c")
+k:: _KL_CheckUnlock("k")
+#HotIf
+
+; ============================================================
+; SECTION 3: COPILOT KEY REBIND — CAMERA TOGGLE
 ; ============================================================
 #+F23:: {
-    global DeviceID, PnPUtilPath
+    global CFG_CameraID, PnPUtilPath, WMI_Service
+
+    if !WMI_Service {
+        ShowOSD("WMI not initialized — check script start!")
+        return
+    }
 
     ShowOSD("Toggling Camera...", 0)
     exitCode := 1
@@ -708,29 +855,36 @@ Esc:: {
     ; Re-query current device state from WMI each time — avoids stale cache
     currentlyOn := false
     try {
-        wmi := ComObjGet("winmgmts:")
-        escapedID := StrReplace(DeviceID, "\", "\\")
-        query := wmi.ExecQuery("SELECT ConfigManagerErrorCode FROM Win32_PnPEntity WHERE PNPDeviceID = '" escapedID "'")
-        for device in query
+        escapedID := StrReplace(CFG_CameraID, "\", "\\")
+        query := WMI_Service.ExecQuery("SELECT ConfigManagerErrorCode FROM Win32_PnPEntity WHERE PNPDeviceID = '" escapedID "'")
+        for device in query {
             currentlyOn := (device.ConfigManagerErrorCode = 0)
+        }
+        ; Release WMI objects to prevent locking the device
+        device := ""
+        query := ""
     }
 
     try {
+        tempFile := A_Temp "\camera_toggle_error.txt"
+        if FileExist(tempFile)
+            FileDelete(tempFile)
+
         if currentlyOn {
-            exitCode := RunWait('"' PnPUtilPath '" /disable-device "' DeviceID '"', , "Hide")
+            ; Try pnputil first, redirect output to temp file
+            exitCode := RunWait(A_ComSpec ' /c ""' PnPUtilPath '" /disable-device "' CFG_CameraID '" > "' tempFile '" 2>&1"', , "Hide")
             if (exitCode != 0) {
-                psCmd := "Disable-PnpDevice -InstanceId '" DeviceID "' -Confirm:$false"
-                exitCode := RunWait('powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "' psCmd '"', ,
-                    "Hide")
+                ; Fallback to PowerShell (NonInteractive prevents hanging on prompts)
+                psCmd := "Disable-PnpDevice -InstanceId '" CFG_CameraID "' -Confirm:$false -ErrorAction Stop"
+                exitCode := RunWait(A_ComSpec ' /c powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -Command "' psCmd '" >> "' tempFile '" 2>&1', , "Hide")
             }
             if (exitCode = 0)
                 ShowOSD("RGB Camera Disabled")
         } else {
-            exitCode := RunWait('"' PnPUtilPath '" /enable-device "' DeviceID '"', , "Hide")
+            exitCode := RunWait(A_ComSpec ' /c ""' PnPUtilPath '" /enable-device "' CFG_CameraID '" > "' tempFile '" 2>&1"', , "Hide")
             if (exitCode != 0) {
-                psCmd := "Enable-PnpDevice -InstanceId '" DeviceID "' -Confirm:$false"
-                exitCode := RunWait('powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "' psCmd '"', ,
-                    "Hide")
+                psCmd := "Enable-PnpDevice -InstanceId '" CFG_CameraID "' -Confirm:$false -ErrorAction Stop"
+                exitCode := RunWait(A_ComSpec ' /c powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -Command "' psCmd '" >> "' tempFile '" 2>&1', , "Hide")
             }
             if (exitCode = 0)
                 ShowOSD("RGB Camera Enabled")
@@ -740,16 +894,31 @@ Esc:: {
         return
     }
 
-    if (exitCode != 0)
-        ShowOSD("Failed to toggle! (Exit Code: " exitCode ")")
+    if (exitCode != 0) {
+        errStr := ""
+        if FileExist(tempFile) {
+            errText := FileRead(tempFile)
+            if InStr(errText, "pending system reboot") {
+                errStr := "Device is locked. A system reboot is required."
+            } else {
+                ; Strip boilerplate and newlines
+                errText := StrReplace(errText, "Microsoft PnP Utility", "")
+                errText := RegExReplace(errText, "s)^[\s\r\n]+", "") ; Trim leading whitespace/newlines
+                errText := StrReplace(errText, "`r`n", " ")
+                errStr := Trim(errText)
+                if (StrLen(errStr) > 80)
+                    errStr := SubStr(errStr, 1, 80) "..."
+            }
+        }
+        ShowOSD("Failed (Code " exitCode "): " errStr, 5000)
+    }
 }
 
 ; ============================================================
-; SECTION 6: STARTUP WORKSPACE LAUNCHER
+; SECTION 4: STARTUP WORKSPACE LAUNCHER
 ; ============================================================
 ;
 ;  Win+Ctrl+S  →  launch & sort everything to its desktop
-;  Win+Ctrl+Q  →  close all work/messaging apps (end of day)
 ;
 ; ── CUSTOMIZING YOUR LAYOUT ─────────────────────────────────
 ;  Edit WorkspaceLayout() below. Change Desktop numbers to
@@ -765,21 +934,29 @@ global WS_P2   := WS_Edge ' --profile-directory="Profile 2"'
 global WS_BrowserTimeout := 12000
 
 WorkspaceLayout() {
+    local localAppData := EnvGet("LocalAppData")
+    local appData      := EnvGet("AppData")
+    
+    ; Identify paths for apps with versioned folders (Discord)
+    local discordPath := "Discord.exe"
+    loop files, localAppData "\Discord\app-*\Discord.exe" {
+        discordPath := A_LoopFilePath
+        break ; use the first one found
+    }
+
     return [
         ; ── Desktop 1 · Personal ────────────────────────────
         { Type: "browser", Launch: WS_P1, Desktop: 1 },
         ; ── Desktop 2 · Work / School ───────────────────────
         { Type: "browser", Launch: WS_P2, Desktop: 2 },
         ; ── Desktop 3 · Messaging ───────────────────────────
-        { Type: "pwa", Launch: WS_P1 ' --app-id=' CFG_PWA_Discord,    Match: "Discord",     Desktop: 3 },
-        { Type: "pwa", Launch: WS_P2 ' --app-id=' CFG_PWA_Slack,      Match: "Slack",       Desktop: 3 },
-        { Type: "pwa", Launch: WS_P1 ' --app-id=' CFG_PWA_Messages,   Match: "Messages",    Desktop: 3 },
-        { Type: "pwa", Launch: WS_P1 ' --app-id=' CFG_PWA_Instagram,  Match: "Instagram",   Desktop: 3 },
-        { Type: "pwa", Launch: WS_P1 ' --app-id=' CFG_PWA_GoogleMeet, Match: "Google Meet", Desktop: 3 },
+        { Type: "app", Launch: discordPath, Match: "ahk_exe Discord.exe", Desktop: 3 },
+        { Type: "pwa", Launch: WS_P2 ' --app-id=' CFG_PWA_Slack, Match: "Slack", Desktop: 3 },
+        { Type: "app", Launch: '"' localAppData '\Programs\Notion\Notion.exe"',  Match: "ahk_exe Notion.exe",  Desktop: 3 },
         ; ── Desktop 4 · Terminal ─────────────────────────────
         { Type: "app", Launch: 'wt.exe', Match: "ahk_exe WindowsTerminal.exe", Desktop: 4 },
         ; ── Desktop 5 · Spotify / Misc ──────────────────────
-        { Type: "pwa", Launch: WS_P1 ' --app-id=' CFG_PWA_Spotify, Match: "Spotify", Desktop: 5 },
+        { Type: "app", Launch: '"' appData '\Spotify\Spotify.exe"', Match: "ahk_exe Spotify.exe", Desktop: 5 },
     ]
 }
 
@@ -806,41 +983,53 @@ WS_LaunchBrowser(cmd) {
 
 ; ── Win+Ctrl+S · Launch and distribute ──────────────────────
 #^s:: {
-    if !MoveWindowToDesktopNumber || !GoToDesktopNumber {
+    if !VDA_IsLoaded {
         ShowOSD("VDA not loaded — can't distribute windows!", 3000)
         return
     }
 
+    ; Land on desktop 1 first
     DllCall(GoToDesktopNumber, "Int", 0)
     Sleep(500)
 
     layout := WorkspaceLayout()
 
     for app in layout {
-        dispName := app.HasProp("Match") ? app.Match : "Browser (Desktop " app.Desktop ")"
+        dispName := app.HasProp("Match") ? app.Match : "Browser (D" app.Desktop ")"
         ShowOSD("Launching " dispName " (" A_Index "/" layout.Length ")...", 0)
+        
         hwnd := 0
-
         if app.Type = "browser" {
             hwnd := WS_LaunchBrowser(app.Launch)
         } else {
-            if !WinExist(app.Match)
-                Run(app.Launch)
-            hwnd := WinWait(app.Match, , 10)
+            ; Only launch if not already running
+            if !WinExist(app.Match) {
+                try {
+                    Run(app.Launch)
+                    hwnd := WinWait(app.Match, , 5)
+                }
+            } else {
+                hwnd := WinExist(app.Match)
+            }
         }
 
         if hwnd {
-            Sleep(200)
+            ; Brief sleep to ensure window is ready for movement
+            Sleep(250)
             DllCall(MoveWindowToDesktopNumber, "Ptr", hwnd, "Int", app.Desktop - 1)
-            Sleep(200)
+            
             if app.HasProp("Maximize") && app.Maximize
                 WinMaximize("ahk_id " hwnd)
+            
+            ; Remember this window for its destination desktop's memory
+            DesktopLastWindow[app.Desktop] := hwnd
         } else {
-            ShowOSD("Timed out on desktop " app.Desktop " — skipping", 0)
-            Sleep(2000)
+            ShowOSD("Timed out on " dispName " — skipping", 0)
+            Sleep(1500)
         }
     }
 
+    ; Return home
     DllCall(GoToDesktopNumber, "Int", 0)
     ShowOSD("Workspace ready!", 2500)
 }
