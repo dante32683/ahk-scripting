@@ -82,17 +82,60 @@ ShowOSD("Script started!")
 ; ============================================================
 ; FOCUS EVENT HOOK (Zero-CPU Focus Tracking)
 ; ============================================================
+; Store the callback pointer so AHK's GC cannot free the underlying
+; ref-counted object while SetWinEventHook is still calling it.
+; Losing this pointer lets the callback be freed mid-session, causing
+; memory corruption that silently breaks hotkeys over time.
+global g_FocusCallbackPtr := CallbackCreate(TrackFocusHistory, "F")
 global hFocusHook := DllCall("SetWinEventHook"
     , "UInt", 0x0003 ; EVENT_SYSTEM_FOREGROUND
     , "UInt", 0x0003
     , "Ptr", 0
-    , "Ptr", CallbackCreate(TrackFocusHistory, "F")
+    , "Ptr", g_FocusCallbackPtr
+    , "UInt", 0
+    , "UInt", 0
+    , "UInt", 0)
+
+; Drag-end hook: EVENT_SYSTEM_MOVESIZEEND fires only on user-interactive moves,
+; never on programmatic SetWindowPos/WinMove — no debounce needed.
+global g_MoveStartCbPtr := CallbackCreate(_OnMoveStart, , 7)
+global g_MoveStartHook  := DllCall("SetWinEventHook"
+    , "UInt", 0x000A ; EVENT_SYSTEM_MOVESIZESTART
+    , "UInt", 0x000A
+    , "Ptr", 0
+    , "Ptr", g_MoveStartCbPtr
+    , "UInt", 0
+    , "UInt", 0
+    , "UInt", 0)
+global g_MoveEndCbPtr := CallbackCreate(_OnMoveEnd, , 7)
+global g_MoveEndHook  := DllCall("SetWinEventHook"
+    , "UInt", 0x000B ; EVENT_SYSTEM_MOVESIZEEND
+    , "UInt", 0x000B
+    , "Ptr", 0
+    , "Ptr", g_MoveEndCbPtr
+    , "UInt", 0
+    , "UInt", 0
+    , "UInt", 0)
+
+global g_LocationChangeCbPtr := CallbackCreate(_OnLocationChange, , 7)
+global g_LocationChangeHook  := DllCall("SetWinEventHook"
+    , "UInt", 0x800B ; EVENT_OBJECT_LOCATIONCHANGE
+    , "UInt", 0x800B
+    , "Ptr", 0
+    , "Ptr", g_LocationChangeCbPtr
     , "UInt", 0
     , "UInt", 0
     , "UInt", 0)
 
 OnExit((*) => DllCall("UnhookWinEvent", "Ptr", hFocusHook))
+OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveStartHook))
+OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveEndHook))
+OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_LocationChangeHook))
 OnExit(SaveDesktopMemory)
+OnExit(_SaveLayouts)
+OnMessage(0x001A, _OnSettingChange)  ; WM_SETTINGCHANGE — work area resize (AppBar dock/undock)
+OnMessage(0x0218, _OnPowerBroadcast) ; WM_POWERBROADCAST — wake from sleep
+OnMessage(0x007E, _OnDisplayChange)  ; WM_DISPLAYCHANGE  — resolution change (fullscreen game exit)
 
 SaveDesktopMemory(*) {
     for desk, hwnd in DesktopLastWindow {
@@ -101,16 +144,51 @@ SaveDesktopMemory(*) {
     }
 }
 
+_SaveLayouts(*) {
+    global g_Layouts, g_LayoutFile
+    try FileDelete(g_LayoutFile)
+    for hwnd, layout in g_Layouts
+        if _IsLiveWindow(hwnd) {
+            IniWrite(layout[1], g_LayoutFile, hwnd, "xf")
+            IniWrite(layout[2], g_LayoutFile, hwnd, "yf")
+            IniWrite(layout[3], g_LayoutFile, hwnd, "wf")
+            IniWrite(layout[4], g_LayoutFile, hwnd, "hf")
+        }
+}
+
+_PersistLayout(hwnd) {
+    global g_Layouts, g_LayoutFile
+    if !g_Layouts.Has(hwnd)
+        return
+    layout := g_Layouts[hwnd]
+    IniWrite(layout[1], g_LayoutFile, hwnd, "xf")
+    IniWrite(layout[2], g_LayoutFile, hwnd, "yf")
+    IniWrite(layout[3], g_LayoutFile, hwnd, "wf")
+    IniWrite(layout[4], g_LayoutFile, hwnd, "hf")
+}
+
+_DeletePersistedLayout(hwnd) {
+    global g_LayoutFile
+    try IniDelete(g_LayoutFile, hwnd)
+}
+
 ; ============================================================
 ; TILING GAP, BORDER & WINDOW HISTORY
 ; ============================================================
-global TileGap        := 4
+global TileGap        := 0    ; px gap around/between tiled windows — set to 4 to re-enable
 global FocusHistory   := []
 global LayoutCycleIdx := Map()
 global WindowOpacity  := Map()
 global g_KeyLockActive := false
 global g_UnlockBuf     := ""
-global g_WindowLayouts := Map()   ; hwnd → [xf, yf, wf, hf] — remembers last tile per window
+global g_Layouts    := Map()   ; hwnd → [xf, yf, wf, hf]  (0–100 percentages of monitor work area)
+global g_LayoutFile := A_Temp "\ahk_layouts.ini"
+global g_LastDesktop := 0
+global g_MoveSuppressUntil := Map() ; hwnd → tickcount until auto-restore should ignore our own WinMove
+global g_UserMoveActive    := Map() ; hwnds currently being user-dragged/resized
+global g_AutoRestoreTimers := Map() ; hwnd → reusable timer callback for deferred auto-restore
+global g_DebugRestore := false
+global g_DebugLogFile := A_Temp "\ahk_restore_debug.log"
 
 ; ============================================================
 ; PER-DESKTOP FOCUS MEMORY
@@ -129,65 +207,156 @@ loop 9 {
     }
 }
 
+; ── Restore persisted tile layouts from the previous AHK session ─────────
+; HWNDs are stable across Caps+Esc reloads (windows don't close, only AHK dies).
+; Stale entries (closed windows) are skipped on load and pruned on save.
+; Tries new filename first, then old filename as a one-time migration fallback.
+_LoadLayoutsFrom(file) {
+    global g_Layouts
+    try {
+        sections := IniRead(file)
+        loop parse, sections, "`n" {
+            s := Trim(A_LoopField)
+            if !s
+                continue
+            hwnd := Integer(s)
+            if !_IsLiveWindow(hwnd)
+                continue
+            xf := IniRead(file, s, "xf", "")
+            yf := IniRead(file, s, "yf", "")
+            wf := IniRead(file, s, "wf", "")
+            hf := IniRead(file, s, "hf", "")
+            if xf != "" && Integer(wf) > 0
+                g_Layouts[hwnd] := [Integer(xf), Integer(yf), Integer(wf), Integer(hf)]
+        }
+    }
+}
+_LoadLayoutsFrom(g_LayoutFile)
+if !g_Layouts.Count  ; nothing loaded — try old filename (one-time migration)
+    _LoadLayoutsFrom(A_Temp "\ahk_window_layouts.ini")
+
+if VDA_IsLoaded && GetCurrentDesktopNumber
+    g_LastDesktop := DllCall(GetCurrentDesktopNumber) + 1
+
+if g_DebugRestore
+    try FileDelete(g_DebugLogFile)
+_Dbg("script-start lastDesk=" g_LastDesktop " layouts=" g_Layouts.Count)
+
+_Dbg(msg) {
+    global g_DebugRestore, g_DebugLogFile
+    if !g_DebugRestore
+        return
+    ts := FormatTime(, "yyyy-MM-dd HH:mm:ss")
+    ms := Mod(A_TickCount, 1000000)
+    FileAppend(ts "." Format("{:06}", ms) " " msg "`n", g_DebugLogFile, "UTF-8")
+}
+
+_WinSig(hwnd) {
+    title := ""
+    proc := ""
+    try title := WinGetTitle("ahk_id " hwnd)
+    try proc := WinGetProcessName("ahk_id " hwnd)
+    return "hwnd=" hwnd " proc=" proc " title=" StrReplace(title, "`n", " ")
+}
+
+_IsLiveWindow(hwnd) {
+    return hwnd && DllCall("user32\IsWindow", "Ptr", hwnd, "Int")
+}
+
+_GetWindowState(hwnd, default := -2) {
+    try return WinGetMinMax("ahk_id " hwnd)
+    catch
+        return default
+}
+
+_GetExpectedOuterPos(hwnd, x_factor, y_factor, w_factor, h_factor, &expX, &expY) {
+    _GetMonitorForHwnd(hwnd, &L, &T, &R, &B)
+    G  := TileGap
+    MW := R - L
+    MH := B - T
+
+    slotL := L + (MW * x_factor // 100)
+    slotR := L + (MW * (x_factor + w_factor) // 100)
+    slotT := T + (MH * y_factor // 100)
+    slotB := T + (MH * (y_factor + h_factor) // 100)
+
+    visL := slotL + (x_factor = 0 ? G : G // 2)
+    visR := slotR - (x_factor + w_factor >= 100 ? G : G // 2)
+    visT := slotT + (y_factor = 0 ? G : G // 2)
+
+    rect := Buffer(16)
+    DllCall("user32\GetWindowRect", "Ptr", hwnd, "Ptr", rect)
+    actualL := NumGet(rect, 0, "Int"), actualT := NumGet(rect, 4, "Int")
+    actualR := NumGet(rect, 8, "Int"), actualB := NumGet(rect, 12, "Int")
+
+    dwmRect := Buffer(16)
+    dwmOk := DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 9, "Ptr", dwmRect, "UInt", 16) = 0
+    visibleL := NumGet(dwmRect, 0, "Int"), visibleT := NumGet(dwmRect, 4, "Int")
+    visibleR := NumGet(dwmRect, 8, "Int"), visibleB := NumGet(dwmRect, 12, "Int")
+
+    if (dwmOk && visibleL >= actualL && visibleR <= actualR
+              && visibleT >= actualT && visibleB <= actualB
+              && (visibleR - visibleL) > 0 && (visibleB - visibleT) > 0) {
+        offL := visibleL - actualL, offT := visibleT - actualT
+        offR := actualR - visibleR
+    } else {
+        offL := 0, offT := 0, offR := 0
+    }
+
+    expX := visL - offL
+    expY := visT - offT
+
+    reqW := visR - visL
+    curVisibleW := visibleR - visibleL
+    if (curVisibleW > reqW) {
+        if (x_factor = 0 && x_factor + w_factor = 50)
+            expX := (visR - curVisibleW) - offL
+        else if (x_factor = 50 && x_factor + w_factor = 100)
+            expX := visL - offL
+    }
+}
+
+_NeedsAutoRestore(hwnd, layout) {
+    if !_IsLiveWindow(hwnd)
+        return false
+    WinGetPos(&wx, &wy, , , "ahk_id " hwnd)
+    _GetExpectedOuterPos(hwnd, layout[1], layout[2], layout[3], layout[4], &expX, &expY)
+    return Abs(wx - expX) > 12 || Abs(wy - expY) > 12
+}
+
+_AutoRestoreWindow(hwnd) {
+    global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive
+    if !g_Layouts.Has(hwnd) || !_IsLiveWindow(hwnd)
+        return
+    if g_UserMoveActive.Has(hwnd)
+        return
+    if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount
+        return
+    if _GetWindowState(hwnd) != 0
+        return
+    layout := g_Layouts[hwnd]
+    if !_NeedsAutoRestore(hwnd, layout)
+        return
+    _Dbg("auto-restore " _WinSig(hwnd))
+    _ApplyLayout(layout[1], layout[2], layout[3], layout[4], hwnd, false)
+}
+
+_ScheduleAutoRestore(hwnd, delay := 120) {
+    global g_AutoRestoreTimers
+    if !g_AutoRestoreTimers.Has(hwnd)
+        g_AutoRestoreTimers[hwnd] := () => _AutoRestoreWindow(hwnd)
+    SetTimer(g_AutoRestoreTimers[hwnd], -delay)
+}
+
 ; ============================================================
 ; OSD HELPER
 ; ms = 0  →  stays visible until the next ShowOSD call
-; Uses Windows 11 Fluent transient-acrylic material (DWMSBT_TRANSIENTWINDOW).
-; DwmExtendFrameIntoClientArea turns black pixels into DWM glass holes
-; that the acrylic backdrop fills. Click-through, never steals focus.
+; Uses the default AutoHotkey tooltip.
 ; ============================================================
 ShowOSD(text, ms := 1500) {
-    static g := 0, lbl := 0, hFont := 0, hideTimer := 0
-
-    if !g {
-        g := Gui("-Caption +AlwaysOnTop +ToolWindow +E0x20")
-        g.BackColor := "000000"  ; black = transparent glass hole for DWM
-        g.SetFont("s13 q5 cFFFFFF", "Segoe UI Variable Text")
-        lbl := g.Add("Text", "x20 y14 w400 BackgroundTrans Center")
-        hFont := DllCall("SendMessageW", "Ptr", lbl.Hwnd, "UInt", 0x31, "Ptr", 0, "Ptr", 0, "Ptr")
-
-        hwnd := g.Hwnd
-        ; Extend DWM frame over entire client area — required for system backdrop
-        DllCall("dwmapi\DwmExtendFrameIntoClientArea", "Ptr", hwnd, "Ptr", Buffer(16, 0xFF))
-        ; Dark window chrome (attr 20 = DWMWA_USE_IMMERSIVE_DARK_MODE)
-        DllCall("dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "UInt", 20, "Int*", 1, "UInt", 4)
-        ; Transient acrylic (attr 38 = DWMWA_SYSTEMBACKDROP_TYPE, value 3 = DWMSBT_TRANSIENTWINDOW)
-        try DllCall("dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "UInt", 38, "Int*", 3, "UInt", 4)
-        ; Rounded corners (attr 33 = DWMWA_WINDOW_CORNER_PREFERENCE, value 2 = DWMWCP_ROUND)
-        try DllCall("dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "UInt", 33, "Int*", 2, "UInt", 4)
-    }
-
-    if hideTimer {
-        SetTimer(hideTimer, 0)
-        hideTimer := 0
-    }
-
-    lbl.Value := text
-
-    ; Measure rendered text (DT_CALCRECT|DT_WORDBREAK, max 400px wide)
-    hDC := DllCall("GetDC", "Ptr", g.Hwnd, "Ptr")
-    if hFont
-        DllCall("SelectObject", "Ptr", hDC, "Ptr", hFont)
-    rc := Buffer(16, 0)
-    NumPut("Int", 400, rc, 8), NumPut("Int", 2000, rc, 12)
-    DllCall("DrawTextW", "Ptr", hDC, "WStr", text, "Int", -1, "Ptr", rc, "UInt", 0x410)
-    DllCall("ReleaseDC", "Ptr", g.Hwnd, "Ptr", hDC)
-    tw := NumGet(rc, 8, "Int")
-    th := NumGet(rc, 12, "Int")
-
-    padX := 20, padY := 14
-    gW := tw + padX * 2
-    gH := th + padY * 2
-    lbl.Move(padX, padY, tw, th)
-
-    ; Bottom-center of primary monitor, 50px above taskbar
-    MonitorGetWorkArea(MonitorGetPrimary(), &ml, &mt, &mr, &mb)
-    g.Show("NoActivate w" gW " h" gH " x" (ml + (mr - ml - gW) // 2) " y" (mb - gH - 50))
-
-    if ms > 0 {
-        hideTimer := () => g.Hide()
-        SetTimer(hideTimer, -ms)
-    }
+    ToolTip(text)
+    if ms > 0
+        SetTimer(() => ToolTip(), -ms)
 }
 
 ; ============================================================
@@ -262,12 +431,13 @@ PrepareWindow() {
         WinRestore("A")
 }
 
-_ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0) {
+_ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist := true) {
+    global g_MoveSuppressUntil
     if overrideHwnd {
         hwnd := overrideHwnd
-        if !WinExist("ahk_id " hwnd)
+        if !_IsLiveWindow(hwnd)
             return
-        state := WinGetMinMax("ahk_id " hwnd)
+        state := _GetWindowState(hwnd)
         if (state = 1 || state = -1)
             WinRestore("ahk_id " hwnd)
         _GetMonitorForHwnd(hwnd, &L, &T, &R, &B)
@@ -279,6 +449,8 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0) {
         GetActiveMonitorWorkArea(&L, &T, &R, &B)
     }
 
+    mode := persist ? "store" : "restore"
+    g_MoveSuppressUntil[hwnd] := A_TickCount + 1500
     G   := TileGap
     MW  := R - L
     MH  := B - T
@@ -303,13 +475,21 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0) {
     actualR := NumGet(rect, 8, "Int"), actualB := NumGet(rect, 12, "Int")
 
     dwmRect := Buffer(16)
-    DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 9, "Ptr", dwmRect, "UInt", 16)
+    dwmOk := DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 9, "Ptr", dwmRect, "UInt", 16) = 0
     visibleL := NumGet(dwmRect, 0, "Int"), visibleT := NumGet(dwmRect, 4, "Int")
     visibleR := NumGet(dwmRect, 8, "Int"), visibleB := NumGet(dwmRect, 12, "Int")
 
-    ; Calculate current border offsets
-    offL := visibleL - actualL, offT := visibleT - actualT
-    offR := actualR - visibleR, offB := actualB - visibleB
+    ; Calculate current border offsets.
+    ; Guard: cloaked windows (inactive desktops) return all-zero rect from DWM.
+    ; Wrong offsets corrupt position far more than skipping invisible-border compensation does.
+    if (dwmOk && visibleL >= actualL && visibleR <= actualR
+              && visibleT >= actualT && visibleB <= actualB
+              && (visibleR - visibleL) > 0 && (visibleB - visibleT) > 0) {
+        offL := visibleL - actualL, offT := visibleT - actualT
+        offR := actualR - visibleR, offB := actualB - visibleB
+    } else {
+        offL := 0, offT := 0, offR := 0, offB := 0
+    }
 
     ; 4. Execute WinMove
     WinMove(visL - offL, visT - offT, (visR - visL) + offL + offR, (visB - visT) + offT + offB, "ahk_id " hwnd)
@@ -330,28 +510,182 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0) {
         }
     }
 
-    ; Remember this layout so we can silently restore it after sleep/desktop switch
-    g_WindowLayouts[hwnd] := [x_factor, y_factor, w_factor, h_factor]
+    _Dbg("apply mode=" mode " " _WinSig(hwnd) " desk?=" (GetWindowDesktopNumber ? DllCall(GetWindowDesktopNumber, "Ptr", hwnd) + 1 : 0)
+        " mon=[" L "," T "," R "," B "] target=[" visL "," visT "," visR "," visB "] offs=[" offL "," offT "," offR "," offB "]"
+        " pct=[" x_factor "," y_factor "," w_factor "," h_factor "]")
+    g_Layouts[hwnd] := [x_factor, y_factor, w_factor, h_factor]
+    if persist
+        _PersistLayout(hwnd)
 }
 
-; Silently re-tile all tracked windows on desktop n.
-; Called after every desktop switch to fix positions Windows may have
-; corrupted during sleep/wake on non-active desktops.
-_ReTileDesktop(n) {
-    global g_WindowLayouts
+; Restore all tracked windows on desktop n to their stored layouts.
+; Called 400ms after switching to desktop n (animation finishes ~300ms).
+; Also prunes dead HWNDs from the layout map.
+_RestoreDesktop(n) {
+    global g_Layouts
     if !VDA_IsLoaded || !GetWindowDesktopNumber
         return
-    for hwnd, layout in g_WindowLayouts.Clone() {
-        if !WinExist("ahk_id " hwnd) {
-            g_WindowLayouts.Delete(hwnd)
+    _Dbg("restore-desktop-start desk=" n " tracked=" g_Layouts.Count)
+    for hwnd, layout in g_Layouts.Clone() {
+        if !_IsLiveWindow(hwnd) {
+            _Dbg("restore-desktop-drop dead " hwnd)
+            g_Layouts.Delete(hwnd)
             continue
         }
         try {
-            deskIdx := DllCall(GetWindowDesktopNumber, "Ptr", hwnd) + 1  ; VDA is 0-indexed
-            if deskIdx = n
-                _ApplyLayout(layout[1], layout[2], layout[3], layout[4], hwnd)
+            winDesk := DllCall(GetWindowDesktopNumber, "Ptr", hwnd) + 1
+            if winDesk != n {
+                _Dbg("restore-desktop-skip desk-mismatch want=" n " got=" winDesk " " _WinSig(hwnd))
+                continue
+            }
         }
+        state := _GetWindowState(hwnd)
+        if state != 0  ; skip maximized/minimized/unavailable-transition-state
+        {
+            _Dbg("restore-desktop-skip state=" state " " _WinSig(hwnd))
+            continue
+        }
+        _Dbg("restore-desktop-apply desk=" n " " _WinSig(hwnd) " pct=[" layout[1] "," layout[2] "," layout[3] "," layout[4] "]")
+        _ApplyLayout(layout[1], layout[2], layout[3], layout[4], hwnd, false)
     }
+    _Dbg("restore-desktop-end desk=" n)
+}
+
+; Restore ALL tracked windows on ALL desktops.
+; Used for system-event triggers (work-area change, wake, display change) because
+; Windows repositions windows on every desktop, not just the active one.
+; All three handlers share this function reference → they auto-debounce each other.
+_RestoreAllDesktops() {
+    global g_Layouts
+    _Dbg("restore-all-start tracked=" g_Layouts.Count)
+    for hwnd, layout in g_Layouts.Clone() {
+        if !_IsLiveWindow(hwnd) {
+            _Dbg("restore-all-drop dead " hwnd)
+            g_Layouts.Delete(hwnd)
+            continue
+        }
+        state := _GetWindowState(hwnd)
+        if state != 0
+        {
+            _Dbg("restore-all-skip state=" state " " _WinSig(hwnd))
+            continue
+        }
+        _Dbg("restore-all-apply " _WinSig(hwnd) " pct=[" layout[1] "," layout[2] "," layout[3] "," layout[4] "]")
+        try _ApplyLayout(layout[1], layout[2], layout[3], layout[4], hwnd, false)
+    }
+    _Dbg("restore-all-end")
+}
+
+_RestoreCurrentDesktop() {
+    if !VDA_IsLoaded || !GetCurrentDesktopNumber
+        return
+    _RestoreDesktop(DllCall(GetCurrentDesktopNumber) + 1)
+}
+
+_ScheduleDesktopRestore(n) {
+    _Dbg("schedule-desktop-restore desk=" n)
+    SetTimer(() => _RestoreDesktop(n), -400)
+    SetTimer(() => _RestoreDesktop(n), -900)
+    SetTimer(() => _RestoreDesktop(n), -1600)
+    SetTimer(() => _RestoreDesktop(n), -2500)
+}
+
+_ScheduleRestoreCurrentDesktop(delay := 600) {
+    _Dbg("schedule-current-desktop delay=" delay)
+    SetTimer(() => _ScheduleDesktopRestore(DllCall(GetCurrentDesktopNumber) + 1), -delay)
+}
+
+; WM_SETTINGCHANGE: SPI_SETWORKAREA (0x2F) fires when AppBar (MenuBar/taskbar) changes
+; the reserved work area. Work area is already updated when the message arrives.
+_OnSettingChange(wParam, *) {
+    if wParam = 0x2F {
+        _Dbg("wm-settingchange SPI_SETWORKAREA")
+        SetTimer(_RestoreAllDesktops, -300)
+        _ScheduleRestoreCurrentDesktop(1200)
+    }
+}
+
+; WM_POWERBROADCAST: safety net for wake-from-sleep.
+; 5s delay: lets AppBars finish their TaskbarCreated re-registration cycle.
+; Same function reference as other handlers → debounces if SPI_SETWORKAREA also fires.
+_OnPowerBroadcast(wParam, *) {
+    if wParam = 0x12 || wParam = 0x7 {
+        _Dbg("wm-powerbroadcast wParam=" wParam)
+        SetTimer(_RestoreAllDesktops, -5000)
+        _ScheduleRestoreCurrentDesktop(6200)
+    }
+}
+
+; WM_DISPLAYCHANGE: fullscreen game resolution change. 1s delay for driver re-init.
+_OnDisplayChange(*) {
+    _Dbg("wm-displaychange")
+    SetTimer(_RestoreAllDesktops, -1000)
+    _ScheduleRestoreCurrentDesktop(1800)
+}
+
+; Drag-end callback (EVENT_SYSTEM_MOVESIZEEND).
+; Only fires for user-interactive moves, never for programmatic WinMove.
+; Only updates layout for windows already being tracked (tiled at least once).
+_OnMoveStart(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+    global g_UserMoveActive
+    if idObject != 0 || !g_Layouts.Has(hwnd)
+        return
+    g_UserMoveActive[hwnd] := true
+}
+
+_OnMoveEnd(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+    global g_UserMoveActive
+    if idObject != 0  ; OBJID_WINDOW = 0; skip menu/scrollbar/etc. events
+        return
+    if !g_Layouts.Has(hwnd)
+        return
+    try {
+        g_UserMoveActive.Delete(hwnd)
+        if _GetWindowState(hwnd) != 0  ; skip maximized/minimized/unavailable-transition-state
+            return
+        WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " hwnd)
+        _GetMonitorForHwnd(hwnd, &L, &T, &R, &B)
+        MW := R - L, MH := B - T
+        if !MW || !MH
+            return
+        g_Layouts[hwnd] := [
+            Round((wx - L) * 100 / MW),
+            Round((wy - T) * 100 / MH),
+            Round(ww       * 100 / MW),
+            Round(wh       * 100 / MH)
+        ]
+        _Dbg("move-end-update " _WinSig(hwnd) " pct=[" g_Layouts[hwnd][1] "," g_Layouts[hwnd][2] "," g_Layouts[hwnd][3] "," g_Layouts[hwnd][4] "]")
+        _PersistLayout(hwnd)
+    }
+}
+
+_OnLocationChange(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+    global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive
+    if idObject != 0 || !g_Layouts.Has(hwnd)
+        return
+    if g_UserMoveActive.Has(hwnd)
+        return
+    if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount
+        return
+    if _GetWindowState(hwnd) != 0
+        return
+    if _NeedsAutoRestore(hwnd, g_Layouts[hwnd])
+        _ScheduleAutoRestore(hwnd)
+}
+
+_HandleDesktopChange() {
+    global g_LastDesktop
+    if !VDA_IsLoaded || !GetCurrentDesktopNumber
+        return
+    try currentDesk := DllCall(GetCurrentDesktopNumber) + 1
+    catch
+        return
+    if !currentDesk || currentDesk = g_LastDesktop
+        return
+    _Dbg("desktop-change old=" g_LastDesktop " new=" currentDesk)
+    g_LastDesktop := currentDesk
+    SetTimer(() => RestoreFocusOnDesktop(currentDesk), -150)
+    _ScheduleDesktopRestore(currentDesk)
 }
 
 TileLeft()        => _ApplyLayout(0, 0, 50, 100)
@@ -385,6 +719,7 @@ TogglePin() {
 }
 
 GotoDesktop(n) {
+    global g_LastDesktop
     if !VDA_IsLoaded {
         ShowOSD("VDA not loaded — install the DLL first!")
         return
@@ -395,14 +730,13 @@ GotoDesktop(n) {
     if WinExist("A")
         DesktopLastWindow[currentDesk] := WinGetID("A")
 
+    _Dbg("goto-desktop from=" currentDesk " to=" n)
+    g_LastDesktop := n
     DllCall(GoToDesktopNumber, "Int", n - 1)
 
-    ; After the switch animation, restore focus on the destination desktop
+    ; After the switch animation, restore focus then layout on the destination desktop
     SetTimer(() => RestoreFocusOnDesktop(n), -150)
-    ; Re-tile any tracked windows on the destination desktop.
-    ; This silently corrects positions Windows corrupts during sleep/wake
-    ; on non-active desktops (snaps them to raw zone coords, stripping TileGap).
-    SetTimer(() => _ReTileDesktop(n), -400)
+    _ScheduleDesktopRestore(n)
 }
 
 RestoreFocusOnDesktop(n) {
@@ -426,6 +760,7 @@ MoveToDesktop(n) {
     if VDA_IsLoaded {
         hwnd := WinGetID("A")
         DllCall(MoveWindowToDesktopNumber, "Ptr", hwnd, "Int", n - 1)
+        DesktopLastWindow[n] := hwnd  ; keep focus on the moved window, not the old remembered one
         GotoDesktop(n)
     } else {
         ShowOSD("VDA not loaded — install the DLL first!")
@@ -467,6 +802,10 @@ FocusDirection(dir) {
             continue
         if WinGetExStyle("ahk_id " hwnd) & 0x80           ; skip tool windows
             continue
+        cloaked := 0
+        DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
+        if cloaked  ; skip windows on other virtual desktops (DWM cloaks them)
+            continue
 
         WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " hwnd)
         wX := wx + ww // 2
@@ -504,8 +843,10 @@ FocusDirection(dir) {
 
 TrackFocusHistory(hHook, event, hwnd, *) {
     try {
+        _HandleDesktopChange()
         if hwnd = 0
             return
+        _Dbg("focus " _WinSig(hwnd))
         ; Only track actual window changes
         if FocusHistory.Length > 0 && FocusHistory[FocusHistory.Length] = hwnd
             return
@@ -677,6 +1018,14 @@ Backspace:: FocusJumpBack()
     if WinExist("A")
         WinClose("A")
 }
+Delete:: {
+    hwnd := WinExist("A") ? WinGetID("A") : 0
+    if hwnd && g_Layouts.Has(hwnd) {
+        g_Layouts.Delete(hwnd)
+        _DeletePersistedLayout(hwnd)
+        ShowOSD("Layout cleared")
+    }
+}
 
 ; --- Opacity ---
 WheelUp::   AdjustOpacity(26)
@@ -687,7 +1036,15 @@ WheelDown:: AdjustOpacity(-26)
 ]::Media_Next
 Space::Media_Play_Pause
 *c:: Send "#+c"
-*!l:: g_KeyLockActive ? _KL_Off() : _KL_On()
+*!l:: {
+    ; Debounce: key-down repeats if held — without this a single long press
+    ; toggles lock on→off→on, leaving the keyboard locked unintentionally.
+    static _lastToggle := 0
+    if (A_TickCount - _lastToggle < 400)
+        return
+    _lastToggle := A_TickCount
+    g_KeyLockActive ? _KL_Off() : _KL_On()
+}
 
 *v:: {
     codePath := EnvGet("LocalAppData") "\Programs\Microsoft VS Code\Code.exe"
@@ -827,7 +1184,11 @@ Esc:: {
 ; ============================================================
 ; KEYBOARD LOCK — intercept keys while locked
 ; Suppresses all key input. Tracks "unlock" sequence to release.
-; Caps+Alt+L also toggles lock off.
+; Unlock: type "unlock" OR press Caps+Alt+L.
+; The Caps+Alt+L backup here handles the edge case where
+; GetKeyState("CapsLock","P") fails to evaluate inside the Hyper
+; layer context (e.g. after BlockInput interaction), so the user
+; is never permanently stuck.
 ; ============================================================
 #HotIf g_KeyLockActive
 u:: _KL_CheckUnlock("u")
@@ -836,6 +1197,7 @@ l:: _KL_CheckUnlock("l")
 o:: _KL_CheckUnlock("o")
 c:: _KL_CheckUnlock("c")
 k:: _KL_CheckUnlock("k")
+*!l:: _KL_Off()   ; Backup unlock: Caps+Alt+L always works even if CapsLock state detection fails
 #HotIf
 
 ; ============================================================
