@@ -1,6 +1,6 @@
 # AutoHotkey Script
 
-A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock-based hotkey layer, window tiling, virtual desktop management, workspace launcher, text expansion, and camera toggle.
+A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock-based hotkey layer, window tiling, virtual desktop management, text expansion, and camera toggle.
 
 ## Requirements
 
@@ -51,7 +51,7 @@ Hold CapsLock to activate. CapsLock itself is disabled — use `Shift + CapsLock
 | `E` | Open File Explorer |
 | `R` | Restart Explorer (Shell) |
 | `V` | Open VS Code |
-| `N` | Open Notion |
+| `N` | Apple Music (Toggle) |
 | `C` | Color picker (PowerToys) |
 | `[` / `]` | Previous / next media track |
 | `Space` | Play / pause media |
@@ -75,16 +75,4 @@ Hold CapsLock to activate. CapsLock itself is disabled — use `Shift + CapsLock
 | `\theta` | θ |
 | `\sigma` | σ |
 
-## Workspace Launcher — `Win + Ctrl + S`
 
-Launches and distributes apps across virtual desktops automatically:
-
-| Desktop | App |
-|---------|-----|
-| 1 | Edge (Personal profile) |
-| 2 | Edge (Work/School profile) |
-| 3 | Discord, Slack, Notion |
-| 4 | Windows Terminal |
-| 5 | Spotify |
-
-Edit `WorkspaceLayout()` in `Master.ahk` to customize which apps go where.

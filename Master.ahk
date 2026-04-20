@@ -2,6 +2,7 @@
 #SingleInstance Force
 #WinActivateForce
 #Include config.ahk
+#Include Remap.ahk
 
 ; ============================================================
 ; OPTIMIZATION: PERFORMANCE & MEMORY
@@ -117,20 +118,9 @@ global g_MoveEndHook  := DllCall("SetWinEventHook"
     , "UInt", 0
     , "UInt", 0)
 
-global g_LocationChangeCbPtr := CallbackCreate(_OnLocationChange, , 7)
-global g_LocationChangeHook  := DllCall("SetWinEventHook"
-    , "UInt", 0x800B ; EVENT_OBJECT_LOCATIONCHANGE
-    , "UInt", 0x800B
-    , "Ptr", 0
-    , "Ptr", g_LocationChangeCbPtr
-    , "UInt", 0
-    , "UInt", 0
-    , "UInt", 0)
-
 OnExit((*) => DllCall("UnhookWinEvent", "Ptr", hFocusHook))
 OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveStartHook))
 OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveEndHook))
-OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_LocationChangeHook))
 OnExit(SaveDesktopMemory)
 OnExit(_SaveLayouts)
 OnMessage(0x001A, _OnSettingChange)  ; WM_SETTINGCHANGE — work area resize (AppBar dock/undock)
@@ -178,7 +168,6 @@ _DeletePersistedLayout(hwnd) {
 global TileGap        := 0    ; px gap around/between tiled windows — set to 4 to re-enable
 global FocusHistory   := []
 global LayoutCycleIdx := Map()
-global WindowOpacity  := Map()
 global g_KeyLockActive := false
 global g_UnlockBuf     := ""
 global g_Layouts    := Map()   ; hwnd → [xf, yf, wf, hf]  (0–100 percentages of monitor work area)
@@ -235,8 +224,11 @@ _LoadLayoutsFrom(g_LayoutFile)
 if !g_Layouts.Count  ; nothing loaded — try old filename (one-time migration)
     _LoadLayoutsFrom(A_Temp "\ahk_window_layouts.ini")
 
-if VDA_IsLoaded && GetCurrentDesktopNumber
+if VDA_IsLoaded && GetCurrentDesktopNumber {
     g_LastDesktop := DllCall(GetCurrentDesktopNumber) + 1
+}
+
+SetTimer(_CheckLayoutRestores, 2000)
 
 if g_DebugRestore
     try FileDelete(g_DebugLogFile)
@@ -659,18 +651,20 @@ _OnMoveEnd(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
     }
 }
 
-_OnLocationChange(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+_CheckLayoutRestores() {
     global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive
-    if idObject != 0 || !g_Layouts.Has(hwnd)
-        return
-    if g_UserMoveActive.Has(hwnd)
-        return
-    if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount
-        return
-    if _GetWindowState(hwnd) != 0
-        return
-    if _NeedsAutoRestore(hwnd, g_Layouts[hwnd])
-        _ScheduleAutoRestore(hwnd)
+    for hwnd, layout in g_Layouts {
+        if !_IsLiveWindow(hwnd)
+            continue
+        if g_UserMoveActive.Has(hwnd)
+            continue
+        if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount
+            continue
+        if _GetWindowState(hwnd) != 0
+            continue
+        if _NeedsAutoRestore(hwnd, layout)
+            _ScheduleAutoRestore(hwnd)
+    }
 }
 
 _HandleDesktopChange() {
@@ -687,6 +681,8 @@ _HandleDesktopChange() {
     SetTimer(() => RestoreFocusOnDesktop(currentDesk), -150)
     _ScheduleDesktopRestore(currentDesk)
 }
+
+
 
 TileLeft()        => _ApplyLayout(0, 0, 50, 100)
 TileRight()       => _ApplyLayout(50, 0, 50, 100)
@@ -765,20 +761,6 @@ MoveToDesktop(n) {
     } else {
         ShowOSD("VDA not loaded — install the DLL first!")
     }
-}
-
-AdjustOpacity(delta) {
-    if !WinExist("A")
-        return
-    hwnd := WinGetID("A")
-    cur := WindowOpacity.Has(hwnd) ? WindowOpacity[hwnd] : 255
-    newVal := Max(40, Min(255, cur + delta))
-    WindowOpacity[hwnd] := newVal
-    if newVal = 255
-        WinSetTransparent("Off", "A")
-    else
-        WinSetTransparent(newVal, "A")
-    ShowOSD("Opacity: " Round(newVal / 255 * 100) "%")
 }
 
 FocusDirection(dir) {
@@ -923,9 +905,9 @@ CycleLayout() {
 ;   D = Right         F2 = Top-right 1/4     `   = Pin / unpin (always on top)
 ;                     F3 = Bottom-left 1/4   Tab = Cycle layouts
 ;                     F4 = Bottom-right 1/4
-; FOCUS             EXTENDED TILING        OPACITY
-;   H = Left          Y = Left 60%           WheelUp   = More opaque
-;   J = Down          U = Left 1/3           WheelDown = More transparent
+; FOCUS             EXTENDED TILING
+;   H = Left          Y = Left 60%
+;   J = Down          U = Left 1/3
 ;   K = Up            I = Center 1/3
 ;   L = Right         O = Right 1/3
 ;   Backspace = Jump  P = Right 40%
@@ -934,7 +916,7 @@ CycleLayout() {
 ;   1-9    = Go to virtual desktop           M   = Task Manager
 ;   Alt+1-9= Move window to virtual desktop  T   = Terminal (focus or open)
 ;   Left   = Prev desktop                    E   = Open File Explorer
-;   Right  = Next desktop                    N   = Notion (focus or open)
+;   Right  = Next desktop                    N   = Apple Music (Toggle)
 ;                                            R   = Restart Explorer
 ;                                            Esc = Reload script
 ; MEDIA
@@ -1027,10 +1009,6 @@ Delete:: {
     }
 }
 
-; --- Opacity ---
-WheelUp::   AdjustOpacity(26)
-WheelDown:: AdjustOpacity(-26)
-
 ; --- Media ---
 [::Media_Prev
 ]::Media_Next
@@ -1060,6 +1038,27 @@ Space::Media_Play_Pause
 }
 
 ; --- Apps ---
+*n:: {
+    targetApp := "ahk_exe AppleMusic.exe"
+    
+    prevDetect := A_DetectHiddenWindows
+    DetectHiddenWindows True
+    
+    if WinExist(targetApp) {
+        isVisible := DllCall("IsWindowVisible", "Ptr", WinExist(targetApp))
+        if (isVisible) {
+            WinHide(targetApp)
+        } else {
+            WinShow(targetApp)
+            WinActivate(targetApp)
+        }
+    } else {
+        ShowOSD("Apple Music is not running.")
+    }
+    
+    DetectHiddenWindows prevDetect
+}
+
 *m:: {
     if WinExist("ahk_exe Taskmgr.exe")
         WinActivate("ahk_exe Taskmgr.exe")
@@ -1123,19 +1122,6 @@ Space::Media_Play_Pause
         Run 'wt.exe', EnvGet("USERPROFILE")
         if WinWait("ahk_exe WindowsTerminal.exe", , 10)
             _QuakeTerminal()
-    }
-}
-
-*n:: {
-    notionPath := EnvGet("LocalAppData") "\Programs\Notion\Notion.exe"
-    if WinExist("ahk_exe Notion.exe") {
-        if WinGetMinMax("ahk_exe Notion.exe") = -1
-            WinRestore("ahk_exe Notion.exe")
-        WinActivate("ahk_exe Notion.exe")
-    } else if FileExist(notionPath) {
-        try Run('"' notionPath '"')
-    } else {
-        try Run("Notion.exe")
     }
 }
 
@@ -1276,122 +1262,4 @@ k:: _KL_CheckUnlock("k")
     }
 }
 
-; ============================================================
-; SECTION 4: STARTUP WORKSPACE LAUNCHER
-; ============================================================
-;
-;  Win+Ctrl+S  →  launch & sort everything to its desktop
-;
-; ── CUSTOMIZING YOUR LAYOUT ─────────────────────────────────
-;  Edit WorkspaceLayout() below. Change Desktop numbers to
-;  swap things around. Add/remove entries freely.
-;  Type "browser" = Edge profile window (detected by new HWND)
-;  Type "pwa"     = Edge PWA (detected by window title)
-;  Type "app"     = anything else (detected by title or exe)
-; ────────────────────────────────────────────────────────────
 
-global WS_Edge := '"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"'
-global WS_P1   := WS_Edge ' --profile-directory="Profile 1"'
-global WS_P2   := WS_Edge ' --profile-directory="Profile 2"'
-global WS_BrowserTimeout := 12000
-
-WorkspaceLayout() {
-    local localAppData := EnvGet("LocalAppData")
-    local appData      := EnvGet("AppData")
-    
-    ; Identify paths for apps with versioned folders (Discord)
-    local discordPath := "Discord.exe"
-    loop files, localAppData "\Discord\app-*\Discord.exe" {
-        discordPath := A_LoopFilePath
-        break ; use the first one found
-    }
-
-    return [
-        ; ── Desktop 1 · Personal ────────────────────────────
-        { Type: "browser", Launch: WS_P1, Desktop: 1 },
-        ; ── Desktop 2 · Work / School ───────────────────────
-        { Type: "browser", Launch: WS_P2, Desktop: 2 },
-        ; ── Desktop 3 · Messaging ───────────────────────────
-        { Type: "app", Launch: discordPath, Match: "ahk_exe Discord.exe", Desktop: 3 },
-        { Type: "pwa", Launch: WS_P2 ' --app-id=' CFG_PWA_Slack, Match: "Slack", Desktop: 3 },
-        { Type: "app", Launch: '"' localAppData '\Programs\Notion\Notion.exe"',  Match: "ahk_exe Notion.exe",  Desktop: 3 },
-        ; ── Desktop 4 · Terminal ─────────────────────────────
-        { Type: "app", Launch: 'wt.exe', Match: "ahk_exe WindowsTerminal.exe", Desktop: 4 },
-        ; ── Desktop 5 · Spotify / Misc ──────────────────────
-        { Type: "app", Launch: '"' appData '\Spotify\Spotify.exe"', Match: "ahk_exe Spotify.exe", Desktop: 5 },
-    ]
-}
-
-; ── Helper: launch an Edge profile and detect the new window ─
-WS_LaunchBrowser(cmd) {
-    existing := Map()
-    for hwnd in WinGetList("ahk_exe msedge.exe")
-        existing[hwnd] := true
-
-    Run(cmd)
-
-    deadline := A_TickCount + WS_BrowserTimeout
-    while A_TickCount < deadline {
-        for hwnd in WinGetList("ahk_exe msedge.exe") {
-            if !existing.Has(hwnd) {
-                Sleep(300)
-                return hwnd
-            }
-        }
-        Sleep(100)
-    }
-    return 0
-}
-
-; ── Win+Ctrl+S · Launch and distribute ──────────────────────
-#^s:: {
-    if !VDA_IsLoaded {
-        ShowOSD("VDA not loaded — can't distribute windows!", 3000)
-        return
-    }
-
-    ; Land on desktop 1 first
-    DllCall(GoToDesktopNumber, "Int", 0)
-    Sleep(500)
-
-    layout := WorkspaceLayout()
-
-    for app in layout {
-        dispName := app.HasProp("Match") ? app.Match : "Browser (D" app.Desktop ")"
-        ShowOSD("Launching " dispName " (" A_Index "/" layout.Length ")...", 0)
-        
-        hwnd := 0
-        if app.Type = "browser" {
-            hwnd := WS_LaunchBrowser(app.Launch)
-        } else {
-            ; Only launch if not already running
-            if !WinExist(app.Match) {
-                try {
-                    Run(app.Launch)
-                    hwnd := WinWait(app.Match, , 5)
-                }
-            } else {
-                hwnd := WinExist(app.Match)
-            }
-        }
-
-        if hwnd {
-            ; Brief sleep to ensure window is ready for movement
-            Sleep(250)
-            DllCall(MoveWindowToDesktopNumber, "Ptr", hwnd, "Int", app.Desktop - 1)
-            
-            if app.HasProp("Maximize") && app.Maximize
-                WinMaximize("ahk_id " hwnd)
-            
-            ; Remember this window for its destination desktop's memory
-            DesktopLastWindow[app.Desktop] := hwnd
-        } else {
-            ShowOSD("Timed out on " dispName " — skipping", 0)
-            Sleep(1500)
-        }
-    }
-
-    ; Return home
-    DllCall(GoToDesktopNumber, "Int", 0)
-    ShowOSD("Workspace ready!", 2500)
-}
