@@ -7,6 +7,8 @@
 ; This script remaps the physical Alt key (which physically sits where the 
 ; Mac Command key sits) to send Ctrl combinations for common shortcuts.
 
+#HotIf !GetKeyState("CapsLock", "P")
+
 ; --- Basic Editing ---
 !c::Send "^c"      ; Copy
 !x::Send "^x"      ; Cut
@@ -34,6 +36,15 @@
 !l::Send "^l"      ; Focus Address Bar
 ![::Send "!{Left}"  ; Back (Cmd+[ -> Alt+Left)
 !]::Send "!{Right}" ; Forward (Cmd+] -> Alt+Right)
+!1::Send "^1"      ; Switch to Tab 1
+!2::Send "^2"      ; Switch to Tab 2
+!3::Send "^3"      ; Switch to Tab 3
+!4::Send "^4"      ; Switch to Tab 4
+!5::Send "^5"      ; Switch to Tab 5
+!6::Send "^6"      ; Switch to Tab 6
+!7::Send "^7"      ; Switch to Tab 7
+!8::Send "^8"      ; Switch to Tab 8
+!9::Send "^9"      ; Switch to Tab 9
 
 ; --- Text Formatting ---
 !b::Send "^b"      ; Bold
@@ -56,3 +67,5 @@
 
 ; Cmd + Backspace -> Delete to start of line
 !Backspace::Send "+{Home}{Backspace}"
+
+#HotIf

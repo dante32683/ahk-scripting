@@ -355,6 +355,16 @@ ShowOSD(text, ms := 1500) {
 ; WINDOW MANAGEMENT HELPERS
 ; ============================================================
 
+; Launch a program as a non-elevated user from an elevated script.
+; This works by asking the shell (explorer.exe) to execute the command.
+RunAsUser(target, args := "", workdir := "") {
+    try {
+        ComObject("Shell.Application").Windows().Item().Document.Application.ShellExecute(target, args, workdir)
+    } catch {
+        Run(target . (args ? " " . args : ""), workdir)
+    }
+}
+
 ; ============================================================
 ; KEYBOARD LOCK HELPERS
 ; ============================================================
@@ -956,16 +966,16 @@ Right:: {
 8:: GotoDesktop(8)
 9:: GotoDesktop(9)
 
-; --- Move window to virtual desktop 1-9 and follow (CapsLock+Alt+1-9) ---
-*!1:: MoveToDesktop(1)
-*!2:: MoveToDesktop(2)
-*!3:: MoveToDesktop(3)
-*!4:: MoveToDesktop(4)
-*!5:: MoveToDesktop(5)
-*!6:: MoveToDesktop(6)
-*!7:: MoveToDesktop(7)
-*!8:: MoveToDesktop(8)
-*!9:: MoveToDesktop(9)
+; --- Move window to virtual desktop 1-9 and follow (CapsLock+Shift+1-9) ---
+*+1:: MoveToDesktop(1)
+*+2:: MoveToDesktop(2)
+*+3:: MoveToDesktop(3)
+*+4:: MoveToDesktop(4)
+*+5:: MoveToDesktop(5)
+*+6:: MoveToDesktop(6)
+*+7:: MoveToDesktop(7)
+*+8:: MoveToDesktop(8)
+*+9:: MoveToDesktop(9)
 
 ; --- Tiling: halves & quadrants ---
 *z:: TileLeft()
@@ -993,6 +1003,16 @@ Tab:: CycleLayout()
 Backspace:: FocusJumpBack()
 
 ; --- Window control ---
+*b:: {
+    static _minimized := false
+    if _minimized {
+        WinMinimizeAllUndo()
+        _minimized := false
+    } else {
+        WinMinimizeAll()
+        _minimized := true
+    }
+}
 *f:: ToggleMaximize()
 *g:: FloatCenter()
 *`:: TogglePin()
@@ -1029,31 +1049,32 @@ Space::Media_Play_Pause
     if WinExist("ahk_exe Code.exe")
         WinActivate("ahk_exe Code.exe")
     else if FileExist(codePath) {
-        Run '"' codePath '"'
+        RunAsUser(codePath)
         if WinWait("ahk_exe Code.exe", , 10)
             WinActivate("ahk_exe Code.exe")
     } else {
-        try Run("Code.exe")
+        try RunAsUser("Code.exe")
     }
 }
 
 ; --- Apps ---
 *n:: {
-    targetApp := "ahk_exe AppleMusic.exe"
+    static lastHwnd := 0
     
     prevDetect := A_DetectHiddenWindows
     DetectHiddenWindows True
     
-    if WinExist(targetApp) {
-        isVisible := DllCall("IsWindowVisible", "Ptr", WinExist(targetApp))
-        if (isVisible) {
-            WinHide(targetApp)
-        } else {
-            WinShow(targetApp)
-            WinActivate(targetApp)
-        }
+    ; If the window we last hid is still hidden, bring it back
+    if lastHwnd && WinExist("ahk_id " lastHwnd) && !DllCall("IsWindowVisible", "Ptr", lastHwnd) {
+        WinShow(lastHwnd)
+        WinActivate(lastHwnd)
     } else {
-        ShowOSD("Apple Music is not running.")
+        ; Otherwise, hide the currently active window and remember it
+        activeHwnd := WinActive("A")
+        if activeHwnd {
+            lastHwnd := activeHwnd
+            WinHide(activeHwnd)
+        }
     }
     
     DetectHiddenWindows prevDetect
@@ -1089,6 +1110,11 @@ Space::Media_Play_Pause
 }
 
 *t:: {
+    if GetKeyState("Shift", "P") {
+        Run 'wt.exe -w new', EnvGet("USERPROFILE")
+        return
+    }
+
     _QuakeTerminal() {
         WinActivate("ahk_exe WindowsTerminal.exe")
         _ApplyLayout(0, 0, 100, 40)   ; full width, top 40% of screen
@@ -1125,7 +1151,7 @@ Space::Media_Play_Pause
     }
 }
 
-*r:: {
+*+r:: {
     ; Force-kill ALL explorer instances (/F = force, /IM = by image name).
     ; Plain ProcessClose can leave ghost instances alive long enough that the
     ; subsequent Run sees an existing explorer and opens a folder window instead
