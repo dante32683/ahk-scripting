@@ -3,4 +3,6 @@ config.ahk
 Tailscale.ahk
 Status.ahk
 Click.ahk
-GEMINI.md
+
+# Local Claude/Cursor agent settings
+.claude/

@@ -27,7 +27,7 @@ A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock
 ## Hotkeys
 
 ### CapsLock Layer
-Hold CapsLock to activate. CapsLock itself is disabled — use `Shift + CapsLock` to toggle it.
+Hold CapsLock to activate. CapsLock itself is disabled — use `Alt + Shift + CapsLock` to toggle it.
 
 | Key | Action |
 |-----|--------|
@@ -44,7 +44,7 @@ Hold CapsLock to activate. CapsLock itself is disabled — use `Shift + CapsLock
 | `Q` | Close window |
 | `` ` `` | Pin / unpin (always on top) |
 | `1–9` | Go to virtual desktop 1–9 |
-| `Alt + 1–9` | Move window to virtual desktop 1–9 |
+| `Shift + 1–9` | Move window to virtual desktop 1–9 (and follow) |
 | `Left / Right` | Previous / next virtual desktop |
 | `M` | Task Manager |
 | `T` | Focus or open Windows Terminal |
@@ -74,5 +74,11 @@ Hold CapsLock to activate. CapsLock itself is disabled — use `Shift + CapsLock
 | `\approx` | ≈ |
 | `\theta` | θ |
 | `\sigma` | σ |
+
+## Notes
+
+- **Admin**: `Master.ahk` auto-elevates to administrator on start.
+- **Virtual desktops**: Desktop switching/moving uses `VirtualDesktopAccessor.dll`. If the DLL is missing, desktop `1–9` hotkeys are disabled and the script falls back to the built-in `Ctrl+Win+Left/Right` behavior for prev/next desktop.
+- **Alt remaps (macOS-like)**: `Remap.ahk` is included by `Master.ahk` and remaps common `Alt+<key>` combos to `Ctrl+<key>` when **CapsLock is not held** (copy/paste/undo, etc.).
 
 

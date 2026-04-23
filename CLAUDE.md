@@ -5,7 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Running the Script
 
 - **Start**: Double-click `Master.ahk` (or right-click → Run with AutoHotkey). The script auto-elevates to admin.
-- **Reload**: `CapsLock + Esc` (force-kills and restarts the process).
+- **Reload**: hold `CapsLock` then press `Esc` (force-kills and restarts the process).
+- **Toggle CapsLock**: `Alt + Shift + CapsLock`.
 - **Kill**: `Ctrl + Esc`.
 - No build step, linter, or test runner — AHK scripts are interpreted directly.
 
@@ -31,11 +32,11 @@ All logic lives in a single `Master.ahk` entry point. The file is divided into c
 1. **Init / Performance** — `ListLines 0`, `KeyHistory 0`, admin elevation.
 2. **VDA (VirtualDesktopAccessor)** — loads the DLL at startup; all virtual desktop calls go through `GoToDesktopNumber`, `MoveWindowToDesktopNumber`, `GetCurrentDesktopNumber`, `GetWindowDesktopNumber` function pointers. Falls back gracefully if the DLL is missing.
 3. **Focus Event Hook** — `SetWinEventHook(EVENT_SYSTEM_FOREGROUND)` drives `TrackFocusHistory`. Zero polling. Unhooked on exit.
-4. **Desktop Focus Memory** — `DesktopLastWindow` Map holds last-focused HWND per desktop. Written to `%TEMP%\ahk_desktop_memory.ini` only on exit via `OnExit`. Restored on reload (HWNDs survive `CapsLock+Esc`). `MoveToDesktop` writes the moved window into `DesktopLastWindow[n]` before switching so focus lands on the moved window, not the previously remembered one.
+4. **Desktop Focus Memory** — `DesktopLastWindow` Map holds last-focused HWND per desktop. Written to `%TEMP%\ahk_desktop_memory.ini` only on exit via `OnExit`. Restored on reload (HWNDs survive reload; windows don’t close, only the AHK process restarts). `MoveToDesktop` writes the moved window into `DesktopLastWindow[n]` before switching so focus lands on the moved window, not the previously remembered one.
 5. **Layout Persistence / Restore** — `g_Layouts` Map (`hwnd → [xf, yf, wf, hf]`) is persisted to `%TEMP%\ahk_layouts.ini` on every tile/update and restored on reload. Use `IsWindow`, not `WinExist`, when validating tracked HWNDs: cloaked windows on inactive virtual desktops are still live and must not be pruned.
    - **Desktop switch**: `GotoDesktop(n)` and foreground-based desktop-change detection both schedule `_RestoreDesktop(n)` retries.
    - **System events**: `WM_SETTINGCHANGE` (`SPI_SETWORKAREA`), `WM_POWERBROADCAST`, and `WM_DISPLAYCHANGE` schedule `_RestoreAllDesktops()` plus a delayed current-desktop pass.
-   - **Passive drift correction**: `EVENT_OBJECT_LOCATIONCHANGE` watches only tracked windows. If a tracked window moves without a user drag and its outer position differs materially from the expected tile, `_ScheduleAutoRestore(hwnd)` snaps it back. Programmatic retiles are suppressed briefly so the hook does not fight the script’s own `WinMove`.
+   - **Passive drift correction**: a low-frequency timer (`_CheckLayoutRestores` every ~2s) checks only tracked windows. If a tracked window drifts without a user drag and its outer position differs materially from the expected tile, `_ScheduleAutoRestore(hwnd)` snaps it back. Programmatic retiles are suppressed briefly so the auto-restore path does not fight the script’s own `WinMove`.
 6. **Window Management Helpers** — `_ApplyLayout(x%, y%, w%, h%, overrideHwnd, persist)` is the single tiling primitive. `persist` defaults `true`; restore helpers pass `false` to skip disk I/O. DWM extended-frame bounds are used for border compensation, with a guard for invalid cloaked-window rects. `EVENT_SYSTEM_MOVESIZESTART/END` distinguishes user drags from automatic correction, and `FocusDirection` skips cloaked windows (`DWMWA_CLOAKED`) so windows on other virtual desktops are never selected.
 7. **Hyper Layer** — `#HotIf GetKeyState("CapsLock", "P")` block; CapsLock acts as a modifier. WASD = arrows, HJKL = focus direction, Z/X/number keys = tiling/desktops.
 8. **Keyboard Lock** — `CapsLock+Alt+L` toggles `BlockInput`. While locked, typing `"unlock"` releases it (tracked in `g_UnlockBuf`; 6-char rolling buffer). A second `#HotIf g_KeyLockActive` block intercepts the unlock keys.

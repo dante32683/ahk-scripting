@@ -9,7 +9,9 @@
 ; ============================================================
 ListLines 0
 KeyHistory 0
-ProcessSetPriority "BelowNormal"
+; Hotkeys can get starved under load if we run at low priority.
+; Keep this responsive without going full Realtime.
+ProcessSetPriority "AboveNormal"
 SetTitleMatchMode 2
 InstallKeybdHook
 #UseHook True
@@ -170,6 +172,7 @@ global FocusHistory   := []
 global LayoutCycleIdx := Map()
 global g_KeyLockActive := false
 global g_UnlockBuf     := ""
+global g_ScriptPaused  := false  ; pause hotkeys + background automation (timers/hooks)
 global g_Layouts    := Map()   ; hwnd → [xf, yf, wf, hf]  (0–100 percentages of monitor work area)
 global g_LayoutFile := A_Temp "\ahk_layouts.ini"
 global g_LastDesktop := 0
@@ -318,6 +321,9 @@ _NeedsAutoRestore(hwnd, layout) {
 
 _AutoRestoreWindow(hwnd) {
     global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive
+    global g_ScriptPaused
+    if g_ScriptPaused
+        return
     if !g_Layouts.Has(hwnd) || !_IsLiveWindow(hwnd)
         return
     if g_UserMoveActive.Has(hwnd)
@@ -351,6 +357,24 @@ ShowOSD(text, ms := 1500) {
         SetTimer(() => ToolTip(), -ms)
 }
 
+ToggleScriptPaused() {
+    global g_ScriptPaused
+    g_ScriptPaused := !g_ScriptPaused
+
+    ; Suspend disables hotkeys/hotstrings across this script, including #Include files.
+    Suspend(g_ScriptPaused)
+
+    ShowOSD(g_ScriptPaused ? "Script Paused" : "Script Resumed", 1500)
+}
+
+_SendWinShift(key) {
+    ; Be explicit about modifier ordering. Rarely, `Send "#+c"` can end up as `Win+C`
+    ; if Shift is missed/released early, which may trigger other OS features.
+    Send "{LWin down}{Shift down}"
+    Send key
+    Send "{Shift up}{LWin up}"
+}
+
 ; ============================================================
 ; WINDOW MANAGEMENT HELPERS
 ; ============================================================
@@ -373,7 +397,7 @@ _KL_On() {
     g_KeyLockActive := true
     g_UnlockBuf     := ""
     BlockInput "On"
-    ShowOSD("⌨ Keyboard Locked", 0)
+    ShowOSD("Keyboard Locked", 0)
 }
 
 _KL_Off() {
@@ -381,7 +405,7 @@ _KL_Off() {
     g_KeyLockActive := false
     g_UnlockBuf     := ""
     BlockInput "Off"
-    ShowOSD("⌨ Keyboard Unlocked", 1500)
+    ShowOSD("Keyboard Unlocked", 1500)
 }
 
 _KL_CheckUnlock(ch) {
@@ -525,6 +549,9 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
 ; Also prunes dead HWNDs from the layout map.
 _RestoreDesktop(n) {
     global g_Layouts
+    global g_ScriptPaused
+    if g_ScriptPaused
+        return
     if !VDA_IsLoaded || !GetWindowDesktopNumber
         return
     _Dbg("restore-desktop-start desk=" n " tracked=" g_Layouts.Count)
@@ -559,6 +586,9 @@ _RestoreDesktop(n) {
 ; All three handlers share this function reference → they auto-debounce each other.
 _RestoreAllDesktops() {
     global g_Layouts
+    global g_ScriptPaused
+    if g_ScriptPaused
+        return
     _Dbg("restore-all-start tracked=" g_Layouts.Count)
     for hwnd, layout in g_Layouts.Clone() {
         if !_IsLiveWindow(hwnd) {
@@ -600,6 +630,9 @@ _ScheduleRestoreCurrentDesktop(delay := 600) {
 ; WM_SETTINGCHANGE: SPI_SETWORKAREA (0x2F) fires when AppBar (MenuBar/taskbar) changes
 ; the reserved work area. Work area is already updated when the message arrives.
 _OnSettingChange(wParam, *) {
+    global g_ScriptPaused
+    if g_ScriptPaused
+        return
     if wParam = 0x2F {
         _Dbg("wm-settingchange SPI_SETWORKAREA")
         SetTimer(_RestoreAllDesktops, -300)
@@ -611,6 +644,9 @@ _OnSettingChange(wParam, *) {
 ; 5s delay: lets AppBars finish their TaskbarCreated re-registration cycle.
 ; Same function reference as other handlers → debounces if SPI_SETWORKAREA also fires.
 _OnPowerBroadcast(wParam, *) {
+    global g_ScriptPaused
+    if g_ScriptPaused
+        return
     if wParam = 0x12 || wParam = 0x7 {
         _Dbg("wm-powerbroadcast wParam=" wParam)
         SetTimer(_RestoreAllDesktops, -5000)
@@ -620,6 +656,9 @@ _OnPowerBroadcast(wParam, *) {
 
 ; WM_DISPLAYCHANGE: fullscreen game resolution change. 1s delay for driver re-init.
 _OnDisplayChange(*) {
+    global g_ScriptPaused
+    if g_ScriptPaused
+        return
     _Dbg("wm-displaychange")
     SetTimer(_RestoreAllDesktops, -1000)
     _ScheduleRestoreCurrentDesktop(1800)
@@ -663,6 +702,9 @@ _OnMoveEnd(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
 
 _CheckLayoutRestores() {
     global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive
+    global g_ScriptPaused
+    if g_ScriptPaused
+        return
     for hwnd, layout in g_Layouts {
         if !_IsLiveWindow(hwnd)
             continue
@@ -679,6 +721,9 @@ _CheckLayoutRestores() {
 
 _HandleDesktopChange() {
     global g_LastDesktop
+    global g_ScriptPaused
+    if g_ScriptPaused
+        return
     if !VDA_IsLoaded || !GetCurrentDesktopNumber
         return
     try currentDesk := DllCall(GetCurrentDesktopNumber) + 1
@@ -834,7 +879,10 @@ FocusDirection(dir) {
 }
 
 TrackFocusHistory(hHook, event, hwnd, *) {
+    global g_ScriptPaused
     try {
+        if g_ScriptPaused
+            return
         _HandleDesktopChange()
         if hwnd = 0
             return
@@ -882,11 +930,23 @@ CycleLayout() {
 }
 
 ; ============================================================
+; PAUSE / RESUME
+; Shift + CapsLock + Space toggles pausing the script.
+; When paused, hotkeys/hotstrings (including #Include files) are suspended,
+; and background automation is gated by g_ScriptPaused.
+; ============================================================
+#SuspendExempt
+#HotIf GetKeyState("CapsLock", "P")
++Space:: ToggleScriptPaused()
+#HotIf
+#SuspendExempt False
+
+; ============================================================
 ; CAPSLOCK CONFIGURATION
 ; ============================================================
 *CapsLock:: return
 
-+CapsLock:: {
+!+CapsLock:: {
     if GetKeyState("CapsLock", "T")
         SetCapsLockState "Off"
     else
@@ -896,7 +956,7 @@ CycleLayout() {
 ; ============================================================
 ; SECTION 1: TEXT EXPANSION
 ; ============================================================
-::@@:: SendText(CFG_Email)
+; ::@@:: SendText(CFG_Email)
 ::#ph:: SendText(CFG_Phone)
 ::\deg::°
 ::\delta::Δ
@@ -1033,7 +1093,7 @@ Delete:: {
 [::Media_Prev
 ]::Media_Next
 Space::Media_Play_Pause
-*c:: Send "#+c"
+*c:: _SendWinShift("c")
 *!l:: {
     ; Debounce: key-down repeats if held — without this a single long press
     ; toggles lock on→off→on, leaving the keyboard locked unintentionally.
