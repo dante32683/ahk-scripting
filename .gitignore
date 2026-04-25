@@ -4,5 +4,8 @@ Tailscale.ahk
 Status.ahk
 Click.ahk
 
+# Task Scheduler exports — machine-specific (hardcoded SIDs and paths)
+*.xml
+
 # Local Claude/Cursor agent settings
 .claude/

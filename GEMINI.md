@@ -70,6 +70,7 @@ The script uses a "Hyper" layer pattern:
 - Tiling functions should calculate coordinates based on `MonitorGetWorkArea` to ensure they respect taskbars and multi-monitor setups.
 - Use `TileGap` to adjust the aesthetic spacing between windows.
 - Virtual desktop functions rely on `DllCall` to `VirtualDesktopAccessor.dll`.
+- App launch/activate hotkeys should prefer same-desktop activation: `_HwndOnCurrentDesktop()` / `_ActivateOrRunOnCurrentDesktop()` only re-focus windows on the current virtual desktop, otherwise they launch a new window.
 - **Opacity**: Window opacity adjustments (e.g., via scroll wheel) are no longer used or supported.
 
 ### Configuration

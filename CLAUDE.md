@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Start**: Double-click `Master.ahk` (or right-click → Run with AutoHotkey). The script auto-elevates to admin.
 - **Reload**: hold `CapsLock` then press `Esc` (force-kills and restarts the process).
+- **Soft reset**: hold `CapsLock` then press `R` (releases stuck modifiers, unlocks keyboard lock, restores the last `CapsLock+N` hidden window).
 - **Toggle CapsLock**: `Alt + Shift + CapsLock`.
 - **Kill**: `Ctrl + Esc`.
 - No build step, linter, or test runner — AHK scripts are interpreted directly.
@@ -40,7 +41,8 @@ All logic lives in a single `Master.ahk` entry point. The file is divided into c
 6. **Window Management Helpers** — `_ApplyLayout(x%, y%, w%, h%, overrideHwnd, persist)` is the single tiling primitive. `persist` defaults `true`; restore helpers pass `false` to skip disk I/O. DWM extended-frame bounds are used for border compensation, with a guard for invalid cloaked-window rects. `EVENT_SYSTEM_MOVESIZESTART/END` distinguishes user drags from automatic correction, and `FocusDirection` skips cloaked windows (`DWMWA_CLOAKED`) so windows on other virtual desktops are never selected.
 7. **Hyper Layer** — `#HotIf GetKeyState("CapsLock", "P")` block; CapsLock acts as a modifier. WASD = arrows, HJKL = focus direction, Z/X/number keys = tiling/desktops.
 8. **Keyboard Lock** — `CapsLock+Alt+L` toggles `BlockInput`. While locked, typing `"unlock"` releases it (tracked in `g_UnlockBuf`; 6-char rolling buffer). A second `#HotIf g_KeyLockActive` block intercepts the unlock keys.
-9. **Camera Toggle** — Copilot key (`#+F23`) uses WMI (pre-initialized at startup) to query device state, then `pnputil.exe` (with PowerShell fallback) to enable/disable by `CFG_CameraID`.
+9. **App Launchers / Activators** — `_HwndOnCurrentDesktop()` and `_ActivateOrRunOnCurrentDesktop()` ensure app hotkeys only re-focus an existing window if it’s on the current virtual desktop; otherwise they open a new window (no cross-desktop jump).
+10. **Camera Toggle** — Copilot key (`#+F23`) uses WMI (pre-initialized at startup) to query device state, then `pnputil.exe` (with PowerShell fallback) to enable/disable by `CFG_CameraID`.
 
 ### Standalone Scripts (not included by Master.ahk)
 

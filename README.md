@@ -49,7 +49,8 @@ Hold CapsLock to activate. CapsLock itself is disabled — use `Alt + Shift + Ca
 | `M` | Task Manager |
 | `T` | Focus or open Windows Terminal |
 | `E` | Open File Explorer |
-| `R` | Restart Explorer (Shell) |
+| `R` | Soft reset (release stuck modifiers, unlock keyboard, undo last `N` hide) |
+| `Shift + R` | Restart Explorer (Shell) |
 | `V` | Open VS Code |
 | `N` | Apple Music (Toggle) |
 | `C` | Color picker (PowerToys) |
@@ -79,6 +80,7 @@ Hold CapsLock to activate. CapsLock itself is disabled — use `Alt + Shift + Ca
 
 - **Admin**: `Master.ahk` auto-elevates to administrator on start.
 - **Virtual desktops**: Desktop switching/moving uses `VirtualDesktopAccessor.dll`. If the DLL is missing, desktop `1–9` hotkeys are disabled and the script falls back to the built-in `Ctrl+Win+Left/Right` behavior for prev/next desktop.
+- **App hotkeys and virtual desktops**: App launchers in the CapsLock layer only refocus an existing app window if it’s on your **current** virtual desktop; otherwise they open a new window instead of switching desktops.
 - **Alt remaps (macOS-like)**: `Remap.ahk` is included by `Master.ahk` and remaps common `Alt+<key>` combos to `Ctrl+<key>` when **CapsLock is not held** (copy/paste/undo, etc.).
 
 
