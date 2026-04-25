@@ -16,6 +16,8 @@ A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock
 
 `config.ahk` is gitignored and will never be committed.
 
+If you use the optional Task Scheduler “Tailscale Auto Switch” task on the laptop, it runs `Tailscale.ahk` (tracked in this repo).
+
 ## Highlights & Optimizations
 
 - **Zero-CPU Focus Tracking**: Replaced polling timers with event-driven system hooks.

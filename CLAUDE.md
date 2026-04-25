@@ -28,7 +28,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-All logic lives in a single `Master.ahk` entry point. The file is divided into clearly labeled sections:
+Shared logic lives in `lib/Core.ahk`. The laptop entry point is `Master.ahk`; the PC entry point is `Master-PC.ahk`.
+The codebase is divided into clearly labeled sections:
 
 1. **Init / Performance** — `ListLines 0`, `KeyHistory 0`, admin elevation.
 2. **VDA (VirtualDesktopAccessor)** — loads the DLL at startup; all virtual desktop calls go through `GoToDesktopNumber`, `MoveWindowToDesktopNumber`, `GetCurrentDesktopNumber`, `GetWindowDesktopNumber` function pointers. Falls back gracefully if the DLL is missing.
@@ -48,7 +49,7 @@ All logic lives in a single `Master.ahk` entry point. The file is divided into c
 
 - `Click.ahk` — Simple auto-clicker toggle on F8. Run separately when needed.
 - `Status.ahk` — Always-on-top status pill showing mic/cam/Tailscale/v2rayN state. Uses `CapabilityAccessManager` registry keys and Core Audio COM. Run separately.
-- `Tailscale.ahk` — Network-aware startup script: detects Wi-Fi SSID and conditionally starts/stops v2rayN, Xray, SSH tunnel, and Tailscale. Intended to run on login/network change.
+- `Tailscale.ahk` — Network-aware startup script: detects Wi‑Fi SSID and conditionally starts/stops v2rayN, Xray, SSH tunnel, and Tailscale. Intended to run on the laptop via Task Scheduler (not included by `Master-PC.ahk`).
 
 ## Conventions
 
