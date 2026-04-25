@@ -7,5 +7,8 @@ Click.ahk
 # Task Scheduler exports — machine-specific (hardcoded SIDs and paths)
 *.xml
 
+# Local planning docs
+REFACTOR_PLAN.md
+
 # Local Claude/Cursor agent settings
 .claude/
