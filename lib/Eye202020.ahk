@@ -29,6 +29,8 @@ global g_202020_LastSnapshotMs := 0
 global g_202020_LastMode := ""
 global g_202020_LastEnabledSent := ""
 global g_202020_CmdBuf := ""
+global g_202020_DebugIpc := false
+global g_202020_IpcLogFile := A_Temp "\ahk_202020_ipc.log"
 
 _202020_Today() => FormatTime(, "yyyyMMdd")
 
@@ -63,6 +65,7 @@ _202020_Reset(reason := "") {
     g_202020_BreakStart := 0
     g_202020_FlashGreenCount := 0
     g_202020_FlashGreenNext := 0
+    _202020_IpcLog("reset reason=" reason)
     _202020_Snapshot(true)
 }
 
@@ -105,6 +108,7 @@ _202020_StartBreak() {
     g_202020_BreakStart := A_TickCount
     g_202020_FlashGreenCount := 0
     g_202020_FlashGreenNext := 0
+    _202020_IpcLog("startBreak inBreak=true")
     _202020_Snapshot(true)
 }
 
@@ -216,6 +220,13 @@ _202020_EscapeJson(s) {
     return s
 }
 
+_202020_IpcLog(line) {
+    global g_202020_DebugIpc, g_202020_IpcLogFile
+    if !g_202020_DebugIpc
+        return
+    try FileAppend(FormatTime(, "yyyy-MM-dd HH:mm:ss.fff") " " line "`n", g_202020_IpcLogFile, "UTF-8")
+}
+
 _202020_IpcTick() {
     global g_ScriptPaused
     if !IsSet(g_ScriptPaused)
@@ -260,6 +271,7 @@ _202020_TryConnectStatePipe() {
         }
     }
     g_202020_StatePipe := h
+    _202020_IpcLog("connected state pipe")
     return true
 }
 
@@ -296,6 +308,7 @@ _202020_TryConnectCmdPipe() {
         }
     }
     g_202020_CmdPipe := h
+    _202020_IpcLog("connected cmd pipe")
     return true
 }
 
@@ -320,6 +333,7 @@ _202020_WriteState(line) {
         _202020_ClosePipe(&g_202020_StatePipe)
         return false
     }
+    _202020_IpcLog("state -> " line)
     return true
 }
 
@@ -353,20 +367,31 @@ _202020_PollCmd() {
     while (p := InStr(g_202020_CmdBuf, "`n")) {
         line := Trim(SubStr(g_202020_CmdBuf, 1, p-1))
         g_202020_CmdBuf := SubStr(g_202020_CmdBuf, p+1)
-        if line
+        if line {
+            _202020_IpcLog("cmd <- " line)
             _202020_HandleCmd(line)
+        }
     }
 }
 
 _202020_HandleCmd(jsonLine) {
     ; Minimal JSON parsing: extract cmd string.
-    if !RegExMatch(jsonLine, '\"cmd\"\\s*:\\s*\"([^\"]+)\"', &m)
+    if !RegExMatch(jsonLine, '"cmd"\s*:\s*"([^"]+)"', &m)
         return
     cmd := m[1]
+    _202020_IpcLog("handle cmd=" cmd)
+    if (cmd = "reset" || cmd = "resetTimer" || cmd = "resetActiveTimer") {
+        if _202020_IsEnabled()
+            _202020_Reset("ipc")
+        return
+    }
     if cmd = "startBreak" {
         if !_202020_IsEnabled()
             return
-        _202020_StartBreak()
+        if g_202020_ElapsedMs < 20*60*1000
+            _202020_Reset("ipc-startBreak")
+        else
+            _202020_StartBreak()
         return
     }
     if cmd = "togglePrompt" {
@@ -381,7 +406,7 @@ _202020_HandleCmd(jsonLine) {
         return
     }
     if cmd = "setEnabled" {
-        if RegExMatch(jsonLine, '\"value\"\\s*:\\s*(true|false)', &v) {
+        if RegExMatch(jsonLine, '"value"\s*:\s*(true|false)', &v) {
             global g_202020_Enabled
             g_202020_Enabled := (v[1] = "true")
             _202020_SaveState()
