@@ -4,7 +4,8 @@
 
 #Include config.ahk
 #Include lib/Eye202020.ahk
-#Include lib/Core.ahk
+#Include lib/Core_FancyZone.ahk
+; #Include lib/Core_Native.ahk
 #Include Remap.ahk
 
 ; WMI pre-init for camera toggle

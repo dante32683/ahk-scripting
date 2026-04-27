@@ -561,7 +561,8 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
 }
 
 _RestoreDesktop(n) {
-    return
+    if (true)
+        return
     global g_Layouts
     global g_ScriptPaused
     if g_ScriptPaused
@@ -591,7 +592,8 @@ _RestoreDesktop(n) {
 }
 
 _RestoreAllDesktops() {
-    return
+    if true
+        return
     global g_Layouts
     global g_ScriptPaused
     if g_ScriptPaused
@@ -978,25 +980,13 @@ a::Left
 s::Down
 d::Right
 
-; --- Tiling: halves & quadrants ---
-; *z:: TileLeft()
 *z:: Send("^!#1")
-; *x:: TileRight()
-; *F1:: TileTopLeft()
-; *F2:: TileTopRight()
-; *F3:: TileBottomLeft()
-; *F4:: TileBottomRight()
 
-; --- Tiling: thirds & splits ---
-; *y:: TileLeft60()
-; *u:: TileLeftThird()
-; *i:: TileCenterThird()
-; *o:: TileRightThird()
-; *p:: TileRight40()
-*p:: Send("^!#2")
+*x:: Send("^!#2")
 
 ; --- Layout cycle ---
-Tab:: CycleLayout()
+; Tab:: CycleLayout()
+Tab:: Send("#{Right}")
 
 ; --- Focus ---
 *h:: FocusDirection("left")
@@ -1019,8 +1009,7 @@ Backspace:: FocusJumpBack()
 *+b:: _202020_TogglePrompt()
 *f:: ToggleMaximize()
 ; *f:: Send("^!#0")
-; *g:: FloatCenter()
-*g:: Send("^!#3")
+*g:: FloatCenter()
 *`:: TogglePin()
 *q:: {
     if WinExist("A")
@@ -1172,6 +1161,7 @@ Esc:: {
     ToolTip("Reloading script...")
     ReleaseModifiers()
     Sleep(200)
+    ; Removed the backslashes. Single quotes handle the inner double quotes perfectly.
     Run('cmd.exe /c taskkill /F /PID ' DllCall("GetCurrentProcessId") ' & start "" "' A_ScriptFullPath '"', , "Hide")
     ExitApp()
 }
