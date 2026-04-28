@@ -154,13 +154,14 @@ _DeletePersistedLayout(hwnd) {
 ; ============================================================
 ; TILING GAP, BORDER & WINDOW HISTORY
 ; ============================================================
-global TileGap        := 0
+global TileGap        := 4
 global FocusHistory   := []
 global LayoutCycleIdx := Map()
 global g_KeyLockActive := false
 global g_UnlockBuf     := ""
 global g_ScriptPaused  := false
 global g_CapsN_LastHiddenHwnd := 0
+global g_TilingMode    := "Native"
 
 global g_Layouts    := Map()   ; hwnd → [xf, yf, wf, hf]
 global g_LayoutFile := A_Temp "\ahk_layouts.ini"
@@ -213,7 +214,7 @@ if VDA_IsLoaded && GetCurrentDesktopNumber {
     g_LastDesktop := DllCall(GetCurrentDesktopNumber) + 1
 }
 
-SetTimer(_CheckLayoutRestores, 2000)
+; SetTimer(_CheckLayoutRestores, 2000)
 
 if g_DebugRestore
     try FileDelete(g_DebugLogFile)
@@ -302,6 +303,8 @@ _NeedsAutoRestore(hwnd, layout) {
 }
 
 _AutoRestoreWindow(hwnd) {
+    if g_TilingMode != "Native"
+        return
     global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive
     global g_ScriptPaused
     if g_ScriptPaused
@@ -559,6 +562,8 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
 }
 
 _RestoreDesktop(n) {
+    if g_TilingMode != "Native"
+        return
     global g_Layouts
     global g_ScriptPaused
     if g_ScriptPaused
@@ -588,6 +593,8 @@ _RestoreDesktop(n) {
 }
 
 _RestoreAllDesktops() {
+    if g_TilingMode != "Native"
+        return
     global g_Layouts
     global g_ScriptPaused
     if g_ScriptPaused
@@ -974,24 +981,6 @@ a::Left
 s::Down
 d::Right
 
-; --- Tiling: halves & quadrants ---
-*z:: TileLeft()
-*x:: TileRight()
-*F1:: TileTopLeft()
-*F2:: TileTopRight()
-*F3:: TileBottomLeft()
-*F4:: TileBottomRight()
-
-; --- Tiling: thirds & splits ---
-*y:: TileLeft60()
-*u:: TileLeftThird()
-*i:: TileCenterThird()
-*o:: TileRightThird()
-*p:: TileRight40()
-
-; --- Layout cycle ---
-Tab:: CycleLayout()
-
 ; --- Focus ---
 *h:: FocusDirection("left")
 *j:: FocusDirection("down")
@@ -1011,8 +1000,6 @@ Backspace:: FocusJumpBack()
     }
 }
 *+b:: _202020_TogglePrompt()
-*f:: ToggleMaximize()
-*g:: FloatCenter()
 *`:: TogglePin()
 *q:: {
     if WinExist("A")
@@ -1139,11 +1126,32 @@ Space::Media_Play_Pause
     Run A_WinDir "\explorer.exe"
 }
 
+_RestartSelf() {
+    ReleaseModifiers()
+    Sleep(150)
+
+    ahkExe := ""
+    try ahkExe := A_AhkPath
+
+    ; Prefer launching via the interpreter (most reliable). Fallback to script path.
+    if (ahkExe && FileExist(ahkExe)) {
+        try Run('"' ahkExe '" "' A_ScriptFullPath '"')
+        catch
+            return false
+        return true
+    }
+
+    try Run('"' A_ScriptFullPath '"')
+    catch
+        return false
+    return true
+}
+
 Esc:: {
     ToolTip("Reloading script...")
     ReleaseModifiers()
     Sleep(200)
-    Run('cmd.exe /c taskkill /F /PID ' DllCall("GetCurrentProcessId") ' & start \"\" \"' A_ScriptFullPath '\"', , "Hide")
+    Run('cmd.exe /c taskkill /F /PID ' DllCall("GetCurrentProcessId") ' & start "" "' A_ScriptFullPath '"', , "Hide")
     ExitApp()
 }
 
@@ -1162,3 +1170,9 @@ k:: _KL_CheckUnlock("k")
 *!l:: _KL_Off()
 #HotIf
 
+; ============================================================
+; MODULAR WINDOW TILING SELECTION
+; ============================================================
+; Uncomment the version you want to use:
+#Include WindowTiling_FancyZones.ahk
+; #Include lib/WindowTiling_Native.ahk
