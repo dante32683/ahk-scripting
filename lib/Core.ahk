@@ -7,6 +7,12 @@
 ; before including this file.
 
 ; ============================================================
+; MODULAR WINDOW TILING — both loaded; CFG_TilingMode selects active set
+; ============================================================
+#Include WindowTiling_FancyZones.ahk
+#Include WindowTiling_Native.ahk
+
+; ============================================================
 ; OPTIMIZATION: PERFORMANCE & MEMORY
 ; ============================================================
 ListLines 0
@@ -60,9 +66,8 @@ if !FileExist(VDA_DLL) {
 OnExit ReleaseModifiers
 
 ReleaseModifiers(ExitReason := "", ExitCode := "") {
-    for mod in ["CapsLock", "Ctrl", "Shift", "Alt", "LWin", "RWin"]
-        if !GetKeyState(mod, "P") && GetKeyState(mod)
-            Send "{" mod " up}"
+    for mod in ["LCtrl", "RCtrl", "LShift", "RShift", "LAlt", "RAlt", "LWin", "RWin", "CapsLock"]
+        Send "{" mod " up}"
 }
 
 ; ============================================================
@@ -161,7 +166,7 @@ global g_KeyLockActive := false
 global g_UnlockBuf     := ""
 global g_ScriptPaused  := false
 global g_CapsN_LastHiddenHwnd := 0
-global g_TilingMode    := "Native"
+global g_TilingMode    := CFG_TilingMode
 
 global g_Layouts    := Map()   ; hwnd → [xf, yf, wf, hf]
 global g_LayoutFile := A_Temp "\ahk_layouts.ini"
@@ -214,7 +219,8 @@ if VDA_IsLoaded && GetCurrentDesktopNumber {
     g_LastDesktop := DllCall(GetCurrentDesktopNumber) + 1
 }
 
-; SetTimer(_CheckLayoutRestores, 2000)
+if (g_TilingMode = "Native")
+    SetTimer(_CheckLayoutRestores, 2000)
 
 if g_DebugRestore
     try FileDelete(g_DebugLogFile)
@@ -778,14 +784,6 @@ ToggleMaximize() {
         WinMaximize("A")
 }
 
-TogglePin() {
-    if !WinExist("A")
-        return
-    WinSetAlwaysOnTop(-1, "A")
-    isPinned := WinGetExStyle("A") & 0x8
-    ShowOSD(isPinned ? "Pinned (Always on Top)" : "Unpinned")
-}
-
 GotoDesktop(n) {
     global g_LastDesktop
     if !VDA_IsLoaded {
@@ -958,21 +956,10 @@ CycleLayout() {
 }
 
 ; ============================================================
-; SECTION 1: TEXT EXPANSION
-; ============================================================
-; ::@@:: SendText(CFG_Email)
-::#ph:: SendText(CFG_Phone)
-::\deg::°
-::\delta::Δ
-::\pi::π
-::\approx::≈
-::\theta::θ
-::\sigma::σ
-
-; ============================================================
-; SECTION 2: THE "HYPER" LAYER  (CapsLock held = Hyper)
+; THE "HYPER" LAYER  (CapsLock held = Hyper)
 ; (Desktop switching/moving is machine-specific and lives in entry points.)
 ; ============================================================
+
 #HotIf GetKeyState("CapsLock", "P")
 
 ; --- Arrow navigation ---
@@ -981,12 +968,11 @@ a::Left
 s::Down
 d::Right
 
-; --- Focus ---
-*h:: FocusDirection("left")
-*j:: FocusDirection("down")
-*k:: FocusDirection("up")
-*l:: FocusDirection("right")
-Backspace:: FocusJumpBack()
+; --- System snap (Alt+CapsLock+W/A/S/D → Win+Arrow) ---
+!w:: Send("#{Up}")
+!a:: Send("#{Left}")
+!s:: Send("#{Down}")
+!d:: Send("#{Right}")
 
 ; --- Window control ---
 *b:: {
@@ -1000,11 +986,7 @@ Backspace:: FocusJumpBack()
     }
 }
 *+b:: _202020_TogglePrompt()
-*`:: TogglePin()
-*q:: {
-    if WinExist("A")
-        WinClose("A")
-}
+*`:: Send("^#t")
 Delete:: {
     hwnd := WinExist("A") ? WinGetID("A") : 0
     if hwnd && g_Layouts.Has(hwnd) {
@@ -1015,10 +997,10 @@ Delete:: {
 }
 
 ; --- Media ---
-[::Media_Prev
-]::Media_Next
-Space::Media_Play_Pause
-*c:: _SendWinShift("c")
+*[:: Send "{Media_Prev}"
+*]:: Send "{Media_Next}"
+*Space:: Send "{Media_Play_Pause}"
+*c:: Send("!+c")
 *!l:: {
     static _lastToggle := 0
     if (A_TickCount - _lastToggle < 400)
@@ -1126,27 +1108,6 @@ Space::Media_Play_Pause
     Run A_WinDir "\explorer.exe"
 }
 
-_RestartSelf() {
-    ReleaseModifiers()
-    Sleep(150)
-
-    ahkExe := ""
-    try ahkExe := A_AhkPath
-
-    ; Prefer launching via the interpreter (most reliable). Fallback to script path.
-    if (ahkExe && FileExist(ahkExe)) {
-        try Run('"' ahkExe '" "' A_ScriptFullPath '"')
-        catch
-            return false
-        return true
-    }
-
-    try Run('"' A_ScriptFullPath '"')
-    catch
-        return false
-    return true
-}
-
 Esc:: {
     ToolTip("Reloading script...")
     ReleaseModifiers()
@@ -1170,9 +1131,3 @@ k:: _KL_CheckUnlock("k")
 *!l:: _KL_Off()
 #HotIf
 
-; ============================================================
-; MODULAR WINDOW TILING SELECTION
-; ============================================================
-; Uncomment the version you want to use:
-#Include WindowTiling_FancyZones.ahk
-; #Include lib/WindowTiling_Native.ahk

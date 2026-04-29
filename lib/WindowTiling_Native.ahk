@@ -2,13 +2,7 @@
 ; NATIVE TILING LOGIC & HOTKEYS
 ; ============================================================
 
-; Enable the automatic retiler timer
-SetTimer(_CheckLayoutRestores, 2000)
-
-; Set the mode for restoration functions
-g_TilingMode := "Native"
-
-#HotIf GetKeyState("CapsLock", "P")
+#HotIf GetKeyState("CapsLock", "P") && g_TilingMode = "Native"
 
 ; --- Tiling: halves & quadrants ---
 *z:: TileLeft()
@@ -27,6 +21,13 @@ g_TilingMode := "Native"
 
 ; --- Layout cycle ---
 Tab:: CycleLayout()
+
+; --- Focus ---
+*h:: FocusDirection("left")
+*j:: FocusDirection("down")
+*k:: FocusDirection("up")
+*l:: FocusDirection("right")
+Backspace:: FocusJumpBack()
 
 ; --- Window control ---
 *f:: ToggleMaximize()

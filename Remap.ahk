@@ -35,6 +35,7 @@
 !,::Send "^,"      ; Preferences/Settings (Cmd+,)
 
 ; --- Window / Tab Management ---
+!q:: WinClose("A") ; Close Window (macOS Cmd+Q)
 !w::Send "^w"      ; Close Tab/Window
 !+w::Send "^+w"    ; Close All Tabs/Window
 !t::Send "^t"      ; New Tab
@@ -53,7 +54,6 @@
 ; --- Browser / Navigation ---
 !l::Send "^l"      ; Focus Address Bar
 !d::Send "^d"      ; Bookmark
-!+d::Send "^+d"    ; Bookmark All Tabs
 !+b::Send "^+b"    ; Toggle Bookmarks Bar
 ![::Send "!{Left}"  ; Back (Cmd+[ -> Alt+Left)
 !]::Send "!{Right}" ; Forward (Cmd+] -> Alt+Right)
@@ -73,7 +73,6 @@
 !b::Send "^b"      ; Bold
 !i::Send "^i"      ; Italic
 !u::Send "^u"      ; Underline
-!k::Send "^k"      ; Insert Hyperlink (Cmd+K)
 !/::Send "^/"      ; Comment code (Ctrl+/)
 
 ; --- Selection / Movement (macOS style) ---

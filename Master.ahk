@@ -6,6 +6,7 @@
 #Include lib/Eye202020.ahk
 #Include lib/Core.ahk
 #Include Remap.ahk
+#UseHook true
 
 ; WMI pre-init for camera toggle
 global WMI_Service := 0

@@ -10,4 +10,7 @@ global CFG_CameraID := ""                         ; Device Instance ID from Devi
                                                   ; Right-click camera → Properties → Details
                                                   ; → Property: "Device instance path"
 
+; Tiling mode: "FancyZones" (PowerToys) or "Native" (built-in AHK tiling)
+global CFG_TilingMode := "FancyZones"
+
 
