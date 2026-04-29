@@ -32,7 +32,7 @@ Both tiling files are always included; `CFG_TilingMode` in `config.ahk` gates wh
 ## Hotkeys
 
 ### CapsLock Layer
-Hold CapsLock to activate. CapsLock itself is disabled — use `Alt + Shift + CapsLock` to toggle it.
+Hold CapsLock to activate. CapsLock itself is disabled — use `Shift + CapsLock` (or `Alt + Shift + CapsLock`) to toggle it.
 
 | Key | Action (Native Mode) | Action (FancyZones Mode) |
 |-----|----------------------|--------------------------|
@@ -60,18 +60,26 @@ Hold CapsLock to activate. CapsLock itself is disabled — use `Alt + Shift + Ca
 ### Global (Alt remaps — active when CapsLock is not held)
 | Key | Action |
 |-----|--------|
-| `Alt + Q` | Close window |
+| `Alt + Q` | Close window (or close highlighted window in Alt+Tab switcher) |
 | `Alt + W` | Close tab (`^w`) |
 | `Alt + J` | Alt+Shift+L (window arrange) |
 | `Alt + K` | Alt+Shift+H (window arrange) |
 | `Alt + C/X/V` | Copy / Cut / Paste |
+| `Alt + Shift + V` | Paste as plain text |
 | `Alt + Z / Y` | Undo / Redo |
+| `Alt + Shift + Z` | Redo (macOS-style) |
 | `Alt + A` | Select All |
 | `Alt + S` | Save |
 | `Alt + F` | Find |
 | `Alt + M` | Minimize window |
-| `Alt + Left/Right` | Home / End |
-| `Alt + Up/Down` | Ctrl+Home / Ctrl+End |
+| `Alt + Left/Right` | Home / End (start/end of line) |
+| `Alt + Shift + Left/Right` | Select word by word (`^+Left/Right`) |
+| `Alt + Up/Down` | Ctrl+Home / Ctrl+End (top/bottom of document) |
+| `Alt + Shift + Up/Down` | Select to top/bottom of document |
+| `Alt + Backspace` | Delete whole word backwards |
+| `` Alt + ` `` | Cycle to next window of the same app |
+| `` Alt + Shift + ` `` | Cycle to previous window of the same app |
+| `Alt + Enter` | Send / Submit (`^Enter`) |
 | `Ctrl + Esc` | Kill script |
 | `Copilot key` | Toggle camera on/off |
 

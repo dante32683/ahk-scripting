@@ -948,6 +948,7 @@ CycleLayout() {
 ; ============================================================
 *CapsLock:: return
 
++CapsLock::
 !+CapsLock:: {
     if GetKeyState("CapsLock", "T")
         SetCapsLockState "Off"
@@ -1065,9 +1066,9 @@ Delete:: {
         return
     }
 
-    _QuakeTerminal() {
+    _FocusTerminal() {
         WinActivate("ahk_exe WindowsTerminal.exe")
-        _ApplyLayout(0, 0, 100, 40)
+        FloatCenter()
     }
 
     if WinActive("ahk_exe Code.exe") {
@@ -1087,16 +1088,16 @@ Delete:: {
             if WinActive("ahk_exe WindowsTerminal.exe") && WinGetMinMax("ahk_exe WindowsTerminal.exe") != -1
                 WinMinimize("ahk_exe WindowsTerminal.exe")
             else
-                _QuakeTerminal()
+                _FocusTerminal()
         } else {
             Run 'wt.exe', EnvGet("USERPROFILE")
             if WinWait("ahk_exe WindowsTerminal.exe", , 10)
-                _QuakeTerminal()
+                _FocusTerminal()
         }
     } else {
         Run 'wt.exe', EnvGet("USERPROFILE")
         if WinWait("ahk_exe WindowsTerminal.exe", , 10)
-            _QuakeTerminal()
+            _FocusTerminal()
     }
 }
 

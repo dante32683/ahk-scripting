@@ -7,6 +7,20 @@
 ; This script remaps the physical Alt key (which physically sits where the 
 ; Mac Command key sits) to send Ctrl combinations for common shortcuts.
 
+global g_AltTabOpen := false
+
+~!Tab:: {
+    global g_AltTabOpen
+    g_AltTabOpen := true
+}
+~LAlt up::
+~RAlt up::
+~*Esc::
+~*Enter:: {
+    global g_AltTabOpen
+    g_AltTabOpen := false
+}
+
 #HotIf !GetKeyState("CapsLock", "P")
 
 ; --- Basic Editing ---
@@ -35,7 +49,13 @@
 !,::Send "^,"      ; Preferences/Settings (Cmd+,)
 
 ; --- Window / Tab Management ---
-!q:: WinClose("A") ; Close Window (macOS Cmd+Q)
+!q:: {
+    global g_AltTabOpen
+    if g_AltTabOpen
+        Send "{Blind}{Delete}"
+    else
+        WinClose("A")
+}
 !w::Send "^w"      ; Close Tab/Window
 !+w::Send "^+w"    ; Close All Tabs/Window
 !t::Send "^t"      ; New Tab
@@ -79,8 +99,8 @@
 ; Cmd + Left/Right -> Home/End (Start/End of line)
 !Left::Send "{Home}"
 !Right::Send "{End}"
-!+Left::Send "+{Home}"
-!+Right::Send "+{End}"
+!+Left::Send "^+{Left}"
+!+Right::Send "^+{Right}"
 
 ; Cmd + Up/Down -> Ctrl+Home/Ctrl+End (Top/Bottom of document)
 !Up::Send "^{Home}"
@@ -89,12 +109,55 @@
 !+Down::Send "+^{End}"
 
 ; Cmd + Backspace -> Delete to start of line
-!Backspace::Send "+{Home}{Backspace}"
-
-; Cmd + Delete -> Delete to end of line
-!Delete::Send "+{End}{Delete}"
+!Backspace::Send "^{Backspace}"
 
 ; Cmd + Enter -> Send/Submit
 !Enter::Send "^{Enter}"
 
+; Alt + Left Click -> Ctrl + Left Click (e.g. open links in a new tab)
+!LButton::Send "^{Click}"
+
+; Cmd + ` -> Cycle windows of the same app (forward / backward)
+!`:: CycleSameAppWindow(1)
+!+`:: CycleSameAppWindow(-1)
+
 #HotIf
+
+CycleSameAppWindow(dir) {
+    if !WinExist("A")
+        return
+    curHwnd := WinGetID("A")
+    proc := WinGetProcessName("ahk_id " curHwnd)
+
+    windows := []
+    for hwnd in WinGetList("ahk_exe " proc) {
+        if hwnd != curHwnd {
+            if WinGetMinMax("ahk_id " hwnd) = -1
+                continue
+            if !(WinGetStyle("ahk_id " hwnd) & 0x10000000)
+                continue
+            cloaked := 0
+            DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
+            if cloaked
+                continue
+        }
+        windows.Push(hwnd)
+    }
+
+    if windows.Length <= 1
+        return
+
+    curIdx := 0
+    for i, hwnd in windows {
+        if hwnd = curHwnd {
+            curIdx := i
+            break
+        }
+    }
+
+    if !curIdx
+        return
+
+    nextIdx := Mod(curIdx - 1 + dir + windows.Length, windows.Length) + 1
+    WinActivate("ahk_id " windows[nextIdx])
+}

@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Start**: Double-click `Master.ahk` (or right-click → Run with AutoHotkey). The script auto-elevates to admin.
 - **Reload**: hold `CapsLock` then press `Esc` (force-kills and restarts the process).
 - **Soft reset**: hold `CapsLock` then press `R` (releases stuck modifiers, unlocks keyboard lock, restores the last `CapsLock+N` hidden window).
-- **Toggle CapsLock**: `Alt + Shift + CapsLock`.
+- **Toggle CapsLock**: `Shift + CapsLock` (or `Alt + Shift + CapsLock`).
 - **Kill**: `Ctrl + Esc`.
 - No build step, linter, or test runner — AHK scripts are interpreted directly.
 
