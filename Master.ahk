@@ -6,6 +6,9 @@
 #Include lib/Eye202020.ahk
 #Include lib/Core.ahk
 #Include Remap.ahk
+#Include lib/Build_Autocorrect.ahk
+#Include lib/Autocorrect_Logic.ahk
+#Include lib/Autocorrect.ahk
 #UseHook true
 
 ; WMI pre-init for camera toggle

@@ -1101,7 +1101,16 @@ Delete:: {
     }
 }
 
-*r:: SoftReset()
+*r:: {
+    if BuildAutocorrect() {
+        ToolTip("Autocorrect rebuilt — reloading...")
+        ReleaseModifiers()
+        Sleep(200)
+        Run('cmd.exe /c taskkill /F /PID ' DllCall("GetCurrentProcessId") ' & start "" "' A_ScriptFullPath '"', , "Hide")
+        ExitApp()
+    } else
+        SoftReset()
+}
 
 *+r:: {
     RunWait "taskkill.exe /F /IM explorer.exe", , "Hide"
@@ -1110,7 +1119,8 @@ Delete:: {
 }
 
 Esc:: {
-    ToolTip("Reloading script...")
+    ToolTip("Building Autocorrect & Reloading...")
+    try BuildAutocorrect()
     ReleaseModifiers()
     Sleep(200)
     Run('cmd.exe /c taskkill /F /PID ' DllCall("GetCurrentProcessId") ' & start "" "' A_ScriptFullPath '"', , "Hide")

@@ -5,10 +5,10 @@
 #HotIf GetKeyState("CapsLock", "P") && g_TilingMode = "FancyZones"
 
 ; --- FancyZones mappings ---
-*z:: Send("^!#1")
-*x:: Send("^!#2")
-*p:: Send("^!#0")
-*o:: Send("^!#4")
+*z:: Send("^!#" . CFG_FZ_Z)
+*x:: Send("^!#" . CFG_FZ_X)
+*p:: Send("^!#" . CFG_FZ_P)
+*o:: Send("^!#" . CFG_FZ_O)
 *f:: ToggleMaximize()
 *g:: FloatCenter()
 

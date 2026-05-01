@@ -11,7 +11,17 @@ _202020_TogglePrompt() => 0
 _202020_SaveState(*) => 0
 
 #Include lib/Core.ahk
+
+; PC doesn't use virtual desktops. Disable VDA to avoid unnecessary logic.
+global VDA_IsLoaded := false
+global GetCurrentDesktopNumber := 0
+global GetWindowDesktopNumber := 0
+global GoToDesktopNumber := 0
+global MoveWindowToDesktopNumber := 0
 #Include Remap.ahk
+#Include lib/Build_Autocorrect.ahk
+#Include lib/Autocorrect_Logic.ahk
+#Include lib/Autocorrect.ahk
 
 ; ============================================================
 ; MULTI-MONITOR HELPERS (PC-specific)

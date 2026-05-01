@@ -1,6 +1,6 @@
 # AutoHotkey Script
 
-A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock-based hotkey layer, modular window tiling (Native AHK or PowerToys FancyZones), virtual desktop management, and camera toggle.
+A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock-based hotkey layer, modular window tiling (Native AHK or PowerToys FancyZones), virtual desktop management, camera toggle, and an autocorrect engine with undo/disable support.
 
 ## Requirements
 
@@ -24,6 +24,11 @@ A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock
 - **`lib/Core.ahk`** — all shared logic (tiling engine, VDA, focus tracking, CapsLock layer)
 - **`lib/WindowTiling_FancyZones.ahk`** — FancyZones hotkeys (active when `CFG_TilingMode = "FancyZones"`)
 - **`lib/WindowTiling_Native.ahk`** — native AHK tiling hotkeys (active when `CFG_TilingMode = "Native"`)
+- **`lib/Build_Autocorrect.ahk`** — rebuilds `lib/Autocorrect.ahk` from `Autocorrect_Database.txt` on startup when the database is newer; reloads automatically
+- **`lib/Autocorrect.ahk`** — **auto-generated**; all hotstrings wrapped in `#HotIf CFG_Autocorrect`. Never edit directly.
+- **`lib/Autocorrect_Logic.ahk`** — runtime: undo, disable, and persistence for autocorrect
+- **`Autocorrect_Database.txt`** — source of truth; one `trigger->correction` per line, auto-sorted on rebuild
+- **`Autocorrect_Disabled.txt`** — persisted disabled entries; loaded on startup
 - **`Remap.ahk`** — macOS-style Alt→Ctrl remaps and global shortcuts
 - **`config.ahk`** — user-specific values (gitignored)
 
@@ -82,6 +87,9 @@ Hold CapsLock to activate. CapsLock itself is disabled — use `Shift + CapsLock
 | `Alt + Enter` | Send / Submit (`^Enter`) |
 | `Ctrl + Esc` | Kill script |
 | `Copilot key` | Toggle camera on/off |
+| `Backspace` (within 2 s of autocorrect) | Undo last autocorrection |
+| `CapsLock + Alt + Backspace` | Permanently disable the last autocorrection |
+| `CapsLock + Alt + D` | Open `Autocorrect_Disabled.txt` to re-enable corrections |
 
 ## Notes
 

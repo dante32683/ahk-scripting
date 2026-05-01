@@ -25,6 +25,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 |---|---|
 | `CFG_Email` / `CFG_Phone` | Text expansion (`@@` / `#ph`) |
 | `CFG_CameraID` | Device Instance Path for camera toggle (from Device Manager → Details) |
+| `CFG_Autocorrect` | `true`/`false` — enables the autocorrect hotstring engine |
 
 ## Architecture
 
@@ -45,6 +46,17 @@ The codebase is divided into modular sections:
 8. **Keyboard Lock** — `CapsLock+Alt+L` toggles `BlockInput`. Unlock by typing `"unlock"`.
 9. **App Launchers** — Ensures app hotkeys stay on the current virtual desktop.
 10. **Camera Toggle** — Copilot key (#+F23) toggles device via `pnputil.exe`.
+
+### Autocorrect System
+
+- **`Autocorrect_Database.txt`** — source of truth; one `trigger->correction` entry per line. Auto-sorted alphabetically on every rebuild.
+- **`lib/Build_Autocorrect.ahk`** — included by `Master.ahk`; rebuilds `lib/Autocorrect.ahk` on startup when the database is newer than the generated file (or the file is missing/empty), then reloads.
+- **`lib/Autocorrect.ahk`** — **auto-generated**; contains all hotstrings wrapped in `#HotIf CFG_Autocorrect`. Never edit directly.
+- **`lib/Autocorrect_Logic.ahk`** — runtime layer: undo last correction (Backspace within 2 s), permanently disable a correction (`CapsLock+Alt+Backspace`), open disabled list (`CapsLock+Alt+D`).
+- **`Autocorrect_Disabled.txt`** — persisted disabled entries in `trigger->correction` format; loaded on startup into `AC_DisabledMap`.
+
+To add corrections: edit `Autocorrect_Database.txt` (one `trigger->correction` per line) and reload — the build step runs automatically.
+To re-enable a disabled correction: remove its line from `Autocorrect_Disabled.txt` (open with `CapsLock+Alt+D`) and reload.
 
 ### Standalone Scripts (not included by Master.ahk)
 
