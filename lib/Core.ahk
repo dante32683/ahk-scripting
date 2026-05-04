@@ -1061,8 +1061,24 @@ Delete:: {
 }
 
 *t:: {
+    if GetKeyState("Alt", "P") && GetKeyState("Shift", "P") {
+        Run 'wt.exe -w new -p Debian', EnvGet("USERPROFILE")
+        if WinWait("ahk_exe WindowsTerminal.exe", , 10)
+            _FocusTerminal()
+        return
+    }
+
+    if GetKeyState("Alt", "P") {
+        Run 'wt.exe -p Debian', EnvGet("USERPROFILE")
+        if WinWait("ahk_exe WindowsTerminal.exe", , 10)
+            _FocusTerminal()
+        return
+    }
+
     if GetKeyState("Shift", "P") {
         Run 'wt.exe -w new', EnvGet("USERPROFILE")
+        if WinWait("ahk_exe WindowsTerminal.exe", , 10)
+            _FocusTerminal()
         return
     }
 
@@ -1100,7 +1116,6 @@ Delete:: {
             _FocusTerminal()
     }
 }
-
 *r:: {
     if BuildAutocorrect() {
         ToolTip("Autocorrect rebuilt — reloading...")

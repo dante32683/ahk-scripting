@@ -55,15 +55,12 @@ AC_Reg(trigger, correction) {
 }
 
 #HotIf CFG_Autocorrect
-; Undo last autocorrect within 2 s via Backspace
-; ~ lets the backspace through so it removes the EndChar first
-~Backspace:: {
-    global AC_LastTrigger, AC_LastCorrection, AC_LastTick
-    if (AC_LastTrigger != "" && A_TickCount - AC_LastTick < 2000) {
-        Send("{Backspace " StrLen(AC_LastCorrection) "}")
-        SendText(AC_LastTrigger)
-        AC_LastTrigger := ""
-    }
+
+; Clear last trigger if the user clicks away
+~*LButton::
+~*RButton::
+~*MButton:: {
+    global AC_LastTrigger := ""
 }
 #HotIf
 
@@ -71,8 +68,11 @@ AC_Reg(trigger, correction) {
 
 ; Permanently disable last autocorrect (CapsLock+Alt+Backspace)
 *Backspace:: {
-    global AC_LastTrigger, AC_LastCorrection, AC_DisabledMap
-    if AC_LastTrigger != "" {
+    global AC_LastTrigger, AC_LastCorrection, AC_DisabledMap, AC_LastTick
+    
+    ; Only allow disabling if the correction happened recently (within 15 seconds)
+    ; to prevent accidentally disabling a correction from a long time ago.
+    if (AC_LastTrigger != "" && A_TickCount - AC_LastTick < 15000) {
         AC_DisabledMap[StrLower(AC_LastTrigger)] := AC_LastTrigger "->" AC_LastCorrection
         AC_SaveDisabled()
 

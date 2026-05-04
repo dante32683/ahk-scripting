@@ -3,1486 +3,6 @@
 ; AUTO-GENERATED — edit Autocorrect_Database.txt, not this file.
 
 #HotIf CFG_Autocorrect
-:C:! a::{
-    if AC_IsDisabled("! a") {
-        SendText("! a" . A_EndChar)
-        return
-    }
-    SendText("! A" . A_EndChar)
-    AC_Reg("! a", "! A")
-}
-:C:! b::{
-    if AC_IsDisabled("! b") {
-        SendText("! b" . A_EndChar)
-        return
-    }
-    SendText("! B" . A_EndChar)
-    AC_Reg("! b", "! B")
-}
-:C:! c::{
-    if AC_IsDisabled("! c") {
-        SendText("! c" . A_EndChar)
-        return
-    }
-    SendText("! C" . A_EndChar)
-    AC_Reg("! c", "! C")
-}
-:C:! d::{
-    if AC_IsDisabled("! d") {
-        SendText("! d" . A_EndChar)
-        return
-    }
-    SendText("! D" . A_EndChar)
-    AC_Reg("! d", "! D")
-}
-:C:! e::{
-    if AC_IsDisabled("! e") {
-        SendText("! e" . A_EndChar)
-        return
-    }
-    SendText("! E" . A_EndChar)
-    AC_Reg("! e", "! E")
-}
-:C:! f::{
-    if AC_IsDisabled("! f") {
-        SendText("! f" . A_EndChar)
-        return
-    }
-    SendText("! F" . A_EndChar)
-    AC_Reg("! f", "! F")
-}
-:C:! h::{
-    if AC_IsDisabled("! h") {
-        SendText("! h" . A_EndChar)
-        return
-    }
-    SendText("! H" . A_EndChar)
-    AC_Reg("! h", "! H")
-}
-:C:! i::{
-    if AC_IsDisabled("! i") {
-        SendText("! i" . A_EndChar)
-        return
-    }
-    SendText("! I" . A_EndChar)
-    AC_Reg("! i", "! I")
-}
-:C:! j::{
-    if AC_IsDisabled("! j") {
-        SendText("! j" . A_EndChar)
-        return
-    }
-    SendText("! J" . A_EndChar)
-    AC_Reg("! j", "! J")
-}
-:C:! k::{
-    if AC_IsDisabled("! k") {
-        SendText("! k" . A_EndChar)
-        return
-    }
-    SendText("! K" . A_EndChar)
-    AC_Reg("! k", "! K")
-}
-:C:! l::{
-    if AC_IsDisabled("! l") {
-        SendText("! l" . A_EndChar)
-        return
-    }
-    SendText("! L" . A_EndChar)
-    AC_Reg("! l", "! L")
-}
-:C:! m::{
-    if AC_IsDisabled("! m") {
-        SendText("! m" . A_EndChar)
-        return
-    }
-    SendText("! M" . A_EndChar)
-    AC_Reg("! m", "! M")
-}
-:C:! n::{
-    if AC_IsDisabled("! n") {
-        SendText("! n" . A_EndChar)
-        return
-    }
-    SendText("! N" . A_EndChar)
-    AC_Reg("! n", "! N")
-}
-:C:! p::{
-    if AC_IsDisabled("! p") {
-        SendText("! p" . A_EndChar)
-        return
-    }
-    SendText("! P" . A_EndChar)
-    AC_Reg("! p", "! P")
-}
-:C:! q::{
-    if AC_IsDisabled("! q") {
-        SendText("! q" . A_EndChar)
-        return
-    }
-    SendText("! Q" . A_EndChar)
-    AC_Reg("! q", "! Q")
-}
-:C:! r::{
-    if AC_IsDisabled("! r") {
-        SendText("! r" . A_EndChar)
-        return
-    }
-    SendText("! R" . A_EndChar)
-    AC_Reg("! r", "! R")
-}
-:C:! s::{
-    if AC_IsDisabled("! s") {
-        SendText("! s" . A_EndChar)
-        return
-    }
-    SendText("! S" . A_EndChar)
-    AC_Reg("! s", "! S")
-}
-:C:! t::{
-    if AC_IsDisabled("! t") {
-        SendText("! t" . A_EndChar)
-        return
-    }
-    SendText("! T" . A_EndChar)
-    AC_Reg("! t", "! T")
-}
-:C:! u::{
-    if AC_IsDisabled("! u") {
-        SendText("! u" . A_EndChar)
-        return
-    }
-    SendText("! U" . A_EndChar)
-    AC_Reg("! u", "! U")
-}
-:C:! v::{
-    if AC_IsDisabled("! v") {
-        SendText("! v" . A_EndChar)
-        return
-    }
-    SendText("! V" . A_EndChar)
-    AC_Reg("! v", "! V")
-}
-:C:! w::{
-    if AC_IsDisabled("! w") {
-        SendText("! w" . A_EndChar)
-        return
-    }
-    SendText("! W" . A_EndChar)
-    AC_Reg("! w", "! W")
-}
-:C:! x::{
-    if AC_IsDisabled("! x") {
-        SendText("! x" . A_EndChar)
-        return
-    }
-    SendText("! X" . A_EndChar)
-    AC_Reg("! x", "! X")
-}
-:C:! y::{
-    if AC_IsDisabled("! y") {
-        SendText("! y" . A_EndChar)
-        return
-    }
-    SendText("! Y" . A_EndChar)
-    AC_Reg("! y", "! Y")
-}
-:C:! z::{
-    if AC_IsDisabled("! z") {
-        SendText("! z" . A_EndChar)
-        return
-    }
-    SendText("! Z" . A_EndChar)
-    AC_Reg("! z", "! Z")
-}
-:C:'nt::{
-    if AC_IsDisabled("'nt") {
-        SendText("'nt" . A_EndChar)
-        return
-    }
-    SendText("n't" . A_EndChar)
-    AC_Reg("'nt", "n't")
-}
-:C:. a::{
-    if AC_IsDisabled(". a") {
-        SendText(". a" . A_EndChar)
-        return
-    }
-    SendText(". A" . A_EndChar)
-    AC_Reg(". a", ". A")
-}
-:C:. b::{
-    if AC_IsDisabled(". b") {
-        SendText(". b" . A_EndChar)
-        return
-    }
-    SendText(". B" . A_EndChar)
-    AC_Reg(". b", ". B")
-}
-:C:. c::{
-    if AC_IsDisabled(". c") {
-        SendText(". c" . A_EndChar)
-        return
-    }
-    SendText(". C" . A_EndChar)
-    AC_Reg(". c", ". C")
-}
-:C:. f::{
-    if AC_IsDisabled(". f") {
-        SendText(". f" . A_EndChar)
-        return
-    }
-    SendText(". F" . A_EndChar)
-    AC_Reg(". f", ". F")
-}
-:C:. g::{
-    if AC_IsDisabled(". g") {
-        SendText(". g" . A_EndChar)
-        return
-    }
-    SendText(". G" . A_EndChar)
-    AC_Reg(". g", ". G")
-}
-:C:. h::{
-    if AC_IsDisabled(". h") {
-        SendText(". h" . A_EndChar)
-        return
-    }
-    SendText(". H" . A_EndChar)
-    AC_Reg(". h", ". H")
-}
-:C:. i::{
-    if AC_IsDisabled(". i") {
-        SendText(". i" . A_EndChar)
-        return
-    }
-    SendText(". I" . A_EndChar)
-    AC_Reg(". i", ". I")
-}
-:C:. j::{
-    if AC_IsDisabled(". j") {
-        SendText(". j" . A_EndChar)
-        return
-    }
-    SendText(". J" . A_EndChar)
-    AC_Reg(". j", ". J")
-}
-:C:. k::{
-    if AC_IsDisabled(". k") {
-        SendText(". k" . A_EndChar)
-        return
-    }
-    SendText(". K" . A_EndChar)
-    AC_Reg(". k", ". K")
-}
-:C:. l::{
-    if AC_IsDisabled(". l") {
-        SendText(". l" . A_EndChar)
-        return
-    }
-    SendText(". L" . A_EndChar)
-    AC_Reg(". l", ". L")
-}
-:C:. m::{
-    if AC_IsDisabled(". m") {
-        SendText(". m" . A_EndChar)
-        return
-    }
-    SendText(". M" . A_EndChar)
-    AC_Reg(". m", ". M")
-}
-:C:. n::{
-    if AC_IsDisabled(". n") {
-        SendText(". n" . A_EndChar)
-        return
-    }
-    SendText(". N" . A_EndChar)
-    AC_Reg(". n", ". N")
-}
-:C:. o::{
-    if AC_IsDisabled(". o") {
-        SendText(". o" . A_EndChar)
-        return
-    }
-    SendText(". O" . A_EndChar)
-    AC_Reg(". o", ". O")
-}
-:C:. p::{
-    if AC_IsDisabled(". p") {
-        SendText(". p" . A_EndChar)
-        return
-    }
-    SendText(". P" . A_EndChar)
-    AC_Reg(". p", ". P")
-}
-:C:. q::{
-    if AC_IsDisabled(". q") {
-        SendText(". q" . A_EndChar)
-        return
-    }
-    SendText(". Q" . A_EndChar)
-    AC_Reg(". q", ". Q")
-}
-:C:. r::{
-    if AC_IsDisabled(". r") {
-        SendText(". r" . A_EndChar)
-        return
-    }
-    SendText(". R" . A_EndChar)
-    AC_Reg(". r", ". R")
-}
-:C:. s::{
-    if AC_IsDisabled(". s") {
-        SendText(". s" . A_EndChar)
-        return
-    }
-    SendText(". S" . A_EndChar)
-    AC_Reg(". s", ". S")
-}
-:C:. t::{
-    if AC_IsDisabled(". t") {
-        SendText(". t" . A_EndChar)
-        return
-    }
-    SendText(". T" . A_EndChar)
-    AC_Reg(". t", ". T")
-}
-:C:. u::{
-    if AC_IsDisabled(". u") {
-        SendText(". u" . A_EndChar)
-        return
-    }
-    SendText(". U" . A_EndChar)
-    AC_Reg(". u", ". U")
-}
-:C:. v::{
-    if AC_IsDisabled(". v") {
-        SendText(". v" . A_EndChar)
-        return
-    }
-    SendText(". V" . A_EndChar)
-    AC_Reg(". v", ". V")
-}
-:C:. w::{
-    if AC_IsDisabled(". w") {
-        SendText(". w" . A_EndChar)
-        return
-    }
-    SendText(". W" . A_EndChar)
-    AC_Reg(". w", ". W")
-}
-:C:. x::{
-    if AC_IsDisabled(". x") {
-        SendText(". x" . A_EndChar)
-        return
-    }
-    SendText(". X" . A_EndChar)
-    AC_Reg(". x", ". X")
-}
-:C:. y::{
-    if AC_IsDisabled(". y") {
-        SendText(". y" . A_EndChar)
-        return
-    }
-    SendText(". Y" . A_EndChar)
-    AC_Reg(". y", ". Y")
-}
-:C:. z::{
-    if AC_IsDisabled(". z") {
-        SendText(". z" . A_EndChar)
-        return
-    }
-    SendText(". Z" . A_EndChar)
-    AC_Reg(". z", ". Z")
-}
-:C:;alpha::{
-    if AC_IsDisabled(";alpha") {
-        SendText(";alpha" . A_EndChar)
-        return
-    }
-    SendText("Alpha`nBravo`nCharlie`nDelta`nEcho`nFoxtrot`nGolf`nHotel`nIndia`nJuliett`nKilo`nLima`nMike`nNovember`nOscar`nPapa`nQuebec`nRomeo`nSierra`nTango`nUniform`nVictor`nWhiskey`nX-ray`nYankee`nZulu" . A_EndChar)
-    AC_Reg(";alpha", "Alpha`nBravo`nCharlie`nDelta`nEcho`nFoxtrot`nGolf`nHotel`nIndia`nJuliett`nKilo`nLima`nMike`nNovember`nOscar`nPapa`nQuebec`nRomeo`nSierra`nTango`nUniform`nVictor`nWhiskey`nX-ray`nYankee`nZulu")
-}
-:C:;animals::{
-    if AC_IsDisabled(";animals") {
-        SendText(";animals" . A_EndChar)
-        return
-    }
-    SendText("Aardvark`nButterfly`nCheetah`nDolphin`nElephant`nFrog`nGiraffe`nHippo`nIguana`nJaguar`nKangaroo`nLion`nMonkey`nNarwhal`nOwl`nPenguin`nQuail`nRabbit`nSnake`nTiger`nUmbrellabird`nVulture`nWolf`nX-ray fish`nYak`nZebra" . A_EndChar)
-    AC_Reg(";animals", "Aardvark`nButterfly`nCheetah`nDolphin`nElephant`nFrog`nGiraffe`nHippo`nIguana`nJaguar`nKangaroo`nLion`nMonkey`nNarwhal`nOwl`nPenguin`nQuail`nRabbit`nSnake`nTiger`nUmbrellabird`nVulture`nWolf`nX-ray fish`nYak`nZebra")
-}
-:C:;colorhex::{
-    if AC_IsDisabled(";colorhex") {
-        SendText(";colorhex" . A_EndChar)
-        return
-    }
-    SendText("Red := 0xFF0000`nOrange := 0xFF7F00`nYellow := 0xFFFF00`nGreen := 0x00FF00`nBlue := 0x0000FF`nIndigo := 0x4B0082`nViolet := 0x8F00FF`nBlack := 0x000000`nWhite := 0xFFFFFF`nRed := {#}FF0000`nOrange := {#}FF7F00`nYellow := {#}FFFF00`nGreen := {#}00FF00`nBlue := {#}0000FF`nIndigo := {#}4B0082`nViolet := {#}8F00FF `nBlack := {#}000000`nWhite := {#}FFFFFF`n" . A_EndChar)
-    AC_Reg(";colorhex", "Red := 0xFF0000`nOrange := 0xFF7F00`nYellow := 0xFFFF00`nGreen := 0x00FF00`nBlue := 0x0000FF`nIndigo := 0x4B0082`nViolet := 0x8F00FF`nBlack := 0x000000`nWhite := 0xFFFFFF`nRed := {#}FF0000`nOrange := {#}FF7F00`nYellow := {#}FFFF00`nGreen := {#}00FF00`nBlue := {#}0000FF`nIndigo := {#}4B0082`nViolet := {#}8F00FF `nBlack := {#}000000`nWhite := {#}FFFFFF`n")
-}
-:C:;colors::{
-    if AC_IsDisabled(";colors") {
-        SendText(";colors" . A_EndChar)
-        return
-    }
-    SendText("Amber`nBlue`nCrimson`nDenim`nEmerald`nFuchsia`nGold`nHarlequin`nIndigo`nJade`nKhaki`nLavender`nMagenta`nNavy`nOlive`nPink`nQuartz`nRed`nScarlet`nTurquoise`nUltramarine`nViolet`nWhite`nXanadu`nYellow`nZaffre" . A_EndChar)
-    AC_Reg(";colors", "Amber`nBlue`nCrimson`nDenim`nEmerald`nFuchsia`nGold`nHarlequin`nIndigo`nJade`nKhaki`nLavender`nMagenta`nNavy`nOlive`nPink`nQuartz`nRed`nScarlet`nTurquoise`nUltramarine`nViolet`nWhite`nXanadu`nYellow`nZaffre")
-}
-:C:;fruits::{
-    if AC_IsDisabled(";fruits") {
-        SendText(";fruits" . A_EndChar)
-        return
-    }
-    SendText("Apple`nBanana`nCarrot`nDate`nEggplant`nFig`nGrape`nHoneydew`nIceberg lettuce`nJalapeno`nKiwi`nLemon`nMango`nNectarine`nOrange`nPapaya`nQuince`nRadish`nStrawberry`nTomato`nUgli fruit`nVanilla bean`nWatermelon`nXigua (Chinese watermelon)`nYellow pepper`nZucchini" . A_EndChar)
-    AC_Reg(";fruits", "Apple`nBanana`nCarrot`nDate`nEggplant`nFig`nGrape`nHoneydew`nIceberg lettuce`nJalapeno`nKiwi`nLemon`nMango`nNectarine`nOrange`nPapaya`nQuince`nRadish`nStrawberry`nTomato`nUgli fruit`nVanilla bean`nWatermelon`nXigua (Chinese watermelon)`nYellow pepper`nZucchini")
-}
-:C:;ll::{
-    if AC_IsDisabled(";ll") {
-        SendText(";ll" . A_EndChar)
-        return
-    }
-    SendText("'ll" . A_EndChar)
-    AC_Reg(";ll", "'ll")
-}
-:C:;re::{
-    if AC_IsDisabled(";re") {
-        SendText(";re" . A_EndChar)
-        return
-    }
-    SendText("'re" . A_EndChar)
-    AC_Reg(";re", "'re")
-}
-:C:;s::{
-    if AC_IsDisabled(";s") {
-        SendText(";s" . A_EndChar)
-        return
-    }
-    SendText("'s" . A_EndChar)
-    AC_Reg(";s", "'s")
-}
-:C:;ve::{
-    if AC_IsDisabled(";ve") {
-        SendText(";ve" . A_EndChar)
-        return
-    }
-    SendText("'ve" . A_EndChar)
-    AC_Reg(";ve", "'ve")
-}
-:C:? a::{
-    if AC_IsDisabled("? a") {
-        SendText("? a" . A_EndChar)
-        return
-    }
-    SendText("? A" . A_EndChar)
-    AC_Reg("? a", "? A")
-}
-:C:? b::{
-    if AC_IsDisabled("? b") {
-        SendText("? b" . A_EndChar)
-        return
-    }
-    SendText("? B" . A_EndChar)
-    AC_Reg("? b", "? B")
-}
-:C:? c::{
-    if AC_IsDisabled("? c") {
-        SendText("? c" . A_EndChar)
-        return
-    }
-    SendText("? C" . A_EndChar)
-    AC_Reg("? c", "? C")
-}
-:C:? d::{
-    if AC_IsDisabled("? d") {
-        SendText("? d" . A_EndChar)
-        return
-    }
-    SendText("? D" . A_EndChar)
-    AC_Reg("? d", "? D")
-}
-:C:? e::{
-    if AC_IsDisabled("? e") {
-        SendText("? e" . A_EndChar)
-        return
-    }
-    SendText("? E" . A_EndChar)
-    AC_Reg("? e", "? E")
-}
-:C:? f::{
-    if AC_IsDisabled("? f") {
-        SendText("? f" . A_EndChar)
-        return
-    }
-    SendText("? F" . A_EndChar)
-    AC_Reg("? f", "? F")
-}
-:C:? g::{
-    if AC_IsDisabled("? g") {
-        SendText("? g" . A_EndChar)
-        return
-    }
-    SendText("? G" . A_EndChar)
-    AC_Reg("? g", "? G")
-}
-:C:? h::{
-    if AC_IsDisabled("? h") {
-        SendText("? h" . A_EndChar)
-        return
-    }
-    SendText("? H" . A_EndChar)
-    AC_Reg("? h", "? H")
-}
-:C:? i::{
-    if AC_IsDisabled("? i") {
-        SendText("? i" . A_EndChar)
-        return
-    }
-    SendText("? I" . A_EndChar)
-    AC_Reg("? i", "? I")
-}
-:C:? k::{
-    if AC_IsDisabled("? k") {
-        SendText("? k" . A_EndChar)
-        return
-    }
-    SendText("? K" . A_EndChar)
-    AC_Reg("? k", "? K")
-}
-:C:? l::{
-    if AC_IsDisabled("? l") {
-        SendText("? l" . A_EndChar)
-        return
-    }
-    SendText("? L" . A_EndChar)
-    AC_Reg("? l", "? L")
-}
-:C:? m::{
-    if AC_IsDisabled("? m") {
-        SendText("? m" . A_EndChar)
-        return
-    }
-    SendText("? M" . A_EndChar)
-    AC_Reg("? m", "? M")
-}
-:C:? o::{
-    if AC_IsDisabled("? o") {
-        SendText("? o" . A_EndChar)
-        return
-    }
-    SendText("? O" . A_EndChar)
-    AC_Reg("? o", "? O")
-}
-:C:? p::{
-    if AC_IsDisabled("? p") {
-        SendText("? p" . A_EndChar)
-        return
-    }
-    SendText("? P" . A_EndChar)
-    AC_Reg("? p", "? P")
-}
-:C:? q::{
-    if AC_IsDisabled("? q") {
-        SendText("? q" . A_EndChar)
-        return
-    }
-    SendText("? Q" . A_EndChar)
-    AC_Reg("? q", "? Q")
-}
-:C:? r::{
-    if AC_IsDisabled("? r") {
-        SendText("? r" . A_EndChar)
-        return
-    }
-    SendText("? R" . A_EndChar)
-    AC_Reg("? r", "? R")
-}
-:C:? s::{
-    if AC_IsDisabled("? s") {
-        SendText("? s" . A_EndChar)
-        return
-    }
-    SendText("? S" . A_EndChar)
-    AC_Reg("? s", "? S")
-}
-:C:? t::{
-    if AC_IsDisabled("? t") {
-        SendText("? t" . A_EndChar)
-        return
-    }
-    SendText("? T" . A_EndChar)
-    AC_Reg("? t", "? T")
-}
-:C:? u::{
-    if AC_IsDisabled("? u") {
-        SendText("? u" . A_EndChar)
-        return
-    }
-    SendText("? U" . A_EndChar)
-    AC_Reg("? u", "? U")
-}
-:C:? v::{
-    if AC_IsDisabled("? v") {
-        SendText("? v" . A_EndChar)
-        return
-    }
-    SendText("? V" . A_EndChar)
-    AC_Reg("? v", "? V")
-}
-:C:? w::{
-    if AC_IsDisabled("? w") {
-        SendText("? w" . A_EndChar)
-        return
-    }
-    SendText("? W" . A_EndChar)
-    AC_Reg("? w", "? W")
-}
-:C:? x::{
-    if AC_IsDisabled("? x") {
-        SendText("? x" . A_EndChar)
-        return
-    }
-    SendText("? X" . A_EndChar)
-    AC_Reg("? x", "? X")
-}
-:C:? y::{
-    if AC_IsDisabled("? y") {
-        SendText("? y" . A_EndChar)
-        return
-    }
-    SendText("? Y" . A_EndChar)
-    AC_Reg("? y", "? Y")
-}
-:C:? z::{
-    if AC_IsDisabled("? z") {
-        SendText("? z" . A_EndChar)
-        return
-    }
-    SendText("? Z" . A_EndChar)
-    AC_Reg("? z", "? Z")
-}
-:C:a ab::{
-    if AC_IsDisabled("a ab") {
-        SendText("a ab" . A_EndChar)
-        return
-    }
-    SendText("an ab" . A_EndChar)
-    AC_Reg("a ab", "an ab")
-}
-:C:a ac::{
-    if AC_IsDisabled("a ac") {
-        SendText("a ac" . A_EndChar)
-        return
-    }
-    SendText("an ac" . A_EndChar)
-    AC_Reg("a ac", "an ac")
-}
-:C:a ad::{
-    if AC_IsDisabled("a ad") {
-        SendText("a ad" . A_EndChar)
-        return
-    }
-    SendText("an ad" . A_EndChar)
-    AC_Reg("a ad", "an ad")
-}
-:C:a af::{
-    if AC_IsDisabled("a af") {
-        SendText("a af" . A_EndChar)
-        return
-    }
-    SendText("an af" . A_EndChar)
-    AC_Reg("a af", "an af")
-}
-:C:a ag::{
-    if AC_IsDisabled("a ag") {
-        SendText("a ag" . A_EndChar)
-        return
-    }
-    SendText("an ag" . A_EndChar)
-    AC_Reg("a ag", "an ag")
-}
-:C:a al::{
-    if AC_IsDisabled("a al") {
-        SendText("a al" . A_EndChar)
-        return
-    }
-    SendText("an al" . A_EndChar)
-    AC_Reg("a al", "an al")
-}
-:C:a am::{
-    if AC_IsDisabled("a am") {
-        SendText("a am" . A_EndChar)
-        return
-    }
-    SendText("an am" . A_EndChar)
-    AC_Reg("a am", "an am")
-}
-:C:a an::{
-    if AC_IsDisabled("a an") {
-        SendText("a an" . A_EndChar)
-        return
-    }
-    SendText("an an" . A_EndChar)
-    AC_Reg("a an", "an an")
-}
-:C:a ap::{
-    if AC_IsDisabled("a ap") {
-        SendText("a ap" . A_EndChar)
-        return
-    }
-    SendText("an ap" . A_EndChar)
-    AC_Reg("a ap", "an ap")
-}
-:C:a as::{
-    if AC_IsDisabled("a as") {
-        SendText("a as" . A_EndChar)
-        return
-    }
-    SendText("an as" . A_EndChar)
-    AC_Reg("a as", "an as")
-}
-:C:a av::{
-    if AC_IsDisabled("a av") {
-        SendText("a av" . A_EndChar)
-        return
-    }
-    SendText("an av" . A_EndChar)
-    AC_Reg("a av", "an av")
-}
-:C:a aw::{
-    if AC_IsDisabled("a aw") {
-        SendText("a aw" . A_EndChar)
-        return
-    }
-    SendText("an aw" . A_EndChar)
-    AC_Reg("a aw", "an aw")
-}
-:C:a bas::{
-    if AC_IsDisabled("a bas") {
-        SendText("a bas" . A_EndChar)
-        return
-    }
-    SendText("à bas" . A_EndChar)
-    AC_Reg("a bas", "à bas")
-}
-:C:a businessmen::{
-    if AC_IsDisabled("a businessmen") {
-        SendText("a businessmen" . A_EndChar)
-        return
-    }
-    SendText("a businessman" . A_EndChar)
-    AC_Reg("a businessmen", "a businessman")
-}
-:C:a businesswomen::{
-    if AC_IsDisabled("a businesswomen") {
-        SendText("a businesswomen" . A_EndChar)
-        return
-    }
-    SendText("a businesswoman" . A_EndChar)
-    AC_Reg("a businesswomen", "a businesswoman")
-}
-:C:a consortia::{
-    if AC_IsDisabled("a consortia") {
-        SendText("a consortia" . A_EndChar)
-        return
-    }
-    SendText("a consortium" . A_EndChar)
-    AC_Reg("a consortia", "a consortium")
-}
-:C:a criteria::{
-    if AC_IsDisabled("a criteria") {
-        SendText("a criteria" . A_EndChar)
-        return
-    }
-    SendText("a criterion" . A_EndChar)
-    AC_Reg("a criteria", "a criterion")
-}
-:C:a dominate::{
-    if AC_IsDisabled("a dominate") {
-        SendText("a dominate" . A_EndChar)
-        return
-    }
-    SendText("a dominant" . A_EndChar)
-    AC_Reg("a dominate", "a dominant")
-}
-:C:a ea::{
-    if AC_IsDisabled("a ea") {
-        SendText("a ea" . A_EndChar)
-        return
-    }
-    SendText("an ea" . A_EndChar)
-    AC_Reg("a ea", "an ea")
-}
-:C:a ef::{
-    if AC_IsDisabled("a ef") {
-        SendText("a ef" . A_EndChar)
-        return
-    }
-    SendText("an ef" . A_EndChar)
-    AC_Reg("a ef", "an ef")
-}
-:C:a ei::{
-    if AC_IsDisabled("a ei") {
-        SendText("a ei" . A_EndChar)
-        return
-    }
-    SendText("an ei" . A_EndChar)
-    AC_Reg("a ei", "an ei")
-}
-:C:a el::{
-    if AC_IsDisabled("a el") {
-        SendText("a el" . A_EndChar)
-        return
-    }
-    SendText("an el" . A_EndChar)
-    AC_Reg("a el", "an el")
-}
-:C:a em::{
-    if AC_IsDisabled("a em") {
-        SendText("a em" . A_EndChar)
-        return
-    }
-    SendText("an em" . A_EndChar)
-    AC_Reg("a em", "an em")
-}
-:C:a en::{
-    if AC_IsDisabled("a en") {
-        SendText("a en" . A_EndChar)
-        return
-    }
-    SendText("an en" . A_EndChar)
-    AC_Reg("a en", "an en")
-}
-:C:a ep::{
-    if AC_IsDisabled("a ep") {
-        SendText("a ep" . A_EndChar)
-        return
-    }
-    SendText("an ep" . A_EndChar)
-    AC_Reg("a ep", "an ep")
-}
-:C:a eq::{
-    if AC_IsDisabled("a eq") {
-        SendText("a eq" . A_EndChar)
-        return
-    }
-    SendText("an eq" . A_EndChar)
-    AC_Reg("a eq", "an eq")
-}
-:C:a es::{
-    if AC_IsDisabled("a es") {
-        SendText("a es" . A_EndChar)
-        return
-    }
-    SendText("an es" . A_EndChar)
-    AC_Reg("a es", "an es")
-}
-:C:a et::{
-    if AC_IsDisabled("a et") {
-        SendText("a et" . A_EndChar)
-        return
-    }
-    SendText("an et" . A_EndChar)
-    AC_Reg("a et", "an et")
-}
-:C:a ex::{
-    if AC_IsDisabled("a ex") {
-        SendText("a ex" . A_EndChar)
-        return
-    }
-    SendText("an ex" . A_EndChar)
-    AC_Reg("a ex", "an ex")
-}
-:C:a falling out::{
-    if AC_IsDisabled("a falling out") {
-        SendText("a falling out" . A_EndChar)
-        return
-    }
-    SendText("a falling-out" . A_EndChar)
-    AC_Reg("a falling out", "a falling-out")
-}
-:C:a firemen::{
-    if AC_IsDisabled("a firemen") {
-        SendText("a firemen" . A_EndChar)
-        return
-    }
-    SendText("a fireman" . A_EndChar)
-    AC_Reg("a firemen", "a fireman")
-}
-:C:a flagella::{
-    if AC_IsDisabled("a flagella") {
-        SendText("a flagella" . A_EndChar)
-        return
-    }
-    SendText("a flagellum" . A_EndChar)
-    AC_Reg("a flagella", "a flagellum")
-}
-:C:a FM::{
-    if AC_IsDisabled("a FM") {
-        SendText("a FM" . A_EndChar)
-        return
-    }
-    SendText("an FM" . A_EndChar)
-    AC_Reg("a FM", "an FM")
-}
-:C:a forward by::{
-    if AC_IsDisabled("a forward by") {
-        SendText("a forward by" . A_EndChar)
-        return
-    }
-    SendText("a foreword by" . A_EndChar)
-    AC_Reg("a forward by", "a foreword by")
-}
-:C:a freshmen::{
-    if AC_IsDisabled("a freshmen") {
-        SendText("a freshmen" . A_EndChar)
-        return
-    }
-    SendText("a freshman" . A_EndChar)
-    AC_Reg("a freshmen", "a freshman")
-}
-:C:a fungi::{
-    if AC_IsDisabled("a fungi") {
-        SendText("a fungi" . A_EndChar)
-        return
-    }
-    SendText("a fungus" . A_EndChar)
-    AC_Reg("a fungi", "a fungus")
-}
-:C:a gunmen::{
-    if AC_IsDisabled("a gunmen") {
-        SendText("a gunmen" . A_EndChar)
-        return
-    }
-    SendText("a gunman" . A_EndChar)
-    AC_Reg("a gunmen", "a gunman")
-}
-:C:a heir::{
-    if AC_IsDisabled("a heir") {
-        SendText("a heir" . A_EndChar)
-        return
-    }
-    SendText("an heir" . A_EndChar)
-    AC_Reg("a heir", "an heir")
-}
-:C:a herb::{
-    if AC_IsDisabled("a herb") {
-        SendText("a herb" . A_EndChar)
-        return
-    }
-    SendText("an herb" . A_EndChar)
-    AC_Reg("a herb", "an herb")
-}
-:C:a honest::{
-    if AC_IsDisabled("a honest") {
-        SendText("a honest" . A_EndChar)
-        return
-    }
-    SendText("an honest" . A_EndChar)
-    AC_Reg("a honest", "an honest")
-}
-:C:a honor::{
-    if AC_IsDisabled("a honor") {
-        SendText("a honor" . A_EndChar)
-        return
-    }
-    SendText("an honor" . A_EndChar)
-    AC_Reg("a honor", "an honor")
-}
-:C:a hour::{
-    if AC_IsDisabled("a hour") {
-        SendText("a hour" . A_EndChar)
-        return
-    }
-    SendText("an hour" . A_EndChar)
-    AC_Reg("a hour", "an hour")
-}
-:C:a ic::{
-    if AC_IsDisabled("a ic") {
-        SendText("a ic" . A_EndChar)
-        return
-    }
-    SendText("an ic" . A_EndChar)
-    AC_Reg("a ic", "an ic")
-}
-:C:a id::{
-    if AC_IsDisabled("a id") {
-        SendText("a id" . A_EndChar)
-        return
-    }
-    SendText("an id" . A_EndChar)
-    AC_Reg("a id", "an id")
-}
-:C:a ig::{
-    if AC_IsDisabled("a ig") {
-        SendText("a ig" . A_EndChar)
-        return
-    }
-    SendText("an ig" . A_EndChar)
-    AC_Reg("a ig", "an ig")
-}
-:C:a il::{
-    if AC_IsDisabled("a il") {
-        SendText("a il" . A_EndChar)
-        return
-    }
-    SendText("an il" . A_EndChar)
-    AC_Reg("a il", "an il")
-}
-:C:a im::{
-    if AC_IsDisabled("a im") {
-        SendText("a im" . A_EndChar)
-        return
-    }
-    SendText("an im" . A_EndChar)
-    AC_Reg("a im", "an im")
-}
-:C:a in::{
-    if AC_IsDisabled("a in") {
-        SendText("a in" . A_EndChar)
-        return
-    }
-    SendText("an in" . A_EndChar)
-    AC_Reg("a in", "an in")
-}
-:C:a ir::{
-    if AC_IsDisabled("a ir") {
-        SendText("a ir" . A_EndChar)
-        return
-    }
-    SendText("an ir" . A_EndChar)
-    AC_Reg("a ir", "an ir")
-}
-:C:a is::{
-    if AC_IsDisabled("a is") {
-        SendText("a is" . A_EndChar)
-        return
-    }
-    SendText("an is" . A_EndChar)
-    AC_Reg("a is", "an is")
-}
-:C:a knead for::{
-    if AC_IsDisabled("a knead for") {
-        SendText("a knead for" . A_EndChar)
-        return
-    }
-    SendText("a need for" . A_EndChar)
-    AC_Reg("a knead for", "a need for")
-}
-:C:a la::{
-    if AC_IsDisabled("a la") {
-        SendText("a la" . A_EndChar)
-        return
-    }
-    SendText("à la" . A_EndChar)
-    AC_Reg("a la", "à la")
-}
-:C:a larvae::{
-    if AC_IsDisabled("a larvae") {
-        SendText("a larvae" . A_EndChar)
-        return
-    }
-    SendText("a larva" . A_EndChar)
-    AC_Reg("a larvae", "a larva")
-}
-:C:a lock up::{
-    if AC_IsDisabled("a lock up") {
-        SendText("a lock up" . A_EndChar)
-        return
-    }
-    SendText("a lockup" . A_EndChar)
-    AC_Reg("a lock up", "a lockup")
-}
-:C:a lose::{
-    if AC_IsDisabled("a lose") {
-        SendText("a lose" . A_EndChar)
-        return
-    }
-    SendText("a loss" . A_EndChar)
-    AC_Reg("a lose", "a loss")
-}
-:C:a manufacture::{
-    if AC_IsDisabled("a manufacture") {
-        SendText("a manufacture" . A_EndChar)
-        return
-    }
-    SendText("a manufacturer" . A_EndChar)
-    AC_Reg("a manufacture", "a manufacturer")
-}
-:C:a MRI::{
-    if AC_IsDisabled("a MRI") {
-        SendText("a MRI" . A_EndChar)
-        return
-    }
-    SendText("an MRI" . A_EndChar)
-    AC_Reg("a MRI", "an MRI")
-}
-:C:a nuclei::{
-    if AC_IsDisabled("a nuclei") {
-        SendText("a nuclei" . A_EndChar)
-        return
-    }
-    SendText("a nucleus" . A_EndChar)
-    AC_Reg("a nuclei", "a nucleus")
-}
-:C:a numbers of::{
-    if AC_IsDisabled("a numbers of") {
-        SendText("a numbers of" . A_EndChar)
-        return
-    }
-    SendText("a number of" . A_EndChar)
-    AC_Reg("a numbers of", "a number of")
-}
-:C:a oa::{
-    if AC_IsDisabled("a oa") {
-        SendText("a oa" . A_EndChar)
-        return
-    }
-    SendText("an oa" . A_EndChar)
-    AC_Reg("a oa", "an oa")
-}
-:C:a ob::{
-    if AC_IsDisabled("a ob") {
-        SendText("a ob" . A_EndChar)
-        return
-    }
-    SendText("an ob" . A_EndChar)
-    AC_Reg("a ob", "an ob")
-}
-:C:a ocean::{
-    if AC_IsDisabled("a ocean") {
-        SendText("a ocean" . A_EndChar)
-        return
-    }
-    SendText("an ocean" . A_EndChar)
-    AC_Reg("a ocean", "an ocean")
-}
-:C:a offen::{
-    if AC_IsDisabled("a offen") {
-        SendText("a offen" . A_EndChar)
-        return
-    }
-    SendText("an offen; Fixes 1 word" . A_EndChar)
-    AC_Reg("a offen", "an offen; Fixes 1 word")
-}
-:C:a offic::{
-    if AC_IsDisabled("a offic") {
-        SendText("a offic" . A_EndChar)
-        return
-    }
-    SendText("an offic" . A_EndChar)
-    AC_Reg("a offic", "an offic")
-}
-:C:a oi::{
-    if AC_IsDisabled("a oi") {
-        SendText("a oi" . A_EndChar)
-        return
-    }
-    SendText("an oi" . A_EndChar)
-    AC_Reg("a oi", "an oi")
-}
-:C:a ol::{
-    if AC_IsDisabled("a ol") {
-        SendText("a ol" . A_EndChar)
-        return
-    }
-    SendText("an ol" . A_EndChar)
-    AC_Reg("a ol", "an ol")
-}
-:C:a one of the::{
-    if AC_IsDisabled("a one of the") {
-        SendText("a one of the" . A_EndChar)
-        return
-    }
-    SendText("one of the" . A_EndChar)
-    AC_Reg("a one of the", "one of the")
-}
-:C:a only a::{
-    if AC_IsDisabled("a only a") {
-        SendText("a only a" . A_EndChar)
-        return
-    }
-    SendText("only a" . A_EndChar)
-    AC_Reg("a only a", "only a")
-}
-:C:a op::{
-    if AC_IsDisabled("a op") {
-        SendText("a op" . A_EndChar)
-        return
-    }
-    SendText("an op" . A_EndChar)
-    AC_Reg("a op", "an op")
-}
-:C:a or::{
-    if AC_IsDisabled("a or") {
-        SendText("a or" . A_EndChar)
-        return
-    }
-    SendText("an or" . A_EndChar)
-    AC_Reg("a or", "an or")
-}
-:C:a os::{
-    if AC_IsDisabled("a os") {
-        SendText("a os" . A_EndChar)
-        return
-    }
-    SendText("an os" . A_EndChar)
-    AC_Reg("a os", "an os")
-}
-:C:a ot::{
-    if AC_IsDisabled("a ot") {
-        SendText("a ot" . A_EndChar)
-        return
-    }
-    SendText("an ot" . A_EndChar)
-    AC_Reg("a ot", "an ot")
-}
-:C:a oupl::{
-    if AC_IsDisabled("a oupl") {
-        SendText("a oupl" . A_EndChar)
-        return
-    }
-    SendText("a coupl" . A_EndChar)
-    AC_Reg("a oupl", "a coupl")
-}
-:C:a ov::{
-    if AC_IsDisabled("a ov") {
-        SendText("a ov" . A_EndChar)
-        return
-    }
-    SendText("an ov" . A_EndChar)
-    AC_Reg("a ov", "an ov")
-}
-:C:a ow::{
-    if AC_IsDisabled("a ow") {
-        SendText("a ow" . A_EndChar)
-        return
-    }
-    SendText("an ow" . A_EndChar)
-    AC_Reg("a ow", "an ow")
-}
-:C:a parentheses::{
-    if AC_IsDisabled("a parentheses") {
-        SendText("a parentheses" . A_EndChar)
-        return
-    }
-    SendText("a parenthesis" . A_EndChar)
-    AC_Reg("a parentheses", "a parenthesis")
-}
-:C:a phenomena::{
-    if AC_IsDisabled("a phenomena") {
-        SendText("a phenomena" . A_EndChar)
-        return
-    }
-    SendText("a phenomenon" . A_EndChar)
-    AC_Reg("a phenomena", "a phenomenon")
-}
-:C:a protozoa::{
-    if AC_IsDisabled("a protozoa") {
-        SendText("a protozoa" . A_EndChar)
-        return
-    }
-    SendText("a protozoon" . A_EndChar)
-    AC_Reg("a protozoa", "a protozoon")
-}
-:C:a pupae::{
-    if AC_IsDisabled("a pupae") {
-        SendText("a pupae" . A_EndChar)
-        return
-    }
-    SendText("a pupa" . A_EndChar)
-    AC_Reg("a pupae", "a pupa")
-}
-:C:a radii::{
-    if AC_IsDisabled("a radii") {
-        SendText("a radii" . A_EndChar)
-        return
-    }
-    SendText("a radius" . A_EndChar)
-    AC_Reg("a radii", "a radius")
-}
-:C:a regular bases::{
-    if AC_IsDisabled("a regular bases") {
-        SendText("a regular bases" . A_EndChar)
-        return
-    }
-    SendText("a regular basis" . A_EndChar)
-    AC_Reg("a regular bases", "a regular basis")
-}
-:C:a renown::{
-    if AC_IsDisabled("a renown") {
-        SendText("a renown" . A_EndChar)
-        return
-    }
-    SendText("a renowned" . A_EndChar)
-    AC_Reg("a renown", "a renowned")
-}
-:C:a resent::{
-    if AC_IsDisabled("a resent") {
-        SendText("a resent" . A_EndChar)
-        return
-    }
-    SendText("a recent" . A_EndChar)
-    AC_Reg("a resent", "a recent")
-}
-:C:a run in::{
-    if AC_IsDisabled("a run in") {
-        SendText("a run in" . A_EndChar)
-        return
-    }
-    SendText("a run-in" . A_EndChar)
-    AC_Reg("a run in", "a run-in")
-}
-:C:a set back::{
-    if AC_IsDisabled("a set back") {
-        SendText("a set back" . A_EndChar)
-        return
-    }
-    SendText("a set-back" . A_EndChar)
-    AC_Reg("a set back", "a set-back")
-}
-:C:a set up::{
-    if AC_IsDisabled("a set up") {
-        SendText("a set up" . A_EndChar)
-        return
-    }
-    SendText("a setup" . A_EndChar)
-    AC_Reg("a set up", "a setup")
-}
-:C:a several::{
-    if AC_IsDisabled("a several") {
-        SendText("a several" . A_EndChar)
-        return
-    }
-    SendText("several" . A_EndChar)
-    AC_Reg("a several", "several")
-}
-:C:a simple as::{
-    if AC_IsDisabled("a simple as") {
-        SendText("a simple as" . A_EndChar)
-        return
-    }
-    SendText("as simple as" . A_EndChar)
-    AC_Reg("a simple as", "as simple as")
-}
-:C:a spermatozoa::{
-    if AC_IsDisabled("a spermatozoa") {
-        SendText("a spermatozoa" . A_EndChar)
-        return
-    }
-    SendText("a spermatozoon" . A_EndChar)
-    AC_Reg("a spermatozoa", "a spermatozoon")
-}
-:C:a statesmen::{
-    if AC_IsDisabled("a statesmen") {
-        SendText("a statesmen" . A_EndChar)
-        return
-    }
-    SendText("a statesman" . A_EndChar)
-    AC_Reg("a statesmen", "a statesman")
-}
-:C:a strata::{
-    if AC_IsDisabled("a strata") {
-        SendText("a strata" . A_EndChar)
-        return
-    }
-    SendText("a stratum" . A_EndChar)
-    AC_Reg("a strata", "a stratum")
-}
-:C:a taxa::{
-    if AC_IsDisabled("a taxa") {
-        SendText("a taxa" . A_EndChar)
-        return
-    }
-    SendText("a taxon" . A_EndChar)
-    AC_Reg("a taxa", "a taxon")
-}
-:C:a two months::{
-    if AC_IsDisabled("a two months") {
-        SendText("a two months" . A_EndChar)
-        return
-    }
-    SendText("a two-month" . A_EndChar)
-    AC_Reg("a two months", "a two-month")
-}
-:C:a ud::{
-    if AC_IsDisabled("a ud") {
-        SendText("a ud" . A_EndChar)
-        return
-    }
-    SendText("an ud" . A_EndChar)
-    AC_Reg("a ud", "an ud")
-}
-:C:a ug::{
-    if AC_IsDisabled("a ug") {
-        SendText("a ug" . A_EndChar)
-        return
-    }
-    SendText("an ug" . A_EndChar)
-    AC_Reg("a ug", "an ug")
-}
-:C:a ul::{
-    if AC_IsDisabled("a ul") {
-        SendText("a ul" . A_EndChar)
-        return
-    }
-    SendText("an ul" . A_EndChar)
-    AC_Reg("a ul", "an ul")
-}
-:C:a um::{
-    if AC_IsDisabled("a um") {
-        SendText("a um" . A_EndChar)
-        return
-    }
-    SendText("an um" . A_EndChar)
-    AC_Reg("a um", "an um")
-}
-:C:a up::{
-    if AC_IsDisabled("a up") {
-        SendText("a up" . A_EndChar)
-        return
-    }
-    SendText("an up" . A_EndChar)
-    AC_Reg("a up", "an up")
-}
-:C:a urban::{
-    if AC_IsDisabled("a urban") {
-        SendText("a urban" . A_EndChar)
-        return
-    }
-    SendText("an urban" . A_EndChar)
-    AC_Reg("a urban", "an urban")
-}
-:C:a vertebrae::{
-    if AC_IsDisabled("a vertebrae") {
-        SendText("a vertebrae" . A_EndChar)
-        return
-    }
-    SendText("a vertebra" . A_EndChar)
-    AC_Reg("a vertebrae", "a vertebra")
-}
-:C:a women::{
-    if AC_IsDisabled("a women") {
-        SendText("a women" . A_EndChar)
-        return
-    }
-    SendText("a woman" . A_EndChar)
-    AC_Reg("a women", "a woman")
-}
-:C:a work out::{
-    if AC_IsDisabled("a work out") {
-        SendText("a work out" . A_EndChar)
-        return
-    }
-    SendText("a workout" . A_EndChar)
-    AC_Reg("a work out", "a workout")
-}
-:C:a;;::{
-    if AC_IsDisabled("a;;") {
-        SendText("a;;" . A_EndChar)
-        return
-    }
-    SendText("all" . A_EndChar)
-    AC_Reg("a;;", "all")
-}
 :C:aall::{
     if AC_IsDisabled("aall") {
         SendText("aall" . A_EndChar)
@@ -1723,38 +243,6 @@
     SendText("about" . A_EndChar)
     AC_Reg("abotu", "about")
 }
-:C:about it's::{
-    if AC_IsDisabled("about it's") {
-        SendText("about it's" . A_EndChar)
-        return
-    }
-    SendText("about its" . A_EndChar)
-    AC_Reg("about it's", "about its")
-}
-:C:about they're::{
-    if AC_IsDisabled("about they're") {
-        SendText("about they're" . A_EndChar)
-        return
-    }
-    SendText("about their" . A_EndChar)
-    AC_Reg("about they're", "about their")
-}
-:C:about who to::{
-    if AC_IsDisabled("about who to") {
-        SendText("about who to" . A_EndChar)
-        return
-    }
-    SendText("about whom to" . A_EndChar)
-    AC_Reg("about who to", "about whom to")
-}
-:C:about who's::{
-    if AC_IsDisabled("about who's") {
-        SendText("about who's" . A_EndChar)
-        return
-    }
-    SendText("about whose" . A_EndChar)
-    AC_Reg("about who's", "about whose")
-}
 :C:abouta::{
     if AC_IsDisabled("abouta") {
         SendText("abouta" . A_EndChar)
@@ -1778,14 +266,6 @@
     }
     SendText("about the" . A_EndChar)
     AC_Reg("aboutthe", "about the")
-}
-:C:above it's::{
-    if AC_IsDisabled("above it's") {
-        SendText("above it's" . A_EndChar)
-        return
-    }
-    SendText("above its" . A_EndChar)
-    AC_Reg("above it's", "above its")
 }
 :C:abreviat::{
     if AC_IsDisabled("abreviat") {
@@ -2331,14 +811,6 @@
     SendText("accordion" . A_EndChar)
     AC_Reg("accordian", "accordion")
 }
-:C:according a::{
-    if AC_IsDisabled("according a") {
-        SendText("according a" . A_EndChar)
-        return
-    }
-    SendText("according to a" . A_EndChar)
-    AC_Reg("according a", "according to a")
-}
 :C:accordingto::{
     if AC_IsDisabled("accordingto") {
         SendText("accordingto" . A_EndChar)
@@ -2794,14 +1266,6 @@
     }
     SendText("acquitted" . A_EndChar)
     AC_Reg("acquited", "acquitted")
-}
-:C:across it's::{
-    if AC_IsDisabled("across it's") {
-        SendText("across it's" . A_EndChar)
-        return
-    }
-    SendText("across its" . A_EndChar)
-    AC_Reg("across it's", "across its")
 }
 :C:actaul::{
     if AC_IsDisabled("actaul") {
@@ -3635,30 +2099,6 @@
     SendText("affair" . A_EndChar)
     AC_Reg("afair", "affair")
 }
-:C:affect on::{
-    if AC_IsDisabled("affect on") {
-        SendText("affect on" . A_EndChar)
-        return
-    }
-    SendText("effect on" . A_EndChar)
-    AC_Reg("affect on", "effect on")
-}
-:C:affect upon::{
-    if AC_IsDisabled("affect upon") {
-        SendText("affect upon" . A_EndChar)
-        return
-    }
-    SendText("effect upon" . A_EndChar)
-    AC_Reg("affect upon", "effect upon")
-}
-:C:affects of::{
-    if AC_IsDisabled("affects of") {
-        SendText("affects of" . A_EndChar)
-        return
-    }
-    SendText("effects of" . A_EndChar)
-    AC_Reg("affects of", "effects of")
-}
 :C:afficianad::{
     if AC_IsDisabled("afficianad") {
         SendText("afficianad" . A_EndChar)
@@ -3763,46 +2203,6 @@
     SendText("aforementioned" . A_EndChar)
     AC_Reg("aforememtioned", "aforementioned")
 }
-:C:after along time::{
-    if AC_IsDisabled("after along time") {
-        SendText("after along time" . A_EndChar)
-        return
-    }
-    SendText("after a long time" . A_EndChar)
-    AC_Reg("after along time", "after a long time")
-}
-:C:after awhile::{
-    if AC_IsDisabled("after awhile") {
-        SendText("after awhile" . A_EndChar)
-        return
-    }
-    SendText("after a while" . A_EndChar)
-    AC_Reg("after awhile", "after a while")
-}
-:C:after been::{
-    if AC_IsDisabled("after been") {
-        SendText("after been" . A_EndChar)
-        return
-    }
-    SendText("after being" . A_EndChar)
-    AC_Reg("after been", "after being")
-}
-:C:after it's::{
-    if AC_IsDisabled("after it's") {
-        SendText("after it's" . A_EndChar)
-        return
-    }
-    SendText("after its" . A_EndChar)
-    AC_Reg("after it's", "after its")
-}
-:C:after quite awhile::{
-    if AC_IsDisabled("after quite awhile") {
-        SendText("after quite awhile" . A_EndChar)
-        return
-    }
-    SendText("after quite a while" . A_EndChar)
-    AC_Reg("after quite awhile", "after quite a while")
-}
 :C:afterthe::{
     if AC_IsDisabled("afterthe") {
         SendText("afterthe" . A_EndChar)
@@ -3834,30 +2234,6 @@
     }
     SendText("against" . A_EndChar)
     AC_Reg("agains", "against")
-}
-:C:against it's::{
-    if AC_IsDisabled("against it's") {
-        SendText("against it's" . A_EndChar)
-        return
-    }
-    SendText("against its" . A_EndChar)
-    AC_Reg("against it's", "against its")
-}
-:C:against who::{
-    if AC_IsDisabled("against who") {
-        SendText("against who" . A_EndChar)
-        return
-    }
-    SendText("against whom" . A_EndChar)
-    AC_Reg("against who", "against whom")
-}
-:C:againstt he::{
-    if AC_IsDisabled("againstt he") {
-        SendText("againstt he" . A_EndChar)
-        return
-    }
-    SendText("against the" . A_EndChar)
-    AC_Reg("againstt he", "against the")
 }
 :C:agaisnt::{
     if AC_IsDisabled("agaisnt") {
@@ -4283,14 +2659,6 @@
     SendText("airport" . A_EndChar)
     AC_Reg("aiport", "airport")
 }
-:C:air tight::{
-    if AC_IsDisabled("air tight") {
-        SendText("air tight" . A_EndChar)
-        return
-    }
-    SendText("airtight" . A_EndChar)
-    AC_Reg("air tight", "airtight")
-}
 :C:airbourne::{
     if AC_IsDisabled("airbourne") {
         SendText("airbourne" . A_EndChar)
@@ -4322,14 +2690,6 @@
     }
     SendText("aircraft" . A_EndChar)
     AC_Reg("aircrafts", "aircraft")
-}
-:C:airplane hanger::{
-    if AC_IsDisabled("airplane hanger") {
-        SendText("airplane hanger" . A_EndChar)
-        return
-    }
-    SendText("airplane hangar" . A_EndChar)
-    AC_Reg("airplane hanger", "airplane hangar")
 }
 :C:airporta::{
     if AC_IsDisabled("airporta") {
@@ -4667,54 +3027,6 @@
     SendText("lativ" . A_EndChar)
     AC_Reg("alitv", "lativ")
 }
-:C:all for not::{
-    if AC_IsDisabled("all for not") {
-        SendText("all for not" . A_EndChar)
-        return
-    }
-    SendText("all for naught" . A_EndChar)
-    AC_Reg("all for not", "all for naught")
-}
-:C:all it's::{
-    if AC_IsDisabled("all it's") {
-        SendText("all it's" . A_EndChar)
-        return
-    }
-    SendText("all its" . A_EndChar)
-    AC_Reg("all it's", "all its")
-}
-:C:all ready done::{
-    if AC_IsDisabled("all ready done") {
-        SendText("all ready done" . A_EndChar)
-        return
-    }
-    SendText("already done" . A_EndChar)
-    AC_Reg("all ready done", "already done")
-}
-:C:all ready set::{
-    if AC_IsDisabled("all ready set") {
-        SendText("all ready set" . A_EndChar)
-        return
-    }
-    SendText("already set" . A_EndChar)
-    AC_Reg("all ready set", "already set")
-}
-:C:all together::{
-    if AC_IsDisabled("all together") {
-        SendText("all together" . A_EndChar)
-        return
-    }
-    SendText("altogether" . A_EndChar)
-    AC_Reg("all together", "altogether")
-}
-:C:all tolled::{
-    if AC_IsDisabled("all tolled") {
-        SendText("all tolled" . A_EndChar)
-        return
-    }
-    SendText("all told" . A_EndChar)
-    AC_Reg("all tolled", "all told")
-}
 :C:alledg::{
     if AC_IsDisabled("alledg") {
         SendText("alledg" . A_EndChar)
@@ -4851,14 +3163,6 @@
     SendText("allophones" . A_EndChar)
     AC_Reg("allopones", "allophones")
 }
-:C:allot of::{
-    if AC_IsDisabled("allot of") {
-        SendText("allot of" . A_EndChar)
-        return
-    }
-    SendText("a lot of" . A_EndChar)
-    AC_Reg("allot of", "a lot of")
-}
 :C:allr::{
     if AC_IsDisabled("allr") {
         SendText("allr" . A_EndChar)
@@ -4939,14 +3243,6 @@
     SendText("alty" . A_EndChar)
     AC_Reg("allty", "alty")
 }
-:C:alma matter::{
-    if AC_IsDisabled("alma matter") {
-        SendText("alma matter" . A_EndChar)
-        return
-    }
-    SendText("alma mater" . A_EndChar)
-    AC_Reg("alma matter", "alma mater")
-}
 :C:almots::{
     if AC_IsDisabled("almots") {
         SendText("almots" . A_EndChar)
@@ -4979,38 +3275,6 @@
     SendText("almost" . A_EndChar)
     AC_Reg("alomst", "almost")
 }
-:C:along it's::{
-    if AC_IsDisabled("along it's") {
-        SendText("along it's" . A_EndChar)
-        return
-    }
-    SendText("along its" . A_EndChar)
-    AC_Reg("along it's", "along its")
-}
-:C:along side::{
-    if AC_IsDisabled("along side") {
-        SendText("along side" . A_EndChar)
-        return
-    }
-    SendText("alongside" . A_EndChar)
-    AC_Reg("along side", "alongside")
-}
-:C:along time::{
-    if AC_IsDisabled("along time") {
-        SendText("along time" . A_EndChar)
-        return
-    }
-    SendText("a long time" . A_EndChar)
-    AC_Reg("along time", "a long time")
-}
-:C:alongside it's::{
-    if AC_IsDisabled("alongside it's") {
-        SendText("alongside it's" . A_EndChar)
-        return
-    }
-    SendText("alongside its" . A_EndChar)
-    AC_Reg("alongside it's", "alongside its")
-}
 :C:alos::{
     if AC_IsDisabled("alos") {
         SendText("alos" . A_EndChar)
@@ -5042,22 +3306,6 @@
     }
     SendText("allotted" . A_EndChar)
     AC_Reg("alotted", "allotted")
-}
-:C:aloud out::{
-    if AC_IsDisabled("aloud out") {
-        SendText("aloud out" . A_EndChar)
-        return
-    }
-    SendText("allowed out" . A_EndChar)
-    AC_Reg("aloud out", "allowed out")
-}
-:C:aloud to go::{
-    if AC_IsDisabled("aloud to go") {
-        SendText("aloud to go" . A_EndChar)
-        return
-    }
-    SendText("allowed to go" . A_EndChar)
-    AC_Reg("aloud to go", "allowed to go")
 }
 :C:alowe::{
     if AC_IsDisabled("alowe") {
@@ -5131,30 +3379,6 @@
     SendText("alistic" . A_EndChar)
     AC_Reg("alsitic", "alistic")
 }
-:C:also know as::{
-    if AC_IsDisabled("also know as") {
-        SendText("also know as" . A_EndChar)
-        return
-    }
-    SendText("also known as" . A_EndChar)
-    AC_Reg("also know as", "also known as")
-}
-:C:also know by::{
-    if AC_IsDisabled("also know by") {
-        SendText("also know by" . A_EndChar)
-        return
-    }
-    SendText("also known by" . A_EndChar)
-    AC_Reg("also know by", "also known by")
-}
-:C:also know for::{
-    if AC_IsDisabled("also know for") {
-        SendText("also know for" . A_EndChar)
-        return
-    }
-    SendText("also known for" . A_EndChar)
-    AC_Reg("also know for", "also known for")
-}
 :C:alsot::{
     if AC_IsDisabled("alsot") {
         SendText("alsot" . A_EndChar)
@@ -5162,30 +3386,6 @@
     }
     SendText("also" . A_EndChar)
     AC_Reg("alsot", "also")
-}
-:C:altar ego::{
-    if AC_IsDisabled("altar ego") {
-        SendText("altar ego" . A_EndChar)
-        return
-    }
-    SendText("alter ego" . A_EndChar)
-    AC_Reg("altar ego", "alter ego")
-}
-:C:alter boy::{
-    if AC_IsDisabled("alter boy") {
-        SendText("alter boy" . A_EndChar)
-        return
-    }
-    SendText("altar boy" . A_EndChar)
-    AC_Reg("alter boy", "altar boy")
-}
-:C:alter server::{
-    if AC_IsDisabled("alter server") {
-        SendText("alter server" . A_EndChar)
-        return
-    }
-    SendText("altar server" . A_EndChar)
-    AC_Reg("alter server", "altar server")
 }
 :C:alterio::{
     if AC_IsDisabled("alterio") {
@@ -5291,22 +3491,6 @@
     SendText("always" . A_EndChar)
     AC_Reg("alway", "always")
 }
-:C:always their::{
-    if AC_IsDisabled("always their") {
-        SendText("always their" . A_EndChar)
-        return
-    }
-    SendText("always there" . A_EndChar)
-    AC_Reg("always their", "always there")
-}
-:C:always they're::{
-    if AC_IsDisabled("always they're") {
-        SendText("always they're" . A_EndChar)
-        return
-    }
-    SendText("always there" . A_EndChar)
-    AC_Reg("always they're", "always there")
-}
 :C:alwyas::{
     if AC_IsDisabled("alwyas") {
         SendText("alwyas" . A_EndChar)
@@ -5322,14 +3506,6 @@
     }
     SendText("ally" . A_EndChar)
     AC_Reg("alyl", "ally")
-}
-:C:am loathe to::{
-    if AC_IsDisabled("am loathe to") {
-        SendText("am loathe to" . A_EndChar)
-        return
-    }
-    SendText("am loath to" . A_EndChar)
-    AC_Reg("am loathe to", "am loath to")
 }
 :C:amalgom::{
     if AC_IsDisabled("amalgom") {
@@ -5418,22 +3594,6 @@
     }
     SendText("amental" . A_EndChar)
     AC_Reg("ametal", "amental")
-}
-:C:amid it's::{
-    if AC_IsDisabled("amid it's") {
-        SendText("amid it's" . A_EndChar)
-        return
-    }
-    SendText("amid its" . A_EndChar)
-    AC_Reg("amid it's", "amid its")
-}
-:C:amidst it's::{
-    if AC_IsDisabled("amidst it's") {
-        SendText("amidst it's" . A_EndChar)
-        return
-    }
-    SendText("amidst its" . A_EndChar)
-    AC_Reg("amidst it's", "amidst its")
 }
 :C:amin::{
     if AC_IsDisabled("amin") {
@@ -5563,46 +3723,6 @@
     SendText("many" . A_EndChar)
     AC_Reg("amny", "many")
 }
-:C:among it's::{
-    if AC_IsDisabled("among it's") {
-        SendText("among it's" . A_EndChar)
-        return
-    }
-    SendText("among it" . A_EndChar)
-    AC_Reg("among it's", "among it")
-}
-:C:among others things::{
-    if AC_IsDisabled("among others things") {
-        SendText("among others things" . A_EndChar)
-        return
-    }
-    SendText("among other things" . A_EndChar)
-    AC_Reg("among others things", "among other things")
-}
-:C:amongst it's::{
-    if AC_IsDisabled("amongst it's") {
-        SendText("amongst it's" . A_EndChar)
-        return
-    }
-    SendText("amongst its" . A_EndChar)
-    AC_Reg("amongst it's", "amongst its")
-}
-:C:amongst one of the::{
-    if AC_IsDisabled("amongst one of the") {
-        SendText("amongst one of the" . A_EndChar)
-        return
-    }
-    SendText("amongst the" . A_EndChar)
-    AC_Reg("amongst one of the", "amongst the")
-}
-:C:amongst others things::{
-    if AC_IsDisabled("amongst others things") {
-        SendText("amongst others things" . A_EndChar)
-        return
-    }
-    SendText("amongst other things" . A_EndChar)
-    AC_Reg("amongst others things", "amongst other things")
-}
 :C:amoung::{
     if AC_IsDisabled("amoung") {
         SendText("amoung" . A_EndChar)
@@ -5650,318 +3770,6 @@
     }
     SendText("ammunition" . A_EndChar)
     AC_Reg("amunition", "ammunition")
-}
-:C:an affect::{
-    if AC_IsDisabled("an affect") {
-        SendText("an affect" . A_EndChar)
-        return
-    }
-    SendText("an effect" . A_EndChar)
-    AC_Reg("an affect", "an effect")
-}
-:C:an another::{
-    if AC_IsDisabled("an another") {
-        SendText("an another" . A_EndChar)
-        return
-    }
-    SendText("another" . A_EndChar)
-    AC_Reg("an another", "another")
-}
-:C:an antennae::{
-    if AC_IsDisabled("an antennae") {
-        SendText("an antennae" . A_EndChar)
-        return
-    }
-    SendText("an antenna" . A_EndChar)
-    AC_Reg("an antennae", "an antenna")
-}
-:C:an film::{
-    if AC_IsDisabled("an film") {
-        SendText("an film" . A_EndChar)
-        return
-    }
-    SendText("a film" . A_EndChar)
-    AC_Reg("an film", "a film")
-}
-:C:an half::{
-    if AC_IsDisabled("an half") {
-        SendText("an half" . A_EndChar)
-        return
-    }
-    SendText("a half" . A_EndChar)
-    AC_Reg("an half", "a half")
-}
-:C:an halt::{
-    if AC_IsDisabled("an halt") {
-        SendText("an halt" . A_EndChar)
-        return
-    }
-    SendText("a halt" . A_EndChar)
-    AC_Reg("an halt", "a halt")
-}
-:C:an hand::{
-    if AC_IsDisabled("an hand") {
-        SendText("an hand" . A_EndChar)
-        return
-    }
-    SendText("a hand" . A_EndChar)
-    AC_Reg("an hand", "a hand")
-}
-:C:an head::{
-    if AC_IsDisabled("an head") {
-        SendText("an head" . A_EndChar)
-        return
-    }
-    SendText("a head" . A_EndChar)
-    AC_Reg("an head", "a head")
-}
-:C:an heart::{
-    if AC_IsDisabled("an heart") {
-        SendText("an heart" . A_EndChar)
-        return
-    }
-    SendText("a heart" . A_EndChar)
-    AC_Reg("an heart", "a heart")
-}
-:C:an helicopter::{
-    if AC_IsDisabled("an helicopter") {
-        SendText("an helicopter" . A_EndChar)
-        return
-    }
-    SendText("a helicopter" . A_EndChar)
-    AC_Reg("an helicopter", "a helicopter")
-}
-:C:an hero::{
-    if AC_IsDisabled("an hero") {
-        SendText("an hero" . A_EndChar)
-        return
-    }
-    SendText("a hero" . A_EndChar)
-    AC_Reg("an hero", "a hero")
-}
-:C:an high::{
-    if AC_IsDisabled("an high") {
-        SendText("an high" . A_EndChar)
-        return
-    }
-    SendText("a high" . A_EndChar)
-    AC_Reg("an high", "a high")
-}
-:C:an histor::{
-    if AC_IsDisabled("an histor") {
-        SendText("an histor" . A_EndChar)
-        return
-    }
-    SendText("a histor" . A_EndChar)
-    AC_Reg("an histor", "a histor")
-}
-:C:an hospital::{
-    if AC_IsDisabled("an hospital") {
-        SendText("an hospital" . A_EndChar)
-        return
-    }
-    SendText("a hospital" . A_EndChar)
-    AC_Reg("an hospital", "a hospital")
-}
-:C:an hotel::{
-    if AC_IsDisabled("an hotel") {
-        SendText("an hotel" . A_EndChar)
-        return
-    }
-    SendText("a hotel" . A_EndChar)
-    AC_Reg("an hotel", "a hotel")
-}
-:C:an humanitarian::{
-    if AC_IsDisabled("an humanitarian") {
-        SendText("an humanitarian" . A_EndChar)
-        return
-    }
-    SendText("a humanitarian" . A_EndChar)
-    AC_Reg("an humanitarian", "a humanitarian")
-}
-:C:an large::{
-    if AC_IsDisabled("an large") {
-        SendText("an large" . A_EndChar)
-        return
-    }
-    SendText("a large" . A_EndChar)
-    AC_Reg("an large", "a large")
-}
-:C:an law::{
-    if AC_IsDisabled("an law") {
-        SendText("an law" . A_EndChar)
-        return
-    }
-    SendText("a law" . A_EndChar)
-    AC_Reg("an law", "a law")
-}
-:C:an local::{
-    if AC_IsDisabled("an local") {
-        SendText("an local" . A_EndChar)
-        return
-    }
-    SendText("a local" . A_EndChar)
-    AC_Reg("an local", "a local")
-}
-:C:an new::{
-    if AC_IsDisabled("an new") {
-        SendText("an new" . A_EndChar)
-        return
-    }
-    SendText("a new" . A_EndChar)
-    AC_Reg("an new", "a new")
-}
-:C:an nin::{
-    if AC_IsDisabled("an nin") {
-        SendText("an nin" . A_EndChar)
-        return
-    }
-    SendText("a nin" . A_EndChar)
-    AC_Reg("an nin", "a nin")
-}
-:C:an non::{
-    if AC_IsDisabled("an non") {
-        SendText("an non" . A_EndChar)
-        return
-    }
-    SendText("a non" . A_EndChar)
-    AC_Reg("an non", "a non")
-}
-:C:an number::{
-    if AC_IsDisabled("an number") {
-        SendText("an number" . A_EndChar)
-        return
-    }
-    SendText("a number" . A_EndChar)
-    AC_Reg("an number", "a number")
-}
-:C:an pair::{
-    if AC_IsDisabled("an pair") {
-        SendText("an pair" . A_EndChar)
-        return
-    }
-    SendText("a pair" . A_EndChar)
-    AC_Reg("an pair", "a pair")
-}
-:C:an player::{
-    if AC_IsDisabled("an player") {
-        SendText("an player" . A_EndChar)
-        return
-    }
-    SendText("a player" . A_EndChar)
-    AC_Reg("an player", "a player")
-}
-:C:an popular::{
-    if AC_IsDisabled("an popular") {
-        SendText("an popular" . A_EndChar)
-        return
-    }
-    SendText("a popular" . A_EndChar)
-    AC_Reg("an popular", "a popular")
-}
-:C:an pre-::{
-    if AC_IsDisabled("an pre-") {
-        SendText("an pre-" . A_EndChar)
-        return
-    }
-    SendText("a pre-" . A_EndChar)
-    AC_Reg("an pre-", "a pre-")
-}
-:C:an sec::{
-    if AC_IsDisabled("an sec") {
-        SendText("an sec" . A_EndChar)
-        return
-    }
-    SendText("a sec" . A_EndChar)
-    AC_Reg("an sec", "a sec")
-}
-:C:an ser::{
-    if AC_IsDisabled("an ser") {
-        SendText("an ser" . A_EndChar)
-        return
-    }
-    SendText("a ser" . A_EndChar)
-    AC_Reg("an ser", "a ser")
-}
-:C:an seven::{
-    if AC_IsDisabled("an seven") {
-        SendText("an seven" . A_EndChar)
-        return
-    }
-    SendText("a seven" . A_EndChar)
-    AC_Reg("an seven", "a seven")
-}
-:C:an six::{
-    if AC_IsDisabled("an six") {
-        SendText("an six" . A_EndChar)
-        return
-    }
-    SendText("a six" . A_EndChar)
-    AC_Reg("an six", "a six")
-}
-:C:an song::{
-    if AC_IsDisabled("an song") {
-        SendText("an song" . A_EndChar)
-        return
-    }
-    SendText("a song" . A_EndChar)
-    AC_Reg("an song", "a song")
-}
-:C:an spec::{
-    if AC_IsDisabled("an spec") {
-        SendText("an spec" . A_EndChar)
-        return
-    }
-    SendText("a spec" . A_EndChar)
-    AC_Reg("an spec", "a spec")
-}
-:C:an stat::{
-    if AC_IsDisabled("an stat") {
-        SendText("an stat" . A_EndChar)
-        return
-    }
-    SendText("a stat" . A_EndChar)
-    AC_Reg("an stat", "a stat")
-}
-:C:an ten::{
-    if AC_IsDisabled("an ten") {
-        SendText("an ten" . A_EndChar)
-        return
-    }
-    SendText("a ten" . A_EndChar)
-    AC_Reg("an ten", "a ten")
-}
-:C:an union::{
-    if AC_IsDisabled("an union") {
-        SendText("an union" . A_EndChar)
-        return
-    }
-    SendText("a union" . A_EndChar)
-    AC_Reg("an union", "a union")
-}
-:C:an unit::{
-    if AC_IsDisabled("an unit") {
-        SendText("an unit" . A_EndChar)
-        return
-    }
-    SendText("a unit" . A_EndChar)
-    AC_Reg("an unit", "a unit")
-}
-:C:an Unix::{
-    if AC_IsDisabled("an Unix") {
-        SendText("an Unix" . A_EndChar)
-        return
-    }
-    SendText("a Unix" . A_EndChar)
-    AC_Reg("an Unix", "a Unix")
-}
-:C:an USB::{
-    if AC_IsDisabled("an USB") {
-        SendText("an USB" . A_EndChar)
-        return
-    }
-    SendText("a USB" . A_EndChar)
-    AC_Reg("an USB", "a USB")
 }
 :C:analag::{
     if AC_IsDisabled("analag") {
@@ -6027,22 +3835,6 @@
     SendText("ancestry" . A_EndChar)
     AC_Reg("ancestory", "ancestry")
 }
-:C:anchors away::{
-    if AC_IsDisabled("anchors away") {
-        SendText("anchors away" . A_EndChar)
-        return
-    }
-    SendText("anchors aweigh" . A_EndChar)
-    AC_Reg("anchors away", "anchors aweigh")
-}
-:C:ancien regime::{
-    if AC_IsDisabled("ancien regime") {
-        SendText("ancien regime" . A_EndChar)
-        return
-    }
-    SendText("Ancien Régime" . A_EndChar)
-    AC_Reg("ancien regime", "Ancien Régime")
-}
 :C:anciet::{
     if AC_IsDisabled("anciet") {
         SendText("anciet" . A_EndChar)
@@ -6098,14 +3890,6 @@
     }
     SendText("androgyny" . A_EndChar)
     AC_Reg("androgeny", "androgyny")
-}
-:C:andt he::{
-    if AC_IsDisabled("andt he") {
-        SendText("andt he" . A_EndChar)
-        return
-    }
-    SendText("and the" . A_EndChar)
-    AC_Reg("andt he", "and the")
 }
 :C:aneing::{
     if AC_IsDisabled("aneing") {
@@ -6363,22 +4147,6 @@
     SendText("another" . A_EndChar)
     AC_Reg("anothe", "another")
 }
-:C:another criteria::{
-    if AC_IsDisabled("another criteria") {
-        SendText("another criteria" . A_EndChar)
-        return
-    }
-    SendText("another criterion" . A_EndChar)
-    AC_Reg("another criteria", "another criterion")
-}
-:C:another words::{
-    if AC_IsDisabled("another words") {
-        SendText("another words" . A_EndChar)
-        return
-    }
-    SendText("in other words" . A_EndChar)
-    AC_Reg("another words", "in other words")
-}
 :C:anoun::{
     if AC_IsDisabled("anoun") {
         SendText("anoun" . A_EndChar)
@@ -6499,14 +4267,6 @@
     SendText("anthropology" . A_EndChar)
     AC_Reg("anthropolgy", "anthropology")
 }
-:C:anti-semetic::{
-    if AC_IsDisabled("anti-semetic") {
-        SendText("anti-semetic" . A_EndChar)
-        return
-    }
-    SendText("anti-Semitic" . A_EndChar)
-    AC_Reg("anti-semetic", "anti-Semitic")
-}
 :C:antiapartheid::{
     if AC_IsDisabled("antiapartheid") {
         SendText("antiapartheid" . A_EndChar)
@@ -6563,38 +4323,6 @@
     SendText("answered" . A_EndChar)
     AC_Reg("anwsered", "answered")
 }
-:C:any another::{
-    if AC_IsDisabled("any another") {
-        SendText("any another" . A_EndChar)
-        return
-    }
-    SendText("another" . A_EndChar)
-    AC_Reg("any another", "another")
-}
-:C:any more::{
-    if AC_IsDisabled("any more") {
-        SendText("any more" . A_EndChar)
-        return
-    }
-    SendText("anymore" . A_EndChar)
-    AC_Reg("any more", "anymore")
-}
-:C:any resent::{
-    if AC_IsDisabled("any resent") {
-        SendText("any resent" . A_EndChar)
-        return
-    }
-    SendText("any recent" . A_EndChar)
-    AC_Reg("any resent", "any recent")
-}
-:C:any where::{
-    if AC_IsDisabled("any where") {
-        SendText("any where" . A_EndChar)
-        return
-    }
-    SendText("anywhere" . A_EndChar)
-    AC_Reg("any where", "anywhere")
-}
 :C:anyhwere::{
     if AC_IsDisabled("anyhwere") {
         SendText("anyhwere" . A_EndChar)
@@ -6634,14 +4362,6 @@
     }
     SendText("anything" . A_EndChar)
     AC_Reg("anytying", "anything")
-}
-:C:ao dai::{
-    if AC_IsDisabled("ao dai") {
-        SendText("ao dai" . A_EndChar)
-        return
-    }
-    SendText("ào dái" . A_EndChar)
-    AC_Reg("ao dai", "ào dái")
 }
 :C:aof::{
     if AC_IsDisabled("aof") {
@@ -6714,14 +4434,6 @@
     }
     SendText("apartment" . A_EndChar)
     AC_Reg("aparment", "apartment")
-}
-:C:apart form::{
-    if AC_IsDisabled("apart form") {
-        SendText("apart form" . A_EndChar)
-        return
-    }
-    SendText("apart from" . A_EndChar)
-    AC_Reg("apart form", "apart from")
 }
 :C:apear::{
     if AC_IsDisabled("apear") {
@@ -7579,166 +5291,6 @@
     SendText("archetypes" . A_EndChar)
     AC_Reg("archtypes", "archetypes")
 }
-:C:are aloud to::{
-    if AC_IsDisabled("are aloud to") {
-        SendText("are aloud to" . A_EndChar)
-        return
-    }
-    SendText("are allowed to" . A_EndChar)
-    AC_Reg("are aloud to", "are allowed to")
-}
-:C:are ass::{
-    if AC_IsDisabled("are ass") {
-        SendText("are ass" . A_EndChar)
-        return
-    }
-    SendText("are as" . A_EndChar)
-    AC_Reg("are ass", "are as")
-}
-:C:are build::{
-    if AC_IsDisabled("are build") {
-        SendText("are build" . A_EndChar)
-        return
-    }
-    SendText("are built" . A_EndChar)
-    AC_Reg("are build", "are built")
-}
-:C:are dominate::{
-    if AC_IsDisabled("are dominate") {
-        SendText("are dominate" . A_EndChar)
-        return
-    }
-    SendText("are dominant" . A_EndChar)
-    AC_Reg("are dominate", "are dominant")
-}
-:C:are drew::{
-    if AC_IsDisabled("are drew") {
-        SendText("are drew" . A_EndChar)
-        return
-    }
-    SendText("are drawn" . A_EndChar)
-    AC_Reg("are drew", "are drawn")
-}
-:C:are it's::{
-    if AC_IsDisabled("are it's") {
-        SendText("are it's" . A_EndChar)
-        return
-    }
-    SendText("are its" . A_EndChar)
-    AC_Reg("are it's", "are its")
-}
-:C:are know::{
-    if AC_IsDisabled("are know") {
-        SendText("are know" . A_EndChar)
-        return
-    }
-    SendText("are known" . A_EndChar)
-    AC_Reg("are know", "are known")
-}
-:C:are lain::{
-    if AC_IsDisabled("are lain") {
-        SendText("are lain" . A_EndChar)
-        return
-    }
-    SendText("are laid" . A_EndChar)
-    AC_Reg("are lain", "are laid")
-}
-:C:are lead by::{
-    if AC_IsDisabled("are lead by") {
-        SendText("are lead by" . A_EndChar)
-        return
-    }
-    SendText("are led by" . A_EndChar)
-    AC_Reg("are lead by", "are led by")
-}
-:C:are loathe to::{
-    if AC_IsDisabled("are loathe to") {
-        SendText("are loathe to" . A_EndChar)
-        return
-    }
-    SendText("are loath to" . A_EndChar)
-    AC_Reg("are loathe to", "are loath to")
-}
-:C:are meet::{
-    if AC_IsDisabled("are meet") {
-        SendText("are meet" . A_EndChar)
-        return
-    }
-    SendText("are met" . A_EndChar)
-    AC_Reg("are meet", "are met")
-}
-:C:are ran by::{
-    if AC_IsDisabled("are ran by") {
-        SendText("are ran by" . A_EndChar)
-        return
-    }
-    SendText("are run by" . A_EndChar)
-    AC_Reg("are ran by", "are run by")
-}
-:C:are renown::{
-    if AC_IsDisabled("are renown") {
-        SendText("are renown" . A_EndChar)
-        return
-    }
-    SendText("are renowned" . A_EndChar)
-    AC_Reg("are renown", "are renowned")
-}
-:C:are set-up::{
-    if AC_IsDisabled("are set-up") {
-        SendText("are set-up" . A_EndChar)
-        return
-    }
-    SendText("are set up" . A_EndChar)
-    AC_Reg("are set-up", "are set up")
-}
-:C:are setup::{
-    if AC_IsDisabled("are setup") {
-        SendText("are setup" . A_EndChar)
-        return
-    }
-    SendText("are set up" . A_EndChar)
-    AC_Reg("are setup", "are set up")
-}
-:C:are shutdown::{
-    if AC_IsDisabled("are shutdown") {
-        SendText("are shutdown" . A_EndChar)
-        return
-    }
-    SendText("are shut down" . A_EndChar)
-    AC_Reg("are shutdown", "are shut down")
-}
-:C:are shutout::{
-    if AC_IsDisabled("are shutout") {
-        SendText("are shutout" . A_EndChar)
-        return
-    }
-    SendText("are shut out" . A_EndChar)
-    AC_Reg("are shutout", "are shut out")
-}
-:C:are suppose to::{
-    if AC_IsDisabled("are suppose to") {
-        SendText("are suppose to" . A_EndChar)
-        return
-    }
-    SendText("are supposed to" . A_EndChar)
-    AC_Reg("are suppose to", "are supposed to")
-}
-:C:are the dominate::{
-    if AC_IsDisabled("are the dominate") {
-        SendText("are the dominate" . A_EndChar)
-        return
-    }
-    SendText("are the dominant" . A_EndChar)
-    AC_Reg("are the dominate", "are the dominant")
-}
-:C:are use to::{
-    if AC_IsDisabled("are use to") {
-        SendText("are use to" . A_EndChar)
-        return
-    }
-    SendText("are used to" . A_EndChar)
-    AC_Reg("are use to", "are used to")
-}
 :C:aready::{
     if AC_IsDisabled("aready") {
         SendText("aready" . A_EndChar)
@@ -7899,14 +5451,6 @@
     SendText("armistice" . A_EndChar)
     AC_Reg("armistace", "armistice")
 }
-:C:arms length::{
-    if AC_IsDisabled("arms length") {
-        SendText("arms length" . A_EndChar)
-        return
-    }
-    SendText("arm's length" . A_EndChar)
-    AC_Reg("arms length", "arm's length")
-}
 :C:arn't::{
     if AC_IsDisabled("arn't") {
         SendText("arn't" . A_EndChar)
@@ -7962,14 +5506,6 @@
     }
     SendText("around" . A_EndChar)
     AC_Reg("aroud", "around")
-}
-:C:around it's::{
-    if AC_IsDisabled("around it's") {
-        SendText("around it's" . A_EndChar)
-        return
-    }
-    SendText("around its" . A_EndChar)
-    AC_Reg("around it's", "around its")
 }
 :C:arrangment::{
     if AC_IsDisabled("arrangment") {
@@ -8147,38 +5683,6 @@
     SendText("aries" . A_EndChar)
     AC_Reg("arys", "aries")
 }
-:C:as a resulted::{
-    if AC_IsDisabled("as a resulted") {
-        SendText("as a resulted" . A_EndChar)
-        return
-    }
-    SendText("as a result" . A_EndChar)
-    AC_Reg("as a resulted", "as a result")
-}
-:C:as apposed to::{
-    if AC_IsDisabled("as apposed to") {
-        SendText("as apposed to" . A_EndChar)
-        return
-    }
-    SendText("as opposed to" . A_EndChar)
-    AC_Reg("as apposed to", "as opposed to")
-}
-:C:as back up::{
-    if AC_IsDisabled("as back up") {
-        SendText("as back up" . A_EndChar)
-        return
-    }
-    SendText("as backup" . A_EndChar)
-    AC_Reg("as back up", "as backup")
-}
-:C:as oppose to::{
-    if AC_IsDisabled("as oppose to") {
-        SendText("as oppose to" . A_EndChar)
-        return
-    }
-    SendText("as opposed to" . A_EndChar)
-    AC_Reg("as oppose to", "as opposed to")
-}
 :C:asdver::{
     if AC_IsDisabled("asdver") {
         SendText("asdver" . A_EndChar)
@@ -8211,22 +5715,6 @@
     SendText("as far" . A_EndChar)
     AC_Reg("asfar", "as far")
 }
-:C:aside form::{
-    if AC_IsDisabled("aside form") {
-        SendText("aside form" . A_EndChar)
-        return
-    }
-    SendText("aside from" . A_EndChar)
-    AC_Reg("aside form", "aside from")
-}
-:C:aside it's::{
-    if AC_IsDisabled("aside it's") {
-        SendText("aside it's" . A_EndChar)
-        return
-    }
-    SendText("aside its" . A_EndChar)
-    AC_Reg("aside it's", "aside its")
-}
 :C:asign::{
     if AC_IsDisabled("asign") {
         SendText("asign" . A_EndChar)
@@ -8234,14 +5722,6 @@
     }
     SendText("assign" . A_EndChar)
     AC_Reg("asign", "assign")
-}
-:C:askt he::{
-    if AC_IsDisabled("askt he") {
-        SendText("askt he" . A_EndChar)
-        return
-    }
-    SendText("ask the" . A_EndChar)
-    AC_Reg("askt he", "ask the")
 }
 :C:aslo::{
     if AC_IsDisabled("aslo") {
@@ -8306,14 +5786,6 @@
     }
     SendText("absorbed" . A_EndChar)
     AC_Reg("asorbed", "absorbed")
-}
-:C:aspect ration::{
-    if AC_IsDisabled("aspect ration") {
-        SendText("aspect ration" . A_EndChar)
-        return
-    }
-    SendText("aspect ratio" . A_EndChar)
-    AC_Reg("aspect ration", "aspect ratio")
 }
 :C:asphyxa::{
     if AC_IsDisabled("asphyxa") {
@@ -8635,22 +6107,6 @@
     SendText("assaulted" . A_EndChar)
     AC_Reg("assualted", "assaulted")
 }
-:C:assume the reigns::{
-    if AC_IsDisabled("assume the reigns") {
-        SendText("assume the reigns" . A_EndChar)
-        return
-    }
-    SendText("assume the reins" . A_EndChar)
-    AC_Reg("assume the reigns", "assume the reins")
-}
-:C:assume the roll::{
-    if AC_IsDisabled("assume the roll") {
-        SendText("assume the roll" . A_EndChar)
-        return
-    }
-    SendText("assume the role" . A_EndChar)
-    AC_Reg("assume the roll", "assume the role")
-}
 :C:assym::{
     if AC_IsDisabled("assym") {
         SendText("assym" . A_EndChar)
@@ -8754,54 +6210,6 @@
     }
     SendText("as well" . A_EndChar)
     AC_Reg("aswell", "as well")
-}
-:C:at it's::{
-    if AC_IsDisabled("at it's") {
-        SendText("at it's" . A_EndChar)
-        return
-    }
-    SendText("at its" . A_EndChar)
-    AC_Reg("at it's", "at its")
-}
-:C:at of::{
-    if AC_IsDisabled("at of") {
-        SendText("at of" . A_EndChar)
-        return
-    }
-    SendText("at or" . A_EndChar)
-    AC_Reg("at of", "at or")
-}
-:C:at the alter::{
-    if AC_IsDisabled("at the alter") {
-        SendText("at the alter" . A_EndChar)
-        return
-    }
-    SendText("at the altar" . A_EndChar)
-    AC_Reg("at the alter", "at the altar")
-}
-:C:at the reigns::{
-    if AC_IsDisabled("at the reigns") {
-        SendText("at the reigns" . A_EndChar)
-        return
-    }
-    SendText("at the reins" . A_EndChar)
-    AC_Reg("at the reigns", "at the reins")
-}
-:C:at then end::{
-    if AC_IsDisabled("at then end") {
-        SendText("at then end" . A_EndChar)
-        return
-    }
-    SendText("at the end" . A_EndChar)
-    AC_Reg("at then end", "at the end")
-}
-:C:at-rist::{
-    if AC_IsDisabled("at-rist") {
-        SendText("at-rist" . A_EndChar)
-        return
-    }
-    SendText("at-risk" . A_EndChar)
-    AC_Reg("at-rist", "at-risk")
 }
 :C:atain::{
     if AC_IsDisabled("atain") {
@@ -9499,14 +6907,6 @@
     SendText("audit" . A_EndChar)
     AC_Reg("autit", "audit")
 }
-:C:auto-da-fe::{
-    if AC_IsDisabled("auto-da-fe") {
-        SendText("auto-da-fe" . A_EndChar)
-        return
-    }
-    SendText("auto-da-fé" . A_EndChar)
-    AC_Reg("auto-da-fe", "auto-da-fé")
-}
 :C:autochto::{
     if AC_IsDisabled("autochto") {
         SendText("autochto" . A_EndChar)
@@ -9875,14 +7275,6 @@
     SendText("awarded" . A_EndChar)
     AC_Reg("awared", "awarded")
 }
-:C:away form::{
-    if AC_IsDisabled("away form") {
-        SendText("away form" . A_EndChar)
-        return
-    }
-    SendText("away from" . A_EndChar)
-    AC_Reg("away form", "away from")
-}
 :C:awaye::{
     if AC_IsDisabled("awaye") {
         SendText("awaye" . A_EndChar)
@@ -9963,46 +7355,6 @@
     SendText("because" . A_EndChar)
     AC_Reg("baceause", "because")
 }
-:C:back and fourth::{
-    if AC_IsDisabled("back and fourth") {
-        SendText("back and fourth" . A_EndChar)
-        return
-    }
-    SendText("back and forth" . A_EndChar)
-    AC_Reg("back and fourth", "back and forth")
-}
-:C:back drop::{
-    if AC_IsDisabled("back drop") {
-        SendText("back drop" . A_EndChar)
-        return
-    }
-    SendText("backdrop" . A_EndChar)
-    AC_Reg("back drop", "backdrop")
-}
-:C:back fir::{
-    if AC_IsDisabled("back fir") {
-        SendText("back fir" . A_EndChar)
-        return
-    }
-    SendText("backfir" . A_EndChar)
-    AC_Reg("back fir", "backfir")
-}
-:C:back peddle::{
-    if AC_IsDisabled("back peddle") {
-        SendText("back peddle" . A_EndChar)
-        return
-    }
-    SendText("backpedal" . A_EndChar)
-    AC_Reg("back peddle", "backpedal")
-}
-:C:back round::{
-    if AC_IsDisabled("back round") {
-        SendText("back round" . A_EndChar)
-        return
-    }
-    SendText("background" . A_EndChar)
-    AC_Reg("back round", "background")
-}
 :C:backgorund::{
     if AC_IsDisabled("backgorund") {
         SendText("backgorund" . A_EndChar)
@@ -10019,14 +7371,6 @@
     SendText("backgrounds" . A_EndChar)
     AC_Reg("backrounds", "backgrounds")
 }
-:C:badly effected::{
-    if AC_IsDisabled("badly effected") {
-        SendText("badly effected" . A_EndChar)
-        return
-    }
-    SendText("badly affected" . A_EndChar)
-    AC_Reg("badly effected", "badly affected")
-}
 :C:baet::{
     if AC_IsDisabled("baet") {
         SendText("baet" . A_EndChar)
@@ -10034,14 +7378,6 @@
     }
     SendText("best" . A_EndChar)
     AC_Reg("baet", "best")
-}
-:C:baited breath::{
-    if AC_IsDisabled("baited breath") {
-        SendText("baited breath" . A_EndChar)
-        return
-    }
-    SendText("bated breath" . A_EndChar)
-    AC_Reg("baited breath", "bated breath")
 }
 :C:bakc::{
     if AC_IsDisabled("bakc") {
@@ -10059,14 +7395,6 @@
     SendText("back" . A_EndChar)
     AC_Reg("bakk", "back")
 }
-:C:baled out::{
-    if AC_IsDisabled("baled out") {
-        SendText("baled out" . A_EndChar)
-        return
-    }
-    SendText("bailed out" . A_EndChar)
-    AC_Reg("baled out", "bailed out")
-}
 :C:balen::{
     if AC_IsDisabled("balen") {
         SendText("balen" . A_EndChar)
@@ -10074,14 +7402,6 @@
     }
     SendText("balan" . A_EndChar)
     AC_Reg("balen", "balan")
-}
-:C:baling out::{
-    if AC_IsDisabled("baling out") {
-        SendText("baling out" . A_EndChar)
-        return
-    }
-    SendText("bailing out" . A_EndChar)
-    AC_Reg("baling out", "bailing out")
 }
 :C:ballan::{
     if AC_IsDisabled("ballan") {
@@ -10195,78 +7515,6 @@
     SendText("about" . A_EndChar)
     AC_Reg("baout", "about")
 }
-:C:barb wire::{
-    if AC_IsDisabled("barb wire") {
-        SendText("barb wire" . A_EndChar)
-        return
-    }
-    SendText("barbed wire" . A_EndChar)
-    AC_Reg("barb wire", "barbed wire")
-}
-:C:bare in mind::{
-    if AC_IsDisabled("bare in mind") {
-        SendText("bare in mind" . A_EndChar)
-        return
-    }
-    SendText("bear in mind" . A_EndChar)
-    AC_Reg("bare in mind", "bear in mind")
-}
-:C:bare the brunt::{
-    if AC_IsDisabled("bare the brunt") {
-        SendText("bare the brunt" . A_EndChar)
-        return
-    }
-    SendText("bear the brunt" . A_EndChar)
-    AC_Reg("bare the brunt", "bear the brunt")
-}
-:C:bare the burden::{
-    if AC_IsDisabled("bare the burden") {
-        SendText("bare the burden" . A_EndChar)
-        return
-    }
-    SendText("bear the burden" . A_EndChar)
-    AC_Reg("bare the burden", "bear the burden")
-}
-:C:bare the consequence::{
-    if AC_IsDisabled("bare the consequence") {
-        SendText("bare the consequence" . A_EndChar)
-        return
-    }
-    SendText("bear the consequence" . A_EndChar)
-    AC_Reg("bare the consequence", "bear the consequence")
-}
-:C:bare the cost::{
-    if AC_IsDisabled("bare the cost") {
-        SendText("bare the cost" . A_EndChar)
-        return
-    }
-    SendText("bear the cost" . A_EndChar)
-    AC_Reg("bare the cost", "bear the cost")
-}
-:C:bare the pain::{
-    if AC_IsDisabled("bare the pain") {
-        SendText("bare the pain" . A_EndChar)
-        return
-    }
-    SendText("bear the pain" . A_EndChar)
-    AC_Reg("bare the pain", "bear the pain")
-}
-:C:bare with me::{
-    if AC_IsDisabled("bare with me") {
-        SendText("bare with me" . A_EndChar)
-        return
-    }
-    SendText("bear with me" . A_EndChar)
-    AC_Reg("bare with me", "bear with me")
-}
-:C:bare witness::{
-    if AC_IsDisabled("bare witness") {
-        SendText("bare witness" . A_EndChar)
-        return
-    }
-    SendText("bear witness" . A_EndChar)
-    AC_Reg("bare witness", "bear witness")
-}
 :C:barily::{
     if AC_IsDisabled("barily") {
         SendText("barily" . A_EndChar)
@@ -10274,14 +7522,6 @@
     }
     SendText("barely" . A_EndChar)
     AC_Reg("barily", "barely")
-}
-:C:basic principal::{
-    if AC_IsDisabled("basic principal") {
-        SendText("basic principal" . A_EndChar)
-        return
-    }
-    SendText("basic principle" . A_EndChar)
-    AC_Reg("basic principal", "basic principle")
 }
 :C:basicaly::{
     if AC_IsDisabled("basicaly") {
@@ -10330,150 +7570,6 @@
     }
     SendText("back" . A_EndChar)
     AC_Reg("bcak", "back")
-}
-:C:be apart of::{
-    if AC_IsDisabled("be apart of") {
-        SendText("be apart of" . A_EndChar)
-        return
-    }
-    SendText("be a part of" . A_EndChar)
-    AC_Reg("be apart of", "be a part of")
-}
-:C:be build::{
-    if AC_IsDisabled("be build") {
-        SendText("be build" . A_EndChar)
-        return
-    }
-    SendText("be built" . A_EndChar)
-    AC_Reg("be build", "be built")
-}
-:C:be cause::{
-    if AC_IsDisabled("be cause") {
-        SendText("be cause" . A_EndChar)
-        return
-    }
-    SendText("because" . A_EndChar)
-    AC_Reg("be cause", "because")
-}
-:C:be drew::{
-    if AC_IsDisabled("be drew") {
-        SendText("be drew" . A_EndChar)
-        return
-    }
-    SendText("be drawn" . A_EndChar)
-    AC_Reg("be drew", "be drawn")
-}
-:C:be it's::{
-    if AC_IsDisabled("be it's") {
-        SendText("be it's" . A_EndChar)
-        return
-    }
-    SendText("be its" . A_EndChar)
-    AC_Reg("be it's", "be its")
-}
-:C:be know as::{
-    if AC_IsDisabled("be know as") {
-        SendText("be know as" . A_EndChar)
-        return
-    }
-    SendText("be known as" . A_EndChar)
-    AC_Reg("be know as", "be known as")
-}
-:C:be lain::{
-    if AC_IsDisabled("be lain") {
-        SendText("be lain" . A_EndChar)
-        return
-    }
-    SendText("be laid" . A_EndChar)
-    AC_Reg("be lain", "be laid")
-}
-:C:be lead by::{
-    if AC_IsDisabled("be lead by") {
-        SendText("be lead by" . A_EndChar)
-        return
-    }
-    SendText("be led by" . A_EndChar)
-    AC_Reg("be lead by", "be led by")
-}
-:C:be loathe to::{
-    if AC_IsDisabled("be loathe to") {
-        SendText("be loathe to" . A_EndChar)
-        return
-    }
-    SendText("be loath to" . A_EndChar)
-    AC_Reg("be loathe to", "be loath to")
-}
-:C:be ran::{
-    if AC_IsDisabled("be ran") {
-        SendText("be ran" . A_EndChar)
-        return
-    }
-    SendText("be run" . A_EndChar)
-    AC_Reg("be ran", "be run")
-}
-:C:be rebuild::{
-    if AC_IsDisabled("be rebuild") {
-        SendText("be rebuild" . A_EndChar)
-        return
-    }
-    SendText("be rebuilt" . A_EndChar)
-    AC_Reg("be rebuild", "be rebuilt")
-}
-:C:be rode::{
-    if AC_IsDisabled("be rode") {
-        SendText("be rode" . A_EndChar)
-        return
-    }
-    SendText("be ridden" . A_EndChar)
-    AC_Reg("be rode", "be ridden")
-}
-:C:be send::{
-    if AC_IsDisabled("be send") {
-        SendText("be send" . A_EndChar)
-        return
-    }
-    SendText("be sent" . A_EndChar)
-    AC_Reg("be send", "be sent")
-}
-:C:be set-up::{
-    if AC_IsDisabled("be set-up") {
-        SendText("be set-up" . A_EndChar)
-        return
-    }
-    SendText("be set up" . A_EndChar)
-    AC_Reg("be set-up", "be set up")
-}
-:C:be setup::{
-    if AC_IsDisabled("be setup") {
-        SendText("be setup" . A_EndChar)
-        return
-    }
-    SendText("be set up" . A_EndChar)
-    AC_Reg("be setup", "be set up")
-}
-:C:be shutdown::{
-    if AC_IsDisabled("be shutdown") {
-        SendText("be shutdown" . A_EndChar)
-        return
-    }
-    SendText("be shut down" . A_EndChar)
-    AC_Reg("be shutdown", "be shut down")
-}
-:C:be use to::{
-    if AC_IsDisabled("be use to") {
-        SendText("be use to" . A_EndChar)
-        return
-    }
-    SendText("be used to" . A_EndChar)
-    AC_Reg("be use to", "be used to")
-}
-:C:be ware::{
-    if AC_IsDisabled("be ware") {
-        SendText("be ware" . A_EndChar)
-        return
-    }
-    SendText("beware" . A_EndChar)
-    AC_Reg("be ware", "beware")
 }
 :C:beaau::{
     if AC_IsDisabled("beaau") {
@@ -10595,22 +7691,6 @@
     SendText("became" . A_EndChar)
     AC_Reg("becamae", "became")
 }
-:C:became it's::{
-    if AC_IsDisabled("became it's") {
-        SendText("became it's" . A_EndChar)
-        return
-    }
-    SendText("became its" . A_EndChar)
-    AC_Reg("became it's", "became its")
-}
-:C:became know::{
-    if AC_IsDisabled("became know") {
-        SendText("became know" . A_EndChar)
-        return
-    }
-    SendText("became known" . A_EndChar)
-    AC_Reg("became know", "became known")
-}
 :C:becames::{
     if AC_IsDisabled("becames") {
         SendText("becames" . A_EndChar)
@@ -10642,14 +7722,6 @@
     }
     SendText("because" . A_EndChar)
     AC_Reg("becaus", "because")
-}
-:C:because of it's::{
-    if AC_IsDisabled("because of it's") {
-        SendText("because of it's" . A_EndChar)
-        return
-    }
-    SendText("because of its" . A_EndChar)
-    AC_Reg("because of it's", "because of its")
 }
 :C:becausea::{
     if AC_IsDisabled("becausea") {
@@ -10714,14 +7786,6 @@
     }
     SendText("beco" . A_EndChar)
     AC_Reg("beceo", "beco")
-}
-:C:beckon call::{
-    if AC_IsDisabled("beckon call") {
-        SendText("beckon call" . A_EndChar)
-        return
-    }
-    SendText("beck and call" . A_EndChar)
-    AC_Reg("beckon call", "beck and call")
 }
 :C:becoe::{
     if AC_IsDisabled("becoe") {
@@ -10819,150 +7883,6 @@
     SendText("being" . A_EndChar)
     AC_Reg("beeing", "being")
 }
-:C:been accustom to::{
-    if AC_IsDisabled("been accustom to") {
-        SendText("been accustom to" . A_EndChar)
-        return
-    }
-    SendText("been accustomed to" . A_EndChar)
-    AC_Reg("been accustom to", "been accustomed to")
-}
-:C:been build::{
-    if AC_IsDisabled("been build") {
-        SendText("been build" . A_EndChar)
-        return
-    }
-    SendText("been built" . A_EndChar)
-    AC_Reg("been build", "been built")
-}
-:C:been hear::{
-    if AC_IsDisabled("been hear") {
-        SendText("been hear" . A_EndChar)
-        return
-    }
-    SendText("been here" . A_EndChar)
-    AC_Reg("been hear", "been here")
-}
-:C:been it's::{
-    if AC_IsDisabled("been it's") {
-        SendText("been it's" . A_EndChar)
-        return
-    }
-    SendText("been its" . A_EndChar)
-    AC_Reg("been it's", "been its")
-}
-:C:been know::{
-    if AC_IsDisabled("been know") {
-        SendText("been know" . A_EndChar)
-        return
-    }
-    SendText("been known" . A_EndChar)
-    AC_Reg("been know", "been known")
-}
-:C:been lain::{
-    if AC_IsDisabled("been lain") {
-        SendText("been lain" . A_EndChar)
-        return
-    }
-    SendText("been laid" . A_EndChar)
-    AC_Reg("been lain", "been laid")
-}
-:C:been lead by::{
-    if AC_IsDisabled("been lead by") {
-        SendText("been lead by" . A_EndChar)
-        return
-    }
-    SendText("been led by" . A_EndChar)
-    AC_Reg("been lead by", "been led by")
-}
-:C:been loathe to::{
-    if AC_IsDisabled("been loathe to") {
-        SendText("been loathe to" . A_EndChar)
-        return
-    }
-    SendText("been loath to" . A_EndChar)
-    AC_Reg("been loathe to", "been loath to")
-}
-:C:been mislead::{
-    if AC_IsDisabled("been mislead") {
-        SendText("been mislead" . A_EndChar)
-        return
-    }
-    SendText("been misled" . A_EndChar)
-    AC_Reg("been mislead", "been misled")
-}
-:C:been ran::{
-    if AC_IsDisabled("been ran") {
-        SendText("been ran" . A_EndChar)
-        return
-    }
-    SendText("been run" . A_EndChar)
-    AC_Reg("been ran", "been run")
-}
-:C:been rebuild::{
-    if AC_IsDisabled("been rebuild") {
-        SendText("been rebuild" . A_EndChar)
-        return
-    }
-    SendText("been rebuilt" . A_EndChar)
-    AC_Reg("been rebuild", "been rebuilt")
-}
-:C:been rode::{
-    if AC_IsDisabled("been rode") {
-        SendText("been rode" . A_EndChar)
-        return
-    }
-    SendText("been ridden" . A_EndChar)
-    AC_Reg("been rode", "been ridden")
-}
-:C:been send::{
-    if AC_IsDisabled("been send") {
-        SendText("been send" . A_EndChar)
-        return
-    }
-    SendText("been sent" . A_EndChar)
-    AC_Reg("been send", "been sent")
-}
-:C:been set-up::{
-    if AC_IsDisabled("been set-up") {
-        SendText("been set-up" . A_EndChar)
-        return
-    }
-    SendText("been set up" . A_EndChar)
-    AC_Reg("been set-up", "been set up")
-}
-:C:been setup::{
-    if AC_IsDisabled("been setup") {
-        SendText("been setup" . A_EndChar)
-        return
-    }
-    SendText("been set up" . A_EndChar)
-    AC_Reg("been setup", "been set up")
-}
-:C:been show on::{
-    if AC_IsDisabled("been show on") {
-        SendText("been show on" . A_EndChar)
-        return
-    }
-    SendText("been shown on" . A_EndChar)
-    AC_Reg("been show on", "been shown on")
-}
-:C:been shutdown::{
-    if AC_IsDisabled("been shutdown") {
-        SendText("been shutdown" . A_EndChar)
-        return
-    }
-    SendText("been shut down" . A_EndChar)
-    AC_Reg("been shutdown", "been shut down")
-}
-:C:been use to::{
-    if AC_IsDisabled("been use to") {
-        SendText("been use to" . A_EndChar)
-        return
-    }
-    SendText("been used to" . A_EndChar)
-    AC_Reg("been use to", "been used to")
-}
 :C:befinn::{
     if AC_IsDisabled("befinn") {
         SendText("befinn" . A_EndChar)
@@ -10978,22 +7898,6 @@
     }
     SendText("before" . A_EndChar)
     AC_Reg("befoer", "before")
-}
-:C:before hand::{
-    if AC_IsDisabled("before hand") {
-        SendText("before hand" . A_EndChar)
-        return
-    }
-    SendText("beforehand" . A_EndChar)
-    AC_Reg("before hand", "beforehand")
-}
-:C:began it's::{
-    if AC_IsDisabled("began it's") {
-        SendText("began it's" . A_EndChar)
-        return
-    }
-    SendText("began its" . A_EndChar)
-    AC_Reg("began it's", "began its")
 }
 :C:beggin::{
     if AC_IsDisabled("beggin") {
@@ -11107,14 +8011,6 @@
     SendText("behavior" . A_EndChar)
     AC_Reg("behavour", "behavior")
 }
-:C:behind it's::{
-    if AC_IsDisabled("behind it's") {
-        SendText("behind it's" . A_EndChar)
-        return
-    }
-    SendText("behind its" . A_EndChar)
-    AC_Reg("behind it's", "behind its")
-}
 :C:beht::{
     if AC_IsDisabled("beht") {
         SendText("beht" . A_EndChar)
@@ -11122,102 +8018,6 @@
     }
     SendText("beth" . A_EndChar)
     AC_Reg("beht", "beth")
-}
-:C:being build::{
-    if AC_IsDisabled("being build") {
-        SendText("being build" . A_EndChar)
-        return
-    }
-    SendText("being built" . A_EndChar)
-    AC_Reg("being build", "being built")
-}
-:C:being it's::{
-    if AC_IsDisabled("being it's") {
-        SendText("being it's" . A_EndChar)
-        return
-    }
-    SendText("being its" . A_EndChar)
-    AC_Reg("being it's", "being its")
-}
-:C:being lain::{
-    if AC_IsDisabled("being lain") {
-        SendText("being lain" . A_EndChar)
-        return
-    }
-    SendText("being laid" . A_EndChar)
-    AC_Reg("being lain", "being laid")
-}
-:C:being lead by::{
-    if AC_IsDisabled("being lead by") {
-        SendText("being lead by" . A_EndChar)
-        return
-    }
-    SendText("being led by" . A_EndChar)
-    AC_Reg("being lead by", "being led by")
-}
-:C:being loathe to::{
-    if AC_IsDisabled("being loathe to") {
-        SendText("being loathe to" . A_EndChar)
-        return
-    }
-    SendText("being loath to" . A_EndChar)
-    AC_Reg("being loathe to", "being loath to")
-}
-:C:being ran::{
-    if AC_IsDisabled("being ran") {
-        SendText("being ran" . A_EndChar)
-        return
-    }
-    SendText("being run" . A_EndChar)
-    AC_Reg("being ran", "being run")
-}
-:C:being rode::{
-    if AC_IsDisabled("being rode") {
-        SendText("being rode" . A_EndChar)
-        return
-    }
-    SendText("being ridden" . A_EndChar)
-    AC_Reg("being rode", "being ridden")
-}
-:C:being set-up::{
-    if AC_IsDisabled("being set-up") {
-        SendText("being set-up" . A_EndChar)
-        return
-    }
-    SendText("being set up" . A_EndChar)
-    AC_Reg("being set-up", "being set up")
-}
-:C:being setup::{
-    if AC_IsDisabled("being setup") {
-        SendText("being setup" . A_EndChar)
-        return
-    }
-    SendText("being set up" . A_EndChar)
-    AC_Reg("being setup", "being set up")
-}
-:C:being show on::{
-    if AC_IsDisabled("being show on") {
-        SendText("being show on" . A_EndChar)
-        return
-    }
-    SendText("being shown on" . A_EndChar)
-    AC_Reg("being show on", "being shown on")
-}
-:C:being shutdown::{
-    if AC_IsDisabled("being shutdown") {
-        SendText("being shutdown" . A_EndChar)
-        return
-    }
-    SendText("being shut down" . A_EndChar)
-    AC_Reg("being shutdown", "being shut down")
-}
-:C:being use to::{
-    if AC_IsDisabled("being use to") {
-        SendText("being use to" . A_EndChar)
-        return
-    }
-    SendText("being used to" . A_EndChar)
-    AC_Reg("being use to", "being used to")
 }
 :C:beist::{
     if AC_IsDisabled("beist") {
@@ -11355,14 +8155,6 @@
     SendText("believes" . A_EndChar)
     AC_Reg("belives", "believes")
 }
-:C:belle epoque::{
-    if AC_IsDisabled("belle epoque") {
-        SendText("belle epoque" . A_EndChar)
-        return
-    }
-    SendText("belle époque" . A_EndChar)
-    AC_Reg("belle epoque", "belle époque")
-}
 :C:belligeran::{
     if AC_IsDisabled("belligeran") {
         SendText("belligeran" . A_EndChar)
@@ -11395,14 +8187,6 @@
     SendText("bellwether" . A_EndChar)
     AC_Reg("bellweather", "bellwether")
 }
-:C:below it's::{
-    if AC_IsDisabled("below it's") {
-        SendText("below it's" . A_EndChar)
-        return
-    }
-    SendText("below its" . A_EndChar)
-    AC_Reg("below it's", "below its")
-}
 :C:bemusemnt::{
     if AC_IsDisabled("bemusemnt") {
         SendText("bemusemnt" . A_EndChar)
@@ -11410,14 +8194,6 @@
     }
     SendText("bemusement" . A_EndChar)
     AC_Reg("bemusemnt", "bemusement")
-}
-:C:beneath it's::{
-    if AC_IsDisabled("beneath it's") {
-        SendText("beneath it's" . A_EndChar)
-        return
-    }
-    SendText("beneath its" . A_EndChar)
-    AC_Reg("beneath it's", "beneath its")
 }
 :C:beneficary::{
     if AC_IsDisabled("beneficary") {
@@ -11531,30 +8307,6 @@
     SendText("besieging" . A_EndChar)
     AC_Reg("beseiging", "besieging")
 }
-:C:beside it's::{
-    if AC_IsDisabled("beside it's") {
-        SendText("beside it's" . A_EndChar)
-        return
-    }
-    SendText("beside its" . A_EndChar)
-    AC_Reg("beside it's", "beside its")
-}
-:C:besides it's::{
-    if AC_IsDisabled("besides it's") {
-        SendText("besides it's" . A_EndChar)
-        return
-    }
-    SendText("besides its" . A_EndChar)
-    AC_Reg("besides it's", "besides its")
-}
-:C:bete noire::{
-    if AC_IsDisabled("bete noire") {
-        SendText("bete noire" . A_EndChar)
-        return
-    }
-    SendText("bête noire" . A_EndChar)
-    AC_Reg("bete noire", "bête noire")
-}
 :C:beteen::{
     if AC_IsDisabled("beteen") {
         SendText("beteen" . A_EndChar)
@@ -11570,62 +8322,6 @@
     }
     SendText("bêtise" . A_EndChar)
     AC_Reg("betise", "bêtise")
-}
-:C:better know as::{
-    if AC_IsDisabled("better know as") {
-        SendText("better know as" . A_EndChar)
-        return
-    }
-    SendText("better known as" . A_EndChar)
-    AC_Reg("better know as", "better known as")
-}
-:C:better know for::{
-    if AC_IsDisabled("better know for") {
-        SendText("better know for" . A_EndChar)
-        return
-    }
-    SendText("better known for" . A_EndChar)
-    AC_Reg("better know for", "better known for")
-}
-:C:better then::{
-    if AC_IsDisabled("better then") {
-        SendText("better then" . A_EndChar)
-        return
-    }
-    SendText("better than" . A_EndChar)
-    AC_Reg("better then", "better than")
-}
-:C:between he and::{
-    if AC_IsDisabled("between he and") {
-        SendText("between he and" . A_EndChar)
-        return
-    }
-    SendText("between him and" . A_EndChar)
-    AC_Reg("between he and", "between him and")
-}
-:C:between I and::{
-    if AC_IsDisabled("between I and") {
-        SendText("between I and" . A_EndChar)
-        return
-    }
-    SendText("between me and" . A_EndChar)
-    AC_Reg("between I and", "between me and")
-}
-:C:between it's::{
-    if AC_IsDisabled("between it's") {
-        SendText("between it's" . A_EndChar)
-        return
-    }
-    SendText("between its" . A_EndChar)
-    AC_Reg("between it's", "between its")
-}
-:C:between they and::{
-    if AC_IsDisabled("between they and") {
-        SendText("between they and" . A_EndChar)
-        return
-    }
-    SendText("between them and" . A_EndChar)
-    AC_Reg("between they and", "between them and")
 }
 :C:betwen::{
     if AC_IsDisabled("betwen") {
@@ -11698,14 +8394,6 @@
     }
     SendText("best" . A_EndChar)
     AC_Reg("bext", "best")
-}
-:C:beyond it's::{
-    if AC_IsDisabled("beyond it's") {
-        SendText("beyond it's" . A_EndChar)
-        return
-    }
-    SendText("beyond its" . A_EndChar)
-    AC_Reg("beyond it's", "beyond its")
 }
 :C:bhaav::{
     if AC_IsDisabled("bhaav") {
@@ -11810,14 +8498,6 @@
     }
     SendText("binomial" . A_EndChar)
     AC_Reg("binominal", "binomial")
-}
-:C:bite code::{
-    if AC_IsDisabled("bite code") {
-        SendText("bite code" . A_EndChar)
-        return
-    }
-    SendText("byte code" . A_EndChar)
-    AC_Reg("bite code", "byte code")
 }
 :C:biul::{
     if AC_IsDisabled("biul") {
@@ -12147,14 +8827,6 @@
     SendText("broke" . A_EndChar)
     AC_Reg("borke", "broke")
 }
-:C:born fruit::{
-    if AC_IsDisabled("born fruit") {
-        SendText("born fruit" . A_EndChar)
-        return
-    }
-    SendText("borne fruit" . A_EndChar)
-    AC_Reg("born fruit", "borne fruit")
-}
 :C:borrom::{
     if AC_IsDisabled("borrom") {
         SendText("borrom" . A_EndChar)
@@ -12162,38 +8834,6 @@
     }
     SendText("bottom" . A_EndChar)
     AC_Reg("borrom", "bottom")
-}
-:C:both it's::{
-    if AC_IsDisabled("both it's") {
-        SendText("both it's" . A_EndChar)
-        return
-    }
-    SendText("both its" . A_EndChar)
-    AC_Reg("both it's", "both its")
-}
-:C:both of it's::{
-    if AC_IsDisabled("both of it's") {
-        SendText("both of it's" . A_EndChar)
-        return
-    }
-    SendText("both of its" . A_EndChar)
-    AC_Reg("both of it's", "both of its")
-}
-:C:both of them is::{
-    if AC_IsDisabled("both of them is") {
-        SendText("both of them is" . A_EndChar)
-        return
-    }
-    SendText("both of them are" . A_EndChar)
-    AC_Reg("both of them is", "both of them are")
-}
-:C:both of who::{
-    if AC_IsDisabled("both of who") {
-        SendText("both of who" . A_EndChar)
-        return
-    }
-    SendText("both of whom" . A_EndChar)
-    AC_Reg("both of who", "both of whom")
 }
 :C:botton::{
     if AC_IsDisabled("botton") {
@@ -12315,46 +8955,6 @@
     SendText("broadcast" . A_EndChar)
     AC_Reg("bradcast", "broadcast")
 }
-:C:brake away::{
-    if AC_IsDisabled("brake away") {
-        SendText("brake away" . A_EndChar)
-        return
-    }
-    SendText("break away" . A_EndChar)
-    AC_Reg("brake away", "break away")
-}
-:C:brake free::{
-    if AC_IsDisabled("brake free") {
-        SendText("brake free" . A_EndChar)
-        return
-    }
-    SendText("break free" . A_EndChar)
-    AC_Reg("brake free", "break free")
-}
-:C:brake loose::{
-    if AC_IsDisabled("brake loose") {
-        SendText("brake loose" . A_EndChar)
-        return
-    }
-    SendText("break loose" . A_EndChar)
-    AC_Reg("brake loose", "break loose")
-}
-:C:brake the rule::{
-    if AC_IsDisabled("brake the rule") {
-        SendText("brake the rule" . A_EndChar)
-        return
-    }
-    SendText("break the rule" . A_EndChar)
-    AC_Reg("brake the rule", "break the rule")
-}
-:C:brake through::{
-    if AC_IsDisabled("brake through") {
-        SendText("brake through" . A_EndChar)
-        return
-    }
-    SendText("break through" . A_EndChar)
-    AC_Reg("brake through", "break through")
-}
 :C:brasillian::{
     if AC_IsDisabled("brasillian") {
         SendText("brasillian" . A_EndChar)
@@ -12378,14 +8978,6 @@
     }
     SendText("breakthroughs" . A_EndChar)
     AC_Reg("breakthroughts", "breakthroughs")
-}
-:C:breath fire::{
-    if AC_IsDisabled("breath fire") {
-        SendText("breath fire" . A_EndChar)
-        return
-    }
-    SendText("breathe fire" . A_EndChar)
-    AC_Reg("breath fire", "breathe fire")
 }
 :C:breif::{
     if AC_IsDisabled("breif") {
@@ -12426,14 +9018,6 @@
     }
     SendText("brethren" . A_EndChar)
     AC_Reg("bretheren", "brethren")
-}
-:C:brew haha::{
-    if AC_IsDisabled("brew haha") {
-        SendText("brew haha" . A_EndChar)
-        return
-    }
-    SendText("brouhaha" . A_EndChar)
-    AC_Reg("brew haha", "brouhaha")
 }
 :C:briliant::{
     if AC_IsDisabled("briliant") {
@@ -12754,38 +9338,6 @@
     }
     SendText("be" . A_EndChar)
     AC_Reg("bve", "be")
-}
-:C:by it's::{
-    if AC_IsDisabled("by it's") {
-        SendText("by it's" . A_EndChar)
-        return
-    }
-    SendText("by its" . A_EndChar)
-    AC_Reg("by it's", "by its")
-}
-:C:by who's::{
-    if AC_IsDisabled("by who's") {
-        SendText("by who's" . A_EndChar)
-        return
-    }
-    SendText("by whose" . A_EndChar)
-    AC_Reg("by who's", "by whose")
-}
-:C:byt he::{
-    if AC_IsDisabled("byt he") {
-        SendText("byt he" . A_EndChar)
-        return
-    }
-    SendText("by the" . A_EndChar)
-    AC_Reg("byt he", "by the")
-}
-:C:ca nyou::{
-    if AC_IsDisabled("ca nyou") {
-        SendText("ca nyou" . A_EndChar)
-        return
-    }
-    SendText("can you" . A_EndChar)
-    AC_Reg("ca nyou", "can you")
 }
 :C:caculater::{
     if AC_IsDisabled("caculater") {
@@ -13147,78 +9699,6 @@
     SendText("campaigns" . A_EndChar)
     AC_Reg("campains", "campaigns")
 }
-:C:can backup::{
-    if AC_IsDisabled("can backup") {
-        SendText("can backup" . A_EndChar)
-        return
-    }
-    SendText("can back up" . A_EndChar)
-    AC_Reg("can backup", "can back up")
-}
-:C:can been::{
-    if AC_IsDisabled("can been") {
-        SendText("can been" . A_EndChar)
-        return
-    }
-    SendText("can be" . A_EndChar)
-    AC_Reg("can been", "can be")
-}
-:C:can blackout::{
-    if AC_IsDisabled("can blackout") {
-        SendText("can blackout" . A_EndChar)
-        return
-    }
-    SendText("can black out" . A_EndChar)
-    AC_Reg("can blackout", "can black out")
-}
-:C:can breath::{
-    if AC_IsDisabled("can breath") {
-        SendText("can breath" . A_EndChar)
-        return
-    }
-    SendText("can breathe" . A_EndChar)
-    AC_Reg("can breath", "can breathe")
-}
-:C:can checkout::{
-    if AC_IsDisabled("can checkout") {
-        SendText("can checkout" . A_EndChar)
-        return
-    }
-    SendText("can check out" . A_EndChar)
-    AC_Reg("can checkout", "can check out")
-}
-:C:can playback::{
-    if AC_IsDisabled("can playback") {
-        SendText("can playback" . A_EndChar)
-        return
-    }
-    SendText("can play back" . A_EndChar)
-    AC_Reg("can playback", "can play back")
-}
-:C:can setup::{
-    if AC_IsDisabled("can setup") {
-        SendText("can setup" . A_EndChar)
-        return
-    }
-    SendText("can set up" . A_EndChar)
-    AC_Reg("can setup", "can set up")
-}
-:C:can tryout::{
-    if AC_IsDisabled("can tryout") {
-        SendText("can tryout" . A_EndChar)
-        return
-    }
-    SendText("can try out" . A_EndChar)
-    AC_Reg("can tryout", "can try out")
-}
-:C:can workout::{
-    if AC_IsDisabled("can workout") {
-        SendText("can workout" . A_EndChar)
-        return
-    }
-    SendText("can work out" . A_EndChar)
-    AC_Reg("can workout", "can work out")
-}
 :C:can'nt::{
     if AC_IsDisabled("can'nt") {
         SendText("can'nt" . A_EndChar)
@@ -13226,22 +9706,6 @@
     }
     SendText("can't" . A_EndChar)
     AC_Reg("can'nt", "can't")
-}
-:C:can't breath::{
-    if AC_IsDisabled("can't breath") {
-        SendText("can't breath" . A_EndChar)
-        return
-    }
-    SendText("can't breathe" . A_EndChar)
-    AC_Reg("can't breath", "can't breathe")
-}
-:C:can't of::{
-    if AC_IsDisabled("can't of") {
-        SendText("can't of" . A_EndChar)
-        return
-    }
-    SendText("can't have" . A_EndChar)
-    AC_Reg("can't of", "can't have")
 }
 :C:canape::{
     if AC_IsDisabled("canape") {
@@ -13595,14 +10059,6 @@
     SendText("Carnegie" . A_EndChar)
     AC_Reg("carnagie", "Carnegie")
 }
-:C:carnagie-mellon::{
-    if AC_IsDisabled("carnagie-mellon") {
-        SendText("carnagie-mellon" . A_EndChar)
-        return
-    }
-    SendText("Carnegie-Mellon" . A_EndChar)
-    AC_Reg("carnagie-mellon", "Carnegie-Mellon")
-}
 :C:carnege::{
     if AC_IsDisabled("carnege") {
         SendText("carnege" . A_EndChar)
@@ -13626,14 +10082,6 @@
     }
     SendText("Carnegie" . A_EndChar)
     AC_Reg("carnigie", "Carnegie")
-}
-:C:carnigie-mellon::{
-    if AC_IsDisabled("carnigie-mellon") {
-        SendText("carnigie-mellon" . A_EndChar)
-        return
-    }
-    SendText("Carnegie-Mellon" . A_EndChar)
-    AC_Reg("carnigie-mellon", "Carnegie-Mellon")
 }
 :C:carniver::{
     if AC_IsDisabled("carniver") {
@@ -13786,14 +10234,6 @@
     }
     SendText("cassette" . A_EndChar)
     AC_Reg("casette", "cassette")
-}
-:C:cash memory::{
-    if AC_IsDisabled("cash memory") {
-        SendText("cash memory" . A_EndChar)
-        return
-    }
-    SendText("cache memory" . A_EndChar)
-    AC_Reg("cash memory", "cache memory")
 }
 :C:cashe::{
     if AC_IsDisabled("cashe") {
@@ -14139,22 +10579,6 @@
     SendText("Caucasian" . A_EndChar)
     AC_Reg("caucasion", "Caucasian")
 }
-:C:caught in the site::{
-    if AC_IsDisabled("caught in the site") {
-        SendText("caught in the site" . A_EndChar)
-        return
-    }
-    SendText("caught in the sight" . A_EndChar)
-    AC_Reg("caught in the site", "caught in the sight")
-}
-:C:caught site of::{
-    if AC_IsDisabled("caught site of") {
-        SendText("caught site of" . A_EndChar)
-        return
-    }
-    SendText("caught sight of" . A_EndChar)
-    AC_Reg("caught site of", "caught sight of")
-}
 :C:causalities::{
     if AC_IsDisabled("causalities") {
         SendText("causalities" . A_EndChar)
@@ -14387,46 +10811,6 @@
     SendText("certain" . A_EndChar)
     AC_Reg("ceratin", "certain")
 }
-:C:cereal connection::{
-    if AC_IsDisabled("cereal connection") {
-        SendText("cereal connection" . A_EndChar)
-        return
-    }
-    SendText("serial connection" . A_EndChar)
-    AC_Reg("cereal connection", "serial connection")
-}
-:C:cereal interface::{
-    if AC_IsDisabled("cereal interface") {
-        SendText("cereal interface" . A_EndChar)
-        return
-    }
-    SendText("serial interface" . A_EndChar)
-    AC_Reg("cereal interface", "serial interface")
-}
-:C:cereal killer::{
-    if AC_IsDisabled("cereal killer") {
-        SendText("cereal killer" . A_EndChar)
-        return
-    }
-    SendText("serial killer" . A_EndChar)
-    AC_Reg("cereal killer", "serial killer")
-}
-:C:cereal offender::{
-    if AC_IsDisabled("cereal offender") {
-        SendText("cereal offender" . A_EndChar)
-        return
-    }
-    SendText("serial offender" . A_EndChar)
-    AC_Reg("cereal offender", "serial offender")
-}
-:C:cereal port::{
-    if AC_IsDisabled("cereal port") {
-        SendText("cereal port" . A_EndChar)
-        return
-    }
-    SendText("serial port" . A_EndChar)
-    AC_Reg("cereal port", "serial port")
-}
 :C:cerimo::{
     if AC_IsDisabled("cerimo") {
         SendText("cerimo" . A_EndChar)
@@ -14482,14 +10866,6 @@
     }
     SendText("ceremony" . A_EndChar)
     AC_Reg("ceromony", "ceremony")
-}
-:C:certain extend::{
-    if AC_IsDisabled("certain extend") {
-        SendText("certain extend" . A_EndChar)
-        return
-    }
-    SendText("certain extent" . A_EndChar)
-    AC_Reg("certain extend", "certain extent")
 }
 :C:certainity::{
     if AC_IsDisabled("certainity") {
@@ -14611,14 +10987,6 @@
     SendText("challenging" . A_EndChar)
     AC_Reg("chalenging", "challenging")
 }
-:C:chalk full::{
-    if AC_IsDisabled("chalk full") {
-        SendText("chalk full" . A_EndChar)
-        return
-    }
-    SendText("chock-full" . A_EndChar)
-    AC_Reg("chalk full", "chock-full")
-}
 :C:challang::{
     if AC_IsDisabled("challang") {
         SendText("challang" . A_EndChar)
@@ -14675,14 +11043,6 @@
     SendText("Champagne" . A_EndChar)
     AC_Reg("champange", "Champagne")
 }
-:C:champs-elysees::{
-    if AC_IsDisabled("champs-elysees") {
-        SendText("champs-elysees" . A_EndChar)
-        return
-    }
-    SendText("Champs-Élysées" . A_EndChar)
-    AC_Reg("champs-elysees", "Champs-Élysées")
-}
 :C:changab::{
     if AC_IsDisabled("changab") {
         SendText("changab" . A_EndChar)
@@ -14698,14 +11058,6 @@
     }
     SendText("changeable" . A_EndChar)
     AC_Reg("changable", "changeable")
-}
-:C:changed it's::{
-    if AC_IsDisabled("changed it's") {
-        SendText("changed it's" . A_EndChar)
-        return
-    }
-    SendText("changed its" . A_EndChar)
-    AC_Reg("changed it's", "changed its")
 }
 :C:chante::{
     if AC_IsDisabled("chante") {
@@ -14818,14 +11170,6 @@
     }
     SendText("chargea" . A_EndChar)
     AC_Reg("charga", "chargea")
-}
-:C:charge d'affaires::{
-    if AC_IsDisabled("charge d'affaires") {
-        SendText("charge d'affaires" . A_EndChar)
-        return
-    }
-    SendText("chargé d'affaires" . A_EndChar)
-    AC_Reg("charge d'affaires", "chargé d'affaires")
 }
 :C:chariman::{
     if AC_IsDisabled("chariman") {
@@ -14995,22 +11339,6 @@
     SendText("children's" . A_EndChar)
     AC_Reg("childrens", "children's")
 }
-:C:chock it up::{
-    if AC_IsDisabled("chock it up") {
-        SendText("chock it up" . A_EndChar)
-        return
-    }
-    SendText("chalk it up" . A_EndChar)
-    AC_Reg("chock it up", "chalk it up")
-}
-:C:chocked full::{
-    if AC_IsDisabled("chocked full") {
-        SendText("chocked full" . A_EndChar)
-        return
-    }
-    SendText("chock-full" . A_EndChar)
-    AC_Reg("chocked full", "chock-full")
-}
 :C:choclat::{
     if AC_IsDisabled("choclat") {
         SendText("choclat" . A_EndChar)
@@ -15026,14 +11354,6 @@
     }
     SendText("chocolate" . A_EndChar)
     AC_Reg("choclate", "chocolate")
-}
-:C:chomping at the bit::{
-    if AC_IsDisabled("chomping at the bit") {
-        SendText("chomping at the bit" . A_EndChar)
-        return
-    }
-    SendText("champing at the bit" . A_EndChar)
-    AC_Reg("chomping at the bit", "champing at the bit")
 }
 :C:choosen::{
     if AC_IsDisabled("choosen") {
@@ -15227,22 +11547,6 @@
     SendText("Cincinnati" . A_EndChar)
     AC_Reg("cincinnatti", "Cincinnati")
 }
-:C:cinema verite::{
-    if AC_IsDisabled("cinema verite") {
-        SendText("cinema verite" . A_EndChar)
-        return
-    }
-    SendText("cinéma vérité" . A_EndChar)
-    AC_Reg("cinema verite", "cinéma vérité")
-}
-:C:cinemas verite::{
-    if AC_IsDisabled("cinemas verite") {
-        SendText("cinemas verite" . A_EndChar)
-        return
-    }
-    SendText("cinémas vérit" . A_EndChar)
-    AC_Reg("cinemas verite", "cinémas vérit")
-}
 :C:cinf::{
     if AC_IsDisabled("cinf") {
         SendText("cinf" . A_EndChar)
@@ -15330,78 +11634,6 @@
     }
     SendText("cision" . A_EndChar)
     AC_Reg("cison", "cision")
-}
-:C:cite administrator::{
-    if AC_IsDisabled("cite administrator") {
-        SendText("cite administrator" . A_EndChar)
-        return
-    }
-    SendText("site administrator" . A_EndChar)
-    AC_Reg("cite administrator", "site administrator")
-}
-:C:cite analys::{
-    if AC_IsDisabled("cite analys") {
-        SendText("cite analys" . A_EndChar)
-        return
-    }
-    SendText("site analys" . A_EndChar)
-    AC_Reg("cite analys", "site analys")
-}
-:C:cite host::{
-    if AC_IsDisabled("cite host") {
-        SendText("cite host" . A_EndChar)
-        return
-    }
-    SendText("site host" . A_EndChar)
-    AC_Reg("cite host", "site host")
-}
-:C:cite license::{
-    if AC_IsDisabled("cite license") {
-        SendText("cite license" . A_EndChar)
-        return
-    }
-    SendText("site license" . A_EndChar)
-    AC_Reg("cite license", "site license")
-}
-:C:cite maintenance::{
-    if AC_IsDisabled("cite maintenance") {
-        SendText("cite maintenance" . A_EndChar)
-        return
-    }
-    SendText("site maintenance" . A_EndChar)
-    AC_Reg("cite maintenance", "site maintenance")
-}
-:C:cite metric::{
-    if AC_IsDisabled("cite metric") {
-        SendText("cite metric" . A_EndChar)
-        return
-    }
-    SendText("site metric" . A_EndChar)
-    AC_Reg("cite metric", "site metric")
-}
-:C:cite performance::{
-    if AC_IsDisabled("cite performance") {
-        SendText("cite performance" . A_EndChar)
-        return
-    }
-    SendText("site performance" . A_EndChar)
-    AC_Reg("cite performance", "site performance")
-}
-:C:cite reliability::{
-    if AC_IsDisabled("cite reliability") {
-        SendText("cite reliability" . A_EndChar)
-        return
-    }
-    SendText("site reliability" . A_EndChar)
-    AC_Reg("cite reliability", "site reliability")
-}
-:C:cite security::{
-    if AC_IsDisabled("cite security") {
-        SendText("cite security" . A_EndChar)
-        return
-    }
-    SendText("site security" . A_EndChar)
-    AC_Reg("cite security", "site security")
 }
 :C:citment::{
     if AC_IsDisabled("citment") {
@@ -15811,22 +12043,6 @@
     SendText("clipbo" . A_EndChar)
     AC_Reg("clopbo", "clipbo")
 }
-:C:closed it's::{
-    if AC_IsDisabled("closed it's") {
-        SendText("closed it's" . A_EndChar)
-        return
-    }
-    SendText("closed its" . A_EndChar)
-    AC_Reg("closed it's", "closed its")
-}
-:C:closer then::{
-    if AC_IsDisabled("closer then") {
-        SendText("closer then" . A_EndChar)
-        return
-    }
-    SendText("closer than" . A_EndChar)
-    AC_Reg("closer then", "closer than")
-}
 :C:closs::{
     if AC_IsDisabled("closs") {
         SendText("closs" . A_EndChar)
@@ -15882,30 +12098,6 @@
     }
     SendText("can" . A_EndChar)
     AC_Reg("cna", "can")
-}
-:C:co-incid::{
-    if AC_IsDisabled("co-incid") {
-        SendText("co-incid" . A_EndChar)
-        return
-    }
-    SendText("coincid" . A_EndChar)
-    AC_Reg("co-incid", "coincid")
-}
-:C:co-incided::{
-    if AC_IsDisabled("co-incided") {
-        SendText("co-incided" . A_EndChar)
-        return
-    }
-    SendText("coincided" . A_EndChar)
-    AC_Reg("co-incided", "coincided")
-}
-:C:coca cola::{
-    if AC_IsDisabled("coca cola") {
-        SendText("coca cola" . A_EndChar)
-        return
-    }
-    SendText("Coca-Cola" . A_EndChar)
-    AC_Reg("coca cola", "Coca-Cola")
 }
 :C:coce::{
     if AC_IsDisabled("coce") {
@@ -16179,30 +12371,6 @@
     SendText("column" . A_EndChar)
     AC_Reg("colomn", "column")
 }
-:C:colonel mode::{
-    if AC_IsDisabled("colonel mode") {
-        SendText("colonel mode" . A_EndChar)
-        return
-    }
-    SendText("kernel mode" . A_EndChar)
-    AC_Reg("colonel mode", "kernel mode")
-}
-:C:colonel space::{
-    if AC_IsDisabled("colonel space") {
-        SendText("colonel space" . A_EndChar)
-        return
-    }
-    SendText("kernel space" . A_EndChar)
-    AC_Reg("colonel space", "kernel space")
-}
-:C:colonel update::{
-    if AC_IsDisabled("colonel update") {
-        SendText("colonel update" . A_EndChar)
-        return
-    }
-    SendText("kernel update" . A_EndChar)
-    AC_Reg("colonel update", "kernel update")
-}
 :C:colonizators::{
     if AC_IsDisabled("colonizators") {
         SendText("colonizators" . A_EndChar)
@@ -16378,22 +12546,6 @@
     }
     SendText("condemnation" . A_EndChar)
     AC_Reg("comdemnation", "condemnation")
-}
-:C:come over hear::{
-    if AC_IsDisabled("come over hear") {
-        SendText("come over hear" . A_EndChar)
-        return
-    }
-    SendText("come over here" . A_EndChar)
-    AC_Reg("come over hear", "come over here")
-}
-:C:come reign or shine::{
-    if AC_IsDisabled("come reign or shine") {
-        SendText("come reign or shine" . A_EndChar)
-        return
-    }
-    SendText("come rain or shine" . A_EndChar)
-    AC_Reg("come reign or shine", "come rain or shine")
 }
 :C:comemmorates::{
     if AC_IsDisabled("comemmorates") {
@@ -16835,22 +12987,6 @@
     SendText("commonly" . A_EndChar)
     AC_Reg("commongly", "commonly")
 }
-:C:commonly know as::{
-    if AC_IsDisabled("commonly know as") {
-        SendText("commonly know as" . A_EndChar)
-        return
-    }
-    SendText("commonly known as" . A_EndChar)
-    AC_Reg("commonly know as", "commonly known as")
-}
-:C:commonly know for::{
-    if AC_IsDisabled("commonly know for") {
-        SendText("commonly know for" . A_EndChar)
-        return
-    }
-    SendText("commonly known for" . A_EndChar)
-    AC_Reg("commonly know for", "commonly known for")
-}
 :C:commonweath::{
     if AC_IsDisabled("commonweath") {
         SendText("commonweath" . A_EndChar)
@@ -17266,14 +13402,6 @@
     }
     SendText("completene" . A_EndChar)
     AC_Reg("compleatne", "completene")
-}
-:C:complement your work::{
-    if AC_IsDisabled("complement your work") {
-        SendText("complement your work" . A_EndChar)
-        return
-    }
-    SendText("compliment your work" . A_EndChar)
-    AC_Reg("complement your work", "compliment your work")
 }
 :C:completedthe::{
     if AC_IsDisabled("completedthe") {
@@ -18331,14 +14459,6 @@
     SendText("constitutional" . A_EndChar)
     AC_Reg("constituional", "constitutional")
 }
-:C:construction sight::{
-    if AC_IsDisabled("construction sight") {
-        SendText("construction sight" . A_EndChar)
-        return
-    }
-    SendText("construction site" . A_EndChar)
-    AC_Reg("construction sight", "construction site")
-}
 :C:consttruction::{
     if AC_IsDisabled("consttruction") {
         SendText("consttruction" . A_EndChar)
@@ -18979,22 +15099,6 @@
     SendText("computer" . A_EndChar)
     AC_Reg("coputer", "computer")
 }
-:C:copy or report::{
-    if AC_IsDisabled("copy or report") {
-        SendText("copy or report" . A_EndChar)
-        return
-    }
-    SendText("copy of report" . A_EndChar)
-    AC_Reg("copy or report", "copy of report")
-}
-:C:copy or signed::{
-    if AC_IsDisabled("copy or signed") {
-        SendText("copy or signed" . A_EndChar)
-        return
-    }
-    SendText("copy of signed" . A_EndChar)
-    AC_Reg("copy or signed", "copy of signed")
-}
 :C:copywrite::{
     if AC_IsDisabled("copywrite") {
         SendText("copywrite" . A_EndChar)
@@ -19002,14 +15106,6 @@
     }
     SendText("copyright" . A_EndChar)
     AC_Reg("copywrite", "copyright")
-}
-:C:core principal::{
-    if AC_IsDisabled("core principal") {
-        SendText("core principal" . A_EndChar)
-        return
-    }
-    SendText("core principle" . A_EndChar)
-    AC_Reg("core principal", "core principle")
 }
 :C:coreect::{
     if AC_IsDisabled("coreect") {
@@ -19331,54 +15427,6 @@
     SendText("couldn't" . A_EndChar)
     AC_Reg("coudn't", "couldn't")
 }
-:C:could backup::{
-    if AC_IsDisabled("could backup") {
-        SendText("could backup" . A_EndChar)
-        return
-    }
-    SendText("could back up" . A_EndChar)
-    AC_Reg("could backup", "could back up")
-}
-:C:could breath::{
-    if AC_IsDisabled("could breath") {
-        SendText("could breath" . A_EndChar)
-        return
-    }
-    SendText("could breathe" . A_EndChar)
-    AC_Reg("could breath", "could breathe")
-}
-:C:could of been::{
-    if AC_IsDisabled("could of been") {
-        SendText("could of been" . A_EndChar)
-        return
-    }
-    SendText("could have been" . A_EndChar)
-    AC_Reg("could of been", "could have been")
-}
-:C:could of::{
-    if AC_IsDisabled("could of") {
-        SendText("could of" . A_EndChar)
-        return
-    }
-    SendText("could have" . A_EndChar)
-    AC_Reg("could of", "could have")
-}
-:C:could setup::{
-    if AC_IsDisabled("could setup") {
-        SendText("could setup" . A_EndChar)
-        return
-    }
-    SendText("could set up" . A_EndChar)
-    AC_Reg("could setup", "could set up")
-}
-:C:could workout::{
-    if AC_IsDisabled("could workout") {
-        SendText("could workout" . A_EndChar)
-        return
-    }
-    SendText("could work out" . A_EndChar)
-    AC_Reg("could workout", "could work out")
-}
 :C:could'nt::{
     if AC_IsDisabled("could'nt") {
         SendText("could'nt" . A_EndChar)
@@ -19386,14 +15434,6 @@
     }
     SendText("couldn't" . A_EndChar)
     AC_Reg("could'nt", "couldn't")
-}
-:C:couldn't breath::{
-    if AC_IsDisabled("couldn't breath") {
-        SendText("couldn't breath" . A_EndChar)
-        return
-    }
-    SendText("couldn't breathe" . A_EndChar)
-    AC_Reg("couldn't breath", "couldn't breathe")
 }
 :C:couldnt::{
     if AC_IsDisabled("couldnt") {
@@ -19467,14 +15507,6 @@
     SendText("countries" . A_EndChar)
     AC_Reg("counries", "countries")
 }
-:C:counsel member::{
-    if AC_IsDisabled("counsel member") {
-        SendText("counsel member" . A_EndChar)
-        return
-    }
-    SendText("council member" . A_EndChar)
-    AC_Reg("counsel member", "council member")
-}
 :C:countain::{
     if AC_IsDisabled("countain") {
         SendText("countain" . A_EndChar)
@@ -19514,30 +15546,6 @@
     }
     SendText("countries" . A_EndChar)
     AC_Reg("countrie's", "countries")
-}
-:C:coup d'etat::{
-    if AC_IsDisabled("coup d'etat") {
-        SendText("coup d'etat" . A_EndChar)
-        return
-    }
-    SendText("coup d'état" . A_EndChar)
-    AC_Reg("coup d'etat", "coup d'état")
-}
-:C:coup de grace::{
-    if AC_IsDisabled("coup de grace") {
-        SendText("coup de grace" . A_EndChar)
-        return
-    }
-    SendText("coup de grâce" . A_EndChar)
-    AC_Reg("coup de grace", "coup de grâce")
-}
-:C:coup de tat::{
-    if AC_IsDisabled("coup de tat") {
-        SendText("coup de tat" . A_EndChar)
-        return
-    }
-    SendText("coup d'état" . A_EndChar)
-    AC_Reg("coup de tat", "coup d'état")
 }
 :C:couraing::{
     if AC_IsDisabled("couraing") {
@@ -19723,38 +15731,6 @@
     SendText("credence" . A_EndChar)
     AC_Reg("creedence", "credence")
 }
-:C:creme brulee::{
-    if AC_IsDisabled("creme brulee") {
-        SendText("creme brulee" . A_EndChar)
-        return
-    }
-    SendText("crème brûlée" . A_EndChar)
-    AC_Reg("creme brulee", "crème brûlée")
-}
-:C:creme caramel::{
-    if AC_IsDisabled("creme caramel") {
-        SendText("creme caramel" . A_EndChar)
-        return
-    }
-    SendText("crème caramel" . A_EndChar)
-    AC_Reg("creme caramel", "crème caramel")
-}
-:C:creme de cacao::{
-    if AC_IsDisabled("creme de cacao") {
-        SendText("creme de cacao" . A_EndChar)
-        return
-    }
-    SendText("crème de cacao" . A_EndChar)
-    AC_Reg("creme de cacao", "crème de cacao")
-}
-:C:creme de menthe::{
-    if AC_IsDisabled("creme de menthe") {
-        SendText("creme de menthe" . A_EndChar)
-        return
-    }
-    SendText("crème de menthe" . A_EndChar)
-    AC_Reg("creme de menthe", "crème de menthe")
-}
 :C:crepe::{
     if AC_IsDisabled("crepe") {
         SendText("crepe" . A_EndChar)
@@ -19802,22 +15778,6 @@
     }
     SendText("criterion" . A_EndChar)
     AC_Reg("critereon", "criterion")
-}
-:C:criteria is::{
-    if AC_IsDisabled("criteria is") {
-        SendText("criteria is" . A_EndChar)
-        return
-    }
-    SendText("criteria are" . A_EndChar)
-    AC_Reg("criteria is", "criteria are")
-}
-:C:criteria was::{
-    if AC_IsDisabled("criteria was") {
-        SendText("criteria was" . A_EndChar)
-        return
-    }
-    SendText("criteria were" . A_EndChar)
-    AC_Reg("criteria was", "criteria were")
 }
 :C:criterias::{
     if AC_IsDisabled("criterias") {
@@ -20491,14 +16451,6 @@
     SendText("dear" . A_EndChar)
     AC_Reg("daer", "dear")
 }
-:C:daily regiment::{
-    if AC_IsDisabled("daily regiment") {
-        SendText("daily regiment" . A_EndChar)
-        return
-    }
-    SendText("daily regimen" . A_EndChar)
-    AC_Reg("daily regiment", "daily regimen")
-}
 :C:dais::{
     if AC_IsDisabled("dais") {
         SendText("dais" . A_EndChar)
@@ -20602,14 +16554,6 @@
     }
     SendText("daren't" . A_EndChar)
     AC_Reg("darent", "daren't")
-}
-:C:darker then::{
-    if AC_IsDisabled("darker then") {
-        SendText("darker then" . A_EndChar)
-        return
-    }
-    SendText("darker than" . A_EndChar)
-    AC_Reg("darker then", "darker than")
 }
 :C:daty::{
     if AC_IsDisabled("daty") {
@@ -20835,14 +16779,6 @@
     SendText("decidedly" . A_EndChar)
     AC_Reg("decidely", "decidedly")
 }
-:C:deciding on how::{
-    if AC_IsDisabled("deciding on how") {
-        SendText("deciding on how" . A_EndChar)
-        return
-    }
-    SendText("deciding how" . A_EndChar)
-    AC_Reg("deciding on how", "deciding how")
-}
 :C:decieved::{
     if AC_IsDisabled("decieved") {
         SendText("decieved" . A_EndChar)
@@ -20986,22 +16922,6 @@
     }
     SendText("detect" . A_EndChar)
     AC_Reg("dectect", "detect")
-}
-:C:deep seeded::{
-    if AC_IsDisabled("deep seeded") {
-        SendText("deep seeded" . A_EndChar)
-        return
-    }
-    SendText("deep seated" . A_EndChar)
-    AC_Reg("deep seeded", "deep seated")
-}
-:C:deep-seeded::{
-    if AC_IsDisabled("deep-seeded") {
-        SendText("deep-seeded" . A_EndChar)
-        return
-    }
-    SendText("deep-seated" . A_EndChar)
-    AC_Reg("deep-seeded", "deep-seated")
 }
 :C:defenden::{
     if AC_IsDisabled("defenden") {
@@ -21226,14 +17146,6 @@
     }
     SendText("dings" . A_EndChar)
     AC_Reg("deings", "dings")
-}
-:C:deja vu::{
-    if AC_IsDisabled("deja vu") {
-        SendText("deja vu" . A_EndChar)
-        return
-    }
-    SendText("déjà vu" . A_EndChar)
-    AC_Reg("deja vu", "déjà vu")
 }
 :C:delag::{
     if AC_IsDisabled("delag") {
@@ -21522,22 +17434,6 @@
     }
     SendText("dependency" . A_EndChar)
     AC_Reg("dependancy", "dependency")
-}
-:C:depending of::{
-    if AC_IsDisabled("depending of") {
-        SendText("depending of" . A_EndChar)
-        return
-    }
-    SendText("depending on" . A_EndChar)
-    AC_Reg("depending of", "depending on")
-}
-:C:depends of::{
-    if AC_IsDisabled("depends of") {
-        SendText("depends of" . A_EndChar)
-        return
-    }
-    SendText("depends on" . A_EndChar)
-    AC_Reg("depends of", "depends on")
 }
 :C:deptart::{
     if AC_IsDisabled("deptart") {
@@ -21922,14 +17818,6 @@
     }
     SendText("desperation" . A_EndChar)
     AC_Reg("despiration", "desperation")
-}
-:C:despite of::{
-    if AC_IsDisabled("despite of") {
-        SendText("despite of" . A_EndChar)
-        return
-    }
-    SendText("despite" . A_EndChar)
-    AC_Reg("despite of", "despite")
 }
 :C:dessica::{
     if AC_IsDisabled("dessica") {
@@ -22507,14 +18395,6 @@
     SendText("discussed" . A_EndChar)
     AC_Reg("dicussed", "discussed")
 }
-:C:did attempted::{
-    if AC_IsDisabled("did attempted") {
-        SendText("did attempted" . A_EndChar)
-        return
-    }
-    SendText("did attempt" . A_EndChar)
-    AC_Reg("did attempted", "did attempt")
-}
 :C:didint::{
     if AC_IsDisabled("didint") {
         SendText("didint" . A_EndChar)
@@ -22530,14 +18410,6 @@
     }
     SendText("didn't" . A_EndChar)
     AC_Reg("didn'nt", "didn't")
-}
-:C:didn't fair::{
-    if AC_IsDisabled("didn't fair") {
-        SendText("didn't fair" . A_EndChar)
-        return
-    }
-    SendText("didn't fare" . A_EndChar)
-    AC_Reg("didn't fair", "didn't fare")
 }
 :C:didnot::{
     if AC_IsDisabled("didnot") {
@@ -22651,22 +18523,6 @@
     SendText("differen" . A_EndChar)
     AC_Reg("differan", "differen")
 }
-:C:different tact::{
-    if AC_IsDisabled("different tact") {
-        SendText("different tact" . A_EndChar)
-        return
-    }
-    SendText("different tack" . A_EndChar)
-    AC_Reg("different tact", "different tack")
-}
-:C:different to::{
-    if AC_IsDisabled("different to") {
-        SendText("different to" . A_EndChar)
-        return
-    }
-    SendText("different from" . A_EndChar)
-    AC_Reg("different to", "different from")
-}
 :C:differentiatiations::{
     if AC_IsDisabled("differentiatiations") {
         SendText("differentiatiations" . A_EndChar)
@@ -22706,14 +18562,6 @@
     }
     SendText("different" . A_EndChar)
     AC_Reg("diffrent", "different")
-}
-:C:diffuse the::{
-    if AC_IsDisabled("diffuse the") {
-        SendText("diffuse the" . A_EndChar)
-        return
-    }
-    SendText("defuse the" . A_EndChar)
-    AC_Reg("diffuse the", "defuse the")
 }
 :C:dificu::{
     if AC_IsDisabled("dificu") {
@@ -22963,14 +18811,6 @@
     SendText("diphthongs" . A_EndChar)
     AC_Reg("dipthongs", "diphthongs")
 }
-:C:direct affect::{
-    if AC_IsDisabled("direct affect") {
-        SendText("direct affect" . A_EndChar)
-        return
-    }
-    SendText("direct effect" . A_EndChar)
-    AC_Reg("direct affect", "direct effect")
-}
 :C:directoty::{
     if AC_IsDisabled("directoty") {
         SendText("directoty" . A_EndChar)
@@ -23123,38 +18963,6 @@
     SendText("distract" . A_EndChar)
     AC_Reg("discract", "distract")
 }
-:C:discreet data::{
-    if AC_IsDisabled("discreet data") {
-        SendText("discreet data" . A_EndChar)
-        return
-    }
-    SendText("discrete data" . A_EndChar)
-    AC_Reg("discreet data", "discrete data")
-}
-:C:discreet observation::{
-    if AC_IsDisabled("discreet observation") {
-        SendText("discreet observation" . A_EndChar)
-        return
-    }
-    SendText("discrete observation" . A_EndChar)
-    AC_Reg("discreet observation", "discrete observation")
-}
-:C:discreet trial::{
-    if AC_IsDisabled("discreet trial") {
-        SendText("discreet trial" . A_EndChar)
-        return
-    }
-    SendText("discrete trial" . A_EndChar)
-    AC_Reg("discreet trial", "discrete trial")
-}
-:C:discrete steps::{
-    if AC_IsDisabled("discrete steps") {
-        SendText("discrete steps" . A_EndChar)
-        return
-    }
-    SendText("discreet steps" . A_EndChar)
-    AC_Reg("discrete steps", "discreet steps")
-}
 :C:discrib::{
     if AC_IsDisabled("discrib") {
         SendText("discrib" . A_EndChar)
@@ -23218,30 +19026,6 @@
     }
     SendText("distinctive" . A_EndChar)
     AC_Reg("disctinctive", "distinctive")
-}
-:C:discus a::{
-    if AC_IsDisabled("discus a") {
-        SendText("discus a" . A_EndChar)
-        return
-    }
-    SendText("discuss a" . A_EndChar)
-    AC_Reg("discus a", "discuss a")
-}
-:C:discus the::{
-    if AC_IsDisabled("discus the") {
-        SendText("discus the" . A_EndChar)
-        return
-    }
-    SendText("discuss the" . A_EndChar)
-    AC_Reg("discus the", "discuss the")
-}
-:C:discus this::{
-    if AC_IsDisabled("discus this") {
-        SendText("discus this" . A_EndChar)
-        return
-    }
-    SendText("discuss this" . A_EndChar)
-    AC_Reg("discus this", "discuss this")
 }
 :C:disemin::{
     if AC_IsDisabled("disemin") {
@@ -23883,14 +19667,6 @@
     SendText("ding" . A_EndChar)
     AC_Reg("dng", "ding")
 }
-:C:do to circumstances::{
-    if AC_IsDisabled("do to circumstances") {
-        SendText("do to circumstances" . A_EndChar)
-        return
-    }
-    SendText("due to circumstances" . A_EndChar)
-    AC_Reg("do to circumstances", "due to circumstances")
-}
 :C:doccu::{
     if AC_IsDisabled("doccu") {
         SendText("doccu" . A_EndChar)
@@ -23978,14 +19754,6 @@
     }
     SendText("documentary" . A_EndChar)
     AC_Reg("documenatry", "documentary")
-}
-:C:doe snot::{
-    if AC_IsDisabled("doe snot") {
-        SendText("doe snot" . A_EndChar)
-        return
-    }
-    SendText("does not" . A_EndChar)
-    AC_Reg("doe snot", "does not")
 }
 :C:doen't::{
     if AC_IsDisabled("doen't") {
@@ -24099,30 +19867,6 @@
     SendText("dollar" . A_EndChar)
     AC_Reg("doller", "dollar")
 }
-:C:dolling out::{
-    if AC_IsDisabled("dolling out") {
-        SendText("dolling out" . A_EndChar)
-        return
-    }
-    SendText("doling out" . A_EndChar)
-    AC_Reg("dolling out", "doling out")
-}
-:C:dominate player::{
-    if AC_IsDisabled("dominate player") {
-        SendText("dominate player" . A_EndChar)
-        return
-    }
-    SendText("dominant player" . A_EndChar)
-    AC_Reg("dominate player", "dominant player")
-}
-:C:dominate role::{
-    if AC_IsDisabled("dominate role") {
-        SendText("dominate role" . A_EndChar)
-        return
-    }
-    SendText("dominant role" . A_EndChar)
-    AC_Reg("dominate role", "dominant role")
-}
 :C:dominaton::{
     if AC_IsDisabled("dominaton") {
         SendText("dominaton" . A_EndChar)
@@ -24163,14 +19907,6 @@
     SendText("don't" . A_EndChar)
     AC_Reg("don'nt", "don't")
 }
-:C:don't no::{
-    if AC_IsDisabled("don't no") {
-        SendText("don't no" . A_EndChar)
-        return
-    }
-    SendText("don't know" . A_EndChar)
-    AC_Reg("don't no", "don't know")
-}
 :C:donig::{
     if AC_IsDisabled("donig") {
         SendText("donig" . A_EndChar)
@@ -24194,14 +19930,6 @@
     }
     SendText("don't" . A_EndChar)
     AC_Reg("dont", "don't")
-}
-:C:door jam::{
-    if AC_IsDisabled("door jam") {
-        SendText("door jam" . A_EndChar)
-        return
-    }
-    SendText("doorjamb" . A_EndChar)
-    AC_Reg("door jam", "doorjamb")
 }
 :C:doppelganger::{
     if AC_IsDisabled("doppelganger") {
@@ -24235,14 +19963,6 @@
     SendText("doubt" . A_EndChar)
     AC_Reg("doub", "doubt")
 }
-:C:double header::{
-    if AC_IsDisabled("double header") {
-        SendText("double header" . A_EndChar)
-        return
-    }
-    SendText("doubleheader" . A_EndChar)
-    AC_Reg("double header", "doubleheader")
-}
 :C:doulbe::{
     if AC_IsDisabled("doulbe") {
         SendText("doulbe" . A_EndChar)
@@ -24267,22 +19987,6 @@
     SendText("downloads" . A_EndChar)
     AC_Reg("dowloads", "downloads")
 }
-:C:down it's::{
-    if AC_IsDisabled("down it's") {
-        SendText("down it's" . A_EndChar)
-        return
-    }
-    SendText("down its" . A_EndChar)
-    AC_Reg("down it's", "down its")
-}
-:C:down side::{
-    if AC_IsDisabled("down side") {
-        SendText("down side" . A_EndChar)
-        return
-    }
-    SendText("downside" . A_EndChar)
-    AC_Reg("down side", "downside")
-}
 :C:dpend::{
     if AC_IsDisabled("dpend") {
         SendText("dpend" . A_EndChar)
@@ -24306,14 +20010,6 @@
     }
     SendText("drag" . A_EndChar)
     AC_Reg("draf", "drag")
-}
-:C:drafty of::{
-    if AC_IsDisabled("drafty of") {
-        SendText("drafty of" . A_EndChar)
-        return
-    }
-    SendText("draft of" . A_EndChar)
-    AC_Reg("drafty of", "draft of")
 }
 :C:dramti::{
     if AC_IsDisabled("dramti") {
@@ -24443,22 +20139,6 @@
     SendText("d the" . A_EndChar)
     AC_Reg("dthe", "d the")
 }
-:C:due to it's::{
-    if AC_IsDisabled("due to it's") {
-        SendText("due to it's" . A_EndChar)
-        return
-    }
-    SendText("due to its" . A_EndChar)
-    AC_Reg("due to it's", "due to its")
-}
-:C:due two circumstances::{
-    if AC_IsDisabled("due two circumstances") {
-        SendText("due two circumstances" . A_EndChar)
-        return
-    }
-    SendText("due to circumstances" . A_EndChar)
-    AC_Reg("due two circumstances", "due to circumstances")
-}
 :C:duect::{
     if AC_IsDisabled("duect") {
         SendText("duect" . A_EndChar)
@@ -24523,22 +20203,6 @@
     SendText("during" . A_EndChar)
     AC_Reg("durig", "during")
 }
-:C:during it's::{
-    if AC_IsDisabled("during it's") {
-        SendText("during it's" . A_EndChar)
-        return
-    }
-    SendText("during its" . A_EndChar)
-    AC_Reg("during it's", "during its")
-}
-:C:during they're::{
-    if AC_IsDisabled("during they're") {
-        SendText("during they're" . A_EndChar)
-        return
-    }
-    SendText("during their" . A_EndChar)
-    AC_Reg("during they're", "during their")
-}
 :C:durring::{
     if AC_IsDisabled("durring") {
         SendText("durring" . A_EndChar)
@@ -24578,14 +20242,6 @@
     }
     SendText("each" . A_EndChar)
     AC_Reg("eacg", "each")
-}
-:C:each phenomena::{
-    if AC_IsDisabled("each phenomena") {
-        SendText("each phenomena" . A_EndChar)
-        return
-    }
-    SendText("each phenomenon" . A_EndChar)
-    AC_Reg("each phenomena", "each phenomenon")
 }
 :C:eacll::{
     if AC_IsDisabled("eacll") {
@@ -25019,14 +20675,6 @@
     SendText("economic" . A_EndChar)
     AC_Reg("econoimic", "economic")
 }
-:C:econoä±mic::{
-    if AC_IsDisabled("econoä±mic") {
-        SendText("econoä±mic" . A_EndChar)
-        return
-    }
-    SendText("economic" . A_EndChar)
-    AC_Reg("econoä±mic", "economic")
-}
 :C:econtit::{
     if AC_IsDisabled("econtit") {
         SendText("econtit" . A_EndChar)
@@ -25082,14 +20730,6 @@
     }
     SendText("ecycl" . A_EndChar)
     AC_Reg("ecyl", "ecycl")
-}
-:C:ed form the::{
-    if AC_IsDisabled("ed form the") {
-        SendText("ed form the" . A_EndChar)
-        return
-    }
-    SendText("ed from the" . A_EndChar)
-    AC_Reg("ed form the", "ed from the")
 }
 :C:edabl::{
     if AC_IsDisabled("edabl") {
@@ -25491,14 +21131,6 @@
     SendText("eh" . A_EndChar)
     AC_Reg("ejh", "eh")
 }
-:C:el nino::{
-    if AC_IsDisabled("el nino") {
-        SendText("el nino" . A_EndChar)
-        return
-    }
-    SendText("El Niño" . A_EndChar)
-    AC_Reg("el nino", "El Niño")
-}
 :C:elan::{
     if AC_IsDisabled("elan") {
         SendText("elan" . A_EndChar)
@@ -25778,14 +21410,6 @@
     }
     SendText("elephant" . A_EndChar)
     AC_Reg("elphant", "elephant")
-}
-:C:eluded to::{
-    if AC_IsDisabled("eluded to") {
-        SendText("eluded to" . A_EndChar)
-        return
-    }
-    SendText("alluded to" . A_EndChar)
-    AC_Reg("eluded to", "alluded to")
 }
 :C:elyhood::{
     if AC_IsDisabled("elyhood") {
@@ -26314,14 +21938,6 @@
     }
     SendText("empty" . A_EndChar)
     AC_Reg("empry", "empty")
-}
-:C:en mass::{
-    if AC_IsDisabled("en mass") {
-        SendText("en mass" . A_EndChar)
-        return
-    }
-    SendText("en masse" . A_EndChar)
-    AC_Reg("en mass", "en masse")
 }
 :C:enameld::{
     if AC_IsDisabled("enameld") {
@@ -29035,22 +24651,6 @@
     SendText("extinct" . A_EndChar)
     AC_Reg("extint", "extinct")
 }
-:C:extract punishment::{
-    if AC_IsDisabled("extract punishment") {
-        SendText("extract punishment" . A_EndChar)
-        return
-    }
-    SendText("exact punishment" . A_EndChar)
-    AC_Reg("extract punishment", "exact punishment")
-}
-:C:extract revenge::{
-    if AC_IsDisabled("extract revenge") {
-        SendText("extract revenge" . A_EndChar)
-        return
-    }
-    SendText("exact revenge" . A_EndChar)
-    AC_Reg("extract revenge", "exact revenge")
-}
 :C:extradict::{
     if AC_IsDisabled("extradict") {
         SendText("extradict" . A_EndChar)
@@ -29194,46 +24794,6 @@
     }
     SendText("years" . A_EndChar)
     AC_Reg("eyasr", "years")
-}
-:C:eye brow::{
-    if AC_IsDisabled("eye brow") {
-        SendText("eye brow" . A_EndChar)
-        return
-    }
-    SendText("eyebrow" . A_EndChar)
-    AC_Reg("eye brow", "eyebrow")
-}
-:C:eye lash::{
-    if AC_IsDisabled("eye lash") {
-        SendText("eye lash" . A_EndChar)
-        return
-    }
-    SendText("eyelash" . A_EndChar)
-    AC_Reg("eye lash", "eyelash")
-}
-:C:eye lid::{
-    if AC_IsDisabled("eye lid") {
-        SendText("eye lid" . A_EndChar)
-        return
-    }
-    SendText("eyelid" . A_EndChar)
-    AC_Reg("eye lid", "eyelid")
-}
-:C:eye sight::{
-    if AC_IsDisabled("eye sight") {
-        SendText("eye sight" . A_EndChar)
-        return
-    }
-    SendText("eyesight" . A_EndChar)
-    AC_Reg("eye sight", "eyesight")
-}
-:C:eye sore::{
-    if AC_IsDisabled("eye sore") {
-        SendText("eye sore" . A_EndChar)
-        return
-    }
-    SendText("eyesore" . A_EndChar)
-    AC_Reg("eye sore", "eyesore")
 }
 :C:eyt::{
     if AC_IsDisabled("eyt") {
@@ -29387,134 +24947,6 @@
     SendText("fairly" . A_EndChar)
     AC_Reg("failly", "fairly")
 }
-:C:fair well::{
-    if AC_IsDisabled("fair well") {
-        SendText("fair well" . A_EndChar)
-        return
-    }
-    SendText("fare well" . A_EndChar)
-    AC_Reg("fair well", "fare well")
-}
-:C:faired as well::{
-    if AC_IsDisabled("faired as well") {
-        SendText("faired as well" . A_EndChar)
-        return
-    }
-    SendText("fared as well" . A_EndChar)
-    AC_Reg("faired as well", "fared as well")
-}
-:C:faired badly::{
-    if AC_IsDisabled("faired badly") {
-        SendText("faired badly" . A_EndChar)
-        return
-    }
-    SendText("fared badly" . A_EndChar)
-    AC_Reg("faired badly", "fared badly")
-}
-:C:faired better::{
-    if AC_IsDisabled("faired better") {
-        SendText("faired better" . A_EndChar)
-        return
-    }
-    SendText("fared better" . A_EndChar)
-    AC_Reg("faired better", "fared better")
-}
-:C:faired far::{
-    if AC_IsDisabled("faired far") {
-        SendText("faired far" . A_EndChar)
-        return
-    }
-    SendText("fared far" . A_EndChar)
-    AC_Reg("faired far", "fared far")
-}
-:C:faired less::{
-    if AC_IsDisabled("faired less") {
-        SendText("faired less" . A_EndChar)
-        return
-    }
-    SendText("fared less" . A_EndChar)
-    AC_Reg("faired less", "fared less")
-}
-:C:faired little::{
-    if AC_IsDisabled("faired little") {
-        SendText("faired little" . A_EndChar)
-        return
-    }
-    SendText("fared little" . A_EndChar)
-    AC_Reg("faired little", "fared little")
-}
-:C:faired much::{
-    if AC_IsDisabled("faired much") {
-        SendText("faired much" . A_EndChar)
-        return
-    }
-    SendText("fared much" . A_EndChar)
-    AC_Reg("faired much", "fared much")
-}
-:C:faired no better::{
-    if AC_IsDisabled("faired no better") {
-        SendText("faired no better" . A_EndChar)
-        return
-    }
-    SendText("fared no better" . A_EndChar)
-    AC_Reg("faired no better", "fared no better")
-}
-:C:faired poorly::{
-    if AC_IsDisabled("faired poorly") {
-        SendText("faired poorly" . A_EndChar)
-        return
-    }
-    SendText("fared poorly" . A_EndChar)
-    AC_Reg("faired poorly", "fared poorly")
-}
-:C:faired quite::{
-    if AC_IsDisabled("faired quite") {
-        SendText("faired quite" . A_EndChar)
-        return
-    }
-    SendText("fared quite" . A_EndChar)
-    AC_Reg("faired quite", "fared quite")
-}
-:C:faired rather::{
-    if AC_IsDisabled("faired rather") {
-        SendText("faired rather" . A_EndChar)
-        return
-    }
-    SendText("fared rather" . A_EndChar)
-    AC_Reg("faired rather", "fared rather")
-}
-:C:faired slightly::{
-    if AC_IsDisabled("faired slightly") {
-        SendText("faired slightly" . A_EndChar)
-        return
-    }
-    SendText("fared slightly" . A_EndChar)
-    AC_Reg("faired slightly", "fared slightly")
-}
-:C:faired somewhat::{
-    if AC_IsDisabled("faired somewhat") {
-        SendText("faired somewhat" . A_EndChar)
-        return
-    }
-    SendText("fared somewhat" . A_EndChar)
-    AC_Reg("faired somewhat", "fared somewhat")
-}
-:C:faired well::{
-    if AC_IsDisabled("faired well") {
-        SendText("faired well" . A_EndChar)
-        return
-    }
-    SendText("fared well" . A_EndChar)
-    AC_Reg("faired well", "fared well")
-}
-:C:faired worse::{
-    if AC_IsDisabled("faired worse") {
-        SendText("faired worse" . A_EndChar)
-        return
-    }
-    SendText("fared worse" . A_EndChar)
-    AC_Reg("faired worse", "fared worse")
-}
 :C:falab::{
     if AC_IsDisabled("falab") {
         SendText("falab" . A_EndChar)
@@ -29587,14 +25019,6 @@
     SendText("fanaticism" . A_EndChar)
     AC_Reg("fanatism", "fanaticism")
 }
-:C:fare enough::{
-    if AC_IsDisabled("fare enough") {
-        SendText("fare enough" . A_EndChar)
-        return
-    }
-    SendText("fair enough" . A_EndChar)
-    AC_Reg("fare enough", "fair enough")
-}
 :C:farenheit::{
     if AC_IsDisabled("farenheit") {
         SendText("farenheit" . A_EndChar)
@@ -29602,14 +25026,6 @@
     }
     SendText("Fahrenheit" . A_EndChar)
     AC_Reg("farenheit", "Fahrenheit")
-}
-:C:farther then::{
-    if AC_IsDisabled("farther then") {
-        SendText("farther then" . A_EndChar)
-        return
-    }
-    SendText("farther than" . A_EndChar)
-    AC_Reg("farther then", "farther than")
 }
 :C:fascit::{
     if AC_IsDisabled("fascit") {
@@ -29626,14 +25042,6 @@
     }
     SendText("phasia" . A_EndChar)
     AC_Reg("fasia", "phasia")
-}
-:C:faster then::{
-    if AC_IsDisabled("faster then") {
-        SendText("faster then" . A_EndChar)
-        return
-    }
-    SendText("faster than" . A_EndChar)
-    AC_Reg("faster then", "faster than")
 }
 :C:fatc::{
     if AC_IsDisabled("fatc") {
@@ -30051,14 +25459,6 @@
     SendText("fighting" . A_EndChar)
     AC_Reg("fightings", "fighting")
 }
-:C:figure head::{
-    if AC_IsDisabled("figure head") {
-        SendText("figure head" . A_EndChar)
-        return
-    }
-    SendText("figurehead" . A_EndChar)
-    AC_Reg("figure head", "figurehead")
-}
 :C:filiament::{
     if AC_IsDisabled("filiament") {
         SendText("filiament" . A_EndChar)
@@ -30083,14 +25483,6 @@
     SendText("field" . A_EndChar)
     AC_Reg("filld", "field")
 }
-:C:filled a lawsuit::{
-    if AC_IsDisabled("filled a lawsuit") {
-        SendText("filled a lawsuit" . A_EndChar)
-        return
-    }
-    SendText("filed a lawsuit" . A_EndChar)
-    AC_Reg("filled a lawsuit", "filed a lawsuit")
-}
 :C:filmjolk::{
     if AC_IsDisabled("filmjolk") {
         SendText("filmjolk" . A_EndChar)
@@ -30114,14 +25506,6 @@
     }
     SendText("families" . A_EndChar)
     AC_Reg("fimilies", "families")
-}
-:C:fin de siecle::{
-    if AC_IsDisabled("fin de siecle") {
-        SendText("fin de siecle" . A_EndChar)
-        return
-    }
-    SendText("fin de siècle" . A_EndChar)
-    AC_Reg("fin de siecle", "fin de siècle")
 }
 :C:finac::{
     if AC_IsDisabled("finac") {
@@ -30267,22 +25651,6 @@
     SendText("fissip" . A_EndChar)
     AC_Reg("fisip", "fissip")
 }
-:C:flag ship::{
-    if AC_IsDisabled("flag ship") {
-        SendText("flag ship" . A_EndChar)
-        return
-    }
-    SendText("flagship" . A_EndChar)
-    AC_Reg("flag ship", "flagship")
-}
-:C:flair up::{
-    if AC_IsDisabled("flair up") {
-        SendText("flair up" . A_EndChar)
-        return
-    }
-    SendText("flare up" . A_EndChar)
-    AC_Reg("flair up", "flare up")
-}
 :C:flama::{
     if AC_IsDisabled("flama") {
         SendText("flama" . A_EndChar)
@@ -30306,14 +25674,6 @@
     }
     SendText("flambé" . A_EndChar)
     AC_Reg("flambe", "flambé")
-}
-:C:flare for drama::{
-    if AC_IsDisabled("flare for drama") {
-        SendText("flare for drama" . A_EndChar)
-        return
-    }
-    SendText("flair for drama" . A_EndChar)
-    AC_Reg("flare for drama", "flair for drama")
 }
 :C:flawess::{
     if AC_IsDisabled("flawess") {
@@ -30627,14 +25987,6 @@
     SendText("forex" . A_EndChar)
     AC_Reg("foerx", "forex")
 }
-:C:Fohn wind::{
-    if AC_IsDisabled("Fohn wind") {
-        SendText("Fohn wind" . A_EndChar)
-        return
-    }
-    SendText("Föhn wind" . A_EndChar)
-    AC_Reg("Fohn wind", "Föhn wind")
-}
 :C:fokr::{
     if AC_IsDisabled("fokr") {
         SendText("fokr" . A_EndChar)
@@ -30643,30 +25995,6 @@
     SendText("fork" . A_EndChar)
     AC_Reg("fokr", "fork")
 }
-:C:folder cash::{
-    if AC_IsDisabled("folder cash") {
-        SendText("folder cash" . A_EndChar)
-        return
-    }
-    SendText("folder cache" . A_EndChar)
-    AC_Reg("folder cash", "folder cache")
-}
-:C:folie a deux::{
-    if AC_IsDisabled("folie a deux") {
-        SendText("folie a deux" . A_EndChar)
-        return
-    }
-    SendText("folie à deux" . A_EndChar)
-    AC_Reg("folie a deux", "folie à deux")
-}
-:C:folies a deux::{
-    if AC_IsDisabled("folies a deux") {
-        SendText("folies a deux" . A_EndChar)
-        return
-    }
-    SendText("folies à deux" . A_EndChar)
-    AC_Reg("folies a deux", "folies à deux")
-}
 :C:folliwing::{
     if AC_IsDisabled("folliwing") {
         SendText("folliwing" . A_EndChar)
@@ -30674,22 +26002,6 @@
     }
     SendText("following" . A_EndChar)
     AC_Reg("folliwing", "following")
-}
-:C:follow suite::{
-    if AC_IsDisabled("follow suite") {
-        SendText("follow suite" . A_EndChar)
-        return
-    }
-    SendText("follow suit" . A_EndChar)
-    AC_Reg("follow suite", "follow suit")
-}
-:C:following it's::{
-    if AC_IsDisabled("following it's") {
-        SendText("following it's" . A_EndChar)
-        return
-    }
-    SendText("following its" . A_EndChar)
-    AC_Reg("following it's", "following its")
 }
 :C:follwo::{
     if AC_IsDisabled("follwo") {
@@ -30811,54 +26123,6 @@
     SendText("football" . A_EndChar)
     AC_Reg("foootball", "football")
 }
-:C:for all intensive purposes::{
-    if AC_IsDisabled("for all intensive purposes") {
-        SendText("for all intensive purposes" . A_EndChar)
-        return
-    }
-    SendText("for all intents and purposes" . A_EndChar)
-    AC_Reg("for all intensive purposes", "for all intents and purposes")
-}
-:C:for along time::{
-    if AC_IsDisabled("for along time") {
-        SendText("for along time" . A_EndChar)
-        return
-    }
-    SendText("for a long time" . A_EndChar)
-    AC_Reg("for along time", "for a long time")
-}
-:C:for awhile::{
-    if AC_IsDisabled("for awhile") {
-        SendText("for awhile" . A_EndChar)
-        return
-    }
-    SendText("for a while" . A_EndChar)
-    AC_Reg("for awhile", "for a while")
-}
-:C:for he and::{
-    if AC_IsDisabled("for he and") {
-        SendText("for he and" . A_EndChar)
-        return
-    }
-    SendText("for him and" . A_EndChar)
-    AC_Reg("for he and", "for him and")
-}
-:C:for quite awhile::{
-    if AC_IsDisabled("for quite awhile") {
-        SendText("for quite awhile" . A_EndChar)
-        return
-    }
-    SendText("for quite a while" . A_EndChar)
-    AC_Reg("for quite awhile", "for quite a while")
-}
-:C:for way it's::{
-    if AC_IsDisabled("for way it's") {
-        SendText("for way it's" . A_EndChar)
-        return
-    }
-    SendText("for what it's" . A_EndChar)
-    AC_Reg("for way it's", "for what it's")
-}
 :C:fora::{
     if AC_IsDisabled("fora") {
         SendText("fora" . A_EndChar)
@@ -30899,46 +26163,6 @@
     SendText("folder" . A_EndChar)
     AC_Reg("forder", "folder")
 }
-:C:fore get about it::{
-    if AC_IsDisabled("fore get about it") {
-        SendText("fore get about it" . A_EndChar)
-        return
-    }
-    SendText("forget about it" . A_EndChar)
-    AC_Reg("fore get about it", "forget about it")
-}
-:C:fore ground::{
-    if AC_IsDisabled("fore ground") {
-        SendText("fore ground" . A_EndChar)
-        return
-    }
-    SendText("foreground" . A_EndChar)
-    AC_Reg("fore ground", "foreground")
-}
-:C:forego her::{
-    if AC_IsDisabled("forego her") {
-        SendText("forego her" . A_EndChar)
-        return
-    }
-    SendText("forgo her" . A_EndChar)
-    AC_Reg("forego her", "forgo her")
-}
-:C:forego his::{
-    if AC_IsDisabled("forego his") {
-        SendText("forego his" . A_EndChar)
-        return
-    }
-    SendText("forgo his" . A_EndChar)
-    AC_Reg("forego his", "forgo his")
-}
-:C:forego their::{
-    if AC_IsDisabled("forego their") {
-        SendText("forego their" . A_EndChar)
-        return
-    }
-    SendText("forgo their" . A_EndChar)
-    AC_Reg("forego their", "forgo their")
-}
 :C:foretu::{
     if AC_IsDisabled("foretu") {
         SendText("foretu" . A_EndChar)
@@ -30978,14 +26202,6 @@
     }
     SendText("forgivab" . A_EndChar)
     AC_Reg("forgiveab", "forgivab")
-}
-:C:forgone conclusion::{
-    if AC_IsDisabled("forgone conclusion") {
-        SendText("forgone conclusion" . A_EndChar)
-        return
-    }
-    SendText("foregone conclusion" . A_EndChar)
-    AC_Reg("forgone conclusion", "foregone conclusion")
 }
 :C:forguna::{
     if AC_IsDisabled("forguna") {
@@ -31123,14 +26339,6 @@
     SendText("foretelling" . A_EndChar)
     AC_Reg("fortelling", "foretelling")
 }
-:C:forth grade::{
-    if AC_IsDisabled("forth grade") {
-        SendText("forth grade" . A_EndChar)
-        return
-    }
-    SendText("fourth grade" . A_EndChar)
-    AC_Reg("forth grade", "fourth grade")
-}
 :C:forthe::{
     if AC_IsDisabled("forthe") {
         SendText("forthe" . A_EndChar)
@@ -31218,30 +26426,6 @@
     }
     SendText("Newfoundland" . A_EndChar)
     AC_Reg("foundland", "Newfoundland")
-}
-:C:four get about it::{
-    if AC_IsDisabled("four get about it") {
-        SendText("four get about it" . A_EndChar)
-        return
-    }
-    SendText("forget about it" . A_EndChar)
-    AC_Reg("four get about it", "forget about it")
-}
-:C:fourth coming::{
-    if AC_IsDisabled("fourth coming") {
-        SendText("fourth coming" . A_EndChar)
-        return
-    }
-    SendText("forthcoming" . A_EndChar)
-    AC_Reg("fourth coming", "forthcoming")
-}
-:C:fourth with::{
-    if AC_IsDisabled("fourth with") {
-        SendText("fourth with" . A_EndChar)
-        return
-    }
-    SendText("forth with" . A_EndChar)
-    AC_Reg("fourth with", "forth with")
 }
 :C:fourti::{
     if AC_IsDisabled("fourti") {
@@ -31451,14 +26635,6 @@
     SendText("formi" . A_EndChar)
     AC_Reg("fromi", "formi")
 }
-:C:fromt he::{
-    if AC_IsDisabled("fromt he") {
-        SendText("fromt he" . A_EndChar)
-        return
-    }
-    SendText("from the" . A_EndChar)
-    AC_Reg("fromt he", "from the")
-}
 :C:froniter::{
     if AC_IsDisabled("froniter") {
         SendText("froniter" . A_EndChar)
@@ -31466,14 +26642,6 @@
     }
     SendText("frontier" . A_EndChar)
     AC_Reg("froniter", "frontier")
-}
-:C:frp,::{
-    if AC_IsDisabled("frp,") {
-        SendText("frp," . A_EndChar)
-        return
-    }
-    SendText("from" . A_EndChar)
-    AC_Reg("frp,", "from")
 }
 :C:fthe::{
     if AC_IsDisabled("fthe") {
@@ -31570,14 +26738,6 @@
     }
     SendText("fulfilled" . A_EndChar)
     AC_Reg("fulfiled", "fulfilled")
-}
-:C:full compliment of::{
-    if AC_IsDisabled("full compliment of") {
-        SendText("full compliment of" . A_EndChar)
-        return
-    }
-    SendText("full complement of" . A_EndChar)
-    AC_Reg("full compliment of", "full complement of")
 }
 :C:fullfill::{
     if AC_IsDisabled("fullfill") {
@@ -32043,14 +27203,6 @@
     SendText("guarantees" . A_EndChar)
     AC_Reg("gaurentees", "guarantees")
 }
-:C:gave advise::{
-    if AC_IsDisabled("gave advise") {
-        SendText("gave advise" . A_EndChar)
-        return
-    }
-    SendText("gave advice" . A_EndChar)
-    AC_Reg("gave advise", "gave advice")
-}
 :C:geht::{
     if AC_IsDisabled("geht") {
         SendText("geht" . A_EndChar)
@@ -32195,22 +27347,6 @@
     SendText("gestib" . A_EndChar)
     AC_Reg("gestab", "gestib")
 }
-:C:get setup::{
-    if AC_IsDisabled("get setup") {
-        SendText("get setup" . A_EndChar)
-        return
-    }
-    SendText("get set up" . A_EndChar)
-    AC_Reg("get setup", "get set up")
-}
-:C:get use to::{
-    if AC_IsDisabled("get use to") {
-        SendText("get use to" . A_EndChar)
-        return
-    }
-    SendText("get used to" . A_EndChar)
-    AC_Reg("get use to", "get used to")
-}
 :C:geting::{
     if AC_IsDisabled("geting") {
         SendText("geting" . A_EndChar)
@@ -32218,14 +27354,6 @@
     }
     SendText("getting" . A_EndChar)
     AC_Reg("geting", "getting")
-}
-:C:gets it's::{
-    if AC_IsDisabled("gets it's") {
-        SendText("gets it's" . A_EndChar)
-        return
-    }
-    SendText("gets its" . A_EndChar)
-    AC_Reg("gets it's", "gets its")
 }
 :C:getted::{
     if AC_IsDisabled("getted") {
@@ -32242,14 +27370,6 @@
     }
     SendText("getting" . A_EndChar)
     AC_Reg("gettin", "getting")
-}
-:C:getting use to::{
-    if AC_IsDisabled("getting use to") {
-        SendText("getting use to" . A_EndChar)
-        return
-    }
-    SendText("getting used to" . A_EndChar)
-    AC_Reg("getting use to", "getting used to")
 }
 :C:gewurztraminer::{
     if AC_IsDisabled("gewurztraminer") {
@@ -32346,22 +27466,6 @@
     }
     SendText("gyrat" . A_EndChar)
     AC_Reg("girat", "gyrat")
-}
-:C:give advise::{
-    if AC_IsDisabled("give advise") {
-        SendText("give advise" . A_EndChar)
-        return
-    }
-    SendText("give advice" . A_EndChar)
-    AC_Reg("give advise", "give advice")
-}
-:C:gives advise::{
-    if AC_IsDisabled("gives advise") {
-        SendText("gives advise" . A_EndChar)
-        return
-    }
-    SendText("gives advice" . A_EndChar)
-    AC_Reg("gives advise", "gives advice")
 }
 :C:gixt::{
     if AC_IsDisabled("gixt") {
@@ -32539,14 +27643,6 @@
     SendText("going" . A_EndChar)
     AC_Reg("goign", "going")
 }
-:C:going threw::{
-    if AC_IsDisabled("going threw") {
-        SendText("going threw" . A_EndChar)
-        return
-    }
-    SendText("going through" . A_EndChar)
-    AC_Reg("going threw", "going through")
-}
 :C:gonig::{
     if AC_IsDisabled("gonig") {
         SendText("gonig" . A_EndChar)
@@ -32586,38 +27682,6 @@
     }
     SendText("ground" . A_EndChar)
     AC_Reg("gorund", "ground")
-}
-:C:got ran::{
-    if AC_IsDisabled("got ran") {
-        SendText("got ran" . A_EndChar)
-        return
-    }
-    SendText("got run" . A_EndChar)
-    AC_Reg("got ran", "got run")
-}
-:C:got setup::{
-    if AC_IsDisabled("got setup") {
-        SendText("got setup" . A_EndChar)
-        return
-    }
-    SendText("got set up" . A_EndChar)
-    AC_Reg("got setup", "got set up")
-}
-:C:got shutdown::{
-    if AC_IsDisabled("got shutdown") {
-        SendText("got shutdown" . A_EndChar)
-        return
-    }
-    SendText("got shut down" . A_EndChar)
-    AC_Reg("got shutdown", "got shut down")
-}
-:C:got shutout::{
-    if AC_IsDisabled("got shutout") {
-        SendText("got shutout" . A_EndChar)
-        return
-    }
-    SendText("got shut out" . A_EndChar)
-    AC_Reg("got shutout", "got shut out")
 }
 :C:gothenberg::{
     if AC_IsDisabled("gothenberg") {
@@ -32787,14 +27851,6 @@
     SendText("graded" . A_EndChar)
     AC_Reg("gradded", "graded")
 }
-:C:grading principal::{
-    if AC_IsDisabled("grading principal") {
-        SendText("grading principal" . A_EndChar)
-        return
-    }
-    SendText("grading principle" . A_EndChar)
-    AC_Reg("grading principal", "grading principle")
-}
 :C:graet::{
     if AC_IsDisabled("graet") {
         SendText("graet" . A_EndChar)
@@ -32802,14 +27858,6 @@
     }
     SendText("great" . A_EndChar)
     AC_Reg("graet", "great")
-}
-:C:grafenberg spot::{
-    if AC_IsDisabled("grafenberg spot") {
-        SendText("grafenberg spot" . A_EndChar)
-        return
-    }
-    SendText("Gräfenberg spot" . A_EndChar)
-    AC_Reg("grafenberg spot", "Gräfenberg spot")
 }
 :C:graffitti::{
     if AC_IsDisabled("graffitti") {
@@ -32883,14 +27931,6 @@
     SendText("grade" . A_EndChar)
     AC_Reg("greae", "grade")
 }
-:C:greater then::{
-    if AC_IsDisabled("greater then") {
-        SendText("greater then" . A_EndChar)
-        return
-    }
-    SendText("greater than" . A_EndChar)
-    AC_Reg("greater then", "greater than")
-}
 :C:greatful::{
     if AC_IsDisabled("greatful") {
         SendText("greatful" . A_EndChar)
@@ -32939,22 +27979,6 @@
     SendText("griddles" . A_EndChar)
     AC_Reg("gridles", "griddles")
 }
-:C:grin and bare it::{
-    if AC_IsDisabled("grin and bare it") {
-        SendText("grin and bare it" . A_EndChar)
-        return
-    }
-    SendText("grin and bear it" . A_EndChar)
-    AC_Reg("grin and bare it", "grin and bear it")
-}
-:C:grizzly details::{
-    if AC_IsDisabled("grizzly details") {
-        SendText("grizzly details" . A_EndChar)
-        return
-    }
-    SendText("grisly details" . A_EndChar)
-    AC_Reg("grizzly details", "grisly details")
-}
 :C:gropu::{
     if AC_IsDisabled("gropu") {
         SendText("gropu" . A_EndChar)
@@ -32962,14 +27986,6 @@
     }
     SendText("group" . A_EndChar)
     AC_Reg("gropu", "group")
-}
-:C:ground work::{
-    if AC_IsDisabled("ground work") {
-        SendText("ground work" . A_EndChar)
-        return
-    }
-    SendText("groundwork" . A_EndChar)
-    AC_Reg("ground work", "groundwork")
 }
 :C:grouth::{
     if AC_IsDisabled("grouth") {
@@ -33147,14 +28163,6 @@
     SendText("guerrillas" . A_EndChar)
     AC_Reg("guerrilas", "guerrillas")
 }
-:C:guest stared::{
-    if AC_IsDisabled("guest stared") {
-        SendText("guest stared" . A_EndChar)
-        return
-    }
-    SendText("guest-starred" . A_EndChar)
-    AC_Reg("guest stared", "guest-starred")
-}
 :C:guiden::{
     if AC_IsDisabled("guiden") {
         SendText("guiden" . A_EndChar)
@@ -33170,14 +28178,6 @@
     }
     SendText("guidance" . A_EndChar)
     AC_Reg("guidence", "guidance")
-}
-:C:guiding principal::{
-    if AC_IsDisabled("guiding principal") {
-        SendText("guiding principal" . A_EndChar)
-        return
-    }
-    SendText("guiding principle" . A_EndChar)
-    AC_Reg("guiding principal", "guiding principle")
 }
 :C:guidl::{
     if AC_IsDisabled("guidl") {
@@ -33371,510 +28371,6 @@
     SendText("hare" . A_EndChar)
     AC_Reg("hace", "hare")
 }
-:C:had arose::{
-    if AC_IsDisabled("had arose") {
-        SendText("had arose" . A_EndChar)
-        return
-    }
-    SendText("had arisen" . A_EndChar)
-    AC_Reg("had arose", "had arisen")
-}
-:C:had awoke::{
-    if AC_IsDisabled("had awoke") {
-        SendText("had awoke" . A_EndChar)
-        return
-    }
-    SendText("had awoken" . A_EndChar)
-    AC_Reg("had awoke", "had awoken")
-}
-:C:had became::{
-    if AC_IsDisabled("had became") {
-        SendText("had became" . A_EndChar)
-        return
-    }
-    SendText("had become" . A_EndChar)
-    AC_Reg("had became", "had become")
-}
-:C:had began::{
-    if AC_IsDisabled("had began") {
-        SendText("had began" . A_EndChar)
-        return
-    }
-    SendText("had begun" . A_EndChar)
-    AC_Reg("had began", "had begun")
-}
-:C:had being::{
-    if AC_IsDisabled("had being") {
-        SendText("had being" . A_EndChar)
-        return
-    }
-    SendText("had been" . A_EndChar)
-    AC_Reg("had being", "had been")
-}
-:C:had broke::{
-    if AC_IsDisabled("had broke") {
-        SendText("had broke" . A_EndChar)
-        return
-    }
-    SendText("had broken" . A_EndChar)
-    AC_Reg("had broke", "had broken")
-}
-:C:had brung::{
-    if AC_IsDisabled("had brung") {
-        SendText("had brung" . A_EndChar)
-        return
-    }
-    SendText("had brought" . A_EndChar)
-    AC_Reg("had brung", "had brought")
-}
-:C:had came::{
-    if AC_IsDisabled("had came") {
-        SendText("had came" . A_EndChar)
-        return
-    }
-    SendText("had come" . A_EndChar)
-    AC_Reg("had came", "had come")
-}
-:C:had chose::{
-    if AC_IsDisabled("had chose") {
-        SendText("had chose" . A_EndChar)
-        return
-    }
-    SendText("had chosen" . A_EndChar)
-    AC_Reg("had chose", "had chosen")
-}
-:C:had comeback::{
-    if AC_IsDisabled("had comeback") {
-        SendText("had comeback" . A_EndChar)
-        return
-    }
-    SendText("had come back" . A_EndChar)
-    AC_Reg("had comeback", "had come back")
-}
-:C:had cut-off::{
-    if AC_IsDisabled("had cut-off") {
-        SendText("had cut-off" . A_EndChar)
-        return
-    }
-    SendText("had cut off" . A_EndChar)
-    AC_Reg("had cut-off", "had cut off")
-}
-:C:had did::{
-    if AC_IsDisabled("had did") {
-        SendText("had did" . A_EndChar)
-        return
-    }
-    SendText("had done" . A_EndChar)
-    AC_Reg("had did", "had done")
-}
-:C:had drank::{
-    if AC_IsDisabled("had drank") {
-        SendText("had drank" . A_EndChar)
-        return
-    }
-    SendText("had drunk" . A_EndChar)
-    AC_Reg("had drank", "had drunk")
-}
-:C:had drew::{
-    if AC_IsDisabled("had drew") {
-        SendText("had drew" . A_EndChar)
-        return
-    }
-    SendText("had drawn" . A_EndChar)
-    AC_Reg("had drew", "had drawn")
-}
-:C:had drove::{
-    if AC_IsDisabled("had drove") {
-        SendText("had drove" . A_EndChar)
-        return
-    }
-    SendText("had driven" . A_EndChar)
-    AC_Reg("had drove", "had driven")
-}
-:C:had fell::{
-    if AC_IsDisabled("had fell") {
-        SendText("had fell" . A_EndChar)
-        return
-    }
-    SendText("had fallen" . A_EndChar)
-    AC_Reg("had fell", "had fallen")
-}
-:C:had flew::{
-    if AC_IsDisabled("had flew") {
-        SendText("had flew" . A_EndChar)
-        return
-    }
-    SendText("had flown" . A_EndChar)
-    AC_Reg("had flew", "had flown")
-}
-:C:had forbad::{
-    if AC_IsDisabled("had forbad") {
-        SendText("had forbad" . A_EndChar)
-        return
-    }
-    SendText("had forbidden" . A_EndChar)
-    AC_Reg("had forbad", "had forbidden")
-}
-:C:had forbade::{
-    if AC_IsDisabled("had forbade") {
-        SendText("had forbade" . A_EndChar)
-        return
-    }
-    SendText("had forbidden" . A_EndChar)
-    AC_Reg("had forbade", "had forbidden")
-}
-:C:had gave::{
-    if AC_IsDisabled("had gave") {
-        SendText("had gave" . A_EndChar)
-        return
-    }
-    SendText("had given" . A_EndChar)
-    AC_Reg("had gave", "had given")
-}
-:C:had grew::{
-    if AC_IsDisabled("had grew") {
-        SendText("had grew" . A_EndChar)
-        return
-    }
-    SendText("had grown" . A_EndChar)
-    AC_Reg("had grew", "had grown")
-}
-:C:had it's::{
-    if AC_IsDisabled("had it's") {
-        SendText("had it's" . A_EndChar)
-        return
-    }
-    SendText("had its" . A_EndChar)
-    AC_Reg("had it's", "had its")
-}
-:C:had knew::{
-    if AC_IsDisabled("had knew") {
-        SendText("had knew" . A_EndChar)
-        return
-    }
-    SendText("had known" . A_EndChar)
-    AC_Reg("had knew", "had known")
-}
-:C:had know::{
-    if AC_IsDisabled("had know") {
-        SendText("had know" . A_EndChar)
-        return
-    }
-    SendText("had known" . A_EndChar)
-    AC_Reg("had know", "had known")
-}
-:C:had lead for::{
-    if AC_IsDisabled("had lead for") {
-        SendText("had lead for" . A_EndChar)
-        return
-    }
-    SendText("had led for" . A_EndChar)
-    AC_Reg("had lead for", "had led for")
-}
-:C:had lead the::{
-    if AC_IsDisabled("had lead the") {
-        SendText("had lead the" . A_EndChar)
-        return
-    }
-    SendText("had led the" . A_EndChar)
-    AC_Reg("had lead the", "had led the")
-}
-:C:had lead to::{
-    if AC_IsDisabled("had lead to") {
-        SendText("had lead to" . A_EndChar)
-        return
-    }
-    SendText("had led to" . A_EndChar)
-    AC_Reg("had lead to", "had led to")
-}
-:C:had meet::{
-    if AC_IsDisabled("had meet") {
-        SendText("had meet" . A_EndChar)
-        return
-    }
-    SendText("had met" . A_EndChar)
-    AC_Reg("had meet", "had met")
-}
-:C:had mislead::{
-    if AC_IsDisabled("had mislead") {
-        SendText("had mislead" . A_EndChar)
-        return
-    }
-    SendText("had misled" . A_EndChar)
-    AC_Reg("had mislead", "had misled")
-}
-:C:had overcame::{
-    if AC_IsDisabled("had overcame") {
-        SendText("had overcame" . A_EndChar)
-        return
-    }
-    SendText("had overcome" . A_EndChar)
-    AC_Reg("had overcame", "had overcome")
-}
-:C:had overran::{
-    if AC_IsDisabled("had overran") {
-        SendText("had overran" . A_EndChar)
-        return
-    }
-    SendText("had overrun" . A_EndChar)
-    AC_Reg("had overran", "had overrun")
-}
-:C:had overtook::{
-    if AC_IsDisabled("had overtook") {
-        SendText("had overtook" . A_EndChar)
-        return
-    }
-    SendText("had overtaken" . A_EndChar)
-    AC_Reg("had overtook", "had overtaken")
-}
-:C:had plead::{
-    if AC_IsDisabled("had plead") {
-        SendText("had plead" . A_EndChar)
-        return
-    }
-    SendText("had pleaded" . A_EndChar)
-    AC_Reg("had plead", "had pleaded")
-}
-:C:had ran::{
-    if AC_IsDisabled("had ran") {
-        SendText("had ran" . A_EndChar)
-        return
-    }
-    SendText("had run" . A_EndChar)
-    AC_Reg("had ran", "had run")
-}
-:C:had rang::{
-    if AC_IsDisabled("had rang") {
-        SendText("had rang" . A_EndChar)
-        return
-    }
-    SendText("had rung" . A_EndChar)
-    AC_Reg("had rang", "had rung")
-}
-:C:had rode::{
-    if AC_IsDisabled("had rode") {
-        SendText("had rode" . A_EndChar)
-        return
-    }
-    SendText("had ridden" . A_EndChar)
-    AC_Reg("had rode", "had ridden")
-}
-:C:had runaway::{
-    if AC_IsDisabled("had runaway") {
-        SendText("had runaway" . A_EndChar)
-        return
-    }
-    SendText("had run away" . A_EndChar)
-    AC_Reg("had runaway", "had run away")
-}
-:C:had sang::{
-    if AC_IsDisabled("had sang") {
-        SendText("had sang" . A_EndChar)
-        return
-    }
-    SendText("had sung" . A_EndChar)
-    AC_Reg("had sang", "had sung")
-}
-:C:had send::{
-    if AC_IsDisabled("had send") {
-        SendText("had send" . A_EndChar)
-        return
-    }
-    SendText("had sent" . A_EndChar)
-    AC_Reg("had send", "had sent")
-}
-:C:had set-up::{
-    if AC_IsDisabled("had set-up") {
-        SendText("had set-up" . A_EndChar)
-        return
-    }
-    SendText("had set up" . A_EndChar)
-    AC_Reg("had set-up", "had set up")
-}
-:C:had setup::{
-    if AC_IsDisabled("had setup") {
-        SendText("had setup" . A_EndChar)
-        return
-    }
-    SendText("had set up" . A_EndChar)
-    AC_Reg("had setup", "had set up")
-}
-:C:had shook::{
-    if AC_IsDisabled("had shook") {
-        SendText("had shook" . A_EndChar)
-        return
-    }
-    SendText("had shaken" . A_EndChar)
-    AC_Reg("had shook", "had shaken")
-}
-:C:had shut-down::{
-    if AC_IsDisabled("had shut-down") {
-        SendText("had shut-down" . A_EndChar)
-        return
-    }
-    SendText("had shut down" . A_EndChar)
-    AC_Reg("had shut-down", "had shut down")
-}
-:C:had shutdown::{
-    if AC_IsDisabled("had shutdown") {
-        SendText("had shutdown" . A_EndChar)
-        return
-    }
-    SendText("had shut down" . A_EndChar)
-    AC_Reg("had shutdown", "had shut down")
-}
-:C:had shutout::{
-    if AC_IsDisabled("had shutout") {
-        SendText("had shutout" . A_EndChar)
-        return
-    }
-    SendText("had shut out" . A_EndChar)
-    AC_Reg("had shutout", "had shut out")
-}
-:C:had sowed::{
-    if AC_IsDisabled("had sowed") {
-        SendText("had sowed" . A_EndChar)
-        return
-    }
-    SendText("had sown" . A_EndChar)
-    AC_Reg("had sowed", "had sown")
-}
-:C:had spend::{
-    if AC_IsDisabled("had spend") {
-        SendText("had spend" . A_EndChar)
-        return
-    }
-    SendText("had spent" . A_EndChar)
-    AC_Reg("had spend", "had spent")
-}
-:C:had spoke::{
-    if AC_IsDisabled("had spoke") {
-        SendText("had spoke" . A_EndChar)
-        return
-    }
-    SendText("had spoken" . A_EndChar)
-    AC_Reg("had spoke", "had spoken")
-}
-:C:had sprang::{
-    if AC_IsDisabled("had sprang") {
-        SendText("had sprang" . A_EndChar)
-        return
-    }
-    SendText("had sprung" . A_EndChar)
-    AC_Reg("had sprang", "had sprung")
-}
-:C:had swam::{
-    if AC_IsDisabled("had swam") {
-        SendText("had swam" . A_EndChar)
-        return
-    }
-    SendText("had swum" . A_EndChar)
-    AC_Reg("had swam", "had swum")
-}
-:C:had threw::{
-    if AC_IsDisabled("had threw") {
-        SendText("had threw" . A_EndChar)
-        return
-    }
-    SendText("had thrown" . A_EndChar)
-    AC_Reg("had threw", "had thrown")
-}
-:C:had throve::{
-    if AC_IsDisabled("had throve") {
-        SendText("had throve" . A_EndChar)
-        return
-    }
-    SendText("had thriven" . A_EndChar)
-    AC_Reg("had throve", "had thriven")
-}
-:C:had thunk::{
-    if AC_IsDisabled("had thunk") {
-        SendText("had thunk" . A_EndChar)
-        return
-    }
-    SendText("had thought" . A_EndChar)
-    AC_Reg("had thunk", "had thought")
-}
-:C:had to much::{
-    if AC_IsDisabled("had to much") {
-        SendText("had to much" . A_EndChar)
-        return
-    }
-    SendText("had too much" . A_EndChar)
-    AC_Reg("had to much", "had too much")
-}
-:C:had to used::{
-    if AC_IsDisabled("had to used") {
-        SendText("had to used" . A_EndChar)
-        return
-    }
-    SendText("had to use" . A_EndChar)
-    AC_Reg("had to used", "had to use")
-}
-:C:had took::{
-    if AC_IsDisabled("had took") {
-        SendText("had took" . A_EndChar)
-        return
-    }
-    SendText("had taken" . A_EndChar)
-    AC_Reg("had took", "had taken")
-}
-:C:had tore::{
-    if AC_IsDisabled("had tore") {
-        SendText("had tore" . A_EndChar)
-        return
-    }
-    SendText("had torn" . A_EndChar)
-    AC_Reg("had tore", "had torn")
-}
-:C:had undertook::{
-    if AC_IsDisabled("had undertook") {
-        SendText("had undertook" . A_EndChar)
-        return
-    }
-    SendText("had undertaken" . A_EndChar)
-    AC_Reg("had undertook", "had undertaken")
-}
-:C:had underwent::{
-    if AC_IsDisabled("had underwent") {
-        SendText("had underwent" . A_EndChar)
-        return
-    }
-    SendText("had undergone" . A_EndChar)
-    AC_Reg("had underwent", "had undergone")
-}
-:C:had went::{
-    if AC_IsDisabled("had went") {
-        SendText("had went" . A_EndChar)
-        return
-    }
-    SendText("had gone" . A_EndChar)
-    AC_Reg("had went", "had gone")
-}
-:C:had woke::{
-    if AC_IsDisabled("had woke") {
-        SendText("had woke" . A_EndChar)
-        return
-    }
-    SendText("had woken" . A_EndChar)
-    AC_Reg("had woke", "had woken")
-}
-:C:had wore::{
-    if AC_IsDisabled("had wore") {
-        SendText("had wore" . A_EndChar)
-        return
-    }
-    SendText("had worn" . A_EndChar)
-    AC_Reg("had wore", "had worn")
-}
-:C:had wrote::{
-    if AC_IsDisabled("had wrote") {
-        SendText("had wrote" . A_EndChar)
-        return
-    }
-    SendText("had written" . A_EndChar)
-    AC_Reg("had wrote", "had written")
-}
 :C:hadbeen::{
     if AC_IsDisabled("hadbeen") {
         SendText("hadbeen" . A_EndChar)
@@ -33890,14 +28386,6 @@
     }
     SendText("hadn't" . A_EndChar)
     AC_Reg("hadn'nt", "hadn't")
-}
-:C:hadn't went::{
-    if AC_IsDisabled("hadn't went") {
-        SendText("hadn't went" . A_EndChar)
-        return
-    }
-    SendText("hadn't gone" . A_EndChar)
-    AC_Reg("hadn't went", "hadn't gone")
 }
 :C:hadnt::{
     if AC_IsDisabled("hadnt") {
@@ -33947,14 +28435,6 @@
     SendText("hilarious" . A_EndChar)
     AC_Reg("halarious", "hilarious")
 }
-:C:half and hour::{
-    if AC_IsDisabled("half and hour") {
-        SendText("half and hour" . A_EndChar)
-        return
-    }
-    SendText("half an hour" . A_EndChar)
-    AC_Reg("half and hour", "half an hour")
-}
 :C:hallowean::{
     if AC_IsDisabled("hallowean") {
         SendText("hallowean" . A_EndChar)
@@ -33978,14 +28458,6 @@
     }
     SendText("help" . A_EndChar)
     AC_Reg("halp", "help")
-}
-:C:hand the reigns::{
-    if AC_IsDisabled("hand the reigns") {
-        SendText("hand the reigns" . A_EndChar)
-        return
-    }
-    SendText("hand the reins" . A_EndChar)
-    AC_Reg("hand the reigns", "hand the reins")
 }
 :C:haneg::{
     if AC_IsDisabled("haneg") {
@@ -34211,366 +28683,6 @@
     SendText("harassments" . A_EndChar)
     AC_Reg("harrassments", "harassments")
 }
-:C:has arose::{
-    if AC_IsDisabled("has arose") {
-        SendText("has arose" . A_EndChar)
-        return
-    }
-    SendText("has arisen" . A_EndChar)
-    AC_Reg("has arose", "has arisen")
-}
-:C:has awoke::{
-    if AC_IsDisabled("has awoke") {
-        SendText("has awoke" . A_EndChar)
-        return
-    }
-    SendText("has awoken" . A_EndChar)
-    AC_Reg("has awoke", "has awoken")
-}
-:C:has bore::{
-    if AC_IsDisabled("has bore") {
-        SendText("has bore" . A_EndChar)
-        return
-    }
-    SendText("has borne" . A_EndChar)
-    AC_Reg("has bore", "has borne")
-}
-:C:has broke::{
-    if AC_IsDisabled("has broke") {
-        SendText("has broke" . A_EndChar)
-        return
-    }
-    SendText("has broken" . A_EndChar)
-    AC_Reg("has broke", "has broken")
-}
-:C:has brung::{
-    if AC_IsDisabled("has brung") {
-        SendText("has brung" . A_EndChar)
-        return
-    }
-    SendText("has brought" . A_EndChar)
-    AC_Reg("has brung", "has brought")
-}
-:C:has build::{
-    if AC_IsDisabled("has build") {
-        SendText("has build" . A_EndChar)
-        return
-    }
-    SendText("has built" . A_EndChar)
-    AC_Reg("has build", "has built")
-}
-:C:has came::{
-    if AC_IsDisabled("has came") {
-        SendText("has came" . A_EndChar)
-        return
-    }
-    SendText("has come" . A_EndChar)
-    AC_Reg("has came", "has come")
-}
-:C:has chose::{
-    if AC_IsDisabled("has chose") {
-        SendText("has chose" . A_EndChar)
-        return
-    }
-    SendText("has chosen" . A_EndChar)
-    AC_Reg("has chose", "has chosen")
-}
-:C:has cut-off::{
-    if AC_IsDisabled("has cut-off") {
-        SendText("has cut-off" . A_EndChar)
-        return
-    }
-    SendText("has cut off" . A_EndChar)
-    AC_Reg("has cut-off", "has cut off")
-}
-:C:has did::{
-    if AC_IsDisabled("has did") {
-        SendText("has did" . A_EndChar)
-        return
-    }
-    SendText("has done" . A_EndChar)
-    AC_Reg("has did", "has done")
-}
-:C:has drank::{
-    if AC_IsDisabled("has drank") {
-        SendText("has drank" . A_EndChar)
-        return
-    }
-    SendText("has drunk" . A_EndChar)
-    AC_Reg("has drank", "has drunk")
-}
-:C:has drew::{
-    if AC_IsDisabled("has drew") {
-        SendText("has drew" . A_EndChar)
-        return
-    }
-    SendText("has drawn" . A_EndChar)
-    AC_Reg("has drew", "has drawn")
-}
-:C:has drove::{
-    if AC_IsDisabled("has drove") {
-        SendText("has drove" . A_EndChar)
-        return
-    }
-    SendText("has driven" . A_EndChar)
-    AC_Reg("has drove", "has driven")
-}
-:C:has fell::{
-    if AC_IsDisabled("has fell") {
-        SendText("has fell" . A_EndChar)
-        return
-    }
-    SendText("has fallen" . A_EndChar)
-    AC_Reg("has fell", "has fallen")
-}
-:C:has flew::{
-    if AC_IsDisabled("has flew") {
-        SendText("has flew" . A_EndChar)
-        return
-    }
-    SendText("has flown" . A_EndChar)
-    AC_Reg("has flew", "has flown")
-}
-:C:has forbad::{
-    if AC_IsDisabled("has forbad") {
-        SendText("has forbad" . A_EndChar)
-        return
-    }
-    SendText("has forbidden" . A_EndChar)
-    AC_Reg("has forbad", "has forbidden")
-}
-:C:has forbade::{
-    if AC_IsDisabled("has forbade") {
-        SendText("has forbade" . A_EndChar)
-        return
-    }
-    SendText("has forbidden" . A_EndChar)
-    AC_Reg("has forbade", "has forbidden")
-}
-:C:has gave::{
-    if AC_IsDisabled("has gave") {
-        SendText("has gave" . A_EndChar)
-        return
-    }
-    SendText("has given" . A_EndChar)
-    AC_Reg("has gave", "has given")
-}
-:C:has having::{
-    if AC_IsDisabled("has having") {
-        SendText("has having" . A_EndChar)
-        return
-    }
-    SendText("as having" . A_EndChar)
-    AC_Reg("has having", "as having")
-}
-:C:has it's::{
-    if AC_IsDisabled("has it's") {
-        SendText("has it's" . A_EndChar)
-        return
-    }
-    SendText("has its" . A_EndChar)
-    AC_Reg("has it's", "has its")
-}
-:C:has lead the::{
-    if AC_IsDisabled("has lead the") {
-        SendText("has lead the" . A_EndChar)
-        return
-    }
-    SendText("has led the" . A_EndChar)
-    AC_Reg("has lead the", "has led the")
-}
-:C:has lead to::{
-    if AC_IsDisabled("has lead to") {
-        SendText("has lead to" . A_EndChar)
-        return
-    }
-    SendText("has led to" . A_EndChar)
-    AC_Reg("has lead to", "has led to")
-}
-:C:has meet::{
-    if AC_IsDisabled("has meet") {
-        SendText("has meet" . A_EndChar)
-        return
-    }
-    SendText("has met" . A_EndChar)
-    AC_Reg("has meet", "has met")
-}
-:C:has mislead::{
-    if AC_IsDisabled("has mislead") {
-        SendText("has mislead" . A_EndChar)
-        return
-    }
-    SendText("has misled" . A_EndChar)
-    AC_Reg("has mislead", "has misled")
-}
-:C:has overcame::{
-    if AC_IsDisabled("has overcame") {
-        SendText("has overcame" . A_EndChar)
-        return
-    }
-    SendText("has overcome" . A_EndChar)
-    AC_Reg("has overcame", "has overcome")
-}
-:C:has plead::{
-    if AC_IsDisabled("has plead") {
-        SendText("has plead" . A_EndChar)
-        return
-    }
-    SendText("has pleaded" . A_EndChar)
-    AC_Reg("has plead", "has pleaded")
-}
-:C:has ran::{
-    if AC_IsDisabled("has ran") {
-        SendText("has ran" . A_EndChar)
-        return
-    }
-    SendText("has run" . A_EndChar)
-    AC_Reg("has ran", "has run")
-}
-:C:has rang::{
-    if AC_IsDisabled("has rang") {
-        SendText("has rang" . A_EndChar)
-        return
-    }
-    SendText("has rung" . A_EndChar)
-    AC_Reg("has rang", "has rung")
-}
-:C:has sang::{
-    if AC_IsDisabled("has sang") {
-        SendText("has sang" . A_EndChar)
-        return
-    }
-    SendText("has sung" . A_EndChar)
-    AC_Reg("has sang", "has sung")
-}
-:C:has set-up::{
-    if AC_IsDisabled("has set-up") {
-        SendText("has set-up" . A_EndChar)
-        return
-    }
-    SendText("has set up" . A_EndChar)
-    AC_Reg("has set-up", "has set up")
-}
-:C:has setup::{
-    if AC_IsDisabled("has setup") {
-        SendText("has setup" . A_EndChar)
-        return
-    }
-    SendText("has set up" . A_EndChar)
-    AC_Reg("has setup", "has set up")
-}
-:C:has shook::{
-    if AC_IsDisabled("has shook") {
-        SendText("has shook" . A_EndChar)
-        return
-    }
-    SendText("has shaken" . A_EndChar)
-    AC_Reg("has shook", "has shaken")
-}
-:C:has spoke::{
-    if AC_IsDisabled("has spoke") {
-        SendText("has spoke" . A_EndChar)
-        return
-    }
-    SendText("has spoken" . A_EndChar)
-    AC_Reg("has spoke", "has spoken")
-}
-:C:has sprang::{
-    if AC_IsDisabled("has sprang") {
-        SendText("has sprang" . A_EndChar)
-        return
-    }
-    SendText("has sprung" . A_EndChar)
-    AC_Reg("has sprang", "has sprung")
-}
-:C:has swam::{
-    if AC_IsDisabled("has swam") {
-        SendText("has swam" . A_EndChar)
-        return
-    }
-    SendText("has swum" . A_EndChar)
-    AC_Reg("has swam", "has swum")
-}
-:C:has threw::{
-    if AC_IsDisabled("has threw") {
-        SendText("has threw" . A_EndChar)
-        return
-    }
-    SendText("has thrown" . A_EndChar)
-    AC_Reg("has threw", "has thrown")
-}
-:C:has throve::{
-    if AC_IsDisabled("has throve") {
-        SendText("has throve" . A_EndChar)
-        return
-    }
-    SendText("has thrived" . A_EndChar)
-    AC_Reg("has throve", "has thrived")
-}
-:C:has thunk::{
-    if AC_IsDisabled("has thunk") {
-        SendText("has thunk" . A_EndChar)
-        return
-    }
-    SendText("has thought" . A_EndChar)
-    AC_Reg("has thunk", "has thought")
-}
-:C:has took::{
-    if AC_IsDisabled("has took") {
-        SendText("has took" . A_EndChar)
-        return
-    }
-    SendText("has taken" . A_EndChar)
-    AC_Reg("has took", "has taken")
-}
-:C:has trod::{
-    if AC_IsDisabled("has trod") {
-        SendText("has trod" . A_EndChar)
-        return
-    }
-    SendText("has trodden" . A_EndChar)
-    AC_Reg("has trod", "has trodden")
-}
-:C:has undertook::{
-    if AC_IsDisabled("has undertook") {
-        SendText("has undertook" . A_EndChar)
-        return
-    }
-    SendText("has undertaken" . A_EndChar)
-    AC_Reg("has undertook", "has undertaken")
-}
-:C:has underwent::{
-    if AC_IsDisabled("has underwent") {
-        SendText("has underwent" . A_EndChar)
-        return
-    }
-    SendText("has undergone" . A_EndChar)
-    AC_Reg("has underwent", "has undergone")
-}
-:C:has went::{
-    if AC_IsDisabled("has went") {
-        SendText("has went" . A_EndChar)
-        return
-    }
-    SendText("has gone" . A_EndChar)
-    AC_Reg("has went", "has gone")
-}
-:C:has woke::{
-    if AC_IsDisabled("has woke") {
-        SendText("has woke" . A_EndChar)
-        return
-    }
-    SendText("has woken" . A_EndChar)
-    AC_Reg("has woke", "has woken")
-}
-:C:has wrote::{
-    if AC_IsDisabled("has wrote") {
-        SendText("has wrote" . A_EndChar)
-        return
-    }
-    SendText("has written" . A_EndChar)
-    AC_Reg("has wrote", "has written")
-}
 :C:hasbeen::{
     if AC_IsDisabled("hasbeen") {
         SendText("hasbeen" . A_EndChar)
@@ -34618,110 +28730,6 @@
     }
     SendText("Haitian" . A_EndChar)
     AC_Reg("hatian", "Haitian")
-}
-:C:have drank::{
-    if AC_IsDisabled("have drank") {
-        SendText("have drank" . A_EndChar)
-        return
-    }
-    SendText("have drunk" . A_EndChar)
-    AC_Reg("have drank", "have drunk")
-}
-:C:have it's::{
-    if AC_IsDisabled("have it's") {
-        SendText("have it's" . A_EndChar)
-        return
-    }
-    SendText("have its" . A_EndChar)
-    AC_Reg("have it's", "have its")
-}
-:C:have lead to::{
-    if AC_IsDisabled("have lead to") {
-        SendText("have lead to" . A_EndChar)
-        return
-    }
-    SendText("have led to" . A_EndChar)
-    AC_Reg("have lead to", "have led to")
-}
-:C:have mislead::{
-    if AC_IsDisabled("have mislead") {
-        SendText("have mislead" . A_EndChar)
-        return
-    }
-    SendText("have misled" . A_EndChar)
-    AC_Reg("have mislead", "have misled")
-}
-:C:have ran::{
-    if AC_IsDisabled("have ran") {
-        SendText("have ran" . A_EndChar)
-        return
-    }
-    SendText("have run" . A_EndChar)
-    AC_Reg("have ran", "have run")
-}
-:C:have rang::{
-    if AC_IsDisabled("have rang") {
-        SendText("have rang" . A_EndChar)
-        return
-    }
-    SendText("have rung" . A_EndChar)
-    AC_Reg("have rang", "have rung")
-}
-:C:have sang::{
-    if AC_IsDisabled("have sang") {
-        SendText("have sang" . A_EndChar)
-        return
-    }
-    SendText("have sung" . A_EndChar)
-    AC_Reg("have sang", "have sung")
-}
-:C:have setup::{
-    if AC_IsDisabled("have setup") {
-        SendText("have setup" . A_EndChar)
-        return
-    }
-    SendText("have set up" . A_EndChar)
-    AC_Reg("have setup", "have set up")
-}
-:C:have sprang::{
-    if AC_IsDisabled("have sprang") {
-        SendText("have sprang" . A_EndChar)
-        return
-    }
-    SendText("have sprung" . A_EndChar)
-    AC_Reg("have sprang", "have sprung")
-}
-:C:have swam::{
-    if AC_IsDisabled("have swam") {
-        SendText("have swam" . A_EndChar)
-        return
-    }
-    SendText("have swum" . A_EndChar)
-    AC_Reg("have swam", "have swum")
-}
-:C:have took::{
-    if AC_IsDisabled("have took") {
-        SendText("have took" . A_EndChar)
-        return
-    }
-    SendText("have taken" . A_EndChar)
-    AC_Reg("have took", "have taken")
-}
-:C:have underwent::{
-    if AC_IsDisabled("have underwent") {
-        SendText("have underwent" . A_EndChar)
-        return
-    }
-    SendText("have undergone" . A_EndChar)
-    AC_Reg("have underwent", "have undergone")
-}
-:C:have went::{
-    if AC_IsDisabled("have went") {
-        SendText("have went" . A_EndChar)
-        return
-    }
-    SendText("have gone" . A_EndChar)
-    AC_Reg("have went", "have gone")
 }
 :C:havebeen::{
     if AC_IsDisabled("havebeen") {
@@ -34771,94 +28779,6 @@
     SendText("heaviest" . A_EndChar)
     AC_Reg("haviest", "heaviest")
 }
-:C:having became::{
-    if AC_IsDisabled("having became") {
-        SendText("having became" . A_EndChar)
-        return
-    }
-    SendText("having become" . A_EndChar)
-    AC_Reg("having became", "having become")
-}
-:C:having began::{
-    if AC_IsDisabled("having began") {
-        SendText("having began" . A_EndChar)
-        return
-    }
-    SendText("having begun" . A_EndChar)
-    AC_Reg("having began", "having begun")
-}
-:C:having being::{
-    if AC_IsDisabled("having being") {
-        SendText("having being" . A_EndChar)
-        return
-    }
-    SendText("having been" . A_EndChar)
-    AC_Reg("having being", "having been")
-}
-:C:having it's::{
-    if AC_IsDisabled("having it's") {
-        SendText("having it's" . A_EndChar)
-        return
-    }
-    SendText("having its" . A_EndChar)
-    AC_Reg("having it's", "having its")
-}
-:C:having ran::{
-    if AC_IsDisabled("having ran") {
-        SendText("having ran" . A_EndChar)
-        return
-    }
-    SendText("having run" . A_EndChar)
-    AC_Reg("having ran", "having run")
-}
-:C:having sang::{
-    if AC_IsDisabled("having sang") {
-        SendText("having sang" . A_EndChar)
-        return
-    }
-    SendText("having sung" . A_EndChar)
-    AC_Reg("having sang", "having sung")
-}
-:C:having setup::{
-    if AC_IsDisabled("having setup") {
-        SendText("having setup" . A_EndChar)
-        return
-    }
-    SendText("having set up" . A_EndChar)
-    AC_Reg("having setup", "having set up")
-}
-:C:having swam::{
-    if AC_IsDisabled("having swam") {
-        SendText("having swam" . A_EndChar)
-        return
-    }
-    SendText("having swum" . A_EndChar)
-    AC_Reg("having swam", "having swum")
-}
-:C:having took::{
-    if AC_IsDisabled("having took") {
-        SendText("having took" . A_EndChar)
-        return
-    }
-    SendText("having taken" . A_EndChar)
-    AC_Reg("having took", "having taken")
-}
-:C:having underwent::{
-    if AC_IsDisabled("having underwent") {
-        SendText("having underwent" . A_EndChar)
-        return
-    }
-    SendText("having undergone" . A_EndChar)
-    AC_Reg("having underwent", "having undergone")
-}
-:C:having went::{
-    if AC_IsDisabled("having went") {
-        SendText("having went" . A_EndChar)
-        return
-    }
-    SendText("having gone" . A_EndChar)
-    AC_Reg("having went", "having gone")
-}
 :C:havour::{
     if AC_IsDisabled("havour") {
         SendText("havour" . A_EndChar)
@@ -34874,14 +28794,6 @@
     }
     SendText("happen" . A_EndChar)
     AC_Reg("havpen", "happen")
-}
-:C:hay day::{
-    if AC_IsDisabled("hay day") {
-        SendText("hay day" . A_EndChar)
-        return
-    }
-    SendText("heyday" . A_EndChar)
-    AC_Reg("hay day", "heyday")
 }
 :C:hc::{
     if AC_IsDisabled("hc") {
@@ -34914,86 +28826,6 @@
     }
     SendText("had" . A_EndChar)
     AC_Reg("hda", "had")
-}
-:C:he begun::{
-    if AC_IsDisabled("he begun") {
-        SendText("he begun" . A_EndChar)
-        return
-    }
-    SendText("he began" . A_EndChar)
-    AC_Reg("he begun", "he began")
-}
-:C:he let's::{
-    if AC_IsDisabled("he let's") {
-        SendText("he let's" . A_EndChar)
-        return
-    }
-    SendText("he lets" . A_EndChar)
-    AC_Reg("he let's", "he lets")
-}
-:C:he plead::{
-    if AC_IsDisabled("he plead") {
-        SendText("he plead" . A_EndChar)
-        return
-    }
-    SendText("he pleaded" . A_EndChar)
-    AC_Reg("he plead", "he pleaded")
-}
-:C:he seen::{
-    if AC_IsDisabled("he seen") {
-        SendText("he seen" . A_EndChar)
-        return
-    }
-    SendText("he saw" . A_EndChar)
-    AC_Reg("he seen", "he saw")
-}
-:C:he use to::{
-    if AC_IsDisabled("he use to") {
-        SendText("he use to" . A_EndChar)
-        return
-    }
-    SendText("he used to" . A_EndChar)
-    AC_Reg("he use to", "he used to")
-}
-:C:he's drank::{
-    if AC_IsDisabled("he's drank") {
-        SendText("he's drank" . A_EndChar)
-        return
-    }
-    SendText("he drank" . A_EndChar)
-    AC_Reg("he's drank", "he drank")
-}
-:C:head gear::{
-    if AC_IsDisabled("head gear") {
-        SendText("head gear" . A_EndChar)
-        return
-    }
-    SendText("headgear" . A_EndChar)
-    AC_Reg("head gear", "headgear")
-}
-:C:head quarter::{
-    if AC_IsDisabled("head quarter") {
-        SendText("head quarter" . A_EndChar)
-        return
-    }
-    SendText("headquarter" . A_EndChar)
-    AC_Reg("head quarter", "headquarter")
-}
-:C:head stone::{
-    if AC_IsDisabled("head stone") {
-        SendText("head stone" . A_EndChar)
-        return
-    }
-    SendText("headstone" . A_EndChar)
-    AC_Reg("head stone", "headstone")
-}
-:C:head wear::{
-    if AC_IsDisabled("head wear") {
-        SendText("head wear" . A_EndChar)
-        return
-    }
-    SendText("headwear" . A_EndChar)
-    AC_Reg("head wear", "headwear")
 }
 :C:headquarer::{
     if AC_IsDisabled("headquarer") {
@@ -35042,14 +28874,6 @@
     }
     SendText("healthcare" . A_EndChar)
     AC_Reg("healthercare", "healthcare")
-}
-:C:hear and now::{
-    if AC_IsDisabled("hear and now") {
-        SendText("hear and now" . A_EndChar)
-        return
-    }
-    SendText("here and now" . A_EndChar)
-    AC_Reg("hear and now", "here and now")
 }
 :C:heared::{
     if AC_IsDisabled("heared") {
@@ -35131,14 +28955,6 @@
     SendText("hiev" . A_EndChar)
     AC_Reg("heiv", "hiev")
 }
-:C:held the reigns::{
-    if AC_IsDisabled("held the reigns") {
-        SendText("held the reigns" . A_EndChar)
-        return
-    }
-    SendText("held the reins" . A_EndChar)
-    AC_Reg("held the reigns", "held the reins")
-}
 :C:helf::{
     if AC_IsDisabled("helf") {
         SendText("helf" . A_EndChar)
@@ -35162,14 +28978,6 @@
     }
     SendText("helmet" . A_EndChar)
     AC_Reg("helment", "helmet")
-}
-:C:help and make::{
-    if AC_IsDisabled("help and make") {
-        SendText("help and make" . A_EndChar)
-        return
-    }
-    SendText("help to make" . A_EndChar)
-    AC_Reg("help and make", "help to make")
 }
 :C:helpfull::{
     if AC_IsDisabled("helpfull") {
@@ -35219,22 +29027,6 @@
     SendText("heart" . A_EndChar)
     AC_Reg("herat", "heart")
 }
-:C:here to after::{
-    if AC_IsDisabled("here to after") {
-        SendText("here to after" . A_EndChar)
-        return
-    }
-    SendText("hereafter" . A_EndChar)
-    AC_Reg("here to after", "hereafter")
-}
-:C:here to fore::{
-    if AC_IsDisabled("here to fore") {
-        SendText("here to fore" . A_EndChar)
-        return
-    }
-    SendText("heretofore" . A_EndChar)
-    AC_Reg("here to fore", "heretofore")
-}
 :C:herefor::{
     if AC_IsDisabled("herefor") {
         SendText("herefor" . A_EndChar)
@@ -35250,14 +29042,6 @@
     }
     SendText("here's" . A_EndChar)
     AC_Reg("heres", "here's")
-}
-:C:herf=::{
-    if AC_IsDisabled("herf=") {
-        SendText("herf=" . A_EndChar)
-        return
-    }
-    SendText("href=" . A_EndChar)
-    AC_Reg("herf=", "href=")
 }
 :C:heridit::{
     if AC_IsDisabled("heridit") {
@@ -35603,30 +29387,6 @@
     SendText("highest" . A_EndChar)
     AC_Reg("higest", "highest")
 }
-:C:high site::{
-    if AC_IsDisabled("high site") {
-        SendText("high site" . A_EndChar)
-        return
-    }
-    SendText("hindsight" . A_EndChar)
-    AC_Reg("high site", "hindsight")
-}
-:C:higher then::{
-    if AC_IsDisabled("higher then") {
-        SendText("higher then" . A_EndChar)
-        return
-    }
-    SendText("higher than" . A_EndChar)
-    AC_Reg("higher then", "higher than")
-}
-:C:higher ups::{
-    if AC_IsDisabled("higher ups") {
-        SendText("higher ups" . A_EndChar)
-        return
-    }
-    SendText("higher-ups" . A_EndChar)
-    AC_Reg("higher ups", "higher-ups")
-}
 :C:higns::{
     if AC_IsDisabled("higns") {
         SendText("higns" . A_EndChar)
@@ -35682,14 +29442,6 @@
     }
     SendText("himself" . A_EndChar)
     AC_Reg("himselve", "himself")
-}
-:C:hind site::{
-    if AC_IsDisabled("hind site") {
-        SendText("hind site" . A_EndChar)
-        return
-    }
-    SendText("hindsight" . A_EndChar)
-    AC_Reg("hind site", "hindsight")
 }
 :C:hinderan::{
     if AC_IsDisabled("hinderan") {
@@ -35755,30 +29507,6 @@
     SendText("hippopotamus" . A_EndChar)
     AC_Reg("hipopotamus", "hippopotamus")
 }
-:C:hire learning::{
-    if AC_IsDisabled("hire learning") {
-        SendText("hire learning" . A_EndChar)
-        return
-    }
-    SendText("higher learning" . A_EndChar)
-    AC_Reg("hire learning", "higher learning")
-}
-:C:hire order::{
-    if AC_IsDisabled("hire order") {
-        SendText("hire order" . A_EndChar)
-        return
-    }
-    SendText("higher order" . A_EndChar)
-    AC_Reg("hire order", "higher order")
-}
-:C:his resent::{
-    if AC_IsDisabled("his resent") {
-        SendText("his resent" . A_EndChar)
-        return
-    }
-    SendText("his recent" . A_EndChar)
-    AC_Reg("his resent", "his recent")
-}
 :C:hismelf::{
     if AC_IsDisabled("hismelf") {
         SendText("hismelf" . A_EndChar)
@@ -35802,14 +29530,6 @@
     }
     SendText("historians" . A_EndChar)
     AC_Reg("historicians", "historians")
-}
-:C:hit the breaks::{
-    if AC_IsDisabled("hit the breaks") {
-        SendText("hit the breaks" . A_EndChar)
-        return
-    }
-    SendText("hit the brakes" . A_EndChar)
-    AC_Reg("hit the breaks", "hit the brakes")
 }
 :C:hitsingles::{
     if AC_IsDisabled("hitsingles") {
@@ -35859,62 +29579,6 @@
     SendText("hant" . A_EndChar)
     AC_Reg("hnat", "hant")
 }
-:C:hold onto::{
-    if AC_IsDisabled("hold onto") {
-        SendText("hold onto" . A_EndChar)
-        return
-    }
-    SendText("hold on to" . A_EndChar)
-    AC_Reg("hold onto", "hold on to")
-}
-:C:hold the reigns::{
-    if AC_IsDisabled("hold the reigns") {
-        SendText("hold the reigns" . A_EndChar)
-        return
-    }
-    SendText("hold the reins" . A_EndChar)
-    AC_Reg("hold the reigns", "hold the reins")
-}
-:C:holding the reigns::{
-    if AC_IsDisabled("holding the reigns") {
-        SendText("holding the reigns" . A_EndChar)
-        return
-    }
-    SendText("holding the reins" . A_EndChar)
-    AC_Reg("holding the reigns", "holding the reins")
-}
-:C:holds the reigns::{
-    if AC_IsDisabled("holds the reigns") {
-        SendText("holds the reigns" . A_EndChar)
-        return
-    }
-    SendText("holds the reins" . A_EndChar)
-    AC_Reg("holds the reigns", "holds the reins")
-}
-:C:hole approach::{
-    if AC_IsDisabled("hole approach") {
-        SendText("hole approach" . A_EndChar)
-        return
-    }
-    SendText("whole approach" . A_EndChar)
-    AC_Reg("hole approach", "whole approach")
-}
-:C:hole life balance::{
-    if AC_IsDisabled("hole life balance") {
-        SendText("hole life balance" . A_EndChar)
-        return
-    }
-    SendText("whole life balance" . A_EndChar)
-    AC_Reg("hole life balance", "whole life balance")
-}
-:C:hole person::{
-    if AC_IsDisabled("hole person") {
-        SendText("hole person" . A_EndChar)
-        return
-    }
-    SendText("whole person" . A_EndChar)
-    AC_Reg("hole person", "whole person")
-}
 :C:holf::{
     if AC_IsDisabled("holf") {
         SendText("holf" . A_EndChar)
@@ -35947,38 +29611,6 @@
     SendText("holiday" . A_EndChar)
     AC_Reg("holliday", "holiday")
 }
-:C:holy different::{
-    if AC_IsDisabled("holy different") {
-        SendText("holy different" . A_EndChar)
-        return
-    }
-    SendText("wholly different" . A_EndChar)
-    AC_Reg("holy different", "wholly different")
-}
-:C:holy inappropriate::{
-    if AC_IsDisabled("holy inappropriate") {
-        SendText("holy inappropriate" . A_EndChar)
-        return
-    }
-    SendText("wholly inappropriate" . A_EndChar)
-    AC_Reg("holy inappropriate", "wholly inappropriate")
-}
-:C:holy owned::{
-    if AC_IsDisabled("holy owned") {
-        SendText("holy owned" . A_EndChar)
-        return
-    }
-    SendText("wholly owned" . A_EndChar)
-    AC_Reg("holy owned", "wholly owned")
-}
-:C:holy responsible::{
-    if AC_IsDisabled("holy responsible") {
-        SendText("holy responsible" . A_EndChar)
-        return
-    }
-    SendText("wholly responsible" . A_EndChar)
-    AC_Reg("holy responsible", "wholly responsible")
-}
 :C:homestate::{
     if AC_IsDisabled("homestate") {
         SendText("homestate" . A_EndChar)
@@ -36003,30 +29635,6 @@
     SendText("homogenized" . A_EndChar)
     AC_Reg("homogeneized", "homogenized")
 }
-:C:hone in on::{
-    if AC_IsDisabled("hone in on") {
-        SendText("hone in on" . A_EndChar)
-        return
-    }
-    SendText("home in on" . A_EndChar)
-    AC_Reg("hone in on", "home in on")
-}
-:C:hone in::{
-    if AC_IsDisabled("hone in") {
-        SendText("hone in" . A_EndChar)
-        return
-    }
-    SendText("home in" . A_EndChar)
-    AC_Reg("hone in", "home in")
-}
-:C:honed in::{
-    if AC_IsDisabled("honed in") {
-        SendText("honed in" . A_EndChar)
-        return
-    }
-    SendText("homed in" . A_EndChar)
-    AC_Reg("honed in", "homed in")
-}
 :C:honory::{
     if AC_IsDisabled("honory") {
         SendText("honory" . A_EndChar)
@@ -36050,14 +29658,6 @@
     }
     SendText("honorific" . A_EndChar)
     AC_Reg("honourific", "honorific")
-}
-:C:hoo;::{
-    if AC_IsDisabled("hoo;") {
-        SendText("hoo;" . A_EndChar)
-        return
-    }
-    SendText("hool" . A_EndChar)
-    AC_Reg("hoo;", "hool")
 }
 :C:horrifing::{
     if AC_IsDisabled("horrifing") {
@@ -36131,14 +29731,6 @@
     SendText("hotstring" . A_EndChar)
     AC_Reg("hotsting", "hotstring")
 }
-:C:hotter then::{
-    if AC_IsDisabled("hotter then") {
-        SendText("hotter then" . A_EndChar)
-        return
-    }
-    SendText("hotter than" . A_EndChar)
-    AC_Reg("hotter then", "hotter than")
-}
 :C:houdn::{
     if AC_IsDisabled("houdn") {
         SendText("houdn" . A_EndChar)
@@ -36163,14 +29755,6 @@
     SendText("honour" . A_EndChar)
     AC_Reg("hounour", "honour")
 }
-:C:house hold::{
-    if AC_IsDisabled("house hold") {
-        SendText("house hold" . A_EndChar)
-        return
-    }
-    SendText("household" . A_EndChar)
-    AC_Reg("house hold", "household")
-}
 :C:housr::{
     if AC_IsDisabled("housr") {
         SendText("housr" . A_EndChar)
@@ -36178,14 +29762,6 @@
     }
     SendText("hours" . A_EndChar)
     AC_Reg("housr", "hours")
-}
-:C:how ever::{
-    if AC_IsDisabled("how ever") {
-        SendText("how ever" . A_EndChar)
-        return
-    }
-    SendText("however" . A_EndChar)
-    AC_Reg("how ever", "however")
 }
 :C:hows::{
     if AC_IsDisabled("hows") {
@@ -36643,30 +30219,6 @@
     SendText("I" . A_EndChar)
     AC_Reg("i", "I")
 }
-:C:i"m::{
-    if AC_IsDisabled("i`"m") {
-        SendText("i`"m" . A_EndChar)
-        return
-    }
-    SendText("I'm" . A_EndChar)
-    AC_Reg("i`"m", "I'm")
-}
-:C:i;d::{
-    if AC_IsDisabled("i;d") {
-        SendText("i;d" . A_EndChar)
-        return
-    }
-    SendText("I'd" . A_EndChar)
-    AC_Reg("i;d", "I'd")
-}
-:C:i;m::{
-    if AC_IsDisabled("i;m") {
-        SendText("i;m" . A_EndChar)
-        return
-    }
-    SendText("I'm" . A_EndChar)
-    AC_Reg("i;m", "I'm")
-}
 :C:iaing::{
     if AC_IsDisabled("iaing") {
         SendText("iaing" . A_EndChar)
@@ -36851,14 +30403,6 @@
     SendText("isms" . A_EndChar)
     AC_Reg("icms", "isms")
 }
-:C:icon cash::{
-    if AC_IsDisabled("icon cash") {
-        SendText("icon cash" . A_EndChar)
-        return
-    }
-    SendText("icon cache" . A_EndChar)
-    AC_Reg("icon cash", "icon cache")
-}
 :C:iconcla::{
     if AC_IsDisabled("iconcla") {
         SendText("iconcla" . A_EndChar)
@@ -36890,6 +30434,14 @@
     }
     SendText("ictm" . A_EndChar)
     AC_Reg("ictem", "ictm")
+}
+:C:id::{
+    if AC_IsDisabled("id") {
+        SendText("id" . A_EndChar)
+        return
+    }
+    SendText("I'd" . A_EndChar)
+    AC_Reg("id", "I'd")
 }
 :C:idae::{
     if AC_IsDisabled("idae") {
@@ -37019,22 +30571,6 @@
     SendText("idiosyncrasy" . A_EndChar)
     AC_Reg("idiosyncracy", "idiosyncrasy")
 }
-:C:idol hands::{
-    if AC_IsDisabled("idol hands") {
-        SendText("idol hands" . A_EndChar)
-        return
-    }
-    SendText("idle hands" . A_EndChar)
-    AC_Reg("idol hands", "idle hands")
-}
-:C:idol time::{
-    if AC_IsDisabled("idol time") {
-        SendText("idol time" . A_EndChar)
-        return
-    }
-    SendText("idle time" . A_EndChar)
-    AC_Reg("idol time", "idle time")
-}
 :C:idty::{
     if AC_IsDisabled("idty") {
         SendText("idty" . A_EndChar)
@@ -37099,38 +30635,6 @@
     SendText("iven" . A_EndChar)
     AC_Reg("ievn", "iven")
 }
-:C:if is::{
-    if AC_IsDisabled("if is") {
-        SendText("if is" . A_EndChar)
-        return
-    }
-    SendText("it is" . A_EndChar)
-    AC_Reg("if is", "it is")
-}
-:C:if was::{
-    if AC_IsDisabled("if was") {
-        SendText("if was" . A_EndChar)
-        return
-    }
-    SendText("it was" . A_EndChar)
-    AC_Reg("if was", "it was")
-}
-:C:ifb y::{
-    if AC_IsDisabled("ifb y") {
-        SendText("ifb y" . A_EndChar)
-        return
-    }
-    SendText("if by" . A_EndChar)
-    AC_Reg("ifb y", "if by")
-}
-:C:ifi t::{
-    if AC_IsDisabled("ifi t") {
-        SendText("ifi t" . A_EndChar)
-        return
-    }
-    SendText("if it" . A_EndChar)
-    AC_Reg("ifi t", "if it")
-}
 :C:ifiy::{
     if AC_IsDisabled("ifiy") {
         SendText("ifiy" . A_EndChar)
@@ -37138,14 +30642,6 @@
     }
     SendText("ify" . A_EndChar)
     AC_Reg("ifiy", "ify")
-}
-:C:ift he::{
-    if AC_IsDisabled("ift he") {
-        SendText("ift he" . A_EndChar)
-        return
-    }
-    SendText("if the" . A_EndChar)
-    AC_Reg("ift he", "if the")
 }
 :C:igeou::{
     if AC_IsDisabled("igeou") {
@@ -37170,14 +30666,6 @@
     }
     SendText("ing" . A_EndChar)
     AC_Reg("ign", "ing")
-}
-:C:Ign0re Th!s STRing::{
-    if AC_IsDisabled("Ign0re Th!s STRing") {
-        SendText("Ign0re Th!s STRing" . A_EndChar)
-        return
-    }
-    SendText("Did you forget to '#Include' the AutoCorrectSystem.ahk file in AutoCorrect2?" . A_EndChar)
-    AC_Reg("Ign0re Th!s STRing", "Did you forget to '#Include' the AutoCorrectSystem.ahk file in AutoCorrect2?")
 }
 :C:ignf::{
     if AC_IsDisabled("ignf") {
@@ -37274,14 +30762,6 @@
     }
     SendText("ith" . A_EndChar)
     AC_Reg("iht", "ith")
-}
-:C:iits the::{
-    if AC_IsDisabled("iits the") {
-        SendText("iits the" . A_EndChar)
-        return
-    }
-    SendText("it's the" . A_EndChar)
-    AC_Reg("iits the", "it's the")
 }
 :C:ijh::{
     if AC_IsDisabled("ijh") {
@@ -37426,6 +30906,14 @@
     }
     SendText("I'm" . A_EndChar)
     AC_Reg("Im", "I'm")
+}
+:C:im::{
+    if AC_IsDisabled("im") {
+        SendText("im" . A_EndChar)
+        return
+    }
+    SendText("I'm" . A_EndChar)
+    AC_Reg("im", "I'm")
 }
 :C:imagen::{
     if AC_IsDisabled("imagen") {
@@ -37602,14 +31090,6 @@
     }
     SendText("immediately" . A_EndChar)
     AC_Reg("immidiately", "immediately")
-}
-:C:imminent domain::{
-    if AC_IsDisabled("imminent domain") {
-        SendText("imminent domain" . A_EndChar)
-        return
-    }
-    SendText("eminent domain" . A_EndChar)
-    AC_Reg("imminent domain", "eminent domain")
 }
 :C:immita::{
     if AC_IsDisabled("immita") {
@@ -37851,182 +31331,6 @@
     SendText("improvements" . A_EndChar)
     AC_Reg("improvments", "improvements")
 }
-:C:in along time::{
-    if AC_IsDisabled("in along time") {
-        SendText("in along time" . A_EndChar)
-        return
-    }
-    SendText("in a long time" . A_EndChar)
-    AC_Reg("in along time", "in a long time")
-}
-:C:in anyway::{
-    if AC_IsDisabled("in anyway") {
-        SendText("in anyway" . A_EndChar)
-        return
-    }
-    SendText("in any way" . A_EndChar)
-    AC_Reg("in anyway", "in any way")
-}
-:C:in awhile::{
-    if AC_IsDisabled("in awhile") {
-        SendText("in awhile" . A_EndChar)
-        return
-    }
-    SendText("in a while" . A_EndChar)
-    AC_Reg("in awhile", "in a while")
-}
-:C:in edition to::{
-    if AC_IsDisabled("in edition to") {
-        SendText("in edition to" . A_EndChar)
-        return
-    }
-    SendText("in addition to" . A_EndChar)
-    AC_Reg("in edition to", "in addition to")
-}
-:C:in lu of::{
-    if AC_IsDisabled("in lu of") {
-        SendText("in lu of" . A_EndChar)
-        return
-    }
-    SendText("in lieu of" . A_EndChar)
-    AC_Reg("in lu of", "in lieu of")
-}
-:C:in march::{
-    if AC_IsDisabled("in march") {
-        SendText("in march" . A_EndChar)
-        return
-    }
-    SendText("in March" . A_EndChar)
-    AC_Reg("in march", "in March")
-}
-:C:in masse::{
-    if AC_IsDisabled("in masse") {
-        SendText("in masse" . A_EndChar)
-        return
-    }
-    SendText("en masse" . A_EndChar)
-    AC_Reg("in masse", "en masse")
-}
-:C:in may::{
-    if AC_IsDisabled("in may") {
-        SendText("in may" . A_EndChar)
-        return
-    }
-    SendText("in May" . A_EndChar)
-    AC_Reg("in may", "in May")
-}
-:C:in parenthesis::{
-    if AC_IsDisabled("in parenthesis") {
-        SendText("in parenthesis" . A_EndChar)
-        return
-    }
-    SendText("in parentheses" . A_EndChar)
-    AC_Reg("in parenthesis", "in parentheses")
-}
-:C:in placed::{
-    if AC_IsDisabled("in placed") {
-        SendText("in placed" . A_EndChar)
-        return
-    }
-    SendText("in place" . A_EndChar)
-    AC_Reg("in placed", "in place")
-}
-:C:in principal::{
-    if AC_IsDisabled("in principal") {
-        SendText("in principal" . A_EndChar)
-        return
-    }
-    SendText("in principle" . A_EndChar)
-    AC_Reg("in principal", "in principle")
-}
-:C:in quite awhile::{
-    if AC_IsDisabled("in quite awhile") {
-        SendText("in quite awhile" . A_EndChar)
-        return
-    }
-    SendText("in quite a while" . A_EndChar)
-    AC_Reg("in quite awhile", "in quite a while")
-}
-:C:in regards to::{
-    if AC_IsDisabled("in regards to") {
-        SendText("in regards to" . A_EndChar)
-        return
-    }
-    SendText("in regard to" . A_EndChar)
-    AC_Reg("in regards to", "in regard to")
-}
-:C:in site::{
-    if AC_IsDisabled("in site") {
-        SendText("in site" . A_EndChar)
-        return
-    }
-    SendText("insight" . A_EndChar)
-    AC_Reg("in site", "insight")
-}
-:C:in stead of::{
-    if AC_IsDisabled("in stead of") {
-        SendText("in stead of" . A_EndChar)
-        return
-    }
-    SendText("instead of" . A_EndChar)
-    AC_Reg("in stead of", "instead of")
-}
-:C:in tact::{
-    if AC_IsDisabled("in tact") {
-        SendText("in tact" . A_EndChar)
-        return
-    }
-    SendText("intact" . A_EndChar)
-    AC_Reg("in tact", "intact")
-}
-:C:in the long-term::{
-    if AC_IsDisabled("in the long-term") {
-        SendText("in the long-term" . A_EndChar)
-        return
-    }
-    SendText("in the long term" . A_EndChar)
-    AC_Reg("in the long-term", "in the long term")
-}
-:C:in the mist of::{
-    if AC_IsDisabled("in the mist of") {
-        SendText("in the mist of" . A_EndChar)
-        return
-    }
-    SendText("in the midst of" . A_EndChar)
-    AC_Reg("in the mist of", "in the midst of")
-}
-:C:in the short-term::{
-    if AC_IsDisabled("in the short-term") {
-        SendText("in the short-term" . A_EndChar)
-        return
-    }
-    SendText("in the short term" . A_EndChar)
-    AC_Reg("in the short-term", "in the short term")
-}
-:C:in titled::{
-    if AC_IsDisabled("in titled") {
-        SendText("in titled" . A_EndChar)
-        return
-    }
-    SendText("entitled" . A_EndChar)
-    AC_Reg("in titled", "entitled")
-}
-:C:in too days::{
-    if AC_IsDisabled("in too days") {
-        SendText("in too days" . A_EndChar)
-        return
-    }
-    SendText("in two days" . A_EndChar)
-    AC_Reg("in too days", "in two days")
-}
-:C:in vein::{
-    if AC_IsDisabled("in vein") {
-        SendText("in vein" . A_EndChar)
-        return
-    }
-    SendText("in vain" . A_EndChar)
-    AC_Reg("in vein", "in vain")
-}
 :C:inablility::{
     if AC_IsDisabled("inablility") {
         SendText("inablility" . A_EndChar)
@@ -38178,14 +31482,6 @@
     }
     SendText("incarcerated" . A_EndChar)
     AC_Reg("incarcirated", "incarcerated")
-}
-:C:incase of::{
-    if AC_IsDisabled("incase of") {
-        SendText("incase of" . A_EndChar)
-        return
-    }
-    SendText("in case of" . A_EndChar)
-    AC_Reg("incase of", "in case of")
 }
 :C:incede::{
     if AC_IsDisabled("incede") {
@@ -39499,14 +32795,6 @@
     SendText("insurance" . A_EndChar)
     AC_Reg("insurence", "insurance")
 }
-:C:int he::{
-    if AC_IsDisabled("int he") {
-        SendText("int he" . A_EndChar)
-        return
-    }
-    SendText("in the" . A_EndChar)
-    AC_Reg("int he", "in the")
-}
 :C:inteh::{
     if AC_IsDisabled("inteh") {
         SendText("inteh" . A_EndChar)
@@ -39819,14 +33107,6 @@
     SendText("interrupt" . A_EndChar)
     AC_Reg("interupt", "interrupt")
 }
-:C:intervention aid::{
-    if AC_IsDisabled("intervention aid") {
-        SendText("intervention aid" . A_EndChar)
-        return
-    }
-    SendText("intervention aide" . A_EndChar)
-    AC_Reg("intervention aid", "intervention aide")
-}
 :C:intervin::{
     if AC_IsDisabled("intervin") {
         SendText("intervin" . A_EndChar)
@@ -39890,22 +33170,6 @@
     }
     SendText("initially" . A_EndChar)
     AC_Reg("intially", "initially")
-}
-:C:into affect::{
-    if AC_IsDisabled("into affect") {
-        SendText("into affect" . A_EndChar)
-        return
-    }
-    SendText("into effect" . A_EndChar)
-    AC_Reg("into affect", "into effect")
-}
-:C:into it's::{
-    if AC_IsDisabled("into it's") {
-        SendText("into it's" . A_EndChar)
-        return
-    }
-    SendText("into its" . A_EndChar)
-    AC_Reg("into it's", "into its")
 }
 :C:intorm::{
     if AC_IsDisabled("intorm") {
@@ -40315,134 +33579,6 @@
     SendText("irsti" . A_EndChar)
     AC_Reg("irtsi", "irsti")
 }
-:C:is also know::{
-    if AC_IsDisabled("is also know") {
-        SendText("is also know" . A_EndChar)
-        return
-    }
-    SendText("is also known" . A_EndChar)
-    AC_Reg("is also know", "is also known")
-}
-:C:is consider::{
-    if AC_IsDisabled("is consider") {
-        SendText("is consider" . A_EndChar)
-        return
-    }
-    SendText("is considered" . A_EndChar)
-    AC_Reg("is consider", "is considered")
-}
-:C:is front of::{
-    if AC_IsDisabled("is front of") {
-        SendText("is front of" . A_EndChar)
-        return
-    }
-    SendText("in front of" . A_EndChar)
-    AC_Reg("is front of", "in front of")
-}
-:C:is it's::{
-    if AC_IsDisabled("is it's") {
-        SendText("is it's" . A_EndChar)
-        return
-    }
-    SendText("is its" . A_EndChar)
-    AC_Reg("is it's", "is its")
-}
-:C:is know::{
-    if AC_IsDisabled("is know") {
-        SendText("is know" . A_EndChar)
-        return
-    }
-    SendText("is known" . A_EndChar)
-    AC_Reg("is know", "is known")
-}
-:C:is lead by::{
-    if AC_IsDisabled("is lead by") {
-        SendText("is lead by" . A_EndChar)
-        return
-    }
-    SendText("is led by" . A_EndChar)
-    AC_Reg("is lead by", "is led by")
-}
-:C:is loathe to::{
-    if AC_IsDisabled("is loathe to") {
-        SendText("is loathe to" . A_EndChar)
-        return
-    }
-    SendText("is loath to" . A_EndChar)
-    AC_Reg("is loathe to", "is loath to")
-}
-:C:is ran by::{
-    if AC_IsDisabled("is ran by") {
-        SendText("is ran by" . A_EndChar)
-        return
-    }
-    SendText("is run by" . A_EndChar)
-    AC_Reg("is ran by", "is run by")
-}
-:C:is renown for::{
-    if AC_IsDisabled("is renown for") {
-        SendText("is renown for" . A_EndChar)
-        return
-    }
-    SendText("is renowned for" . A_EndChar)
-    AC_Reg("is renown for", "is renowned for")
-}
-:C:is schedule to::{
-    if AC_IsDisabled("is schedule to") {
-        SendText("is schedule to" . A_EndChar)
-        return
-    }
-    SendText("is scheduled to" . A_EndChar)
-    AC_Reg("is schedule to", "is scheduled to")
-}
-:C:is set-up::{
-    if AC_IsDisabled("is set-up") {
-        SendText("is set-up" . A_EndChar)
-        return
-    }
-    SendText("is set up" . A_EndChar)
-    AC_Reg("is set-up", "is set up")
-}
-:C:is setup::{
-    if AC_IsDisabled("is setup") {
-        SendText("is setup" . A_EndChar)
-        return
-    }
-    SendText("is set up" . A_EndChar)
-    AC_Reg("is setup", "is set up")
-}
-:C:is use to::{
-    if AC_IsDisabled("is use to") {
-        SendText("is use to" . A_EndChar)
-        return
-    }
-    SendText("is used to" . A_EndChar)
-    AC_Reg("is use to", "is used to")
-}
-:C:is usefully for::{
-    if AC_IsDisabled("is usefully for") {
-        SendText("is usefully for" . A_EndChar)
-        return
-    }
-    SendText("is useful for" . A_EndChar)
-    AC_Reg("is usefully for", "is useful for")
-}
-:C:is usefuly for::{
-    if AC_IsDisabled("is usefuly for") {
-        SendText("is usefuly for" . A_EndChar)
-        return
-    }
-    SendText("is useful for" . A_EndChar)
-    AC_Reg("is usefuly for", "is useful for")
-}
-:C:is were::{
-    if AC_IsDisabled("is were") {
-        SendText("is were" . A_EndChar)
-        return
-    }
-    SendText("is where" . A_EndChar)
-    AC_Reg("is were", "is where")
-}
 :C:is'nt::{
     if AC_IsDisabled("is'nt") {
         SendText("is'nt" . A_EndChar)
@@ -40450,14 +33586,6 @@
     }
     SendText("isn't" . A_EndChar)
     AC_Reg("is'nt", "isn't")
-}
-:C:Isaax::{
-    if AC_IsDisabled("Isaax") {
-        SendText("Isaax" . A_EndChar)
-        return
-    }
-    SendText("Isaac" . A_EndChar)
-    AC_Reg("Isaax", "Isaac")
 }
 :C:iseh::{
     if AC_IsDisabled("iseh") {
@@ -40562,214 +33690,6 @@
     }
     SendText("it" . A_EndChar)
     AC_Reg("ist", "it")
-}
-:C:it begun::{
-    if AC_IsDisabled("it begun") {
-        SendText("it begun" . A_EndChar)
-        return
-    }
-    SendText("it began" . A_EndChar)
-    AC_Reg("it begun", "it began")
-}
-:C:it lead to::{
-    if AC_IsDisabled("it lead to") {
-        SendText("it lead to" . A_EndChar)
-        return
-    }
-    SendText("it led to" . A_EndChar)
-    AC_Reg("it lead to", "it led to")
-}
-:C:it self::{
-    if AC_IsDisabled("it self") {
-        SendText("it self" . A_EndChar)
-        return
-    }
-    SendText("itself" . A_EndChar)
-    AC_Reg("it self", "itself")
-}
-:C:it set-up::{
-    if AC_IsDisabled("it set-up") {
-        SendText("it set-up" . A_EndChar)
-        return
-    }
-    SendText("it set up" . A_EndChar)
-    AC_Reg("it set-up", "it set up")
-}
-:C:it setup::{
-    if AC_IsDisabled("it setup") {
-        SendText("it setup" . A_EndChar)
-        return
-    }
-    SendText("it set up" . A_EndChar)
-    AC_Reg("it setup", "it set up")
-}
-:C:it snot::{
-    if AC_IsDisabled("it snot") {
-        SendText("it snot" . A_EndChar)
-        return
-    }
-    SendText("it's not" . A_EndChar)
-    AC_Reg("it snot", "it's not")
-}
-:C:it spend::{
-    if AC_IsDisabled("it spend") {
-        SendText("it spend" . A_EndChar)
-        return
-    }
-    SendText("it spent" . A_EndChar)
-    AC_Reg("it spend", "it spent")
-}
-:C:it use to::{
-    if AC_IsDisabled("it use to") {
-        SendText("it use to" . A_EndChar)
-        return
-    }
-    SendText("it used to" . A_EndChar)
-    AC_Reg("it use to", "it used to")
-}
-:C:it was her who::{
-    if AC_IsDisabled("it was her who") {
-        SendText("it was her who" . A_EndChar)
-        return
-    }
-    SendText("it was she who" . A_EndChar)
-    AC_Reg("it was her who", "it was she who")
-}
-:C:it was him who::{
-    if AC_IsDisabled("it was him who") {
-        SendText("it was him who" . A_EndChar)
-        return
-    }
-    SendText("it was he who" . A_EndChar)
-    AC_Reg("it was him who", "it was he who")
-}
-:C:it weighted::{
-    if AC_IsDisabled("it weighted") {
-        SendText("it weighted" . A_EndChar)
-        return
-    }
-    SendText("it weighed" . A_EndChar)
-    AC_Reg("it weighted", "it weighed")
-}
-:C:it weights::{
-    if AC_IsDisabled("it weights") {
-        SendText("it weights" . A_EndChar)
-        return
-    }
-    SendText("it weighs" . A_EndChar)
-    AC_Reg("it weights", "it weighs")
-}
-:C:it' snot::{
-    if AC_IsDisabled("it' snot") {
-        SendText("it' snot" . A_EndChar)
-        return
-    }
-    SendText("it's not" . A_EndChar)
-    AC_Reg("it' snot", "it's not")
-}
-:C:it's end::{
-    if AC_IsDisabled("it's end") {
-        SendText("it's end" . A_EndChar)
-        return
-    }
-    SendText("its end" . A_EndChar)
-    AC_Reg("it's end", "its end")
-}
-:C:it's entire::{
-    if AC_IsDisabled("it's entire") {
-        SendText("it's entire" . A_EndChar)
-        return
-    }
-    SendText("its entire" . A_EndChar)
-    AC_Reg("it's entire", "its entire")
-}
-:C:it's goal::{
-    if AC_IsDisabled("it's goal") {
-        SendText("it's goal" . A_EndChar)
-        return
-    }
-    SendText("its goal" . A_EndChar)
-    AC_Reg("it's goal", "its goal")
-}
-:C:it's name::{
-    if AC_IsDisabled("it's name") {
-        SendText("it's name" . A_EndChar)
-        return
-    }
-    SendText("its name" . A_EndChar)
-    AC_Reg("it's name", "its name")
-}
-:C:it's over hear::{
-    if AC_IsDisabled("it's over hear") {
-        SendText("it's over hear" . A_EndChar)
-        return
-    }
-    SendText("it's over here" . A_EndChar)
-    AC_Reg("it's over hear", "it's over here")
-}
-:C:it's own::{
-    if AC_IsDisabled("it's own") {
-        SendText("it's own" . A_EndChar)
-        return
-    }
-    SendText("its own" . A_EndChar)
-    AC_Reg("it's own", "its own")
-}
-:C:it's performance::{
-    if AC_IsDisabled("it's performance") {
-        SendText("it's performance" . A_EndChar)
-        return
-    }
-    SendText("its performance" . A_EndChar)
-    AC_Reg("it's performance", "its performance")
-}
-:C:it's successor::{
-    if AC_IsDisabled("it's successor") {
-        SendText("it's successor" . A_EndChar)
-        return
-    }
-    SendText("its successor" . A_EndChar)
-    AC_Reg("it's successor", "its successor")
-}
-:C:it's tail::{
-    if AC_IsDisabled("it's tail") {
-        SendText("it's tail" . A_EndChar)
-        return
-    }
-    SendText("its tail" . A_EndChar)
-    AC_Reg("it's tail", "its tail")
-}
-:C:it's theme::{
-    if AC_IsDisabled("it's theme") {
-        SendText("it's theme" . A_EndChar)
-        return
-    }
-    SendText("its theme" . A_EndChar)
-    AC_Reg("it's theme", "its theme")
-}
-:C:it's timeslot::{
-    if AC_IsDisabled("it's timeslot") {
-        SendText("it's timeslot" . A_EndChar)
-        return
-    }
-    SendText("its timeslot" . A_EndChar)
-    AC_Reg("it's timeslot", "its timeslot")
-}
-:C:it's toll::{
-    if AC_IsDisabled("it's toll") {
-        SendText("it's toll" . A_EndChar)
-        return
-    }
-    SendText("its toll" . A_EndChar)
-    AC_Reg("it's toll", "its toll")
-}
-:C:it's website::{
-    if AC_IsDisabled("it's website") {
-        SendText("it's website" . A_EndChar)
-        return
-    }
-    SendText("its website" . A_EndChar)
-    AC_Reg("it's website", "its website")
 }
 :C:itd::{
     if AC_IsDisabled("itd") {
@@ -40906,38 +33826,6 @@
     }
     SendText("it" . A_EndChar)
     AC_Reg("itr", "it")
-}
-:C:its a::{
-    if AC_IsDisabled("its a") {
-        SendText("its a" . A_EndChar)
-        return
-    }
-    SendText("it's a" . A_EndChar)
-    AC_Reg("its a", "it's a")
-}
-:C:its about time::{
-    if AC_IsDisabled("its about time") {
-        SendText("its about time" . A_EndChar)
-        return
-    }
-    SendText("it's about time" . A_EndChar)
-    AC_Reg("its about time", "it's about time")
-}
-:C:its not::{
-    if AC_IsDisabled("its not") {
-        SendText("its not" . A_EndChar)
-        return
-    }
-    SendText("it's not" . A_EndChar)
-    AC_Reg("its not", "it's not")
-}
-:C:its the::{
-    if AC_IsDisabled("its the") {
-        SendText("its the" . A_EndChar)
-        return
-    }
-    SendText("it's the" . A_EndChar)
-    AC_Reg("its the", "it's the")
 }
 :C:itthe::{
     if AC_IsDisabled("itthe") {
@@ -41251,14 +34139,6 @@
     SendText("gist" . A_EndChar)
     AC_Reg("jist", "gist")
 }
-:C:jive with::{
-    if AC_IsDisabled("jive with") {
-        SendText("jive with" . A_EndChar)
-        return
-    }
-    SendText("jibe with" . A_EndChar)
-    AC_Reg("jive with", "jibe with")
-}
 :C:johanine::{
     if AC_IsDisabled("johanine") {
         SendText("johanine" . A_EndChar)
@@ -41451,22 +34331,6 @@
     SendText("juring" . A_EndChar)
     AC_Reg("jurring", "juring")
 }
-:C:just over hear::{
-    if AC_IsDisabled("just over hear") {
-        SendText("just over hear" . A_EndChar)
-        return
-    }
-    SendText("just over here" . A_EndChar)
-    AC_Reg("just over hear", "just over here")
-}
-:C:just plane wrong::{
-    if AC_IsDisabled("just plane wrong") {
-        SendText("just plane wrong" . A_EndChar)
-        return
-    }
-    SendText("just plain wrong" . A_EndChar)
-    AC_Reg("just plane wrong", "just plain wrong")
-}
 :C:jutt::{
     if AC_IsDisabled("jutt") {
         SendText("jutt" . A_EndChar)
@@ -41563,46 +34427,6 @@
     SendText("kings" . A_EndChar)
     AC_Reg("keings", "kings")
 }
-:C:kernal mode::{
-    if AC_IsDisabled("kernal mode") {
-        SendText("kernal mode" . A_EndChar)
-        return
-    }
-    SendText("kernel mode" . A_EndChar)
-    AC_Reg("kernal mode", "kernel mode")
-}
-:C:kernal panic::{
-    if AC_IsDisabled("kernal panic") {
-        SendText("kernal panic" . A_EndChar)
-        return
-    }
-    SendText("kernel panic" . A_EndChar)
-    AC_Reg("kernal panic", "kernel panic")
-}
-:C:kernal space::{
-    if AC_IsDisabled("kernal space") {
-        SendText("kernal space" . A_EndChar)
-        return
-    }
-    SendText("kernel space" . A_EndChar)
-    AC_Reg("kernal space", "kernel space")
-}
-:C:kernal update::{
-    if AC_IsDisabled("kernal update") {
-        SendText("kernal update" . A_EndChar)
-        return
-    }
-    SendText("kernel update" . A_EndChar)
-    AC_Reg("kernal update", "kernel update")
-}
-:C:key note::{
-    if AC_IsDisabled("key note") {
-        SendText("key note" . A_EndChar)
-        return
-    }
-    SendText("keynote" . A_EndChar)
-    AC_Reg("key note", "keynote")
-}
 :C:kfulls::{
     if AC_IsDisabled("kfulls") {
         SendText("kfulls" . A_EndChar)
@@ -41683,14 +34507,6 @@
     SendText("knives" . A_EndChar)
     AC_Reg("knifes", "knives")
 }
-:C:knight light::{
-    if AC_IsDisabled("knight light") {
-        SendText("knight light" . A_EndChar)
-        return
-    }
-    SendText("night light" . A_EndChar)
-    AC_Reg("knight light", "night light")
-}
 :C:knive::{
     if AC_IsDisabled("knive") {
         SendText("knive" . A_EndChar)
@@ -41698,38 +34514,6 @@
     }
     SendText("knife" . A_EndChar)
     AC_Reg("knive", "knife")
-}
-:C:knot likely::{
-    if AC_IsDisabled("knot likely") {
-        SendText("knot likely" . A_EndChar)
-        return
-    }
-    SendText("not likely" . A_EndChar)
-    AC_Reg("knot likely", "not likely")
-}
-:C:knot sure::{
-    if AC_IsDisabled("knot sure") {
-        SendText("knot sure" . A_EndChar)
-        return
-    }
-    SendText("not sure" . A_EndChar)
-    AC_Reg("knot sure", "not sure")
-}
-:C:know problem::{
-    if AC_IsDisabled("know problem") {
-        SendText("know problem" . A_EndChar)
-        return
-    }
-    SendText("no problem" . A_EndChar)
-    AC_Reg("know problem", "no problem")
-}
-:C:know way::{
-    if AC_IsDisabled("know way") {
-        SendText("know way" . A_EndChar)
-        return
-    }
-    SendText("no way" . A_EndChar)
-    AC_Reg("know way", "no way")
 }
 :C:knowldeg::{
     if AC_IsDisabled("knowldeg") {
@@ -41851,22 +34635,6 @@
     SendText("kiness" . A_EndChar)
     AC_Reg("kyness", "kiness")
 }
-:C:l;y::{
-    if AC_IsDisabled("l;y") {
-        SendText("l;y" . A_EndChar)
-        return
-    }
-    SendText("ly" . A_EndChar)
-    AC_Reg("l;y", "ly")
-}
-:C:la nina::{
-    if AC_IsDisabled("la nina") {
-        SendText("la nina" . A_EndChar)
-        return
-    }
-    SendText("La Niña" . A_EndChar)
-    AC_Reg("la nina", "La Niña")
-}
 :C:laas::{
     if AC_IsDisabled("laas") {
         SendText("laas" . A_EndChar)
@@ -41923,14 +34691,6 @@
     SendText("laboratory" . A_EndChar)
     AC_Reg("labratory", "laboratory")
 }
-:C:lack there of::{
-    if AC_IsDisabled("lack there of") {
-        SendText("lack there of" . A_EndChar)
-        return
-    }
-    SendText("lack thereof" . A_EndChar)
-    AC_Reg("lack there of", "lack thereof")
-}
 :C:laeg::{
     if AC_IsDisabled("laeg") {
         SendText("laeg" . A_EndChar)
@@ -41962,30 +34722,6 @@
     }
     SendText("languages" . A_EndChar)
     AC_Reg("laguages", "languages")
-}
-:C:laid ahead::{
-    if AC_IsDisabled("laid ahead") {
-        SendText("laid ahead" . A_EndChar)
-        return
-    }
-    SendText("lay ahead" . A_EndChar)
-    AC_Reg("laid ahead", "lay ahead")
-}
-:C:laid dormant::{
-    if AC_IsDisabled("laid dormant") {
-        SendText("laid dormant" . A_EndChar)
-        return
-    }
-    SendText("lay dormant" . A_EndChar)
-    AC_Reg("laid dormant", "lay dormant")
-}
-:C:laid empty::{
-    if AC_IsDisabled("laid empty") {
-        SendText("laid empty" . A_EndChar)
-        return
-    }
-    SendText("lay empty" . A_EndChar)
-    AC_Reg("laid empty", "lay empty")
 }
 :C:laimation::{
     if AC_IsDisabled("laimation") {
@@ -42051,14 +34787,6 @@
     SendText("ländler" . A_EndChar)
     AC_Reg("landler", "ländler")
 }
-:C:langue d'oil::{
-    if AC_IsDisabled("langue d'oil") {
-        SendText("langue d'oil" . A_EndChar)
-        return
-    }
-    SendText("langue d'oïl" . A_EndChar)
-    AC_Reg("langue d'oil", "langue d'oïl")
-}
 :C:lanious::{
     if AC_IsDisabled("lanious") {
         SendText("lanious" . A_EndChar)
@@ -42106,14 +34834,6 @@
     }
     SendText("large" . A_EndChar)
     AC_Reg("larg", "large")
-}
-:C:larger then::{
-    if AC_IsDisabled("larger then") {
-        SendText("larger then" . A_EndChar)
-        return
-    }
-    SendText("larger than" . A_EndChar)
-    AC_Reg("larger then", "larger than")
 }
 :C:largley::{
     if AC_IsDisabled("largley") {
@@ -42179,14 +34899,6 @@
     SendText("lase" . A_EndChar)
     AC_Reg("lasr", "lase")
 }
-:C:last rights::{
-    if AC_IsDisabled("last rights") {
-        SendText("last rights" . A_EndChar)
-        return
-    }
-    SendText("last rites" . A_EndChar)
-    AC_Reg("last rights", "last rites")
-}
 :C:lastes::{
     if AC_IsDisabled("lastes") {
         SendText("lastes" . A_EndChar)
@@ -42235,14 +34947,6 @@
     SendText("latitude" . A_EndChar)
     AC_Reg("lattitude", "latitude")
 }
-:C:laughing stock::{
-    if AC_IsDisabled("laughing stock") {
-        SendText("laughing stock" . A_EndChar)
-        return
-    }
-    SendText("laughingstock" . A_EndChar)
-    AC_Reg("laughing stock", "laughingstock")
-}
 :C:launchs::{
     if AC_IsDisabled("launchs") {
         SendText("launchs" . A_EndChar)
@@ -42275,22 +34979,6 @@
     SendText("larvae" . A_EndChar)
     AC_Reg("lavae", "larvae")
 }
-:C:law suite::{
-    if AC_IsDisabled("law suite") {
-        SendText("law suite" . A_EndChar)
-        return
-    }
-    SendText("lawsuit" . A_EndChar)
-    AC_Reg("law suite", "lawsuit")
-}
-:C:lay low::{
-    if AC_IsDisabled("lay low") {
-        SendText("lay low" . A_EndChar)
-        return
-    }
-    SendText("lie low" . A_EndChar)
-    AC_Reg("lay low", "lie low")
-}
 :C:layed::{
     if AC_IsDisabled("layed") {
         SendText("layed" . A_EndChar)
@@ -42298,78 +34986,6 @@
     }
     SendText("laid" . A_EndChar)
     AC_Reg("layed", "laid")
-}
-:C:laying around::{
-    if AC_IsDisabled("laying around") {
-        SendText("laying around" . A_EndChar)
-        return
-    }
-    SendText("lying around" . A_EndChar)
-    AC_Reg("laying around", "lying around")
-}
-:C:laying awake::{
-    if AC_IsDisabled("laying awake") {
-        SendText("laying awake" . A_EndChar)
-        return
-    }
-    SendText("lying awake" . A_EndChar)
-    AC_Reg("laying awake", "lying awake")
-}
-:C:laying low::{
-    if AC_IsDisabled("laying low") {
-        SendText("laying low" . A_EndChar)
-        return
-    }
-    SendText("lying low" . A_EndChar)
-    AC_Reg("laying low", "lying low")
-}
-:C:lays atop::{
-    if AC_IsDisabled("lays atop") {
-        SendText("lays atop" . A_EndChar)
-        return
-    }
-    SendText("lies atop" . A_EndChar)
-    AC_Reg("lays atop", "lies atop")
-}
-:C:lays beside::{
-    if AC_IsDisabled("lays beside") {
-        SendText("lays beside" . A_EndChar)
-        return
-    }
-    SendText("lies beside" . A_EndChar)
-    AC_Reg("lays beside", "lies beside")
-}
-:C:lays in::{
-    if AC_IsDisabled("lays in") {
-        SendText("lays in" . A_EndChar)
-        return
-    }
-    SendText("lies in" . A_EndChar)
-    AC_Reg("lays in", "lies in")
-}
-:C:lays low::{
-    if AC_IsDisabled("lays low") {
-        SendText("lays low" . A_EndChar)
-        return
-    }
-    SendText("lies low" . A_EndChar)
-    AC_Reg("lays low", "lies low")
-}
-:C:lays near::{
-    if AC_IsDisabled("lays near") {
-        SendText("lays near" . A_EndChar)
-        return
-    }
-    SendText("lies near" . A_EndChar)
-    AC_Reg("lays near", "lies near")
-}
-:C:lays on::{
-    if AC_IsDisabled("lays on") {
-        SendText("lays on" . A_EndChar)
-        return
-    }
-    SendText("lies on" . A_EndChar)
-    AC_Reg("lays on", "lies on")
 }
 :C:lazer::{
     if AC_IsDisabled("lazer") {
@@ -42395,30 +35011,6 @@
     SendText("clud" . A_EndChar)
     AC_Reg("lcud", "clud")
 }
-:C:lead by::{
-    if AC_IsDisabled("lead by") {
-        SendText("lead by" . A_EndChar)
-        return
-    }
-    SendText("led by" . A_EndChar)
-    AC_Reg("lead by", "led by")
-}
-:C:lead roll::{
-    if AC_IsDisabled("lead roll") {
-        SendText("lead roll" . A_EndChar)
-        return
-    }
-    SendText("lead role" . A_EndChar)
-    AC_Reg("lead roll", "lead role")
-}
-:C:leading roll::{
-    if AC_IsDisabled("leading roll") {
-        SendText("leading roll" . A_EndChar)
-        return
-    }
-    SendText("leading role" . A_EndChar)
-    AC_Reg("leading roll", "leading role")
-}
 :C:leage::{
     if AC_IsDisabled("leage") {
         SendText("leage" . A_EndChar)
@@ -42442,14 +35034,6 @@
     }
     SendText("lean" . A_EndChar)
     AC_Reg("leanr", "lean")
-}
-:C:least wise::{
-    if AC_IsDisabled("least wise") {
-        SendText("least wise" . A_EndChar)
-        return
-    }
-    SendText("leastwise" . A_EndChar)
-    AC_Reg("least wise", "leastwise")
 }
 :C:leathal::{
     if AC_IsDisabled("leathal") {
@@ -42626,70 +35210,6 @@
     }
     SendText("lesbian" . A_EndChar)
     AC_Reg("lesbina", "lesbian")
-}
-:C:less dominate::{
-    if AC_IsDisabled("less dominate") {
-        SendText("less dominate" . A_EndChar)
-        return
-    }
-    SendText("less dominant" . A_EndChar)
-    AC_Reg("less dominate", "less dominant")
-}
-:C:less that::{
-    if AC_IsDisabled("less that") {
-        SendText("less that" . A_EndChar)
-        return
-    }
-    SendText("less than" . A_EndChar)
-    AC_Reg("less that", "less than")
-}
-:C:less then::{
-    if AC_IsDisabled("less then") {
-        SendText("less then" . A_EndChar)
-        return
-    }
-    SendText("less than" . A_EndChar)
-    AC_Reg("less then", "less than")
-}
-:C:lessen learned::{
-    if AC_IsDisabled("lessen learned") {
-        SendText("lessen learned" . A_EndChar)
-        return
-    }
-    SendText("lesson learned" . A_EndChar)
-    AC_Reg("lessen learned", "lesson learned")
-}
-:C:lessen up::{
-    if AC_IsDisabled("lessen up") {
-        SendText("lessen up" . A_EndChar)
-        return
-    }
-    SendText("lesson up" . A_EndChar)
-    AC_Reg("lessen up", "lesson up")
-}
-:C:lesser then::{
-    if AC_IsDisabled("lesser then") {
-        SendText("lesser then" . A_EndChar)
-        return
-    }
-    SendText("less than" . A_EndChar)
-    AC_Reg("lesser then", "less than")
-}
-:C:let's him::{
-    if AC_IsDisabled("let's him") {
-        SendText("let's him" . A_EndChar)
-        return
-    }
-    SendText("lets him" . A_EndChar)
-    AC_Reg("let's him", "lets him")
-}
-:C:let's it::{
-    if AC_IsDisabled("let's it") {
-        SendText("let's it" . A_EndChar)
-        return
-    }
-    SendText("lets it" . A_EndChar)
-    AC_Reg("let's it", "lets it")
 }
 :C:letness::{
     if AC_IsDisabled("letness") {
@@ -43011,14 +35531,6 @@
     SendText("lived" . A_EndChar)
     AC_Reg("lieved", "lived")
 }
-:C:life time::{
-    if AC_IsDisabled("life time") {
-        SendText("life time" . A_EndChar)
-        return
-    }
-    SendText("lifetime" . A_EndChar)
-    AC_Reg("life time", "lifetime")
-}
 :C:lifiing::{
     if AC_IsDisabled("lifiing") {
         SendText("lifiing" . A_EndChar)
@@ -43042,14 +35554,6 @@
     }
     SendText("lightly" . A_EndChar)
     AC_Reg("lighly", "lightly")
-}
-:C:lighter then::{
-    if AC_IsDisabled("lighter then") {
-        SendText("lighter then" . A_EndChar)
-        return
-    }
-    SendText("lighter than" . A_EndChar)
-    AC_Reg("lighter then", "lighter than")
 }
 :C:lightyear::{
     if AC_IsDisabled("lightyear") {
@@ -43147,22 +35651,6 @@
     SendText("lincoln" . A_EndChar)
     AC_Reg("linconl", "lincoln")
 }
-:C:line of site::{
-    if AC_IsDisabled("line of site") {
-        SendText("line of site" . A_EndChar)
-        return
-    }
-    SendText("line of sight" . A_EndChar)
-    AC_Reg("line of site", "line of sight")
-}
-:C:line-of-site::{
-    if AC_IsDisabled("line-of-site") {
-        SendText("line-of-site" . A_EndChar)
-        return
-    }
-    SendText("line-of-sight" . A_EndChar)
-    AC_Reg("line-of-site", "line-of-sight")
-}
 :C:linf::{
     if AC_IsDisabled("linf") {
         SendText("linf" . A_EndChar)
@@ -43194,14 +35682,6 @@
     }
     SendText("linnaean" . A_EndChar)
     AC_Reg("linnaena", "linnaean")
-}
-:C:lions share::{
-    if AC_IsDisabled("lions share") {
-        SendText("lions share" . A_EndChar)
-        return
-    }
-    SendText("lion's share" . A_EndChar)
-    AC_Reg("lions share", "lion's share")
 }
 :C:lippizaner::{
     if AC_IsDisabled("lippizaner") {
@@ -43587,62 +36067,6 @@
     SendText("lant" . A_EndChar)
     AC_Reg("lnat", "lant")
 }
-:C:loan figure stands::{
-    if AC_IsDisabled("loan figure stands") {
-        SendText("loan figure stands" . A_EndChar)
-        return
-    }
-    SendText("lone figure stands" . A_EndChar)
-    AC_Reg("loan figure stands", "lone figure stands")
-}
-:C:loan figure::{
-    if AC_IsDisabled("loan figure") {
-        SendText("loan figure" . A_EndChar)
-        return
-    }
-    SendText("lone figure" . A_EndChar)
-    AC_Reg("loan figure", "lone figure")
-}
-:C:loan star::{
-    if AC_IsDisabled("loan star") {
-        SendText("loan star" . A_EndChar)
-        return
-    }
-    SendText("lone star" . A_EndChar)
-    AC_Reg("loan star", "lone star")
-}
-:C:loan survivor::{
-    if AC_IsDisabled("loan survivor") {
-        SendText("loan survivor" . A_EndChar)
-        return
-    }
-    SendText("lone survivor" . A_EndChar)
-    AC_Reg("loan survivor", "lone survivor")
-}
-:C:loan traveler::{
-    if AC_IsDisabled("loan traveler") {
-        SendText("loan traveler" . A_EndChar)
-        return
-    }
-    SendText("lone traveler" . A_EndChar)
-    AC_Reg("loan traveler", "lone traveler")
-}
-:C:loan voice::{
-    if AC_IsDisabled("loan voice") {
-        SendText("loan voice" . A_EndChar)
-        return
-    }
-    SendText("lone voice" . A_EndChar)
-    AC_Reg("loan voice", "lone voice")
-}
-:C:loan wolf::{
-    if AC_IsDisabled("loan wolf") {
-        SendText("loan wolf" . A_EndChar)
-        return
-    }
-    SendText("lone wolf" . A_EndChar)
-    AC_Reg("loan wolf", "lone wolf")
-}
 :C:lodae::{
     if AC_IsDisabled("lodae") {
         SendText("lodae" . A_EndChar)
@@ -43747,54 +36171,6 @@
     SendText("loot" . A_EndChar)
     AC_Reg("looot", "loot")
 }
-:C:loosing effort::{
-    if AC_IsDisabled("loosing effort") {
-        SendText("loosing effort" . A_EndChar)
-        return
-    }
-    SendText("losing effort" . A_EndChar)
-    AC_Reg("loosing effort", "losing effort")
-}
-:C:loosing record::{
-    if AC_IsDisabled("loosing record") {
-        SendText("loosing record" . A_EndChar)
-        return
-    }
-    SendText("losing record" . A_EndChar)
-    AC_Reg("loosing record", "losing record")
-}
-:C:loosing season::{
-    if AC_IsDisabled("loosing season") {
-        SendText("loosing season" . A_EndChar)
-        return
-    }
-    SendText("losing season" . A_EndChar)
-    AC_Reg("loosing season", "losing season")
-}
-:C:loosing streak::{
-    if AC_IsDisabled("loosing streak") {
-        SendText("loosing streak" . A_EndChar)
-        return
-    }
-    SendText("losing streak" . A_EndChar)
-    AC_Reg("loosing streak", "losing streak")
-}
-:C:loosing team::{
-    if AC_IsDisabled("loosing team") {
-        SendText("loosing team" . A_EndChar)
-        return
-    }
-    SendText("losing team" . A_EndChar)
-    AC_Reg("loosing team", "losing team")
-}
-:C:loosing to::{
-    if AC_IsDisabled("loosing to") {
-        SendText("loosing to" . A_EndChar)
-        return
-    }
-    SendText("losing to" . A_EndChar)
-    AC_Reg("loosing to", "losing to")
-}
 :C:loosing::{
     if AC_IsDisabled("loosing") {
         SendText("loosing" . A_EndChar)
@@ -43803,14 +36179,6 @@
     SendText("losing" . A_EndChar)
     AC_Reg("loosing", "losing")
 }
-:C:lot's of::{
-    if AC_IsDisabled("lot's of") {
-        SendText("lot's of" . A_EndChar)
-        return
-    }
-    SendText("lots of" . A_EndChar)
-    AC_Reg("lot's of", "lots of")
-}
 :C:lotharingen::{
     if AC_IsDisabled("lotharingen") {
         SendText("lotharingen" . A_EndChar)
@@ -43818,22 +36186,6 @@
     }
     SendText("lothringen" . A_EndChar)
     AC_Reg("lotharingen", "lothringen")
-}
-:C:lower that::{
-    if AC_IsDisabled("lower that") {
-        SendText("lower that" . A_EndChar)
-        return
-    }
-    SendText("lower than" . A_EndChar)
-    AC_Reg("lower that", "lower than")
-}
-:C:lower then::{
-    if AC_IsDisabled("lower then") {
-        SendText("lower then" . A_EndChar)
-        return
-    }
-    SendText("lower than" . A_EndChar)
-    AC_Reg("lower then", "lower than")
 }
 :C:lpp::{
     if AC_IsDisabled("lpp") {
@@ -44067,22 +36419,6 @@
     SendText("macramé" . A_EndChar)
     AC_Reg("macrame", "macramé")
 }
-:C:made it plane::{
-    if AC_IsDisabled("made it plane") {
-        SendText("made it plane" . A_EndChar)
-        return
-    }
-    SendText("made it plain" . A_EndChar)
-    AC_Reg("made it plane", "made it plain")
-}
-:C:made it's::{
-    if AC_IsDisabled("made it's") {
-        SendText("made it's" . A_EndChar)
-        return
-    }
-    SendText("made its" . A_EndChar)
-    AC_Reg("made it's", "made its")
-}
 :C:magasin::{
     if AC_IsDisabled("magasin") {
         SendText("magasin" . A_EndChar)
@@ -44179,470 +36515,6 @@
     SendText("major" . A_EndChar)
     AC_Reg("magor", "major")
 }
-:C:maid a breakthrough::{
-    if AC_IsDisabled("maid a breakthrough") {
-        SendText("maid a breakthrough" . A_EndChar)
-        return
-    }
-    SendText("made a breakthrough" . A_EndChar)
-    AC_Reg("maid a breakthrough", "made a breakthrough")
-}
-:C:maid a comeback::{
-    if AC_IsDisabled("maid a comeback") {
-        SendText("maid a comeback" . A_EndChar)
-        return
-    }
-    SendText("made a comeback" . A_EndChar)
-    AC_Reg("maid a comeback", "made a comeback")
-}
-:C:maid a deal::{
-    if AC_IsDisabled("maid a deal") {
-        SendText("maid a deal" . A_EndChar)
-        return
-    }
-    SendText("made a deal" . A_EndChar)
-    AC_Reg("maid a deal", "made a deal")
-}
-:C:maid a decision::{
-    if AC_IsDisabled("maid a decision") {
-        SendText("maid a decision" . A_EndChar)
-        return
-    }
-    SendText("made a decision" . A_EndChar)
-    AC_Reg("maid a decision", "made a decision")
-}
-:C:maid a difference::{
-    if AC_IsDisabled("maid a difference") {
-        SendText("maid a difference" . A_EndChar)
-        return
-    }
-    SendText("made a difference" . A_EndChar)
-    AC_Reg("maid a difference", "made a difference")
-}
-:C:maid a discovery::{
-    if AC_IsDisabled("maid a discovery") {
-        SendText("maid a discovery" . A_EndChar)
-        return
-    }
-    SendText("made a discovery" . A_EndChar)
-    AC_Reg("maid a discovery", "made a discovery")
-}
-:C:maid a fortune::{
-    if AC_IsDisabled("maid a fortune") {
-        SendText("maid a fortune" . A_EndChar)
-        return
-    }
-    SendText("made a fortune" . A_EndChar)
-    AC_Reg("maid a fortune", "made a fortune")
-}
-:C:maid a fuss::{
-    if AC_IsDisabled("maid a fuss") {
-        SendText("maid a fuss" . A_EndChar)
-        return
-    }
-    SendText("made a fuss" . A_EndChar)
-    AC_Reg("maid a fuss", "made a fuss")
-}
-:C:maid a mess::{
-    if AC_IsDisabled("maid a mess") {
-        SendText("maid a mess" . A_EndChar)
-        return
-    }
-    SendText("made a mess" . A_EndChar)
-    AC_Reg("maid a mess", "made a mess")
-}
-:C:maid a mistake::{
-    if AC_IsDisabled("maid a mistake") {
-        SendText("maid a mistake" . A_EndChar)
-        return
-    }
-    SendText("made a mistake" . A_EndChar)
-    AC_Reg("maid a mistake", "made a mistake")
-}
-:C:maid a point::{
-    if AC_IsDisabled("maid a point") {
-        SendText("maid a point" . A_EndChar)
-        return
-    }
-    SendText("made a point" . A_EndChar)
-    AC_Reg("maid a point", "made a point")
-}
-:C:maid a promise::{
-    if AC_IsDisabled("maid a promise") {
-        SendText("maid a promise" . A_EndChar)
-        return
-    }
-    SendText("made a promise" . A_EndChar)
-    AC_Reg("maid a promise", "made a promise")
-}
-:C:maid a scene::{
-    if AC_IsDisabled("maid a scene") {
-        SendText("maid a scene" . A_EndChar)
-        return
-    }
-    SendText("made a scene" . A_EndChar)
-    AC_Reg("maid a scene", "made a scene")
-}
-:C:maid a splash::{
-    if AC_IsDisabled("maid a splash") {
-        SendText("maid a splash" . A_EndChar)
-        return
-    }
-    SendText("made a splash" . A_EndChar)
-    AC_Reg("maid a splash", "made a splash")
-}
-:C:maid a statement::{
-    if AC_IsDisabled("maid a statement") {
-        SendText("maid a statement" . A_EndChar)
-        return
-    }
-    SendText("made a statement" . A_EndChar)
-    AC_Reg("maid a statement", "made a statement")
-}
-:C:maid amends::{
-    if AC_IsDisabled("maid amends") {
-        SendText("maid amends" . A_EndChar)
-        return
-    }
-    SendText("made amends" . A_EndChar)
-    AC_Reg("maid amends", "made amends")
-}
-:C:maid an entrance::{
-    if AC_IsDisabled("maid an entrance") {
-        SendText("maid an entrance" . A_EndChar)
-        return
-    }
-    SendText("made an entrance" . A_EndChar)
-    AC_Reg("maid an entrance", "made an entrance")
-}
-:C:maid an impression::{
-    if AC_IsDisabled("maid an impression") {
-        SendText("maid an impression" . A_EndChar)
-        return
-    }
-    SendText("made an impression" . A_EndChar)
-    AC_Reg("maid an impression", "made an impression")
-}
-:C:maid arrangements::{
-    if AC_IsDisabled("maid arrangements") {
-        SendText("maid arrangements" . A_EndChar)
-        return
-    }
-    SendText("made arrangements" . A_EndChar)
-    AC_Reg("maid arrangements", "made arrangements")
-}
-:C:maid enemies::{
-    if AC_IsDisabled("maid enemies") {
-        SendText("maid enemies" . A_EndChar)
-        return
-    }
-    SendText("made enemies" . A_EndChar)
-    AC_Reg("maid enemies", "made enemies")
-}
-:C:maid excuses::{
-    if AC_IsDisabled("maid excuses") {
-        SendText("maid excuses" . A_EndChar)
-        return
-    }
-    SendText("made excuses" . A_EndChar)
-    AC_Reg("maid excuses", "made excuses")
-}
-:C:maid friends::{
-    if AC_IsDisabled("maid friends") {
-        SendText("maid friends" . A_EndChar)
-        return
-    }
-    SendText("made friends" . A_EndChar)
-    AC_Reg("maid friends", "made friends")
-}
-:C:maid headlines::{
-    if AC_IsDisabled("maid headlines") {
-        SendText("maid headlines" . A_EndChar)
-        return
-    }
-    SendText("made headlines" . A_EndChar)
-    AC_Reg("maid headlines", "made headlines")
-}
-:C:maid history::{
-    if AC_IsDisabled("maid history") {
-        SendText("maid history" . A_EndChar)
-        return
-    }
-    SendText("made history" . A_EndChar)
-    AC_Reg("maid history", "made history")
-}
-:C:maid it big::{
-    if AC_IsDisabled("maid it big") {
-        SendText("maid it big" . A_EndChar)
-        return
-    }
-    SendText("made it big" . A_EndChar)
-    AC_Reg("maid it big", "made it big")
-}
-:C:maid it clear::{
-    if AC_IsDisabled("maid it clear") {
-        SendText("maid it clear" . A_EndChar)
-        return
-    }
-    SendText("made it clear" . A_EndChar)
-    AC_Reg("maid it clear", "made it clear")
-}
-:C:maid it count::{
-    if AC_IsDisabled("maid it count") {
-        SendText("maid it count" . A_EndChar)
-        return
-    }
-    SendText("made it count" . A_EndChar)
-    AC_Reg("maid it count", "made it count")
-}
-:C:maid it happen::{
-    if AC_IsDisabled("maid it happen") {
-        SendText("maid it happen" . A_EndChar)
-        return
-    }
-    SendText("made it happen" . A_EndChar)
-    AC_Reg("maid it happen", "made it happen")
-}
-:C:maid it official::{
-    if AC_IsDisabled("maid it official") {
-        SendText("maid it official" . A_EndChar)
-        return
-    }
-    SendText("made it official" . A_EndChar)
-    AC_Reg("maid it official", "made it official")
-}
-:C:maid it possible::{
-    if AC_IsDisabled("maid it possible") {
-        SendText("maid it possible" . A_EndChar)
-        return
-    }
-    SendText("made it possible" . A_EndChar)
-    AC_Reg("maid it possible", "made it possible")
-}
-:C:maid it through::{
-    if AC_IsDisabled("maid it through") {
-        SendText("maid it through" . A_EndChar)
-        return
-    }
-    SendText("made it through" . A_EndChar)
-    AC_Reg("maid it through", "made it through")
-}
-:C:maid it work::{
-    if AC_IsDisabled("maid it work") {
-        SendText("maid it work" . A_EndChar)
-        return
-    }
-    SendText("made it work" . A_EndChar)
-    AC_Reg("maid it work", "made it work")
-}
-:C:maid money::{
-    if AC_IsDisabled("maid money") {
-        SendText("maid money" . A_EndChar)
-        return
-    }
-    SendText("made money" . A_EndChar)
-    AC_Reg("maid money", "made money")
-}
-:C:maid my day::{
-    if AC_IsDisabled("maid my day") {
-        SendText("maid my day" . A_EndChar)
-        return
-    }
-    SendText("made my day" . A_EndChar)
-    AC_Reg("maid my day", "made my day")
-}
-:C:maid peace::{
-    if AC_IsDisabled("maid peace") {
-        SendText("maid peace" . A_EndChar)
-        return
-    }
-    SendText("made peace" . A_EndChar)
-    AC_Reg("maid peace", "made peace")
-}
-:C:maid plans::{
-    if AC_IsDisabled("maid plans") {
-        SendText("maid plans" . A_EndChar)
-        return
-    }
-    SendText("made plans" . A_EndChar)
-    AC_Reg("maid plans", "made plans")
-}
-:C:maid progress::{
-    if AC_IsDisabled("maid progress") {
-        SendText("maid progress" . A_EndChar)
-        return
-    }
-    SendText("made progress" . A_EndChar)
-    AC_Reg("maid progress", "made progress")
-}
-:C:maid room::{
-    if AC_IsDisabled("maid room") {
-        SendText("maid room" . A_EndChar)
-        return
-    }
-    SendText("made room" . A_EndChar)
-    AC_Reg("maid room", "made room")
-}
-:C:maid sense of::{
-    if AC_IsDisabled("maid sense of") {
-        SendText("maid sense of" . A_EndChar)
-        return
-    }
-    SendText("made sense of" . A_EndChar)
-    AC_Reg("maid sense of", "made sense of")
-}
-:C:maid sense::{
-    if AC_IsDisabled("maid sense") {
-        SendText("maid sense" . A_EndChar)
-        return
-    }
-    SendText("made sense" . A_EndChar)
-    AC_Reg("maid sense", "made sense")
-}
-:C:maid small talk::{
-    if AC_IsDisabled("maid small talk") {
-        SendText("maid small talk" . A_EndChar)
-        return
-    }
-    SendText("made small talk" . A_EndChar)
-    AC_Reg("maid small talk", "made small talk")
-}
-:C:maid the best::{
-    if AC_IsDisabled("maid the best") {
-        SendText("maid the best" . A_EndChar)
-        return
-    }
-    SendText("made the best" . A_EndChar)
-    AC_Reg("maid the best", "made the best")
-}
-:C:maid the call::{
-    if AC_IsDisabled("maid the call") {
-        SendText("maid the call" . A_EndChar)
-        return
-    }
-    SendText("made the call" . A_EndChar)
-    AC_Reg("maid the call", "made the call")
-}
-:C:maid the cut::{
-    if AC_IsDisabled("maid the cut") {
-        SendText("maid the cut" . A_EndChar)
-        return
-    }
-    SendText("made the cut" . A_EndChar)
-    AC_Reg("maid the cut", "made the cut")
-}
-:C:maid the deadline::{
-    if AC_IsDisabled("maid the deadline") {
-        SendText("maid the deadline" . A_EndChar)
-        return
-    }
-    SendText("made the deadline" . A_EndChar)
-    AC_Reg("maid the deadline", "made the deadline")
-}
-:C:maid the difference::{
-    if AC_IsDisabled("maid the difference") {
-        SendText("maid the difference" . A_EndChar)
-        return
-    }
-    SendText("made the difference" . A_EndChar)
-    AC_Reg("maid the difference", "made the difference")
-}
-:C:maid the effort::{
-    if AC_IsDisabled("maid the effort") {
-        SendText("maid the effort" . A_EndChar)
-        return
-    }
-    SendText("made the effort" . A_EndChar)
-    AC_Reg("maid the effort", "made the effort")
-}
-:C:maid the grade::{
-    if AC_IsDisabled("maid the grade") {
-        SendText("maid the grade" . A_EndChar)
-        return
-    }
-    SendText("made the grade" . A_EndChar)
-    AC_Reg("maid the grade", "made the grade")
-}
-:C:maid the news::{
-    if AC_IsDisabled("maid the news") {
-        SendText("maid the news" . A_EndChar)
-        return
-    }
-    SendText("made the news" . A_EndChar)
-    AC_Reg("maid the news", "made the news")
-}
-:C:maid the payment::{
-    if AC_IsDisabled("maid the payment") {
-        SendText("maid the payment" . A_EndChar)
-        return
-    }
-    SendText("made the payment" . A_EndChar)
-    AC_Reg("maid the payment", "made the payment")
-}
-:C:maid the point::{
-    if AC_IsDisabled("maid the point") {
-        SendText("maid the point" . A_EndChar)
-        return
-    }
-    SendText("made the point" . A_EndChar)
-    AC_Reg("maid the point", "made the point")
-}
-:C:maid the rounds::{
-    if AC_IsDisabled("maid the rounds") {
-        SendText("maid the rounds" . A_EndChar)
-        return
-    }
-    SendText("made the rounds" . A_EndChar)
-    AC_Reg("maid the rounds", "made the rounds")
-}
-:C:maid the rules::{
-    if AC_IsDisabled("maid the rules") {
-        SendText("maid the rules" . A_EndChar)
-        return
-    }
-    SendText("made the rules" . A_EndChar)
-    AC_Reg("maid the rules", "made the rules")
-}
-:C:maid the team::{
-    if AC_IsDisabled("maid the team") {
-        SendText("maid the team" . A_EndChar)
-        return
-    }
-    SendText("made the team" . A_EndChar)
-    AC_Reg("maid the team", "made the team")
-}
-:C:maid time::{
-    if AC_IsDisabled("maid time") {
-        SendText("maid time" . A_EndChar)
-        return
-    }
-    SendText("made time" . A_EndChar)
-    AC_Reg("maid time", "made time")
-}
-:C:maid to order::{
-    if AC_IsDisabled("maid to order") {
-        SendText("maid to order" . A_EndChar)
-        return
-    }
-    SendText("made to order" . A_EndChar)
-    AC_Reg("maid to order", "made to order")
-}
-:C:maid up story::{
-    if AC_IsDisabled("maid up story") {
-        SendText("maid up story" . A_EndChar)
-        return
-    }
-    SendText("made up story" . A_EndChar)
-    AC_Reg("maid up story", "made up story")
-}
-:C:maid waves::{
-    if AC_IsDisabled("maid waves") {
-        SendText("maid waves" . A_EndChar)
-        return
-    }
-    SendText("made waves" . A_EndChar)
-    AC_Reg("maid waves", "made waves")
-}
 :C:mailny::{
     if AC_IsDisabled("mailny") {
         SendText("mailny" . A_EndChar)
@@ -44715,22 +36587,6 @@
     SendText("mentioned" . A_EndChar)
     AC_Reg("maintioned", "mentioned")
 }
-:C:maitre d'hotel::{
-    if AC_IsDisabled("maitre d'hotel") {
-        SendText("maitre d'hotel" . A_EndChar)
-        return
-    }
-    SendText("maître d'hôtel" . A_EndChar)
-    AC_Reg("maitre d'hotel", "maître d'hôtel")
-}
-:C:major roll::{
-    if AC_IsDisabled("major roll") {
-        SendText("major roll" . A_EndChar)
-        return
-    }
-    SendText("major role" . A_EndChar)
-    AC_Reg("major roll", "major role")
-}
 :C:majorot::{
     if AC_IsDisabled("majorot") {
         SendText("majorot" . A_EndChar)
@@ -44755,22 +36611,6 @@
     SendText("make" . A_EndChar)
     AC_Reg("makd", "make")
 }
-:C:make due::{
-    if AC_IsDisabled("make due") {
-        SendText("make due" . A_EndChar)
-        return
-    }
-    SendText("make do" . A_EndChar)
-    AC_Reg("make due", "make do")
-}
-:C:make it's::{
-    if AC_IsDisabled("make it's") {
-        SendText("make it's" . A_EndChar)
-        return
-    }
-    SendText("make its" . A_EndChar)
-    AC_Reg("make it's", "make its")
-}
 :C:maked::{
     if AC_IsDisabled("maked") {
         SendText("maked" . A_EndChar)
@@ -44778,14 +36618,6 @@
     }
     SendText("marked" . A_EndChar)
     AC_Reg("maked", "marked")
-}
-:C:making it's::{
-    if AC_IsDisabled("making it's") {
-        SendText("making it's" . A_EndChar)
-        return
-    }
-    SendText("making its" . A_EndChar)
-    AC_Reg("making it's", "making its")
 }
 :C:makse::{
     if AC_IsDisabled("makse") {
@@ -44874,14 +36706,6 @@
     }
     SendText("manageable" . A_EndChar)
     AC_Reg("managable", "manageable")
-}
-:C:managerial reign::{
-    if AC_IsDisabled("managerial reign") {
-        SendText("managerial reign" . A_EndChar)
-        return
-    }
-    SendText("managerial rein" . A_EndChar)
-    AC_Reg("managerial reign", "managerial rein")
 }
 :C:managm::{
     if AC_IsDisabled("managm") {
@@ -44986,14 +36810,6 @@
     }
     SendText("manifestations" . A_EndChar)
     AC_Reg("manisfestations", "manifestations")
-}
-:C:manner born::{
-    if AC_IsDisabled("manner born") {
-        SendText("manner born" . A_EndChar)
-        return
-    }
-    SendText("manor born" . A_EndChar)
-    AC_Reg("manner born", "manor born")
 }
 :C:mannor::{
     if AC_IsDisabled("mannor") {
@@ -45154,14 +36970,6 @@
     }
     SendText("marriage" . A_EndChar)
     AC_Reg("mariage", "marriage")
-}
-:C:Marine Core::{
-    if AC_IsDisabled("Marine Core") {
-        SendText("Marine Core" . A_EndChar)
-        return
-    }
-    SendText("Marine Corps" . A_EndChar)
-    AC_Reg("Marine Core", "Marine Corps")
 }
 :C:marjorit::{
     if AC_IsDisabled("marjorit") {
@@ -45427,22 +37235,6 @@
     SendText("matinée" . A_EndChar)
     AC_Reg("matinee", "matinée")
 }
-:C:may of::{
-    if AC_IsDisabled("may of") {
-        SendText("may of" . A_EndChar)
-        return
-    }
-    SendText("may have" . A_EndChar)
-    AC_Reg("may of", "may have")
-}
-:C:may semm::{
-    if AC_IsDisabled("may semm") {
-        SendText("may semm" . A_EndChar)
-        return
-    }
-    SendText("may seem" . A_EndChar)
-    AC_Reg("may semm", "may seem")
-}
 :C:maye::{
     if AC_IsDisabled("maye") {
         SendText("maye" . A_EndChar)
@@ -45514,14 +37306,6 @@
     }
     SendText("meaning" . A_EndChar)
     AC_Reg("meaing", "meaning")
-}
-:C:mean while::{
-    if AC_IsDisabled("mean while") {
-        SendText("mean while" . A_EndChar)
-        return
-    }
-    SendText("meanwhile" . A_EndChar)
-    AC_Reg("mean while", "meanwhile")
 }
 :C:meaninng::{
     if AC_IsDisabled("meaninng") {
@@ -45771,22 +37555,6 @@
     SendText("memo" . A_EndChar)
     AC_Reg("memmo", "memo")
 }
-:C:memory cash::{
-    if AC_IsDisabled("memory cash") {
-        SendText("memory cash" . A_EndChar)
-        return
-    }
-    SendText("memory cache" . A_EndChar)
-    AC_Reg("memory cash", "memory cache")
-}
-:C:memory leek::{
-    if AC_IsDisabled("memory leek") {
-        SendText("memory leek" . A_EndChar)
-        return
-    }
-    SendText("memory leak" . A_EndChar)
-    AC_Reg("memory leek", "memory leak")
-}
 :C:memt::{
     if AC_IsDisabled("memt") {
         SendText("memt" . A_EndChar)
@@ -45802,22 +37570,6 @@
     }
     SendText("member" . A_EndChar)
     AC_Reg("memver", "member")
-}
-:C:menage a trois::{
-    if AC_IsDisabled("menage a trois") {
-        SendText("menage a trois" . A_EndChar)
-        return
-    }
-    SendText("ménage à trois" . A_EndChar)
-    AC_Reg("menage a trois", "ménage à trois")
-}
-:C:menages a trois::{
-    if AC_IsDisabled("menages a trois") {
-        SendText("menages a trois" . A_EndChar)
-        return
-    }
-    SendText("ménages à trois" . A_EndChar)
-    AC_Reg("menages a trois", "ménages à trois")
 }
 :C:menally::{
     if AC_IsDisabled("menally") {
@@ -46090,22 +37842,6 @@
     }
     SendText("midwives" . A_EndChar)
     AC_Reg("midwifes", "midwives")
-}
-:C:might of been::{
-    if AC_IsDisabled("might of been") {
-        SendText("might of been" . A_EndChar)
-        return
-    }
-    SendText("might have been" . A_EndChar)
-    AC_Reg("might of been", "might have been")
-}
-:C:might of::{
-    if AC_IsDisabled("might of") {
-        SendText("might of" . A_EndChar)
-        return
-    }
-    SendText("might have" . A_EndChar)
-    AC_Reg("might of", "might have")
 }
 :C:mightn'nt::{
     if AC_IsDisabled("mightn'nt") {
@@ -46458,14 +38194,6 @@
     }
     SendText("ministry" . A_EndChar)
     AC_Reg("ministery", "ministry")
-}
-:C:minor roll::{
-    if AC_IsDisabled("minor roll") {
-        SendText("minor roll" . A_EndChar)
-        return
-    }
-    SendText("minor role" . A_EndChar)
-    AC_Reg("minor roll", "minor role")
 }
 :C:minsitr::{
     if AC_IsDisabled("minsitr") {
@@ -47235,54 +38963,6 @@
     SendText("monotypic" . A_EndChar)
     AC_Reg("montypic", "monotypic")
 }
-:C:more dominate::{
-    if AC_IsDisabled("more dominate") {
-        SendText("more dominate" . A_EndChar)
-        return
-    }
-    SendText("more dominant" . A_EndChar)
-    AC_Reg("more dominate", "more dominant")
-}
-:C:more of less::{
-    if AC_IsDisabled("more of less") {
-        SendText("more of less" . A_EndChar)
-        return
-    }
-    SendText("more or less" . A_EndChar)
-    AC_Reg("more of less", "more or less")
-}
-:C:more often then::{
-    if AC_IsDisabled("more often then") {
-        SendText("more often then" . A_EndChar)
-        return
-    }
-    SendText("more often than" . A_EndChar)
-    AC_Reg("more often then", "more often than")
-}
-:C:more resent::{
-    if AC_IsDisabled("more resent") {
-        SendText("more resent" . A_EndChar)
-        return
-    }
-    SendText("more recent" . A_EndChar)
-    AC_Reg("more resent", "more recent")
-}
-:C:more that::{
-    if AC_IsDisabled("more that") {
-        SendText("more that" . A_EndChar)
-        return
-    }
-    SendText("more than" . A_EndChar)
-    AC_Reg("more that", "more than")
-}
-:C:more then::{
-    if AC_IsDisabled("more then") {
-        SendText("more then" . A_EndChar)
-        return
-    }
-    SendText("more than" . A_EndChar)
-    AC_Reg("more then", "more than")
-}
 :C:moreso::{
     if AC_IsDisabled("moreso") {
         SendText("moreso" . A_EndChar)
@@ -47411,22 +39091,6 @@
     SendText("mortgage" . A_EndChar)
     AC_Reg("mortage", "mortgage")
 }
-:C:most populace::{
-    if AC_IsDisabled("most populace") {
-        SendText("most populace" . A_EndChar)
-        return
-    }
-    SendText("most populous" . A_EndChar)
-    AC_Reg("most populace", "most populous")
-}
-:C:most resent::{
-    if AC_IsDisabled("most resent") {
-        SendText("most resent" . A_EndChar)
-        return
-    }
-    SendText("most recent" . A_EndChar)
-    AC_Reg("most resent", "most recent")
-}
 :C:mostur::{
     if AC_IsDisabled("mostur") {
         SendText("mostur" . A_EndChar)
@@ -47450,14 +39114,6 @@
     }
     SendText("motivated" . A_EndChar)
     AC_Reg("motiviated", "motivated")
-}
-:C:motley crue::{
-    if AC_IsDisabled("motley crue") {
-        SendText("motley crue" . A_EndChar)
-        return
-    }
-    SendText("Mötley Crüe" . A_EndChar)
-    AC_Reg("motley crue", "Mötley Crüe")
 }
 :C:motorhead::{
     if AC_IsDisabled("motorhead") {
@@ -47490,14 +39146,6 @@
     }
     SendText("month" . A_EndChar)
     AC_Reg("mounth", "month")
-}
-:C:mourning glory::{
-    if AC_IsDisabled("mourning glory") {
-        SendText("mourning glory" . A_EndChar)
-        return
-    }
-    SendText("morning glory" . A_EndChar)
-    AC_Reg("mourning glory", "morning glory")
 }
 :C:movei::{
     if AC_IsDisabled("movei") {
@@ -47699,14 +39347,6 @@
     SendText("multi" . A_EndChar)
     AC_Reg("mulit", "multi")
 }
-:C:multi0::{
-    if AC_IsDisabled("multi0") {
-        SendText("multi0" . A_EndChar)
-        return
-    }
-    SendText("multi-" . A_EndChar)
-    AC_Reg("multi0", "multi-")
-}
 :C:multicultralism::{
     if AC_IsDisabled("multicultralism") {
         SendText("multicultralism" . A_EndChar)
@@ -47851,30 +39491,6 @@
     SendText("musicians" . A_EndChar)
     AC_Reg("muscicians", "musicians")
 }
-:C:must exact revenge::{
-    if AC_IsDisabled("must exact revenge") {
-        SendText("must exact revenge" . A_EndChar)
-        return
-    }
-    SendText("must extract revenge" . A_EndChar)
-    AC_Reg("must exact revenge", "must extract revenge")
-}
-:C:must of been::{
-    if AC_IsDisabled("must of been") {
-        SendText("must of been" . A_EndChar)
-        return
-    }
-    SendText("must have been" . A_EndChar)
-    AC_Reg("must of been", "must have been")
-}
-:C:must of::{
-    if AC_IsDisabled("must of") {
-        SendText("must of" . A_EndChar)
-        return
-    }
-    SendText("must have" . A_EndChar)
-    AC_Reg("must of", "must have")
-}
 :C:mustn'nt::{
     if AC_IsDisabled("mustn'nt") {
         SendText("mustn'nt" . A_EndChar)
@@ -47898,14 +39514,6 @@
     }
     SendText("must've" . A_EndChar)
     AC_Reg("mustve", "must've")
-}
-:C:mute point::{
-    if AC_IsDisabled("mute point") {
-        SendText("mute point" . A_EndChar)
-        return
-    }
-    SendText("moot point" . A_EndChar)
-    AC_Reg("mute point", "moot point")
 }
 :C:mutilia::{
     if AC_IsDisabled("mutilia") {
@@ -48018,14 +39626,6 @@
     }
     SendText("my" . A_EndChar)
     AC_Reg("myu", "my")
-}
-:C:n;t::{
-    if AC_IsDisabled("n;t") {
-        SendText("n;t" . A_EndChar)
-        return
-    }
-    SendText("n't" . A_EndChar)
-    AC_Reg("n;t", "n't")
 }
 :C:nad::{
     if AC_IsDisabled("nad") {
@@ -48171,14 +39771,6 @@
     SendText("Napoleonic" . A_EndChar)
     AC_Reg("napoleonian", "Napoleonic")
 }
-:C:nation wide::{
-    if AC_IsDisabled("nation wide") {
-        SendText("nation wide" . A_EndChar)
-        return
-    }
-    SendText("nationwide" . A_EndChar)
-    AC_Reg("nation wide", "nationwide")
-}
 :C:natly::{
     if AC_IsDisabled("natly") {
         SendText("natly" . A_EndChar)
@@ -48322,14 +39914,6 @@
     }
     SendText("ndant" . A_EndChar)
     AC_Reg("ndunt", "ndant")
-}
-:C:near by::{
-    if AC_IsDisabled("near by") {
-        SendText("near by" . A_EndChar)
-        return
-    }
-    SendText("nearby" . A_EndChar)
-    AC_Reg("near by", "nearby")
 }
 :C:necass::{
     if AC_IsDisabled("necass") {
@@ -48643,22 +40227,6 @@
     SendText("neighbours" . A_EndChar)
     AC_Reg("neigbours", "neighbours")
 }
-:C:neither criteria::{
-    if AC_IsDisabled("neither criteria") {
-        SendText("neither criteria" . A_EndChar)
-        return
-    }
-    SendText("neither criterion" . A_EndChar)
-    AC_Reg("neither criteria", "neither criterion")
-}
-:C:neither phenomena::{
-    if AC_IsDisabled("neither phenomena") {
-        SendText("neither phenomena" . A_EndChar)
-        return
-    }
-    SendText("neither phenomenon" . A_EndChar)
-    AC_Reg("neither phenomena", "neither phenomenon")
-}
 :C:neize::{
     if AC_IsDisabled("neize") {
         SendText("neize" . A_EndChar)
@@ -48739,14 +40307,6 @@
     SendText("necessary" . A_EndChar)
     AC_Reg("nessecary", "necessary")
 }
-:C:nest one::{
-    if AC_IsDisabled("nest one") {
-        SendText("nest one" . A_EndChar)
-        return
-    }
-    SendText("next one" . A_EndChar)
-    AC_Reg("nest one", "next one")
-}
 :C:nestin::{
     if AC_IsDisabled("nestin") {
         SendText("nestin" . A_EndChar)
@@ -48770,14 +40330,6 @@
     }
     SendText("nevertheless" . A_EndChar)
     AC_Reg("neverthless", "nevertheless")
-}
-:C:new comer::{
-    if AC_IsDisabled("new comer") {
-        SendText("new comer" . A_EndChar)
-        return
-    }
-    SendText("newcomer" . A_EndChar)
-    AC_Reg("new comer", "newcomer")
 }
 :C:newletter::{
     if AC_IsDisabled("newletter") {
@@ -48818,14 +40370,6 @@
     }
     SendText("nesting" . A_EndChar)
     AC_Reg("nexting", "nesting")
-}
-:C:nez perce::{
-    if AC_IsDisabled("nez perce") {
-        SendText("nez perce" . A_EndChar)
-        return
-    }
-    SendText("Nez Percé" . A_EndChar)
-    AC_Reg("nez perce", "Nez Percé")
 }
 :C:nfered::{
     if AC_IsDisabled("nfered") {
@@ -49051,14 +40595,6 @@
     SendText("ninety" . A_EndChar)
     AC_Reg("ninty", "ninety")
 }
-:C:nip it in the butt::{
-    if AC_IsDisabled("nip it in the butt") {
-        SendText("nip it in the butt" . A_EndChar)
-        return
-    }
-    SendText("nip it in the bud" . A_EndChar)
-    AC_Reg("nip it in the butt", "nip it in the bud")
-}
 :C:nisator::{
     if AC_IsDisabled("nisator") {
         SendText("nisator" . A_EndChar)
@@ -49211,14 +40747,6 @@
     SendText("nning" . A_EndChar)
     AC_Reg("nnung", "nning")
 }
-:C:no where to::{
-    if AC_IsDisabled("no where to") {
-        SendText("no where to" . A_EndChar)
-        return
-    }
-    SendText("nowhere to" . A_EndChar)
-    AC_Reg("no where to", "nowhere to")
-}
 :C:noe::{
     if AC_IsDisabled("noe") {
         SendText("noe" . A_EndChar)
@@ -49363,14 +40891,6 @@
     SendText("northeastern" . A_EndChar)
     AC_Reg("northereastern", "northeastern")
 }
-:C:nose no bounds::{
-    if AC_IsDisabled("nose no bounds") {
-        SendText("nose no bounds" . A_EndChar)
-        return
-    }
-    SendText("knows no bounds" . A_EndChar)
-    AC_Reg("nose no bounds", "knows no bounds")
-}
 :C:notabley::{
     if AC_IsDisabled("notabley") {
         SendText("notabley" . A_EndChar)
@@ -49378,14 +40898,6 @@
     }
     SendText("notably" . A_EndChar)
     AC_Reg("notabley", "notably")
-}
-:C:note worth::{
-    if AC_IsDisabled("note worth") {
-        SendText("note worth" . A_EndChar)
-        return
-    }
-    SendText("noteworth" . A_EndChar)
-    AC_Reg("note worth", "noteworth")
 }
 :C:noteable::{
     if AC_IsDisabled("noteable") {
@@ -50107,22 +41619,6 @@
     SendText("ovide" . A_EndChar)
     AC_Reg("obide", "ovide")
 }
-:C:objet trouve::{
-    if AC_IsDisabled("objet trouve") {
-        SendText("objet trouve" . A_EndChar)
-        return
-    }
-    SendText("objet trouvé" . A_EndChar)
-    AC_Reg("objet trouve", "objet trouvé")
-}
-:C:objets trouve::{
-    if AC_IsDisabled("objets trouve") {
-        SendText("objets trouve" . A_EndChar)
-        return
-    }
-    SendText("objets trouvé" . A_EndChar)
-    AC_Reg("objets trouve", "objets trouvé")
-}
 :C:obram::{
     if AC_IsDisabled("obram") {
         SendText("obram" . A_EndChar)
@@ -50715,38 +42211,6 @@
     SendText("over" . A_EndChar)
     AC_Reg("oevr", "over")
 }
-:C:of been::{
-    if AC_IsDisabled("of been") {
-        SendText("of been" . A_EndChar)
-        return
-    }
-    SendText("have been" . A_EndChar)
-    AC_Reg("of been", "have been")
-}
-:C:of had::{
-    if AC_IsDisabled("of had") {
-        SendText("of had" . A_EndChar)
-        return
-    }
-    SendText("have had" . A_EndChar)
-    AC_Reg("of had", "have had")
-}
-:C:of it's kind::{
-    if AC_IsDisabled("of it's kind") {
-        SendText("of it's kind" . A_EndChar)
-        return
-    }
-    SendText("of its kind" . A_EndChar)
-    AC_Reg("of it's kind", "of its kind")
-}
-:C:of it's own::{
-    if AC_IsDisabled("of it's own") {
-        SendText("of it's own" . A_EndChar)
-        return
-    }
-    SendText("of its own" . A_EndChar)
-    AC_Reg("of it's own", "of its own")
-}
 :C:offce::{
     if AC_IsDisabled("offce") {
         SendText("offce" . A_EndChar)
@@ -50851,14 +42315,6 @@
     SendText("ofore" . A_EndChar)
     AC_Reg("ofoer", "ofore")
 }
-:C:oft he::{
-    if AC_IsDisabled("oft he") {
-        SendText("oft he" . A_EndChar)
-        return
-    }
-    SendText("of the" . A_EndChar)
-    AC_Reg("oft he", "of the")
-}
 :C:oftenly::{
     if AC_IsDisabled("oftenly") {
         SendText("oftenly" . A_EndChar)
@@ -50898,14 +42354,6 @@
     }
     SendText("oth" . A_EndChar)
     AC_Reg("oht", "oth")
-}
-:C:oil barron::{
-    if AC_IsDisabled("oil barron") {
-        SendText("oil barron" . A_EndChar)
-        return
-    }
-    SendText("oil baron" . A_EndChar)
-    AC_Reg("oil barron", "oil baron")
 }
 :C:ointim::{
     if AC_IsDisabled("ointim") {
@@ -51227,38 +42675,6 @@
     SendText("most" . A_EndChar)
     AC_Reg("omst", "most")
 }
-:C:on accident::{
-    if AC_IsDisabled("on accident") {
-        SendText("on accident" . A_EndChar)
-        return
-    }
-    SendText("by accident" . A_EndChar)
-    AC_Reg("on accident", "by accident")
-}
-:C:on going::{
-    if AC_IsDisabled("on going") {
-        SendText("on going" . A_EndChar)
-        return
-    }
-    SendText("ongoing" . A_EndChar)
-    AC_Reg("on going", "ongoing")
-}
-:C:on it's own::{
-    if AC_IsDisabled("on it's own") {
-        SendText("on it's own" . A_EndChar)
-        return
-    }
-    SendText("on its own" . A_EndChar)
-    AC_Reg("on it's own", "on its own")
-}
-:C:on-going::{
-    if AC_IsDisabled("on-going") {
-        SendText("on-going" . A_EndChar)
-        return
-    }
-    SendText("ongoing" . A_EndChar)
-    AC_Reg("on-going", "ongoing")
-}
 :C:onc::{
     if AC_IsDisabled("onc") {
         SendText("onc" . A_EndChar)
@@ -51282,30 +42698,6 @@
     }
     SendText("ones" . A_EndChar)
     AC_Reg("oncs", "ones")
-}
-:C:one criteria::{
-    if AC_IsDisabled("one criteria") {
-        SendText("one criteria" . A_EndChar)
-        return
-    }
-    SendText("one criterion" . A_EndChar)
-    AC_Reg("one criteria", "one criterion")
-}
-:C:one in the same::{
-    if AC_IsDisabled("one in the same") {
-        SendText("one in the same" . A_EndChar)
-        return
-    }
-    SendText("one and the same" . A_EndChar)
-    AC_Reg("one in the same", "one and the same")
-}
-:C:one phenomena::{
-    if AC_IsDisabled("one phenomena") {
-        SendText("one phenomena" . A_EndChar)
-        return
-    }
-    SendText("one phenomenon" . A_EndChar)
-    AC_Reg("one phenomena", "one phenomenon")
 }
 :C:onee::{
     if AC_IsDisabled("onee") {
@@ -51338,14 +42730,6 @@
     }
     SendText("onfesse" . A_EndChar)
     AC_Reg("onffese", "onfesse")
-}
-:C:ongoing bases::{
-    if AC_IsDisabled("ongoing bases") {
-        SendText("ongoing bases" . A_EndChar)
-        return
-    }
-    SendText("ongoing basis" . A_EndChar)
-    AC_Reg("ongoing bases", "ongoing basis")
 }
 :C:ongraph::{
     if AC_IsDisabled("ongraph") {
@@ -51411,13 +42795,13 @@
     SendText("onse" . A_EndChar)
     AC_Reg("onsce", "onse")
 }
-:C:ont he::{
-    if AC_IsDisabled("ont he") {
-        SendText("ont he" . A_EndChar)
+:C:ont::{
+    if AC_IsDisabled("ont") {
+        SendText("ont" . A_EndChar)
         return
     }
-    SendText("on the" . A_EndChar)
-    AC_Reg("ont he", "on the")
+    SendText("not" . A_EndChar)
+    AC_Reg("ont", "not")
 }
 :C:onthe::{
     if AC_IsDisabled("onthe") {
@@ -51547,14 +42931,6 @@
     SendText("operat" . A_EndChar)
     AC_Reg("oparat", "operat")
 }
-:C:open pour::{
-    if AC_IsDisabled("open pour") {
-        SendText("open pour" . A_EndChar)
-        return
-    }
-    SendText("open pore" . A_EndChar)
-    AC_Reg("open pour", "open pore")
-}
 :C:openess::{
     if AC_IsDisabled("openess") {
         SendText("openess" . A_EndChar)
@@ -51563,22 +42939,6 @@
     SendText("openness" . A_EndChar)
     AC_Reg("openess", "openness")
 }
-:C:opera bouffe::{
-    if AC_IsDisabled("opera bouffe") {
-        SendText("opera bouffe" . A_EndChar)
-        return
-    }
-    SendText("opéra bouffe" . A_EndChar)
-    AC_Reg("opera bouffe", "opéra bouffe")
-}
-:C:opera comique::{
-    if AC_IsDisabled("opera comique") {
-        SendText("opera comique" . A_EndChar)
-        return
-    }
-    SendText("opéra comique" . A_EndChar)
-    AC_Reg("opera comique", "opéra comique")
-}
 :C:operact::{
     if AC_IsDisabled("operact") {
         SendText("operact" . A_EndChar)
@@ -51586,22 +42946,6 @@
     }
     SendText("operat" . A_EndChar)
     AC_Reg("operact", "operat")
-}
-:C:operas bouffe::{
-    if AC_IsDisabled("operas bouffe") {
-        SendText("operas bouffe" . A_EndChar)
-        return
-    }
-    SendText("opéras bouffe" . A_EndChar)
-    AC_Reg("operas bouffe", "opéras bouffe")
-}
-:C:operas comique::{
-    if AC_IsDisabled("operas comique") {
-        SendText("operas comique" . A_EndChar)
-        return
-    }
-    SendText("opéras comique" . A_EndChar)
-    AC_Reg("operas comique", "opéras comique")
 }
 :C:opinon::{
     if AC_IsDisabled("opinon") {
@@ -52147,14 +43491,6 @@
     SendText("osable" . A_EndChar)
     AC_Reg("osible", "osable")
 }
-:C:ot the::{
-    if AC_IsDisabled("ot the") {
-        SendText("ot the" . A_EndChar)
-        return
-    }
-    SendText("of the" . A_EndChar)
-    AC_Reg("ot the", "of the")
-}
 :C:otaly::{
     if AC_IsDisabled("otaly") {
         SendText("otaly" . A_EndChar)
@@ -52186,14 +43522,6 @@
     }
     SendText("oth" . A_EndChar)
     AC_Reg("otgh", "oth")
-}
-:C:other then::{
-    if AC_IsDisabled("other then") {
-        SendText("other then" . A_EndChar)
-        return
-    }
-    SendText("other than" . A_EndChar)
-    AC_Reg("other then", "other than")
 }
 :C:otherw::{
     if AC_IsDisabled("otherw") {
@@ -52419,22 +43747,6 @@
     SendText("ountain" . A_EndChar)
     AC_Reg("ountian", "ountain")
 }
-:C:our of::{
-    if AC_IsDisabled("our of") {
-        SendText("our of" . A_EndChar)
-        return
-    }
-    SendText("out of" . A_EndChar)
-    AC_Reg("our of", "out of")
-}
-:C:our resent::{
-    if AC_IsDisabled("our resent") {
-        SendText("our resent" . A_EndChar)
-        return
-    }
-    SendText("our recent" . A_EndChar)
-    AC_Reg("our resent", "our recent")
-}
 :C:ourary::{
     if AC_IsDisabled("ourary") {
         SendText("ourary" . A_EndChar)
@@ -52491,38 +43803,6 @@
     SendText("outstanding" . A_EndChar)
     AC_Reg("oustanding", "outstanding")
 }
-:C:out grow::{
-    if AC_IsDisabled("out grow") {
-        SendText("out grow" . A_EndChar)
-        return
-    }
-    SendText("outgrow" . A_EndChar)
-    AC_Reg("out grow", "outgrow")
-}
-:C:out of sink::{
-    if AC_IsDisabled("out of sink") {
-        SendText("out of sink" . A_EndChar)
-        return
-    }
-    SendText("out of sync" . A_EndChar)
-    AC_Reg("out of sink", "out of sync")
-}
-:C:out of state::{
-    if AC_IsDisabled("out of state") {
-        SendText("out of state" . A_EndChar)
-        return
-    }
-    SendText("out-of-state" . A_EndChar)
-    AC_Reg("out of state", "out-of-state")
-}
-:C:out side::{
-    if AC_IsDisabled("out side") {
-        SendText("out side" . A_EndChar)
-        return
-    }
-    SendText("outside" . A_EndChar)
-    AC_Reg("out side", "outside")
-}
 :C:outof::{
     if AC_IsDisabled("outof") {
         SendText("outof" . A_EndChar)
@@ -52562,46 +43842,6 @@
     }
     SendText("ovalen" . A_EndChar)
     AC_Reg("ovelan", "ovalen")
-}
-:C:over hea::{
-    if AC_IsDisabled("over hea") {
-        SendText("over hea" . A_EndChar)
-        return
-    }
-    SendText("overhea" . A_EndChar)
-    AC_Reg("over hea", "overhea")
-}
-:C:over look::{
-    if AC_IsDisabled("over look") {
-        SendText("over look" . A_EndChar)
-        return
-    }
-    SendText("overlook" . A_EndChar)
-    AC_Reg("over look", "overlook")
-}
-:C:over rate::{
-    if AC_IsDisabled("over rate") {
-        SendText("over rate" . A_EndChar)
-        return
-    }
-    SendText("overrate" . A_EndChar)
-    AC_Reg("over rate", "overrate")
-}
-:C:over saw::{
-    if AC_IsDisabled("over saw") {
-        SendText("over saw" . A_EndChar)
-        return
-    }
-    SendText("oversaw" . A_EndChar)
-    AC_Reg("over saw", "oversaw")
-}
-:C:over see::{
-    if AC_IsDisabled("over see") {
-        SendText("over see" . A_EndChar)
-        return
-    }
-    SendText("oversee" . A_EndChar)
-    AC_Reg("over see", "oversee")
 }
 :C:overshaddowed::{
     if AC_IsDisabled("overshaddowed") {
@@ -52762,14 +44002,6 @@
     }
     SendText("paid" . A_EndChar)
     AC_Reg("paide", "paid")
-}
-:C:pail in comparison::{
-    if AC_IsDisabled("pail in comparison") {
-        SendText("pail in comparison" . A_EndChar)
-        return
-    }
-    SendText("pale in comparison" . A_EndChar)
-    AC_Reg("pail in comparison", "pale in comparison")
 }
 :C:paiti::{
     if AC_IsDisabled("paiti") {
@@ -52938,14 +44170,6 @@
     }
     SendText("Papanicolaou" . A_EndChar)
     AC_Reg("papanicalou", "Papanicolaou")
-}
-:C:papier-mache::{
-    if AC_IsDisabled("papier-mache") {
-        SendText("papier-mache" . A_EndChar)
-        return
-    }
-    SendText("papier-mâché" . A_EndChar)
-    AC_Reg("papier-mache", "papier-mâché")
 }
 :C:paralel::{
     if AC_IsDisabled("paralel") {
@@ -53299,30 +44523,6 @@
     SendText("passersby" . A_EndChar)
     AC_Reg("passerbys", "passersby")
 }
-:C:past away::{
-    if AC_IsDisabled("past away") {
-        SendText("past away" . A_EndChar)
-        return
-    }
-    SendText("passed away" . A_EndChar)
-    AC_Reg("past away", "passed away")
-}
-:C:past down::{
-    if AC_IsDisabled("past down") {
-        SendText("past down" . A_EndChar)
-        return
-    }
-    SendText("passed down" . A_EndChar)
-    AC_Reg("past down", "passed down")
-}
-:C:past the test::{
-    if AC_IsDisabled("past the test") {
-        SendText("past the test" . A_EndChar)
-        return
-    }
-    SendText("passed the test" . A_EndChar)
-    AC_Reg("past the test", "passed the test")
-}
 :C:pastss::{
     if AC_IsDisabled("pastss") {
         SendText("pastss" . A_EndChar)
@@ -53386,14 +44586,6 @@
     }
     SendText("pavilion" . A_EndChar)
     AC_Reg("pavillion", "pavilion")
-}
-:C:pawn off::{
-    if AC_IsDisabled("pawn off") {
-        SendText("pawn off" . A_EndChar)
-        return
-    }
-    SendText("palm off" . A_EndChar)
-    AC_Reg("pawn off", "palm off")
 }
 :C:payed::{
     if AC_IsDisabled("payed") {
@@ -53459,14 +44651,6 @@
     SendText("pictur" . A_EndChar)
     AC_Reg("pcitur", "pictur")
 }
-:C:peace by peace::{
-    if AC_IsDisabled("peace by peace") {
-        SendText("peace by peace" . A_EndChar)
-        return
-    }
-    SendText("piece by piece" . A_EndChar)
-    AC_Reg("peace by peace", "piece by piece")
-}
 :C:peacefuland::{
     if AC_IsDisabled("peacefuland") {
         SendText("peacefuland" . A_EndChar)
@@ -53482,38 +44666,6 @@
     }
     SendText("pageant" . A_EndChar)
     AC_Reg("peageant", "pageant")
-}
-:C:peak her interest::{
-    if AC_IsDisabled("peak her interest") {
-        SendText("peak her interest" . A_EndChar)
-        return
-    }
-    SendText("pique her interest" . A_EndChar)
-    AC_Reg("peak her interest", "pique her interest")
-}
-:C:peak his interest::{
-    if AC_IsDisabled("peak his interest") {
-        SendText("peak his interest" . A_EndChar)
-        return
-    }
-    SendText("pique his interest" . A_EndChar)
-    AC_Reg("peak his interest", "pique his interest")
-}
-:C:peak my interest::{
-    if AC_IsDisabled("peak my interest") {
-        SendText("peak my interest" . A_EndChar)
-        return
-    }
-    SendText("pique my interest" . A_EndChar)
-    AC_Reg("peak my interest", "pique my interest")
-}
-:C:peaked my interest::{
-    if AC_IsDisabled("peaked my interest") {
-        SendText("peaked my interest" . A_EndChar)
-        return
-    }
-    SendText("piqued my interest" . A_EndChar)
-    AC_Reg("peaked my interest", "piqued my interest")
 }
 :C:peall::{
     if AC_IsDisabled("peall") {
@@ -53547,14 +44699,6 @@
     SendText("peoples" . A_EndChar)
     AC_Reg("peaples", "peoples")
 }
-:C:pears programming::{
-    if AC_IsDisabled("pears programming") {
-        SendText("pears programming" . A_EndChar)
-        return
-    }
-    SendText("pairs programming" . A_EndChar)
-    AC_Reg("pears programming", "pairs programming")
-}
 :C:peculure::{
     if AC_IsDisabled("peculure") {
         SendText("peculure" . A_EndChar)
@@ -53570,30 +44714,6 @@
     }
     SendText("pedestrian" . A_EndChar)
     AC_Reg("pedestrain", "pedestrian")
-}
-:C:peek my interest::{
-    if AC_IsDisabled("peek my interest") {
-        SendText("peek my interest" . A_EndChar)
-        return
-    }
-    SendText("pique my interest" . A_EndChar)
-    AC_Reg("peek my interest", "pique my interest")
-}
-:C:peek performance::{
-    if AC_IsDisabled("peek performance") {
-        SendText("peek performance" . A_EndChar)
-        return
-    }
-    SendText("peak performance" . A_EndChar)
-    AC_Reg("peek performance", "peak performance")
-}
-:C:peek season::{
-    if AC_IsDisabled("peek season") {
-        SendText("peek season" . A_EndChar)
-        return
-    }
-    SendText("peak season" . A_EndChar)
-    AC_Reg("peek season", "peak season")
 }
 :C:pefor::{
     if AC_IsDisabled("pefor") {
@@ -53834,22 +44954,6 @@
     }
     SendText("poetry" . A_EndChar)
     AC_Reg("peotry", "poetry")
-}
-:C:per cent::{
-    if AC_IsDisabled("per cent") {
-        SendText("per cent" . A_EndChar)
-        return
-    }
-    SendText("percent" . A_EndChar)
-    AC_Reg("per cent", "percent")
-}
-:C:per say::{
-    if AC_IsDisabled("per say") {
-        SendText("per say" . A_EndChar)
-        return
-    }
-    SendText("per se" . A_EndChar)
-    AC_Reg("per say", "per se")
 }
 :C:perade::{
     if AC_IsDisabled("perade") {
@@ -54210,14 +45314,6 @@
     }
     SendText("persistent" . A_EndChar)
     AC_Reg("persistant", "persistent")
-}
-:C:personal affect::{
-    if AC_IsDisabled("personal affect") {
-        SendText("personal affect" . A_EndChar)
-        return
-    }
-    SendText("personal effect" . A_EndChar)
-    AC_Reg("personal affect", "personal effect")
 }
 :C:personel::{
     if AC_IsDisabled("personel") {
@@ -54731,30 +45827,6 @@
     SendText("pically" . A_EndChar)
     AC_Reg("picly", "pically")
 }
-:C:piece de resistance::{
-    if AC_IsDisabled("piece de resistance") {
-        SendText("piece de resistance" . A_EndChar)
-        return
-    }
-    SendText("pièce de résistance" . A_EndChar)
-    AC_Reg("piece de resistance", "pièce de résistance")
-}
-:C:piece of mind::{
-    if AC_IsDisabled("piece of mind") {
-        SendText("piece of mind" . A_EndChar)
-        return
-    }
-    SendText("peace of mind" . A_EndChar)
-    AC_Reg("piece of mind", "peace of mind")
-}
-:C:pied-a-terre::{
-    if AC_IsDisabled("pied-a-terre") {
-        SendText("pied-a-terre" . A_EndChar)
-        return
-    }
-    SendText("pied-à-terre" . A_EndChar)
-    AC_Reg("pied-a-terre", "pied-à-terre")
-}
 :C:pihs::{
     if AC_IsDisabled("pihs") {
         SendText("pihs" . A_EndChar)
@@ -54786,14 +45858,6 @@
     }
     SendText("pilgrimages" . A_EndChar)
     AC_Reg("pilgrimmages", "pilgrimages")
-}
-:C:pina colada::{
-    if AC_IsDisabled("pina colada") {
-        SendText("pina colada" . A_EndChar)
-        return
-    }
-    SendText("Piña Colada" . A_EndChar)
-    AC_Reg("pina colada", "Piña Colada")
 }
 :C:pinapple::{
     if AC_IsDisabled("pinapple") {
@@ -54906,14 +45970,6 @@
     }
     SendText("plantation" . A_EndChar)
     AC_Reg("planation", "plantation")
-}
-:C:plane and simple::{
-    if AC_IsDisabled("plane and simple") {
-        SendText("plane and simple" . A_EndChar)
-        return
-    }
-    SendText("plain and simple" . A_EndChar)
-    AC_Reg("plane and simple", "plain and simple")
 }
 :C:planed::{
     if AC_IsDisabled("planed") {
@@ -55387,14 +46443,6 @@
     SendText("ponsib" . A_EndChar)
     AC_Reg("ponsab", "ponsib")
 }
-:C:poor over::{
-    if AC_IsDisabled("poor over") {
-        SendText("poor over" . A_EndChar)
-        return
-    }
-    SendText("pore over" . A_EndChar)
-    AC_Reg("poor over", "pore over")
-}
 :C:poporti::{
     if AC_IsDisabled("poporti") {
         SendText("poporti" . A_EndChar)
@@ -55458,166 +46506,6 @@
     }
     SendText("proble" . A_EndChar)
     AC_Reg("porble", "proble")
-}
-:C:pore attempt::{
-    if AC_IsDisabled("pore attempt") {
-        SendText("pore attempt" . A_EndChar)
-        return
-    }
-    SendText("poor attempt" . A_EndChar)
-    AC_Reg("pore attempt", "poor attempt")
-}
-:C:pore choice::{
-    if AC_IsDisabled("pore choice") {
-        SendText("pore choice" . A_EndChar)
-        return
-    }
-    SendText("poor choice" . A_EndChar)
-    AC_Reg("pore choice", "poor choice")
-}
-:C:pore connection::{
-    if AC_IsDisabled("pore connection") {
-        SendText("pore connection" . A_EndChar)
-        return
-    }
-    SendText("poor connection" . A_EndChar)
-    AC_Reg("pore connection", "poor connection")
-}
-:C:pore effort::{
-    if AC_IsDisabled("pore effort") {
-        SendText("pore effort" . A_EndChar)
-        return
-    }
-    SendText("poor effort" . A_EndChar)
-    AC_Reg("pore effort", "poor effort")
-}
-:C:pore example::{
-    if AC_IsDisabled("pore example") {
-        SendText("pore example" . A_EndChar)
-        return
-    }
-    SendText("poor example" . A_EndChar)
-    AC_Reg("pore example", "poor example")
-}
-:C:pore excuse::{
-    if AC_IsDisabled("pore excuse") {
-        SendText("pore excuse" . A_EndChar)
-        return
-    }
-    SendText("poor excuse" . A_EndChar)
-    AC_Reg("pore excuse", "poor excuse")
-}
-:C:pore execution::{
-    if AC_IsDisabled("pore execution") {
-        SendText("pore execution" . A_EndChar)
-        return
-    }
-    SendText("poor execution" . A_EndChar)
-    AC_Reg("pore execution", "poor execution")
-}
-:C:pore grade::{
-    if AC_IsDisabled("pore grade") {
-        SendText("pore grade" . A_EndChar)
-        return
-    }
-    SendText("poor grade" . A_EndChar)
-    AC_Reg("pore grade", "poor grade")
-}
-:C:pore outcome::{
-    if AC_IsDisabled("pore outcome") {
-        SendText("pore outcome" . A_EndChar)
-        return
-    }
-    SendText("poor outcome" . A_EndChar)
-    AC_Reg("pore outcome", "poor outcome")
-}
-:C:pore performance::{
-    if AC_IsDisabled("pore performance") {
-        SendText("pore performance" . A_EndChar)
-        return
-    }
-    SendText("poor performance" . A_EndChar)
-    AC_Reg("pore performance", "poor performance")
-}
-:C:pore planning::{
-    if AC_IsDisabled("pore planning") {
-        SendText("pore planning" . A_EndChar)
-        return
-    }
-    SendText("poor planning" . A_EndChar)
-    AC_Reg("pore planning", "poor planning")
-}
-:C:pore qualit::{
-    if AC_IsDisabled("pore qualit") {
-        SendText("pore qualit" . A_EndChar)
-        return
-    }
-    SendText("poor qualit" . A_EndChar)
-    AC_Reg("pore qualit", "poor qualit")
-}
-:C:pore rating::{
-    if AC_IsDisabled("pore rating") {
-        SendText("pore rating" . A_EndChar)
-        return
-    }
-    SendText("poor rating" . A_EndChar)
-    AC_Reg("pore rating", "poor rating")
-}
-:C:pore reception::{
-    if AC_IsDisabled("pore reception") {
-        SendText("pore reception" . A_EndChar)
-        return
-    }
-    SendText("poor reception" . A_EndChar)
-    AC_Reg("pore reception", "poor reception")
-}
-:C:pore results::{
-    if AC_IsDisabled("pore results") {
-        SendText("pore results" . A_EndChar)
-        return
-    }
-    SendText("poor results" . A_EndChar)
-    AC_Reg("pore results", "poor results")
-}
-:C:pore showing::{
-    if AC_IsDisabled("pore showing") {
-        SendText("pore showing" . A_EndChar)
-        return
-    }
-    SendText("poor showing" . A_EndChar)
-    AC_Reg("pore showing", "poor showing")
-}
-:C:pore sport::{
-    if AC_IsDisabled("pore sport") {
-        SendText("pore sport" . A_EndChar)
-        return
-    }
-    SendText("poor sport" . A_EndChar)
-    AC_Reg("pore sport", "poor sport")
-}
-:C:pore start::{
-    if AC_IsDisabled("pore start") {
-        SendText("pore start" . A_EndChar)
-        return
-    }
-    SendText("poor start" . A_EndChar)
-    AC_Reg("pore start", "poor start")
-}
-:C:pore taste::{
-    if AC_IsDisabled("pore taste") {
-        SendText("pore taste" . A_EndChar)
-        return
-    }
-    SendText("poor taste" . A_EndChar)
-    AC_Reg("pore taste", "poor taste")
-}
-:C:pore timing::{
-    if AC_IsDisabled("pore timing") {
-        SendText("pore timing" . A_EndChar)
-        return
-    }
-    SendText("poor timing" . A_EndChar)
-    AC_Reg("pore timing", "poor timing")
 }
 :C:porshan::{
     if AC_IsDisabled("porshan") {
@@ -56027,182 +46915,6 @@
     SendText("populations" . A_EndChar)
     AC_Reg("poulations", "populations")
 }
-:C:pour attempt::{
-    if AC_IsDisabled("pour attempt") {
-        SendText("pour attempt" . A_EndChar)
-        return
-    }
-    SendText("poor attempt" . A_EndChar)
-    AC_Reg("pour attempt", "poor attempt")
-}
-:C:pour choice::{
-    if AC_IsDisabled("pour choice") {
-        SendText("pour choice" . A_EndChar)
-        return
-    }
-    SendText("poor choice" . A_EndChar)
-    AC_Reg("pour choice", "poor choice")
-}
-:C:pour company::{
-    if AC_IsDisabled("pour company") {
-        SendText("pour company" . A_EndChar)
-        return
-    }
-    SendText("poor company" . A_EndChar)
-    AC_Reg("pour company", "poor company")
-}
-:C:pour connection::{
-    if AC_IsDisabled("pour connection") {
-        SendText("pour connection" . A_EndChar)
-        return
-    }
-    SendText("poor connection" . A_EndChar)
-    AC_Reg("pour connection", "poor connection")
-}
-:C:pour effort::{
-    if AC_IsDisabled("pour effort") {
-        SendText("pour effort" . A_EndChar)
-        return
-    }
-    SendText("poor effort" . A_EndChar)
-    AC_Reg("pour effort", "poor effort")
-}
-:C:pour example::{
-    if AC_IsDisabled("pour example") {
-        SendText("pour example" . A_EndChar)
-        return
-    }
-    SendText("poor example" . A_EndChar)
-    AC_Reg("pour example", "poor example")
-}
-:C:pour excuse::{
-    if AC_IsDisabled("pour excuse") {
-        SendText("pour excuse" . A_EndChar)
-        return
-    }
-    SendText("poor excuse" . A_EndChar)
-    AC_Reg("pour excuse", "poor excuse")
-}
-:C:pour execution::{
-    if AC_IsDisabled("pour execution") {
-        SendText("pour execution" . A_EndChar)
-        return
-    }
-    SendText("poor execution" . A_EndChar)
-    AC_Reg("pour execution", "poor execution")
-}
-:C:pour grade::{
-    if AC_IsDisabled("pour grade") {
-        SendText("pour grade" . A_EndChar)
-        return
-    }
-    SendText("poor grade" . A_EndChar)
-    AC_Reg("pour grade", "poor grade")
-}
-:C:pour judgment::{
-    if AC_IsDisabled("pour judgment") {
-        SendText("pour judgment" . A_EndChar)
-        return
-    }
-    SendText("poor judgment" . A_EndChar)
-    AC_Reg("pour judgment", "poor judgment")
-}
-:C:pour outcome::{
-    if AC_IsDisabled("pour outcome") {
-        SendText("pour outcome" . A_EndChar)
-        return
-    }
-    SendText("poor outcome" . A_EndChar)
-    AC_Reg("pour outcome", "poor outcome")
-}
-:C:pour performance::{
-    if AC_IsDisabled("pour performance") {
-        SendText("pour performance" . A_EndChar)
-        return
-    }
-    SendText("poor performance" . A_EndChar)
-    AC_Reg("pour performance", "poor performance")
-}
-:C:pour plan::{
-    if AC_IsDisabled("pour plan") {
-        SendText("pour plan" . A_EndChar)
-        return
-    }
-    SendText("poor plan" . A_EndChar)
-    AC_Reg("pour plan", "poor plan")
-}
-:C:pour quality::{
-    if AC_IsDisabled("pour quality") {
-        SendText("pour quality" . A_EndChar)
-        return
-    }
-    SendText("poor quality" . A_EndChar)
-    AC_Reg("pour quality", "poor quality")
-}
-:C:pour rating::{
-    if AC_IsDisabled("pour rating") {
-        SendText("pour rating" . A_EndChar)
-        return
-    }
-    SendText("poor rating" . A_EndChar)
-    AC_Reg("pour rating", "poor rating")
-}
-:C:pour reception::{
-    if AC_IsDisabled("pour reception") {
-        SendText("pour reception" . A_EndChar)
-        return
-    }
-    SendText("poor reception" . A_EndChar)
-    AC_Reg("pour reception", "poor reception")
-}
-:C:pour result::{
-    if AC_IsDisabled("pour result") {
-        SendText("pour result" . A_EndChar)
-        return
-    }
-    SendText("poor result" . A_EndChar)
-    AC_Reg("pour result", "poor result")
-}
-:C:pour showing::{
-    if AC_IsDisabled("pour showing") {
-        SendText("pour showing" . A_EndChar)
-        return
-    }
-    SendText("poor showing" . A_EndChar)
-    AC_Reg("pour showing", "poor showing")
-}
-:C:pour sport::{
-    if AC_IsDisabled("pour sport") {
-        SendText("pour sport" . A_EndChar)
-        return
-    }
-    SendText("poor sport" . A_EndChar)
-    AC_Reg("pour sport", "poor sport")
-}
-:C:pour start::{
-    if AC_IsDisabled("pour start") {
-        SendText("pour start" . A_EndChar)
-        return
-    }
-    SendText("poor start" . A_EndChar)
-    AC_Reg("pour start", "poor start")
-}
-:C:pour taste::{
-    if AC_IsDisabled("pour taste") {
-        SendText("pour taste" . A_EndChar)
-        return
-    }
-    SendText("poor taste" . A_EndChar)
-    AC_Reg("pour taste", "poor taste")
-}
-:C:pour timing::{
-    if AC_IsDisabled("pour timing") {
-        SendText("pour timing" . A_EndChar)
-        return
-    }
-    SendText("poor timing" . A_EndChar)
-    AC_Reg("pour timing", "poor timing")
-}
 :C:poverful::{
     if AC_IsDisabled("poverful") {
         SendText("poverful" . A_EndChar)
@@ -56402,14 +47114,6 @@
     }
     SendText("practice" . A_EndChar)
     AC_Reg("pratice", "practice")
-}
-:C:pre-Colombian::{
-    if AC_IsDisabled("pre-Colombian") {
-        SendText("pre-Colombian" . A_EndChar)
-        return
-    }
-    SendText("pre-Columbian" . A_EndChar)
-    AC_Reg("pre-Colombian", "pre-Columbian")
 }
 :C:preample::{
     if AC_IsDisabled("preample") {
@@ -56987,14 +47691,6 @@
     SendText("presumably" . A_EndChar)
     AC_Reg("presumibly", "presumably")
 }
-:C:pret-a-porter::{
-    if AC_IsDisabled("pret-a-porter") {
-        SendText("pret-a-porter" . A_EndChar)
-        return
-    }
-    SendText("prêt-à-porter" . A_EndChar)
-    AC_Reg("pret-a-porter", "prêt-à-porter")
-}
 :C:pretect::{
     if AC_IsDisabled("pretect") {
         SendText("pretect" . A_EndChar)
@@ -57154,350 +47850,6 @@
     }
     SendText("principality" . A_EndChar)
     AC_Reg("principlaity", "principality")
-}
-:C:principle accommodation::{
-    if AC_IsDisabled("principle accommodation") {
-        SendText("principle accommodation" . A_EndChar)
-        return
-    }
-    SendText("principal accommodation" . A_EndChar)
-    AC_Reg("principle accommodation", "principal accommodation")
-}
-:C:principle adaptation::{
-    if AC_IsDisabled("principle adaptation") {
-        SendText("principle adaptation" . A_EndChar)
-        return
-    }
-    SendText("principal adaptation" . A_EndChar)
-    AC_Reg("principle adaptation", "principal adaptation")
-}
-:C:principle advantage::{
-    if AC_IsDisabled("principle advantage") {
-        SendText("principle advantage" . A_EndChar)
-        return
-    }
-    SendText("principal advantage" . A_EndChar)
-    AC_Reg("principle advantage", "principal advantage")
-}
-:C:principle advisor::{
-    if AC_IsDisabled("principle advisor") {
-        SendText("principle advisor" . A_EndChar)
-        return
-    }
-    SendText("principal advisor" . A_EndChar)
-    AC_Reg("principle advisor", "principal advisor")
-}
-:C:principle aide::{
-    if AC_IsDisabled("principle aide") {
-        SendText("principle aide" . A_EndChar)
-        return
-    }
-    SendText("principal aide" . A_EndChar)
-    AC_Reg("principle aide", "principal aide")
-}
-:C:principle approval::{
-    if AC_IsDisabled("principle approval") {
-        SendText("principle approval" . A_EndChar)
-        return
-    }
-    SendText("principal approval" . A_EndChar)
-    AC_Reg("principle approval", "principal approval")
-}
-:C:principle assistant::{
-    if AC_IsDisabled("principle assistant") {
-        SendText("principle assistant" . A_EndChar)
-        return
-    }
-    SendText("principal assistant" . A_EndChar)
-    AC_Reg("principle assistant", "principal assistant")
-}
-:C:principle balance::{
-    if AC_IsDisabled("principle balance") {
-        SendText("principle balance" . A_EndChar)
-        return
-    }
-    SendText("principal balance" . A_EndChar)
-    AC_Reg("principle balance", "principal balance")
-}
-:C:principle behavior::{
-    if AC_IsDisabled("principle behavior") {
-        SendText("principle behavior" . A_EndChar)
-        return
-    }
-    SendText("principal behavior*" . A_EndChar)
-    AC_Reg("principle behavior", "principal behavior*")
-}
-:C:principle believes::{
-    if AC_IsDisabled("principle believes") {
-        SendText("principle believes" . A_EndChar)
-        return
-    }
-    SendText("principal believes" . A_EndChar)
-    AC_Reg("principle believes", "principal believes")
-}
-:C:principle cause::{
-    if AC_IsDisabled("principle cause") {
-        SendText("principle cause" . A_EndChar)
-        return
-    }
-    SendText("principal cause" . A_EndChar)
-    AC_Reg("principle cause", "principal cause")
-}
-:C:principle character::{
-    if AC_IsDisabled("principle character") {
-        SendText("principle character" . A_EndChar)
-        return
-    }
-    SendText("principal character" . A_EndChar)
-    AC_Reg("principle character", "principal character")
-}
-:C:principle classification::{
-    if AC_IsDisabled("principle classification") {
-        SendText("principle classification" . A_EndChar)
-        return
-    }
-    SendText("principal classification" . A_EndChar)
-    AC_Reg("principle classification", "principal classification")
-}
-:C:principle component::{
-    if AC_IsDisabled("principle component") {
-        SendText("principle component" . A_EndChar)
-        return
-    }
-    SendText("principal component" . A_EndChar)
-    AC_Reg("principle component", "principal component")
-}
-:C:principle concern::{
-    if AC_IsDisabled("principle concern") {
-        SendText("principle concern" . A_EndChar)
-        return
-    }
-    SendText("principal concern" . A_EndChar)
-    AC_Reg("principle concern", "principal concern")
-}
-:C:principle conference::{
-    if AC_IsDisabled("principle conference") {
-        SendText("principle conference" . A_EndChar)
-        return
-    }
-    SendText("principal conference" . A_EndChar)
-    AC_Reg("principle conference", "principal conference")
-}
-:C:principle decision::{
-    if AC_IsDisabled("principle decision") {
-        SendText("principle decision" . A_EndChar)
-        return
-    }
-    SendText("principal decision" . A_EndChar)
-    AC_Reg("principle decision", "principal decision")
-}
-:C:principle diagnos::{
-    if AC_IsDisabled("principle diagnos") {
-        SendText("principle diagnos" . A_EndChar)
-        return
-    }
-    SendText("principal diagnos" . A_EndChar)
-    AC_Reg("principle diagnos", "principal diagnos")
-}
-:C:principle direction::{
-    if AC_IsDisabled("principle direction") {
-        SendText("principle direction" . A_EndChar)
-        return
-    }
-    SendText("principal direction" . A_EndChar)
-    AC_Reg("principle direction", "principal direction")
-}
-:C:principle directive::{
-    if AC_IsDisabled("principle directive") {
-        SendText("principle directive" . A_EndChar)
-        return
-    }
-    SendText("principal directive" . A_EndChar)
-    AC_Reg("principle directive", "principal directive")
-}
-:C:principle disabilit::{
-    if AC_IsDisabled("principle disabilit") {
-        SendText("principle disabilit" . A_EndChar)
-        return
-    }
-    SendText("principal disabilit" . A_EndChar)
-    AC_Reg("principle disabilit", "principal disabilit")
-}
-:C:principle evaluation::{
-    if AC_IsDisabled("principle evaluation") {
-        SendText("principle evaluation" . A_EndChar)
-        return
-    }
-    SendText("principal evaluation" . A_EndChar)
-    AC_Reg("principle evaluation", "principal evaluation")
-}
-:C:principle focus::{
-    if AC_IsDisabled("principle focus") {
-        SendText("principle focus" . A_EndChar)
-        return
-    }
-    SendText("principal focus" . A_EndChar)
-    AC_Reg("principle focus", "principal focus")
-}
-:C:principle goal::{
-    if AC_IsDisabled("principle goal") {
-        SendText("principle goal" . A_EndChar)
-        return
-    }
-    SendText("principal goal" . A_EndChar)
-    AC_Reg("principle goal", "principal goal")
-}
-:C:principle group::{
-    if AC_IsDisabled("principle group") {
-        SendText("principle group" . A_EndChar)
-        return
-    }
-    SendText("principal group" . A_EndChar)
-    AC_Reg("principle group", "principal group")
-}
-:C:principle guidance::{
-    if AC_IsDisabled("principle guidance") {
-        SendText("principle guidance" . A_EndChar)
-        return
-    }
-    SendText("principal guidance" . A_EndChar)
-    AC_Reg("principle guidance", "principal guidance")
-}
-:C:principle inclusion::{
-    if AC_IsDisabled("principle inclusion") {
-        SendText("principle inclusion" . A_EndChar)
-        return
-    }
-    SendText("principal inclusion" . A_EndChar)
-    AC_Reg("principle inclusion", "principal inclusion")
-}
-:C:principle interest::{
-    if AC_IsDisabled("principle interest") {
-        SendText("principle interest" . A_EndChar)
-        return
-    }
-    SendText("principal interest" . A_EndChar)
-    AC_Reg("principle interest", "principal interest")
-}
-:C:principle intervention::{
-    if AC_IsDisabled("principle intervention") {
-        SendText("principle intervention" . A_EndChar)
-        return
-    }
-    SendText("principal intervention" . A_EndChar)
-    AC_Reg("principle intervention", "principal intervention")
-}
-:C:principle investigator::{
-    if AC_IsDisabled("principle investigator") {
-        SendText("principle investigator" . A_EndChar)
-        return
-    }
-    SendText("principal investigator" . A_EndChar)
-    AC_Reg("principle investigator", "principal investigator")
-}
-:C:principle leadership::{
-    if AC_IsDisabled("principle leadership") {
-        SendText("principle leadership" . A_EndChar)
-        return
-    }
-    SendText("principal leadership" . A_EndChar)
-    AC_Reg("principle leadership", "principal leadership")
-}
-:C:principle method::{
-    if AC_IsDisabled("principle method") {
-        SendText("principle method" . A_EndChar)
-        return
-    }
-    SendText("principal method" . A_EndChar)
-    AC_Reg("principle method", "principal method")
-}
-:C:principle objective::{
-    if AC_IsDisabled("principle objective") {
-        SendText("principle objective" . A_EndChar)
-        return
-    }
-    SendText("principal objective" . A_EndChar)
-    AC_Reg("principle objective", "principal objective")
-}
-:C:principle observation::{
-    if AC_IsDisabled("principle observation") {
-        SendText("principle observation" . A_EndChar)
-        return
-    }
-    SendText("principal observation" . A_EndChar)
-    AC_Reg("principle observation", "principal observation")
-}
-:C:principle owner::{
-    if AC_IsDisabled("principle owner") {
-        SendText("principle owner" . A_EndChar)
-        return
-    }
-    SendText("principal owner" . A_EndChar)
-    AC_Reg("principle owner", "principal owner")
-}
-:C:principle source::{
-    if AC_IsDisabled("principle source") {
-        SendText("principle source" . A_EndChar)
-        return
-    }
-    SendText("principal source" . A_EndChar)
-    AC_Reg("principle source", "principal source")
-}
-:C:principle strateg::{
-    if AC_IsDisabled("principle strateg") {
-        SendText("principle strateg" . A_EndChar)
-        return
-    }
-    SendText("principal strateg" . A_EndChar)
-    AC_Reg("principle strateg", "principal strateg")
-}
-:C:principle student::{
-    if AC_IsDisabled("principle student") {
-        SendText("principle student" . A_EndChar)
-        return
-    }
-    SendText("principal student" . A_EndChar)
-    AC_Reg("principle student", "principal student")
-}
-:C:principle supervisor::{
-    if AC_IsDisabled("principle supervisor") {
-        SendText("principle supervisor" . A_EndChar)
-        return
-    }
-    SendText("principal supervisor" . A_EndChar)
-    AC_Reg("principle supervisor", "principal supervisor")
-}
-:C:principle support::{
-    if AC_IsDisabled("principle support") {
-        SendText("principle support" . A_EndChar)
-        return
-    }
-    SendText("principal support" . A_EndChar)
-    AC_Reg("principle support", "principal support")
-}
-:C:principle symptom::{
-    if AC_IsDisabled("principle symptom") {
-        SendText("principle symptom" . A_EndChar)
-        return
-    }
-    SendText("principal symptom" . A_EndChar)
-    AC_Reg("principle symptom", "principal symptom")
-}
-:C:principle transition::{
-    if AC_IsDisabled("principle transition") {
-        SendText("principle transition" . A_EndChar)
-        return
-    }
-    SendText("principal transition" . A_EndChar)
-    AC_Reg("principle transition", "principal transition")
-}
-:C:principle value::{
-    if AC_IsDisabled("principle value") {
-        SendText("principle value" . A_EndChar)
-        return
-    }
-    SendText("principal value" . A_EndChar)
-    AC_Reg("principle value", "principal value")
 }
 :C:principly::{
     if AC_IsDisabled("principly") {
@@ -58251,14 +48603,6 @@
     SendText("pronunciation" . A_EndChar)
     AC_Reg("pronounciation", "pronunciation")
 }
-:C:proof read::{
-    if AC_IsDisabled("proof read") {
-        SendText("proof read" . A_EndChar)
-        return
-    }
-    SendText("proofread" . A_EndChar)
-    AC_Reg("proof read", "proofread")
-}
 :C:proor::{
     if AC_IsDisabled("proor") {
         SendText("proor" . A_EndChar)
@@ -58306,14 +48650,6 @@
     }
     SendText("prophecy" . A_EndChar)
     AC_Reg("prophacy", "prophecy")
-}
-:C:prophet margin::{
-    if AC_IsDisabled("prophet margin") {
-        SendText("prophet margin" . A_EndChar)
-        return
-    }
-    SendText("profit margin" . A_EndChar)
-    AC_Reg("prophet margin", "profit margin")
 }
 :C:propiet::{
     if AC_IsDisabled("propiet") {
@@ -59755,14 +50091,6 @@
     SendText("ralia" . A_EndChar)
     AC_Reg("railia", "ralia")
 }
-:C:rain supreme::{
-    if AC_IsDisabled("rain supreme") {
-        SendText("rain supreme" . A_EndChar)
-        return
-    }
-    SendText("reign supreme" . A_EndChar)
-    AC_Reg("rain supreme", "reign supreme")
-}
 :C:raing::{
     if AC_IsDisabled("raing") {
         SendText("raing" . A_EndChar)
@@ -59770,14 +50098,6 @@
     }
     SendText("rating" . A_EndChar)
     AC_Reg("raing", "rating")
-}
-:C:raison d'etre::{
-    if AC_IsDisabled("raison d'etre") {
-        SendText("raison d'etre" . A_EndChar)
-        return
-    }
-    SendText("raison d'être" . A_EndChar)
-    AC_Reg("raison d'etre", "raison d'être")
 }
 :C:raly::{
     if AC_IsDisabled("raly") {
@@ -59794,22 +50114,6 @@
     }
     SendText("rannie" . A_EndChar)
     AC_Reg("ranie", "rannie")
-}
-:C:rap up::{
-    if AC_IsDisabled("rap up") {
-        SendText("rap up" . A_EndChar)
-        return
-    }
-    SendText("wrap up" . A_EndChar)
-    AC_Reg("rap up", "wrap up")
-}
-:C:rapped up::{
-    if AC_IsDisabled("rapped up") {
-        SendText("rapped up" . A_EndChar)
-        return
-    }
-    SendText("wrapped up" . A_EndChar)
-    AC_Reg("rapped up", "wrapped up")
 }
 :C:rarified::{
     if AC_IsDisabled("rarified") {
@@ -59842,14 +50146,6 @@
     }
     SendText("rase" . A_EndChar)
     AC_Reg("rasr", "rase")
-}
-:C:rather then::{
-    if AC_IsDisabled("rather then") {
-        SendText("rather then" . A_EndChar)
-        return
-    }
-    SendText("rather than" . A_EndChar)
-    AC_Reg("rather then", "rather than")
 }
 :C:ratly::{
     if AC_IsDisabled("ratly") {
@@ -59954,14 +50250,6 @@
     }
     SendText("recall" . A_EndChar)
     AC_Reg("reacll", "recall")
-}
-:C:read carpet::{
-    if AC_IsDisabled("read carpet") {
-        SendText("read carpet" . A_EndChar)
-        return
-    }
-    SendText("red carpet" . A_EndChar)
-    AC_Reg("read carpet", "red carpet")
 }
 :C:readly::{
     if AC_IsDisabled("readly") {
@@ -60707,22 +50995,6 @@
     SendText("ree" . A_EndChar)
     AC_Reg("reee", "ree")
 }
-:C:reek havoc::{
-    if AC_IsDisabled("reek havoc") {
-        SendText("reek havoc" . A_EndChar)
-        return
-    }
-    SendText("wreak havoc" . A_EndChar)
-    AC_Reg("reek havoc", "wreak havoc")
-}
-:C:reel estate::{
-    if AC_IsDisabled("reel estate") {
-        SendText("reel estate" . A_EndChar)
-        return
-    }
-    SendText("real estate" . A_EndChar)
-    AC_Reg("reel estate", "real estate")
-}
 :C:reenfo::{
     if AC_IsDisabled("reenfo") {
         SendText("reenfo" . A_EndChar)
@@ -61115,38 +51387,6 @@
     SendText("reigning" . A_EndChar)
     AC_Reg("reigining", "reigning")
 }
-:C:reign check::{
-    if AC_IsDisabled("reign check") {
-        SendText("reign check" . A_EndChar)
-        return
-    }
-    SendText("rain check" . A_EndChar)
-    AC_Reg("reign check", "rain check")
-}
-:C:reign in::{
-    if AC_IsDisabled("reign in") {
-        SendText("reign in" . A_EndChar)
-        return
-    }
-    SendText("rein in" . A_EndChar)
-    AC_Reg("reign in", "rein in")
-}
-:C:reigned in::{
-    if AC_IsDisabled("reigned in") {
-        SendText("reigned in" . A_EndChar)
-        return
-    }
-    SendText("reined in" . A_EndChar)
-    AC_Reg("reigned in", "reined in")
-}
-:C:reigns of power::{
-    if AC_IsDisabled("reigns of power") {
-        SendText("reigns of power" . A_EndChar)
-        return
-    }
-    SendText("reins of power" . A_EndChar)
-    AC_Reg("reigns of power", "reins of power")
-}
 :C:reiind::{
     if AC_IsDisabled("reiind") {
         SendText("reiind" . A_EndChar)
@@ -61154,30 +51394,6 @@
     }
     SendText("remind" . A_EndChar)
     AC_Reg("reiind", "remind")
-}
-:C:rein check::{
-    if AC_IsDisabled("rein check") {
-        SendText("rein check" . A_EndChar)
-        return
-    }
-    SendText("rain check" . A_EndChar)
-    AC_Reg("rein check", "rain check")
-}
-:C:rein or shine::{
-    if AC_IsDisabled("rein or shine") {
-        SendText("rein or shine" . A_EndChar)
-        return
-    }
-    SendText("rain or shine" . A_EndChar)
-    AC_Reg("rein or shine", "rain or shine")
-}
-:C:reined supreme::{
-    if AC_IsDisabled("reined supreme") {
-        SendText("reined supreme" . A_EndChar)
-        return
-    }
-    SendText("reigned supreme" . A_EndChar)
-    AC_Reg("reined supreme", "reigned supreme")
 }
 :C:reing::{
     if AC_IsDisabled("reing") {
@@ -62987,38 +53203,6 @@
     SendText("rigueur" . A_EndChar)
     AC_Reg("rigeur", "rigueur")
 }
-:C:right buffer::{
-    if AC_IsDisabled("right buffer") {
-        SendText("right buffer" . A_EndChar)
-        return
-    }
-    SendText("write buffer" . A_EndChar)
-    AC_Reg("right buffer", "write buffer")
-}
-:C:right hear::{
-    if AC_IsDisabled("right hear") {
-        SendText("right hear" . A_EndChar)
-        return
-    }
-    SendText("right here" . A_EndChar)
-    AC_Reg("right hear", "right here")
-}
-:C:right permission::{
-    if AC_IsDisabled("right permission") {
-        SendText("right permission" . A_EndChar)
-        return
-    }
-    SendText("write permission" . A_EndChar)
-    AC_Reg("right permission", "write permission")
-}
-:C:right protect::{
-    if AC_IsDisabled("right protect") {
-        SendText("right protect" . A_EndChar)
-        return
-    }
-    SendText("write protect" . A_EndChar)
-    AC_Reg("right protect", "write protect")
-}
 :C:rigourous::{
     if AC_IsDisabled("rigourous") {
         SendText("rigourous" . A_EndChar)
@@ -63146,190 +53330,6 @@
     }
     SendText("risqué" . A_EndChar)
     AC_Reg("risque", "risqué")
-}
-:C:rite answer::{
-    if AC_IsDisabled("rite answer") {
-        SendText("rite answer" . A_EndChar)
-        return
-    }
-    SendText("right answer" . A_EndChar)
-    AC_Reg("rite answer", "right answer")
-}
-:C:rite away::{
-    if AC_IsDisabled("rite away") {
-        SendText("rite away" . A_EndChar)
-        return
-    }
-    SendText("right away" . A_EndChar)
-    AC_Reg("rite away", "right away")
-}
-:C:rite call::{
-    if AC_IsDisabled("rite call") {
-        SendText("rite call" . A_EndChar)
-        return
-    }
-    SendText("right call" . A_EndChar)
-    AC_Reg("rite call", "right call")
-}
-:C:rite choice::{
-    if AC_IsDisabled("rite choice") {
-        SendText("rite choice" . A_EndChar)
-        return
-    }
-    SendText("right choice" . A_EndChar)
-    AC_Reg("rite choice", "right choice")
-}
-:C:rite conclusion::{
-    if AC_IsDisabled("rite conclusion") {
-        SendText("rite conclusion" . A_EndChar)
-        return
-    }
-    SendText("right conclusion" . A_EndChar)
-    AC_Reg("rite conclusion", "right conclusion")
-}
-:C:rite decision::{
-    if AC_IsDisabled("rite decision") {
-        SendText("rite decision" . A_EndChar)
-        return
-    }
-    SendText("right decision" . A_EndChar)
-    AC_Reg("rite decision", "right decision")
-}
-:C:rite direction::{
-    if AC_IsDisabled("rite direction") {
-        SendText("rite direction" . A_EndChar)
-        return
-    }
-    SendText("right direction" . A_EndChar)
-    AC_Reg("rite direction", "right direction")
-}
-:C:rite guess::{
-    if AC_IsDisabled("rite guess") {
-        SendText("rite guess" . A_EndChar)
-        return
-    }
-    SendText("right guess" . A_EndChar)
-    AC_Reg("rite guess", "right guess")
-}
-:C:rite idea::{
-    if AC_IsDisabled("rite idea") {
-        SendText("rite idea" . A_EndChar)
-        return
-    }
-    SendText("right idea" . A_EndChar)
-    AC_Reg("rite idea", "right idea")
-}
-:C:rite moment::{
-    if AC_IsDisabled("rite moment") {
-        SendText("rite moment" . A_EndChar)
-        return
-    }
-    SendText("right moment" . A_EndChar)
-    AC_Reg("rite moment", "right moment")
-}
-:C:rite move::{
-    if AC_IsDisabled("rite move") {
-        SendText("rite move" . A_EndChar)
-        return
-    }
-    SendText("right move" . A_EndChar)
-    AC_Reg("rite move", "right move")
-}
-:C:rite now::{
-    if AC_IsDisabled("rite now") {
-        SendText("rite now" . A_EndChar)
-        return
-    }
-    SendText("right now" . A_EndChar)
-    AC_Reg("rite now", "right now")
-}
-:C:rite off the bat::{
-    if AC_IsDisabled("rite off the bat") {
-        SendText("rite off the bat" . A_EndChar)
-        return
-    }
-    SendText("right off the bat" . A_EndChar)
-    AC_Reg("rite off the bat", "right off the bat")
-}
-:C:rite on time::{
-    if AC_IsDisabled("rite on time") {
-        SendText("rite on time" . A_EndChar)
-        return
-    }
-    SendText("right on time" . A_EndChar)
-    AC_Reg("rite on time", "right on time")
-}
-:C:rite path::{
-    if AC_IsDisabled("rite path") {
-        SendText("rite path" . A_EndChar)
-        return
-    }
-    SendText("right path" . A_EndChar)
-    AC_Reg("rite path", "right path")
-}
-:C:rite people::{
-    if AC_IsDisabled("rite people") {
-        SendText("rite people" . A_EndChar)
-        return
-    }
-    SendText("right people" . A_EndChar)
-    AC_Reg("rite people", "right people")
-}
-:C:rite permission::{
-    if AC_IsDisabled("rite permission") {
-        SendText("rite permission" . A_EndChar)
-        return
-    }
-    SendText("write permission" . A_EndChar)
-    AC_Reg("rite permission", "write permission")
-}
-:C:rite person::{
-    if AC_IsDisabled("rite person") {
-        SendText("rite person" . A_EndChar)
-        return
-    }
-    SendText("right person" . A_EndChar)
-    AC_Reg("rite person", "right person")
-}
-:C:rite place::{
-    if AC_IsDisabled("rite place") {
-        SendText("rite place" . A_EndChar)
-        return
-    }
-    SendText("right place" . A_EndChar)
-    AC_Reg("rite place", "right place")
-}
-:C:rite protect::{
-    if AC_IsDisabled("rite protect") {
-        SendText("rite protect" . A_EndChar)
-        return
-    }
-    SendText("write protect" . A_EndChar)
-    AC_Reg("rite protect", "write protect")
-}
-:C:rite tim::{
-    if AC_IsDisabled("rite tim") {
-        SendText("rite tim" . A_EndChar)
-        return
-    }
-    SendText("right tim" . A_EndChar)
-    AC_Reg("rite tim", "right tim")
-}
-:C:rite track::{
-    if AC_IsDisabled("rite track") {
-        SendText("rite track" . A_EndChar)
-        return
-    }
-    SendText("right track" . A_EndChar)
-    AC_Reg("rite track", "right track")
-}
-:C:rite way::{
-    if AC_IsDisabled("rite way") {
-        SendText("rite way" . A_EndChar)
-        return
-    }
-    SendText("right way" . A_EndChar)
-    AC_Reg("rite way", "right way")
 }
 :C:ritent::{
     if AC_IsDisabled("ritent") {
@@ -63523,46 +53523,6 @@
     SendText("rogress" . A_EndChar)
     AC_Reg("rograss", "rogress")
 }
-:C:role call::{
-    if AC_IsDisabled("role call") {
-        SendText("role call" . A_EndChar)
-        return
-    }
-    SendText("roll call" . A_EndChar)
-    AC_Reg("role call", "roll call")
-}
-:C:role out::{
-    if AC_IsDisabled("role out") {
-        SendText("role out" . A_EndChar)
-        return
-    }
-    SendText("roll out" . A_EndChar)
-    AC_Reg("role out", "roll out")
-}
-:C:roll model::{
-    if AC_IsDisabled("roll model") {
-        SendText("roll model" . A_EndChar)
-        return
-    }
-    SendText("role model" . A_EndChar)
-    AC_Reg("roll model", "role model")
-}
-:C:roll play::{
-    if AC_IsDisabled("roll play") {
-        SendText("roll play" . A_EndChar)
-        return
-    }
-    SendText("role play" . A_EndChar)
-    AC_Reg("roll play", "role play")
-}
-:C:roman a clef::{
-    if AC_IsDisabled("roman a clef") {
-        SendText("roman a clef" . A_EndChar)
-        return
-    }
-    SendText("roman à clef" . A_EndChar)
-    AC_Reg("roman a clef", "roman à clef")
-}
 :C:romorrow::{
     if AC_IsDisabled("romorrow") {
         SendText("romorrow" . A_EndChar)
@@ -63586,54 +53546,6 @@
     }
     SendText("root" . A_EndChar)
     AC_Reg("rooot", "root")
-}
-:C:root configuration::{
-    if AC_IsDisabled("root configuration") {
-        SendText("root configuration" . A_EndChar)
-        return
-    }
-    SendText("route configuration" . A_EndChar)
-    AC_Reg("root configuration", "route configuration")
-}
-:C:root management::{
-    if AC_IsDisabled("root management") {
-        SendText("root management" . A_EndChar)
-        return
-    }
-    SendText("route management" . A_EndChar)
-    AC_Reg("root management", "route management")
-}
-:C:root optimization::{
-    if AC_IsDisabled("root optimization") {
-        SendText("root optimization" . A_EndChar)
-        return
-    }
-    SendText("route optimization" . A_EndChar)
-    AC_Reg("root optimization", "route optimization")
-}
-:C:root protocol::{
-    if AC_IsDisabled("root protocol") {
-        SendText("root protocol" . A_EndChar)
-        return
-    }
-    SendText("route protocol" . A_EndChar)
-    AC_Reg("root protocol", "route protocol")
-}
-:C:root table::{
-    if AC_IsDisabled("root table") {
-        SendText("root table" . A_EndChar)
-        return
-    }
-    SendText("route table" . A_EndChar)
-    AC_Reg("root table", "route table")
-}
-:C:root traffic::{
-    if AC_IsDisabled("root traffic") {
-        SendText("root traffic" . A_EndChar)
-        return
-    }
-    SendText("route traffic" . A_EndChar)
-    AC_Reg("root traffic", "route traffic")
 }
 :C:roow::{
     if AC_IsDisabled("roow") {
@@ -63674,14 +53586,6 @@
     }
     SendText("roughly" . A_EndChar)
     AC_Reg("rougly", "roughly")
-}
-:C:rowed the wave::{
-    if AC_IsDisabled("rowed the wave") {
-        SendText("rowed the wave" . A_EndChar)
-        return
-    }
-    SendText("rode the wave" . A_EndChar)
-    AC_Reg("rowed the wave", "rode the wave")
 }
 :C:rowm::{
     if AC_IsDisabled("rowm") {
@@ -63987,14 +53891,6 @@
     SendText("running" . A_EndChar)
     AC_Reg("runing", "running")
 }
-:C:runner up::{
-    if AC_IsDisabled("runner up") {
-        SendText("runner up" . A_EndChar)
-        return
-    }
-    SendText("runner-up" . A_EndChar)
-    AC_Reg("runner up", "runner-up")
-}
 :C:runnung::{
     if AC_IsDisabled("runnung") {
         SendText("runnung" . A_EndChar)
@@ -64179,14 +54075,6 @@
     SendText("sacrificial" . A_EndChar)
     AC_Reg("sacrifical", "sacrificial")
 }
-:C:saddle up to::{
-    if AC_IsDisabled("saddle up to") {
-        SendText("saddle up to" . A_EndChar)
-        return
-    }
-    SendText("sidle up to" . A_EndChar)
-    AC_Reg("saddle up to", "sidle up to")
-}
 :C:safegard::{
     if AC_IsDisabled("safegard") {
         SendText("safegard" . A_EndChar)
@@ -64234,14 +54122,6 @@
     }
     SendText("said it" . A_EndChar)
     AC_Reg("saidit", "said it")
-}
-:C:saidt he::{
-    if AC_IsDisabled("saidt he") {
-        SendText("saidt he" . A_EndChar)
-        return
-    }
-    SendText("said the" . A_EndChar)
-    AC_Reg("saidt he", "said the")
 }
 :C:saidth::{
     if AC_IsDisabled("saidth") {
@@ -64531,14 +54411,6 @@
     SendText("saxophone" . A_EndChar)
     AC_Reg("saxaphone", "saxophone")
 }
-:C:say la v::{
-    if AC_IsDisabled("say la v") {
-        SendText("say la v" . A_EndChar)
-        return
-    }
-    SendText("c'est la vie" . A_EndChar)
-    AC_Reg("say la v", "c'est la vie")
-}
 :C:scael::{
     if AC_IsDisabled("scael") {
         SendText("scael" . A_EndChar)
@@ -64611,14 +54483,6 @@
     SendText("schedu" . A_EndChar)
     AC_Reg("scedu", "schedu")
 }
-:C:scene it all::{
-    if AC_IsDisabled("scene it all") {
-        SendText("scene it all" . A_EndChar)
-        return
-    }
-    SendText("seen it all" . A_EndChar)
-    AC_Reg("scene it all", "seen it all")
-}
 :C:schedual::{
     if AC_IsDisabled("schedual") {
         SendText("schedual" . A_EndChar)
@@ -64682,14 +54546,6 @@
     }
     SendText("school" . A_EndChar)
     AC_Reg("scholl", "school")
-}
-:C:school principle::{
-    if AC_IsDisabled("school principle") {
-        SendText("school principle" . A_EndChar)
-        return
-    }
-    SendText("school principal" . A_EndChar)
-    AC_Reg("school principle", "school principal")
 }
 :C:schore::{
     if AC_IsDisabled("schore") {
@@ -64955,46 +54811,6 @@
     SendText("searches" . A_EndChar)
     AC_Reg("seaches", "searches")
 }
-:C:seam fitting::{
-    if AC_IsDisabled("seam fitting") {
-        SendText("seam fitting" . A_EndChar)
-        return
-    }
-    SendText("seem fitting" . A_EndChar)
-    AC_Reg("seam fitting", "seem fitting")
-}
-:C:seam reasonable::{
-    if AC_IsDisabled("seam reasonable") {
-        SendText("seam reasonable" . A_EndChar)
-        return
-    }
-    SendText("seem reasonable" . A_EndChar)
-    AC_Reg("seam reasonable", "seem reasonable")
-}
-:C:seam right::{
-    if AC_IsDisabled("seam right") {
-        SendText("seam right" . A_EndChar)
-        return
-    }
-    SendText("seem right" . A_EndChar)
-    AC_Reg("seam right", "seem right")
-}
-:C:seam to think::{
-    if AC_IsDisabled("seam to think") {
-        SendText("seam to think" . A_EndChar)
-        return
-    }
-    SendText("seem to think" . A_EndChar)
-    AC_Reg("seam to think", "seem to think")
-}
-:C:seams to be::{
-    if AC_IsDisabled("seams to be") {
-        SendText("seams to be" . A_EndChar)
-        return
-    }
-    SendText("seems to be" . A_EndChar)
-    AC_Reg("seams to be", "seems to be")
-}
 :C:seance::{
     if AC_IsDisabled("seance") {
         SendText("seance" . A_EndChar)
@@ -65099,14 +54915,6 @@
     SendText("secon" . A_EndChar)
     AC_Reg("sedon", "secon")
 }
-:C:see know::{
-    if AC_IsDisabled("see know") {
-        SendText("see know" . A_EndChar)
-        return
-    }
-    SendText("see now" . A_EndChar)
-    AC_Reg("see know", "see now")
-}
 :C:seee::{
     if AC_IsDisabled("seee") {
         SendText("seee" . A_EndChar)
@@ -65122,22 +54930,6 @@
     }
     SendText("sought" . A_EndChar)
     AC_Reg("seeked", "sought")
-}
-:C:seen the site::{
-    if AC_IsDisabled("seen the site") {
-        SendText("seen the site" . A_EndChar)
-        return
-    }
-    SendText("seen the sight" . A_EndChar)
-    AC_Reg("seen the site", "seen the sight")
-}
-:C:seen the whole seen::{
-    if AC_IsDisabled("seen the whole seen") {
-        SendText("seen the whole seen" . A_EndChar)
-        return
-    }
-    SendText("seen the whole scene" . A_EndChar)
-    AC_Reg("seen the whole seen", "seen the whole scene")
 }
 :C:seeting::{
     if AC_IsDisabled("seeting") {
@@ -65635,14 +55427,6 @@
     SendText("sessi" . A_EndChar)
     AC_Reg("sesi", "sessi")
 }
-:C:set back::{
-    if AC_IsDisabled("set back") {
-        SendText("set back" . A_EndChar)
-        return
-    }
-    SendText("setback" . A_EndChar)
-    AC_Reg("set back", "setback")
-}
 :C:settelement::{
     if AC_IsDisabled("settelement") {
         SendText("settelement" . A_EndChar)
@@ -65714,22 +55498,6 @@
     }
     SendText("several" . A_EndChar)
     AC_Reg("sevreal", "several")
-}
-:C:sew and sew::{
-    if AC_IsDisabled("sew and sew") {
-        SendText("sew and sew" . A_EndChar)
-        return
-    }
-    SendText("so and so" . A_EndChar)
-    AC_Reg("sew and sew", "so and so")
-}
-:C:sewing discord::{
-    if AC_IsDisabled("sewing discord") {
-        SendText("sewing discord" . A_EndChar)
-        return
-    }
-    SendText("sowing discord" . A_EndChar)
-    AC_Reg("sewing discord", "sowing discord")
 }
 :C:sexaul::{
     if AC_IsDisabled("sexaul") {
@@ -65827,38 +55595,6 @@
     SendText("scho" . A_EndChar)
     AC_Reg("shco", "scho")
 }
-:C:she begun::{
-    if AC_IsDisabled("she begun") {
-        SendText("she begun" . A_EndChar)
-        return
-    }
-    SendText("she began" . A_EndChar)
-    AC_Reg("she begun", "she began")
-}
-:C:she let's::{
-    if AC_IsDisabled("she let's") {
-        SendText("she let's" . A_EndChar)
-        return
-    }
-    SendText("she lets" . A_EndChar)
-    AC_Reg("she let's", "she lets")
-}
-:C:she seen::{
-    if AC_IsDisabled("she seen") {
-        SendText("she seen" . A_EndChar)
-        return
-    }
-    SendText("she saw" . A_EndChar)
-    AC_Reg("she seen", "she saw")
-}
-:C:shear madness::{
-    if AC_IsDisabled("shear madness") {
-        SendText("shear madness" . A_EndChar)
-        return
-    }
-    SendText("sheer madness" . A_EndChar)
-    AC_Reg("shear madness", "sheer madness")
-}
 :C:sheat::{
     if AC_IsDisabled("sheat") {
         SendText("sheat" . A_EndChar)
@@ -65955,30 +55691,6 @@
     SendText("shortly" . A_EndChar)
     AC_Reg("shorly", "shortly")
 }
-:C:short coming::{
-    if AC_IsDisabled("short coming") {
-        SendText("short coming" . A_EndChar)
-        return
-    }
-    SendText("shortcoming" . A_EndChar)
-    AC_Reg("short coming", "shortcoming")
-}
-:C:shorter then::{
-    if AC_IsDisabled("shorter then") {
-        SendText("shorter then" . A_EndChar)
-        return
-    }
-    SendText("shorter than" . A_EndChar)
-    AC_Reg("shorter then", "shorter than")
-}
-:C:shortly there after::{
-    if AC_IsDisabled("shortly there after") {
-        SendText("shortly there after" . A_EndChar)
-        return
-    }
-    SendText("shortly thereafter" . A_EndChar)
-    AC_Reg("shortly there after", "shortly thereafter")
-}
 :C:shortwhile::{
     if AC_IsDisabled("shortwhile") {
         SendText("shortwhile" . A_EndChar)
@@ -66003,46 +55715,6 @@
     SendText("should" . A_EndChar)
     AC_Reg("shoudln", "should")
 }
-:C:should backup::{
-    if AC_IsDisabled("should backup") {
-        SendText("should backup" . A_EndChar)
-        return
-    }
-    SendText("should back up" . A_EndChar)
-    AC_Reg("should backup", "should back up")
-}
-:C:should not of::{
-    if AC_IsDisabled("should not of") {
-        SendText("should not of" . A_EndChar)
-        return
-    }
-    SendText("should not have" . A_EndChar)
-    AC_Reg("should not of", "should not have")
-}
-:C:should of been::{
-    if AC_IsDisabled("should of been") {
-        SendText("should of been" . A_EndChar)
-        return
-    }
-    SendText("should have been" . A_EndChar)
-    AC_Reg("should of been", "should have been")
-}
-:C:should of::{
-    if AC_IsDisabled("should of") {
-        SendText("should of" . A_EndChar)
-        return
-    }
-    SendText("should have" . A_EndChar)
-    AC_Reg("should of", "should have")
-}
-:C:should've went::{
-    if AC_IsDisabled("should've went") {
-        SendText("should've went" . A_EndChar)
-        return
-    }
-    SendText("should have gone" . A_EndChar)
-    AC_Reg("should've went", "should have gone")
-}
 :C:shouldn'nt::{
     if AC_IsDisabled("shouldn'nt") {
         SendText("shouldn'nt" . A_EndChar)
@@ -66066,14 +55738,6 @@
     }
     SendText("should've" . A_EndChar)
     AC_Reg("shouldve", "should've")
-}
-:C:show resent::{
-    if AC_IsDisabled("show resent") {
-        SendText("show resent" . A_EndChar)
-        return
-    }
-    SendText("show recent" . A_EndChar)
-    AC_Reg("show resent", "show recent")
 }
 :C:showt::{
     if AC_IsDisabled("showt") {
@@ -66163,22 +55827,6 @@
     SendText("since" . A_EndChar)
     AC_Reg("sicne", "since")
 }
-:C:side affect::{
-    if AC_IsDisabled("side affect") {
-        SendText("side affect" . A_EndChar)
-        return
-    }
-    SendText("side effect" . A_EndChar)
-    AC_Reg("side affect", "side effect")
-}
-:C:side kick::{
-    if AC_IsDisabled("side kick") {
-        SendText("side kick" . A_EndChar)
-        return
-    }
-    SendText("sidekick" . A_EndChar)
-    AC_Reg("side kick", "sidekick")
-}
 :C:sidenta::{
     if AC_IsDisabled("sidenta") {
         SendText("sidenta" . A_EndChar)
@@ -66242,78 +55890,6 @@
     }
     SendText("seizures" . A_EndChar)
     AC_Reg("siezures", "seizures")
-}
-:C:sight administrator::{
-    if AC_IsDisabled("sight administrator") {
-        SendText("sight administrator" . A_EndChar)
-        return
-    }
-    SendText("site administrator" . A_EndChar)
-    AC_Reg("sight administrator", "site administrator")
-}
-:C:sight analys::{
-    if AC_IsDisabled("sight analys") {
-        SendText("sight analys" . A_EndChar)
-        return
-    }
-    SendText("site analys" . A_EndChar)
-    AC_Reg("sight analys", "site analys")
-}
-:C:sight hosting::{
-    if AC_IsDisabled("sight hosting") {
-        SendText("sight hosting" . A_EndChar)
-        return
-    }
-    SendText("site hosting" . A_EndChar)
-    AC_Reg("sight hosting", "site hosting")
-}
-:C:sight license::{
-    if AC_IsDisabled("sight license") {
-        SendText("sight license" . A_EndChar)
-        return
-    }
-    SendText("site license" . A_EndChar)
-    AC_Reg("sight license", "site license")
-}
-:C:sight maintenance::{
-    if AC_IsDisabled("sight maintenance") {
-        SendText("sight maintenance" . A_EndChar)
-        return
-    }
-    SendText("site maintenance" . A_EndChar)
-    AC_Reg("sight maintenance", "site maintenance")
-}
-:C:sight metric::{
-    if AC_IsDisabled("sight metric") {
-        SendText("sight metric" . A_EndChar)
-        return
-    }
-    SendText("site metric" . A_EndChar)
-    AC_Reg("sight metric", "site metric")
-}
-:C:sight performance::{
-    if AC_IsDisabled("sight performance") {
-        SendText("sight performance" . A_EndChar)
-        return
-    }
-    SendText("site performance" . A_EndChar)
-    AC_Reg("sight performance", "site performance")
-}
-:C:sight reliabilit::{
-    if AC_IsDisabled("sight reliabilit") {
-        SendText("sight reliabilit" . A_EndChar)
-        return
-    }
-    SendText("site reliabilit" . A_EndChar)
-    AC_Reg("sight reliabilit", "site reliabilit")
-}
-:C:sight securit::{
-    if AC_IsDisabled("sight securit") {
-        SendText("sight securit" . A_EndChar)
-        return
-    }
-    SendText("site securit" . A_EndChar)
-    AC_Reg("sight securit", "site securit")
 }
 :C:sigin::{
     if AC_IsDisabled("sigin") {
@@ -66467,14 +56043,6 @@
     SendText("sible" . A_EndChar)
     AC_Reg("silbe", "sible")
 }
-:C:silicone chip::{
-    if AC_IsDisabled("silicone chip") {
-        SendText("silicone chip" . A_EndChar)
-        return
-    }
-    SendText("silicon chip" . A_EndChar)
-    AC_Reg("silicone chip", "silicon chip")
-}
 :C:simala::{
     if AC_IsDisabled("simala") {
         SendText("simala" . A_EndChar)
@@ -66619,14 +56187,6 @@
     SendText("sincerely" . A_EndChar)
     AC_Reg("sincerley", "sincerely")
 }
-:C:single handily::{
-    if AC_IsDisabled("single handily") {
-        SendText("single handily" . A_EndChar)
-        return
-    }
-    SendText("single-handedly" . A_EndChar)
-    AC_Reg("single handily", "single-handedly")
-}
 :C:singsog::{
     if AC_IsDisabled("singsog") {
         SendText("singsog" . A_EndChar)
@@ -66642,14 +56202,6 @@
     }
     SendText("sin" . A_EndChar)
     AC_Reg("sinm", "sin")
-}
-:C:sinn fein::{
-    if AC_IsDisabled("sinn fein") {
-        SendText("sinn fein" . A_EndChar)
-        return
-    }
-    SendText("Sinn Féin" . A_EndChar)
-    AC_Reg("sinn fein", "Sinn Féin")
 }
 :C:sinn::{
     if AC_IsDisabled("sinn") {
@@ -66706,22 +56258,6 @@
     }
     SendText("stick" . A_EndChar)
     AC_Reg("sitck", "stick")
-}
-:C:site line::{
-    if AC_IsDisabled("site line") {
-        SendText("site line" . A_EndChar)
-        return
-    }
-    SendText("sight line" . A_EndChar)
-    AC_Reg("site line", "sight line")
-}
-:C:site-word recog::{
-    if AC_IsDisabled("site-word recog") {
-        SendText("site-word recog" . A_EndChar)
-        return
-    }
-    SendText("sight-word recog" . A_EndChar)
-    AC_Reg("site-word recog", "sight-word recog")
 }
 :C:sitll::{
     if AC_IsDisabled("sitll") {
@@ -66803,14 +56339,6 @@
     SendText("slightly" . A_EndChar)
     AC_Reg("slighly", "slightly")
 }
-:C:slight of hand::{
-    if AC_IsDisabled("slight of hand") {
-        SendText("slight of hand" . A_EndChar)
-        return
-    }
-    SendText("sleight of hand" . A_EndChar)
-    AC_Reg("slight of hand", "sleight of hand")
-}
 :C:slippy::{
     if AC_IsDisabled("slippy") {
         SendText("slippy" . A_EndChar)
@@ -66827,14 +56355,6 @@
     SendText("slowly" . A_EndChar)
     AC_Reg("slowy", "slowly")
 }
-:C:slue of::{
-    if AC_IsDisabled("slue of") {
-        SendText("slue of" . A_EndChar)
-        return
-    }
-    SendText("slew of" . A_EndChar)
-    AC_Reg("slue of", "slew of")
-}
 :C:smae::{
     if AC_IsDisabled("smae") {
         SendText("smae" . A_EndChar)
@@ -66842,22 +56362,6 @@
     }
     SendText("same" . A_EndChar)
     AC_Reg("smae", "same")
-}
-:C:smaller then::{
-    if AC_IsDisabled("smaller then") {
-        SendText("smaller then" . A_EndChar)
-        return
-    }
-    SendText("smaller than" . A_EndChar)
-    AC_Reg("smaller then", "smaller than")
-}
-:C:smarter then::{
-    if AC_IsDisabled("smarter then") {
-        SendText("smarter then" . A_EndChar)
-        return
-    }
-    SendText("smarter than" . A_EndChar)
-    AC_Reg("smarter then", "smarter than")
 }
 :C:smealt::{
     if AC_IsDisabled("smealt") {
@@ -66907,14 +56411,6 @@
     SendText("smörgåstårta" . A_EndChar)
     AC_Reg("smorgastarta", "smörgåstårta")
 }
-:C:sn;r::{
-    if AC_IsDisabled("sn;r") {
-        SendText("sn;r" . A_EndChar)
-        return
-    }
-    SendText("able" . A_EndChar)
-    AC_Reg("sn;r", "able")
-}
 :C:snad::{
     if AC_IsDisabled("snad") {
         SendText("snad" . A_EndChar)
@@ -66922,14 +56418,6 @@
     }
     SendText("sand" . A_EndChar)
     AC_Reg("snad", "sand")
-}
-:C:sneak peak::{
-    if AC_IsDisabled("sneak peak") {
-        SendText("sneak peak" . A_EndChar)
-        return
-    }
-    SendText("sneak peek" . A_EndChar)
-    AC_Reg("sneak peak", "sneak peek")
 }
 :C:sneek::{
     if AC_IsDisabled("sneek") {
@@ -66962,150 +56450,6 @@
     }
     SendText("snow" . A_EndChar)
     AC_Reg("snwo", "snow")
-}
-:C:so it you::{
-    if AC_IsDisabled("so it you") {
-        SendText("so it you" . A_EndChar)
-        return
-    }
-    SendText("so if you" . A_EndChar)
-    AC_Reg("so it you", "so if you")
-}
-:C:soar defeat::{
-    if AC_IsDisabled("soar defeat") {
-        SendText("soar defeat" . A_EndChar)
-        return
-    }
-    SendText("sore defeat" . A_EndChar)
-    AC_Reg("soar defeat", "sore defeat")
-}
-:C:soar experience::{
-    if AC_IsDisabled("soar experience") {
-        SendText("soar experience" . A_EndChar)
-        return
-    }
-    SendText("sore experience" . A_EndChar)
-    AC_Reg("soar experience", "sore experience")
-}
-:C:soar feeling::{
-    if AC_IsDisabled("soar feeling") {
-        SendText("soar feeling" . A_EndChar)
-        return
-    }
-    SendText("sore feeling" . A_EndChar)
-    AC_Reg("soar feeling", "sore feeling")
-}
-:C:soar lesson::{
-    if AC_IsDisabled("soar lesson") {
-        SendText("soar lesson" . A_EndChar)
-        return
-    }
-    SendText("sore lesson" . A_EndChar)
-    AC_Reg("soar lesson", "sore lesson")
-}
-:C:soar loser::{
-    if AC_IsDisabled("soar loser") {
-        SendText("soar loser" . A_EndChar)
-        return
-    }
-    SendText("sore loser" . A_EndChar)
-    AC_Reg("soar loser", "sore loser")
-}
-:C:soar memor::{
-    if AC_IsDisabled("soar memor") {
-        SendText("soar memor" . A_EndChar)
-        return
-    }
-    SendText("sore memor" . A_EndChar)
-    AC_Reg("soar memor", "sore memor")
-}
-:C:soar muscle::{
-    if AC_IsDisabled("soar muscle") {
-        SendText("soar muscle" . A_EndChar)
-        return
-    }
-    SendText("sore muscle" . A_EndChar)
-    AC_Reg("soar muscle", "sore muscle")
-}
-:C:soar point::{
-    if AC_IsDisabled("soar point") {
-        SendText("soar point" . A_EndChar)
-        return
-    }
-    SendText("sore point" . A_EndChar)
-    AC_Reg("soar point", "sore point")
-}
-:C:soar reminder::{
-    if AC_IsDisabled("soar reminder") {
-        SendText("soar reminder" . A_EndChar)
-        return
-    }
-    SendText("sore reminder" . A_EndChar)
-    AC_Reg("soar reminder", "sore reminder")
-}
-:C:soar sport::{
-    if AC_IsDisabled("soar sport") {
-        SendText("soar sport" . A_EndChar)
-        return
-    }
-    SendText("sore sport" . A_EndChar)
-    AC_Reg("soar sport", "sore sport")
-}
-:C:soar spot::{
-    if AC_IsDisabled("soar spot") {
-        SendText("soar spot" . A_EndChar)
-        return
-    }
-    SendText("sore spot" . A_EndChar)
-    AC_Reg("soar spot", "sore spot")
-}
-:C:soar subject::{
-    if AC_IsDisabled("soar subject") {
-        SendText("soar subject" . A_EndChar)
-        return
-    }
-    SendText("sore subject" . A_EndChar)
-    AC_Reg("soar subject", "sore subject")
-}
-:C:soar temper::{
-    if AC_IsDisabled("soar temper") {
-        SendText("soar temper" . A_EndChar)
-        return
-    }
-    SendText("sore temper" . A_EndChar)
-    AC_Reg("soar temper", "sore temper")
-}
-:C:soar throat::{
-    if AC_IsDisabled("soar throat") {
-        SendText("soar throat" . A_EndChar)
-        return
-    }
-    SendText("sore throat" . A_EndChar)
-    AC_Reg("soar throat", "sore throat")
-}
-:C:soar thumb::{
-    if AC_IsDisabled("soar thumb") {
-        SendText("soar thumb" . A_EndChar)
-        return
-    }
-    SendText("sore thumb" . A_EndChar)
-    AC_Reg("soar thumb", "sore thumb")
-}
-:C:soar topic::{
-    if AC_IsDisabled("soar topic") {
-        SendText("soar topic" . A_EndChar)
-        return
-    }
-    SendText("sore topic" . A_EndChar)
-    AC_Reg("soar topic", "sore topic")
-}
-:C:soar winner::{
-    if AC_IsDisabled("soar winner") {
-        SendText("soar winner" . A_EndChar)
-        return
-    }
-    SendText("sore winner" . A_EndChar)
-    AC_Reg("soar winner", "sore winner")
 }
 :C:socal::{
     if AC_IsDisabled("socal") {
@@ -67283,38 +56627,6 @@
     SendText("soluble" . A_EndChar)
     AC_Reg("soluable", "soluble")
 }
-:C:some how::{
-    if AC_IsDisabled("some how") {
-        SendText("some how" . A_EndChar)
-        return
-    }
-    SendText("somehow" . A_EndChar)
-    AC_Reg("some how", "somehow")
-}
-:C:some one::{
-    if AC_IsDisabled("some one") {
-        SendText("some one" . A_EndChar)
-        return
-    }
-    SendText("someone" . A_EndChar)
-    AC_Reg("some one", "someone")
-}
-:C:some what::{
-    if AC_IsDisabled("some what") {
-        SendText("some what" . A_EndChar)
-        return
-    }
-    SendText("somewhat" . A_EndChar)
-    AC_Reg("some what", "somewhat")
-}
-:C:some where::{
-    if AC_IsDisabled("some where") {
-        SendText("some where" . A_EndChar)
-        return
-    }
-    SendText("somewhere" . A_EndChar)
-    AC_Reg("some where", "somewhere")
-}
 :C:somene::{
     if AC_IsDisabled("somene") {
         SendText("somene" . A_EndChar)
@@ -67378,22 +56690,6 @@
     }
     SendText("sonan" . A_EndChar)
     AC_Reg("sonen", "sonan")
-}
-:C:soon there after::{
-    if AC_IsDisabled("soon there after") {
-        SendText("soon there after" . A_EndChar)
-        return
-    }
-    SendText("soon thereafter" . A_EndChar)
-    AC_Reg("soon there after", "soon thereafter")
-}
-:C:sooner then::{
-    if AC_IsDisabled("sooner then") {
-        SendText("sooner then" . A_EndChar)
-        return
-    }
-    SendText("sooner than" . A_EndChar)
-    AC_Reg("sooner then", "sooner than")
 }
 :C:soory::{
     if AC_IsDisabled("soory") {
@@ -67491,14 +56787,6 @@
     SendText("socia" . A_EndChar)
     AC_Reg("sosica", "socia")
 }
-:C:sot hat::{
-    if AC_IsDisabled("sot hat") {
-        SendText("sot hat" . A_EndChar)
-        return
-    }
-    SendText("so that" . A_EndChar)
-    AC_Reg("sot hat", "so that")
-}
 :C:sotry::{
     if AC_IsDisabled("sotry") {
         SendText("sotry" . A_EndChar)
@@ -67539,38 +56827,6 @@
     SendText("soufflé" . A_EndChar)
     AC_Reg("souffle", "soufflé")
 }
-:C:soul focus::{
-    if AC_IsDisabled("soul focus") {
-        SendText("soul focus" . A_EndChar)
-        return
-    }
-    SendText("sole focus" . A_EndChar)
-    AC_Reg("soul focus", "sole focus")
-}
-:C:soul intention::{
-    if AC_IsDisabled("soul intention") {
-        SendText("soul intention" . A_EndChar)
-        return
-    }
-    SendText("sole intention" . A_EndChar)
-    AC_Reg("soul intention", "sole intention")
-}
-:C:soul proprietor::{
-    if AC_IsDisabled("soul proprietor") {
-        SendText("soul proprietor" . A_EndChar)
-        return
-    }
-    SendText("sole proprietor" . A_EndChar)
-    AC_Reg("soul proprietor", "sole proprietor")
-}
-:C:soul purpose::{
-    if AC_IsDisabled("soul purpose") {
-        SendText("soul purpose" . A_EndChar)
-        return
-    }
-    SendText("sole purpose" . A_EndChar)
-    AC_Reg("soul purpose", "sole purpose")
-}
 :C:sould::{
     if AC_IsDisabled("sould") {
         SendText("sould" . A_EndChar)
@@ -67594,22 +56850,6 @@
     }
     SendText("soupçon" . A_EndChar)
     AC_Reg("soupcon", "soupçon")
-}
-:C:source cite::{
-    if AC_IsDisabled("source cite") {
-        SendText("source cite" . A_EndChar)
-        return
-    }
-    SendText("source site" . A_EndChar)
-    AC_Reg("source cite", "source site")
-}
-:C:source sight::{
-    if AC_IsDisabled("source sight") {
-        SendText("source sight" . A_EndChar)
-        return
-    }
-    SendText("source site" . A_EndChar)
-    AC_Reg("source sight", "source site")
 }
 :C:sourse::{
     if AC_IsDisabled("sourse") {
@@ -67706,14 +56946,6 @@
     }
     SendText("sovereignty" . A_EndChar)
     AC_Reg("soverignty", "sovereignty")
-}
-:C:sow and sow::{
-    if AC_IsDisabled("sow and sow") {
-        SendText("sow and sow" . A_EndChar)
-        return
-    }
-    SendText("so and so" . A_EndChar)
-    AC_Reg("sow and sow", "so and so")
 }
 :C:spainish::{
     if AC_IsDisabled("spainish") {
@@ -67899,46 +57131,6 @@
     SendText("sept" . A_EndChar)
     AC_Reg("spet", "sept")
 }
-:C:spilt among::{
-    if AC_IsDisabled("spilt among") {
-        SendText("spilt among" . A_EndChar)
-        return
-    }
-    SendText("split among" . A_EndChar)
-    AC_Reg("spilt among", "split among")
-}
-:C:spilt between::{
-    if AC_IsDisabled("spilt between") {
-        SendText("spilt between" . A_EndChar)
-        return
-    }
-    SendText("split between" . A_EndChar)
-    AC_Reg("spilt between", "split between")
-}
-:C:spilt into::{
-    if AC_IsDisabled("spilt into") {
-        SendText("spilt into" . A_EndChar)
-        return
-    }
-    SendText("split into" . A_EndChar)
-    AC_Reg("spilt into", "split into")
-}
-:C:spilt up::{
-    if AC_IsDisabled("spilt up") {
-        SendText("spilt up" . A_EndChar)
-        return
-    }
-    SendText("split up" . A_EndChar)
-    AC_Reg("spilt up", "split up")
-}
-:C:spinal chord::{
-    if AC_IsDisabled("spinal chord") {
-        SendText("spinal chord" . A_EndChar)
-        return
-    }
-    SendText("spinal cord" . A_EndChar)
-    AC_Reg("spinal chord", "spinal cord")
-}
 :C:spiria::{
     if AC_IsDisabled("spiria") {
         SendText("spiria" . A_EndChar)
@@ -67946,14 +57138,6 @@
     }
     SendText("spira" . A_EndChar)
     AC_Reg("spiria", "spira")
-}
-:C:split in to::{
-    if AC_IsDisabled("split in to") {
-        SendText("split in to" . A_EndChar)
-        return
-    }
-    SendText("split into" . A_EndChar)
-    AC_Reg("split in to", "split into")
 }
 :C:spoac::{
     if AC_IsDisabled("spoac") {
@@ -68107,38 +57291,6 @@
     SendText("psyc" . A_EndChar)
     AC_Reg("spyc", "psyc")
 }
-:C:sq ft::{
-    if AC_IsDisabled("sq ft") {
-        SendText("sq ft" . A_EndChar)
-        return
-    }
-    SendText("ft²" . A_EndChar)
-    AC_Reg("sq ft", "ft²")
-}
-:C:sq in::{
-    if AC_IsDisabled("sq in") {
-        SendText("sq in" . A_EndChar)
-        return
-    }
-    SendText("in²" . A_EndChar)
-    AC_Reg("sq in", "in²")
-}
-:C:sq km::{
-    if AC_IsDisabled("sq km") {
-        SendText("sq km" . A_EndChar)
-        return
-    }
-    SendText("km²" . A_EndChar)
-    AC_Reg("sq km", "km²")
-}
-:C:sq mi::{
-    if AC_IsDisabled("sq mi") {
-        SendText("sq mi" . A_EndChar)
-        return
-    }
-    SendText("mi²" . A_EndChar)
-    AC_Reg("sq mi", "mi²")
-}
 :C:sqaure::{
     if AC_IsDisabled("sqaure") {
         SendText("sqaure" . A_EndChar)
@@ -68146,46 +57298,6 @@
     }
     SendText("square" . A_EndChar)
     AC_Reg("sqaure", "square")
-}
-:C:squared feet::{
-    if AC_IsDisabled("squared feet") {
-        SendText("squared feet" . A_EndChar)
-        return
-    }
-    SendText("square feet" . A_EndChar)
-    AC_Reg("squared feet", "square feet")
-}
-:C:squared inch::{
-    if AC_IsDisabled("squared inch") {
-        SendText("squared inch" . A_EndChar)
-        return
-    }
-    SendText("square inch" . A_EndChar)
-    AC_Reg("squared inch", "square inch")
-}
-:C:squared kilometer::{
-    if AC_IsDisabled("squared kilometer") {
-        SendText("squared kilometer" . A_EndChar)
-        return
-    }
-    SendText("square kilometer" . A_EndChar)
-    AC_Reg("squared kilometer", "square kilometer")
-}
-:C:squared meter::{
-    if AC_IsDisabled("squared meter") {
-        SendText("squared meter" . A_EndChar)
-        return
-    }
-    SendText("square meter" . A_EndChar)
-    AC_Reg("squared meter", "square meter")
-}
-:C:squared mile::{
-    if AC_IsDisabled("squared mile") {
-        SendText("squared mile" . A_EndChar)
-        return
-    }
-    SendText("square mile" . A_EndChar)
-    AC_Reg("squared mile", "square mile")
 }
 :C:srod::{
     if AC_IsDisabled("srod") {
@@ -68299,14 +57411,6 @@
     SendText("station" . A_EndChar)
     AC_Reg("staion", "station")
 }
-:C:stale mat::{
-    if AC_IsDisabled("stale mat") {
-        SendText("stale mat" . A_EndChar)
-        return
-    }
-    SendText("stalemat" . A_EndChar)
-    AC_Reg("stale mat", "stalemat")
-}
 :C:stancial::{
     if AC_IsDisabled("stancial") {
         SendText("stancial" . A_EndChar)
@@ -68339,22 +57443,6 @@
     SendText("stantly" . A_EndChar)
     AC_Reg("stanly", "stantly")
 }
-:C:stares and stripes::{
-    if AC_IsDisabled("stares and stripes") {
-        SendText("stares and stripes" . A_EndChar)
-        return
-    }
-    SendText("stars and stripes" . A_EndChar)
-    AC_Reg("stares and stripes", "stars and stripes")
-}
-:C:staring role::{
-    if AC_IsDisabled("staring role") {
-        SendText("staring role" . A_EndChar)
-        return
-    }
-    SendText("starring role" . A_EndChar)
-    AC_Reg("staring role", "starring role")
-}
 :C:starna::{
     if AC_IsDisabled("starna") {
         SendText("starna" . A_EndChar)
@@ -68362,14 +57450,6 @@
     }
     SendText("sterna" . A_EndChar)
     AC_Reg("starna", "sterna")
-}
-:C:starring roll::{
-    if AC_IsDisabled("starring roll") {
-        SendText("starring roll" . A_EndChar)
-        return
-    }
-    SendText("starring role" . A_EndChar)
-    AC_Reg("starring roll", "starring role")
 }
 :C:starteg::{
     if AC_IsDisabled("starteg") {
@@ -68458,30 +57538,6 @@
     }
     SendText("started" . A_EndChar)
     AC_Reg("statted", "started")
-}
-:C:statue of limitations::{
-    if AC_IsDisabled("statue of limitations") {
-        SendText("statue of limitations" . A_EndChar)
-        return
-    }
-    SendText("statute of limitations" . A_EndChar)
-    AC_Reg("statue of limitations", "statute of limitations")
-}
-:C:stay a while::{
-    if AC_IsDisabled("stay a while") {
-        SendText("stay a while" . A_EndChar)
-        return
-    }
-    SendText("stay awhile" . A_EndChar)
-    AC_Reg("stay a while", "stay awhile")
-}
-:C:steel the show::{
-    if AC_IsDisabled("steel the show") {
-        SendText("steel the show" . A_EndChar)
-        return
-    }
-    SendText("steal the show" . A_EndChar)
-    AC_Reg("steel the show", "steal the show")
 }
 :C:steriods::{
     if AC_IsDisabled("steriods") {
@@ -68691,70 +57747,6 @@
     SendText("straight" . A_EndChar)
     AC_Reg("stragiht", "straight")
 }
-:C:straight away::{
-    if AC_IsDisabled("straight away") {
-        SendText("straight away" . A_EndChar)
-        return
-    }
-    SendText("straightaway" . A_EndChar)
-    AC_Reg("straight away", "straightaway")
-}
-:C:straight jacket::{
-    if AC_IsDisabled("straight jacket") {
-        SendText("straight jacket" . A_EndChar)
-        return
-    }
-    SendText("straitjacket" . A_EndChar)
-    AC_Reg("straight jacket", "straitjacket")
-}
-:C:straight laced::{
-    if AC_IsDisabled("straight laced") {
-        SendText("straight laced" . A_EndChar)
-        return
-    }
-    SendText("straitlaced" . A_EndChar)
-    AC_Reg("straight laced", "straitlaced")
-}
-:C:Straight of::{
-    if AC_IsDisabled("Straight of") {
-        SendText("Straight of" . A_EndChar)
-        return
-    }
-    SendText("Strait of" . A_EndChar)
-    AC_Reg("Straight of", "Strait of")
-}
-:C:strait away::{
-    if AC_IsDisabled("strait away") {
-        SendText("strait away" . A_EndChar)
-        return
-    }
-    SendText("straight away" . A_EndChar)
-    AC_Reg("strait away", "straight away")
-}
-:C:strait jacket::{
-    if AC_IsDisabled("strait jacket") {
-        SendText("strait jacket" . A_EndChar)
-        return
-    }
-    SendText("straitjacket" . A_EndChar)
-    AC_Reg("strait jacket", "straitjacket")
-}
-:C:strait lace::{
-    if AC_IsDisabled("strait lace") {
-        SendText("strait lace" . A_EndChar)
-        return
-    }
-    SendText("straitlace" . A_EndChar)
-    AC_Reg("strait lace", "straitlace")
-}
-:C:strait to::{
-    if AC_IsDisabled("strait to") {
-        SendText("strait to" . A_EndChar)
-        return
-    }
-    SendText("straight to" . A_EndChar)
-    AC_Reg("strait to", "straight to")
-}
 :C:strat::{
     if AC_IsDisabled("strat") {
         SendText("strat" . A_EndChar)
@@ -68899,14 +57891,6 @@
     SendText("strictest" . A_EndChar)
     AC_Reg("strictist", "strictest")
 }
-:C:strike out::{
-    if AC_IsDisabled("strike out") {
-        SendText("strike out" . A_EndChar)
-        return
-    }
-    SendText("strikeout" . A_EndChar)
-    AC_Reg("strike out", "strikeout")
-}
 :C:strikely::{
     if AC_IsDisabled("strikely") {
         SendText("strikely" . A_EndChar)
@@ -68922,14 +57906,6 @@
     }
     SendText("strand" . A_EndChar)
     AC_Reg("strnad", "strand")
-}
-:C:stronger then::{
-    if AC_IsDisabled("stronger then") {
-        SendText("stronger then" . A_EndChar)
-        return
-    }
-    SendText("stronger than" . A_EndChar)
-    AC_Reg("stronger then", "stronger than")
 }
 :C:stroy::{
     if AC_IsDisabled("stroy") {
@@ -69066,14 +58042,6 @@
     }
     SendText("study" . A_EndChar)
     AC_Reg("stude", "study")
-}
-:C:student's that::{
-    if AC_IsDisabled("student's that") {
-        SendText("student's that" . A_EndChar)
-        return
-    }
-    SendText("students that" . A_EndChar)
-    AC_Reg("student's that", "students that")
 }
 :C:studett::{
     if AC_IsDisabled("studett") {
@@ -69803,14 +58771,6 @@
     SendText("suse" . A_EndChar)
     AC_Reg("suise", "suse")
 }
-:C:suite yourself::{
-    if AC_IsDisabled("suite yourself") {
-        SendText("suite yourself" . A_EndChar)
-        return
-    }
-    SendText("suit yourself" . A_EndChar)
-    AC_Reg("suite yourself", "suit yourself")
-}
 :C:sumar::{
     if AC_IsDisabled("sumar") {
         SendText("sumar" . A_EndChar)
@@ -70002,14 +58962,6 @@
     }
     SendText("supposed" . A_EndChar)
     AC_Reg("suppoed", "supposed")
-}
-:C:suppose to::{
-    if AC_IsDisabled("suppose to") {
-        SendText("suppose to" . A_EndChar)
-        return
-    }
-    SendText("supposed to" . A_EndChar)
-    AC_Reg("suppose to", "supposed to")
 }
 :C:supposingly::{
     if AC_IsDisabled("supposingly") {
@@ -70771,22 +59723,6 @@
     SendText("style" . A_EndChar)
     AC_Reg("sytle", "style")
 }
-:C:t eh::{
-    if AC_IsDisabled("t eh") {
-        SendText("t eh" . A_EndChar)
-        return
-    }
-    SendText("the" . A_EndChar)
-    AC_Reg("t eh", "the")
-}
-:C:t he::{
-    if AC_IsDisabled("t he") {
-        SendText("t he" . A_EndChar)
-        return
-    }
-    SendText("the" . A_EndChar)
-    AC_Reg("t he", "the")
-}
 :C:tabacco::{
     if AC_IsDisabled("tabacco") {
         SendText("tabacco" . A_EndChar)
@@ -70890,62 +59826,6 @@
     }
     SendText("traito" . A_EndChar)
     AC_Reg("taito", "traito")
-}
-:C:take affect::{
-    if AC_IsDisabled("take affect") {
-        SendText("take affect" . A_EndChar)
-        return
-    }
-    SendText("take effect" . A_EndChar)
-    AC_Reg("take affect", "take effect")
-}
-:C:take it's course::{
-    if AC_IsDisabled("take it's course") {
-        SendText("take it's course" . A_EndChar)
-        return
-    }
-    SendText("take its course" . A_EndChar)
-    AC_Reg("take it's course", "take its course")
-}
-:C:take it's toll::{
-    if AC_IsDisabled("take it's toll") {
-        SendText("take it's toll" . A_EndChar)
-        return
-    }
-    SendText("take its toll" . A_EndChar)
-    AC_Reg("take it's toll", "take its toll")
-}
-:C:take over the reigns::{
-    if AC_IsDisabled("take over the reigns") {
-        SendText("take over the reigns" . A_EndChar)
-        return
-    }
-    SendText("take over the reins" . A_EndChar)
-    AC_Reg("take over the reigns", "take over the reins")
-}
-:C:take the reigns::{
-    if AC_IsDisabled("take the reigns") {
-        SendText("take the reigns" . A_EndChar)
-        return
-    }
-    SendText("take the reins" . A_EndChar)
-    AC_Reg("take the reigns", "take the reins")
-}
-:C:taken the reigns::{
-    if AC_IsDisabled("taken the reigns") {
-        SendText("taken the reigns" . A_EndChar)
-        return
-    }
-    SendText("taken the reins" . A_EndChar)
-    AC_Reg("taken the reigns", "taken the reins")
-}
-:C:taking the reigns::{
-    if AC_IsDisabled("taking the reigns") {
-        SendText("taking the reigns" . A_EndChar)
-        return
-    }
-    SendText("taking the reins" . A_EndChar)
-    AC_Reg("taking the reigns", "taking the reins")
 }
 :C:talbe::{
     if AC_IsDisabled("talbe") {
@@ -71123,14 +60003,6 @@
     SendText("taught" . A_EndChar)
     AC_Reg("teached", "taught")
 }
-:C:teaching principal::{
-    if AC_IsDisabled("teaching principal") {
-        SendText("teaching principal" . A_EndChar)
-        return
-    }
-    SendText("teaching principle" . A_EndChar)
-    AC_Reg("teaching principal", "teaching principle")
-}
 :C:teahh::{
     if AC_IsDisabled("teahh") {
         SendText("teahh" . A_EndChar)
@@ -71290,14 +60162,6 @@
     }
     SendText("television" . A_EndChar)
     AC_Reg("televsion", "television")
-}
-:C:tellt he::{
-    if AC_IsDisabled("tellt he") {
-        SendText("tellt he" . A_EndChar)
-        return
-    }
-    SendText("tell the" . A_EndChar)
-    AC_Reg("tellt he", "tell the")
 }
 :C:telpho::{
     if AC_IsDisabled("telpho") {
@@ -71675,14 +60539,6 @@
     SendText("testimony" . A_EndChar)
     AC_Reg("testomony", "testimony")
 }
-:C:tete-a-tete::{
-    if AC_IsDisabled("tete-a-tete") {
-        SendText("tete-a-tete" . A_EndChar)
-        return
-    }
-    SendText("tête-à-tête" . A_EndChar)
-    AC_Reg("tete-a-tete", "tête-à-tête")
-}
 :C:tfull::{
     if AC_IsDisabled("tfull") {
         SendText("tfull" . A_EndChar)
@@ -71771,22 +60627,6 @@
     SendText("them" . A_EndChar)
     AC_Reg("tham", "them")
 }
-:C:thanks@!::{
-    if AC_IsDisabled("thanks@!") {
-        SendText("thanks@!" . A_EndChar)
-        return
-    }
-    SendText("thanks!" . A_EndChar)
-    AC_Reg("thanks@!", "thanks!")
-}
-:C:thanks@::{
-    if AC_IsDisabled("thanks@") {
-        SendText("thanks@" . A_EndChar)
-        return
-    }
-    SendText("thanks!" . A_EndChar)
-    AC_Reg("thanks@", "thanks!")
-}
 :C:thansk::{
     if AC_IsDisabled("thansk") {
         SendText("thansk" . A_EndChar)
@@ -71819,14 +60659,6 @@
     SendText("that" . A_EndChar)
     AC_Reg("thast", "that")
 }
-:C:that him and::{
-    if AC_IsDisabled("that him and") {
-        SendText("that him and" . A_EndChar)
-        return
-    }
-    SendText("that he and" . A_EndChar)
-    AC_Reg("that him and", "that he and")
-}
 :C:thatks::{
     if AC_IsDisabled("thatks") {
         SendText("thatks" . A_EndChar)
@@ -71851,14 +60683,6 @@
     SendText("that's" . A_EndChar)
     AC_Reg("thats", "that's")
 }
-:C:thatt he::{
-    if AC_IsDisabled("thatt he") {
-        SendText("thatt he" . A_EndChar)
-        return
-    }
-    SendText("that the" . A_EndChar)
-    AC_Reg("thatt he", "that the")
-}
 :C:thay::{
     if AC_IsDisabled("thay") {
         SendText("thay" . A_EndChar)
@@ -71866,174 +60690,6 @@
     }
     SendText("they" . A_EndChar)
     AC_Reg("thay", "they")
-}
-:C:the absent of::{
-    if AC_IsDisabled("the absent of") {
-        SendText("the absent of" . A_EndChar)
-        return
-    }
-    SendText("the absence of" . A_EndChar)
-    AC_Reg("the absent of", "the absence of")
-}
-:C:the advise of::{
-    if AC_IsDisabled("the advise of") {
-        SendText("the advise of" . A_EndChar)
-        return
-    }
-    SendText("the advice of" . A_EndChar)
-    AC_Reg("the advise of", "the advice of")
-}
-:C:the affect on::{
-    if AC_IsDisabled("the affect on") {
-        SendText("the affect on" . A_EndChar)
-        return
-    }
-    SendText("the effect on" . A_EndChar)
-    AC_Reg("the affect on", "the effect on")
-}
-:C:the affects of::{
-    if AC_IsDisabled("the affects of") {
-        SendText("the affects of" . A_EndChar)
-        return
-    }
-    SendText("the effects of" . A_EndChar)
-    AC_Reg("the affects of", "the effects of")
-}
-:C:the both the::{
-    if AC_IsDisabled("the both the") {
-        SendText("the both the" . A_EndChar)
-        return
-    }
-    SendText("both the" . A_EndChar)
-    AC_Reg("the both the", "both the")
-}
-:C:the break down::{
-    if AC_IsDisabled("the break down") {
-        SendText("the break down" . A_EndChar)
-        return
-    }
-    SendText("the breakdown" . A_EndChar)
-    AC_Reg("the break down", "the breakdown")
-}
-:C:the break up::{
-    if AC_IsDisabled("the break up") {
-        SendText("the break up" . A_EndChar)
-        return
-    }
-    SendText("the breakup" . A_EndChar)
-    AC_Reg("the break up", "the breakup")
-}
-:C:the build up::{
-    if AC_IsDisabled("the build up") {
-        SendText("the build up" . A_EndChar)
-        return
-    }
-    SendText("the buildup" . A_EndChar)
-    AC_Reg("the build up", "the buildup")
-}
-:C:the clamp down::{
-    if AC_IsDisabled("the clamp down") {
-        SendText("the clamp down" . A_EndChar)
-        return
-    }
-    SendText("the clampdown" . A_EndChar)
-    AC_Reg("the clamp down", "the clampdown")
-}
-:C:the crack down::{
-    if AC_IsDisabled("the crack down") {
-        SendText("the crack down" . A_EndChar)
-        return
-    }
-    SendText("the crackdown" . A_EndChar)
-    AC_Reg("the crack down", "the crackdown")
-}
-:C:the dominate::{
-    if AC_IsDisabled("the dominate") {
-        SendText("the dominate" . A_EndChar)
-        return
-    }
-    SendText("the dominant" . A_EndChar)
-    AC_Reg("the dominate", "the dominant")
-}
-:C:the extend of::{
-    if AC_IsDisabled("the extend of") {
-        SendText("the extend of" . A_EndChar)
-        return
-    }
-    SendText("the extent of" . A_EndChar)
-    AC_Reg("the extend of", "the extent of")
-}
-:C:the follow up::{
-    if AC_IsDisabled("the follow up") {
-        SendText("the follow up" . A_EndChar)
-        return
-    }
-    SendText("the follow-up" . A_EndChar)
-    AC_Reg("the follow up", "the follow-up")
-}
-:C:the injures::{
-    if AC_IsDisabled("the injures") {
-        SendText("the injures" . A_EndChar)
-        return
-    }
-    SendText("the injuries" . A_EndChar)
-    AC_Reg("the injures", "the injuries")
-}
-:C:the knead for::{
-    if AC_IsDisabled("the knead for") {
-        SendText("the knead for" . A_EndChar)
-        return
-    }
-    SendText("the need for" . A_EndChar)
-    AC_Reg("the knead for", "the need for")
-}
-:C:the lead up::{
-    if AC_IsDisabled("the lead up") {
-        SendText("the lead up" . A_EndChar)
-        return
-    }
-    SendText("the lead-up" . A_EndChar)
-    AC_Reg("the lead up", "the lead-up")
-}
-:C:the phenomena is::{
-    if AC_IsDisabled("the phenomena is") {
-        SendText("the phenomena is" . A_EndChar)
-        return
-    }
-    SendText("the phenomenon is" . A_EndChar)
-    AC_Reg("the phenomena is", "the phenomenon is")
-}
-:C:the rational behind::{
-    if AC_IsDisabled("the rational behind") {
-        SendText("the rational behind" . A_EndChar)
-        return
-    }
-    SendText("the rationale behind" . A_EndChar)
-    AC_Reg("the rational behind", "the rationale behind")
-}
-:C:the rational for::{
-    if AC_IsDisabled("the rational for") {
-        SendText("the rational for" . A_EndChar)
-        return
-    }
-    SendText("the rationale for" . A_EndChar)
-    AC_Reg("the rational for", "the rationale for")
-}
-:C:the resent::{
-    if AC_IsDisabled("the resent") {
-        SendText("the resent" . A_EndChar)
-        return
-    }
-    SendText("the recent" . A_EndChar)
-    AC_Reg("the resent", "the recent")
-}
-:C:the set up::{
-    if AC_IsDisabled("the set up") {
-        SendText("the set up" . A_EndChar)
-        return
-    }
-    SendText("the setup" . A_EndChar)
-    AC_Reg("the set up", "the setup")
 }
 :C:theather::{
     if AC_IsDisabled("theather") {
@@ -72091,342 +60747,6 @@
     SendText("thief" . A_EndChar)
     AC_Reg("theif", "thief")
 }
-:C:their after::{
-    if AC_IsDisabled("their after") {
-        SendText("their after" . A_EndChar)
-        return
-    }
-    SendText("thereafter" . A_EndChar)
-    AC_Reg("their after", "thereafter")
-}
-:C:their all set::{
-    if AC_IsDisabled("their all set") {
-        SendText("their all set" . A_EndChar)
-        return
-    }
-    SendText("they're all set" . A_EndChar)
-    AC_Reg("their all set", "they're all set")
-}
-:C:their almost done::{
-    if AC_IsDisabled("their almost done") {
-        SendText("their almost done" . A_EndChar)
-        return
-    }
-    SendText("they're almost done" . A_EndChar)
-    AC_Reg("their almost done", "they're almost done")
-}
-:C:their are::{
-    if AC_IsDisabled("their are") {
-        SendText("their are" . A_EndChar)
-        return
-    }
-    SendText("there are" . A_EndChar)
-    AC_Reg("their are", "there are")
-}
-:C:their coming soon::{
-    if AC_IsDisabled("their coming soon") {
-        SendText("their coming soon" . A_EndChar)
-        return
-    }
-    SendText("they're coming soon" . A_EndChar)
-    AC_Reg("their coming soon", "they're coming soon")
-}
-:C:their coming::{
-    if AC_IsDisabled("their coming") {
-        SendText("their coming" . A_EndChar)
-        return
-    }
-    SendText("they're coming" . A_EndChar)
-    AC_Reg("their coming", "they're coming")
-}
-:C:their connected::{
-    if AC_IsDisabled("their connected") {
-        SendText("their connected" . A_EndChar)
-        return
-    }
-    SendText("they're connected" . A_EndChar)
-    AC_Reg("their connected", "they're connected")
-}
-:C:their doing fine::{
-    if AC_IsDisabled("their doing fine") {
-        SendText("their doing fine" . A_EndChar)
-        return
-    }
-    SendText("they're doing fine" . A_EndChar)
-    AC_Reg("their doing fine", "they're doing fine")
-}
-:C:their done::{
-    if AC_IsDisabled("their done") {
-        SendText("their done" . A_EndChar)
-        return
-    }
-    SendText("they're done" . A_EndChar)
-    AC_Reg("their done", "they're done")
-}
-:C:their downloading::{
-    if AC_IsDisabled("their downloading") {
-        SendText("their downloading" . A_EndChar)
-        return
-    }
-    SendText("they're downloading" . A_EndChar)
-    AC_Reg("their downloading", "they're downloading")
-}
-:C:their finished now::{
-    if AC_IsDisabled("their finished now") {
-        SendText("their finished now" . A_EndChar)
-        return
-    }
-    SendText("they're finished now" . A_EndChar)
-    AC_Reg("their finished now", "they're finished now")
-}
-:C:their getting ready::{
-    if AC_IsDisabled("their getting ready") {
-        SendText("their getting ready" . A_EndChar)
-        return
-    }
-    SendText("they're getting ready" . A_EndChar)
-    AC_Reg("their getting ready", "they're getting ready")
-}
-:C:their going to::{
-    if AC_IsDisabled("their going to") {
-        SendText("their going to" . A_EndChar)
-        return
-    }
-    SendText("they're going to" . A_EndChar)
-    AC_Reg("their going to", "they're going to")
-}
-:C:their gone::{
-    if AC_IsDisabled("their gone") {
-        SendText("their gone" . A_EndChar)
-        return
-    }
-    SendText("they're gone" . A_EndChar)
-    AC_Reg("their gone", "they're gone")
-}
-:C:their had::{
-    if AC_IsDisabled("their had") {
-        SendText("their had" . A_EndChar)
-        return
-    }
-    SendText("there had" . A_EndChar)
-    AC_Reg("their had", "there had")
-}
-:C:their has::{
-    if AC_IsDisabled("their has") {
-        SendText("their has" . A_EndChar)
-        return
-    }
-    SendText("there has" . A_EndChar)
-    AC_Reg("their has", "there has")
-}
-:C:their have::{
-    if AC_IsDisabled("their have") {
-        SendText("their have" . A_EndChar)
-        return
-    }
-    SendText("there have" . A_EndChar)
-    AC_Reg("their have", "there have")
-}
-:C:their improving::{
-    if AC_IsDisabled("their improving") {
-        SendText("their improving" . A_EndChar)
-        return
-    }
-    SendText("they're improving" . A_EndChar)
-    AC_Reg("their improving", "they're improving")
-}
-:C:their in trouble::{
-    if AC_IsDisabled("their in trouble") {
-        SendText("their in trouble" . A_EndChar)
-        return
-    }
-    SendText("they're in trouble" . A_EndChar)
-    AC_Reg("their in trouble", "they're in trouble")
-}
-:C:their intervening::{
-    if AC_IsDisabled("their intervening") {
-        SendText("their intervening" . A_EndChar)
-        return
-    }
-    SendText("they're intervening" . A_EndChar)
-    AC_Reg("their intervening", "they're intervening")
-}
-:C:their is::{
-    if AC_IsDisabled("their is") {
-        SendText("their is" . A_EndChar)
-        return
-    }
-    SendText("there is" . A_EndChar)
-    AC_Reg("their is", "there is")
-}
-:C:their it is::{
-    if AC_IsDisabled("their it is") {
-        SendText("their it is" . A_EndChar)
-        return
-    }
-    SendText("there it is" . A_EndChar)
-    AC_Reg("their it is", "there it is")
-}
-:C:their late::{
-    if AC_IsDisabled("their late") {
-        SendText("their late" . A_EndChar)
-        return
-    }
-    SendText("they're late" . A_EndChar)
-    AC_Reg("their late", "they're late")
-}
-:C:their learning::{
-    if AC_IsDisabled("their learning") {
-        SendText("their learning" . A_EndChar)
-        return
-    }
-    SendText("they're learning" . A_EndChar)
-    AC_Reg("their learning", "they're learning")
-}
-:C:their leaving now::{
-    if AC_IsDisabled("their leaving now") {
-        SendText("their leaving now" . A_EndChar)
-        return
-    }
-    SendText("they're leaving now" . A_EndChar)
-    AC_Reg("their leaving now", "they're leaving now")
-}
-:C:their may be::{
-    if AC_IsDisabled("their may be") {
-        SendText("their may be" . A_EndChar)
-        return
-    }
-    SendText("there may be" . A_EndChar)
-    AC_Reg("their may be", "there may be")
-}
-:C:their moving in::{
-    if AC_IsDisabled("their moving in") {
-        SendText("their moving in" . A_EndChar)
-        return
-    }
-    SendText("they're moving in" . A_EndChar)
-    AC_Reg("their moving in", "they're moving in")
-}
-:C:their moving out::{
-    if AC_IsDisabled("their moving out") {
-        SendText("their moving out" . A_EndChar)
-        return
-    }
-    SendText("they're moving out" . A_EndChar)
-    AC_Reg("their moving out", "they're moving out")
-}
-:C:their not ready::{
-    if AC_IsDisabled("their not ready") {
-        SendText("their not ready" . A_EndChar)
-        return
-    }
-    SendText("they're not ready" . A_EndChar)
-    AC_Reg("their not ready", "they're not ready")
-}
-:C:their observing::{
-    if AC_IsDisabled("their observing") {
-        SendText("their observing" . A_EndChar)
-        return
-    }
-    SendText("they're observing" . A_EndChar)
-    AC_Reg("their observing", "they're observing")
-}
-:C:their out there::{
-    if AC_IsDisabled("their out there") {
-        SendText("their out there" . A_EndChar)
-        return
-    }
-    SendText("they're out there" . A_EndChar)
-    AC_Reg("their out there", "they're out there")
-}
-:C:their ready::{
-    if AC_IsDisabled("their ready") {
-        SendText("their ready" . A_EndChar)
-        return
-    }
-    SendText("they're ready" . A_EndChar)
-    AC_Reg("their ready", "they're ready")
-}
-:C:their staying home::{
-    if AC_IsDisabled("their staying home") {
-        SendText("their staying home" . A_EndChar)
-        return
-    }
-    SendText("they're staying home" . A_EndChar)
-    AC_Reg("their staying home", "they're staying home")
-}
-:C:their staying put::{
-    if AC_IsDisabled("their staying put") {
-        SendText("their staying put" . A_EndChar)
-        return
-    }
-    SendText("they're staying put" . A_EndChar)
-    AC_Reg("their staying put", "they're staying put")
-}
-:C:their studying::{
-    if AC_IsDisabled("their studying") {
-        SendText("their studying" . A_EndChar)
-        return
-    }
-    SendText("they're studying" . A_EndChar)
-    AC_Reg("their studying", "they're studying")
-}
-:C:their the best::{
-    if AC_IsDisabled("their the best") {
-        SendText("their the best" . A_EndChar)
-        return
-    }
-    SendText("they're the best" . A_EndChar)
-    AC_Reg("their the best", "they're the best")
-}
-:C:their up next::{
-    if AC_IsDisabled("their up next") {
-        SendText("their up next" . A_EndChar)
-        return
-    }
-    SendText("they're up next" . A_EndChar)
-    AC_Reg("their up next", "they're up next")
-}
-:C:their uploading::{
-    if AC_IsDisabled("their uploading") {
-        SendText("their uploading" . A_EndChar)
-        return
-    }
-    SendText("they're uploading" . A_EndChar)
-    AC_Reg("their uploading", "they're uploading")
-}
-:C:their was::{
-    if AC_IsDisabled("their was") {
-        SendText("their was" . A_EndChar)
-        return
-    }
-    SendText("there was" . A_EndChar)
-    AC_Reg("their was", "there was")
-}
-:C:their were::{
-    if AC_IsDisabled("their were") {
-        SendText("their were" . A_EndChar)
-        return
-    }
-    SendText("there were" . A_EndChar)
-    AC_Reg("their were", "there were")
-}
-:C:their working late::{
-    if AC_IsDisabled("their working late") {
-        SendText("their working late" . A_EndChar)
-        return
-    }
-    SendText("they're working late" . A_EndChar)
-    AC_Reg("their working late", "they're working late")
-}
-:C:their would::{
-    if AC_IsDisabled("their would") {
-        SendText("their would" . A_EndChar)
-        return
-    }
-    SendText("there would" . A_EndChar)
-    AC_Reg("their would", "there would")
-}
 :C:theives::{
     if AC_IsDisabled("theives") {
         SendText("theives" . A_EndChar)
@@ -72434,14 +60754,6 @@
     }
     SendText("thieves" . A_EndChar)
     AC_Reg("theives", "thieves")
-}
-:C:them selves::{
-    if AC_IsDisabled("them selves") {
-        SendText("them selves" . A_EndChar)
-        return
-    }
-    SendText("themselves" . A_EndChar)
-    AC_Reg("them selves", "themselves")
 }
 :C:themselfs::{
     if AC_IsDisabled("themselfs") {
@@ -72458,14 +60770,6 @@
     }
     SendText("themselves" . A_EndChar)
     AC_Reg("themslves", "themselves")
-}
-:C:then exact revenge::{
-    if AC_IsDisabled("then exact revenge") {
-        SendText("then exact revenge" . A_EndChar)
-        return
-    }
-    SendText("then extract revenge" . A_EndChar)
-    AC_Reg("then exact revenge", "then extract revenge")
 }
 :C:thenew::{
     if AC_IsDisabled("thenew") {
@@ -72507,622 +60811,6 @@
     SendText("thereby" . A_EndChar)
     AC_Reg("therby", "thereby")
 }
-:C:there accommodation::{
-    if AC_IsDisabled("there accommodation") {
-        SendText("there accommodation" . A_EndChar)
-        return
-    }
-    SendText("their accommodation" . A_EndChar)
-    AC_Reg("there accommodation", "their accommodation")
-}
-:C:there admitted::{
-    if AC_IsDisabled("there admitted") {
-        SendText("there admitted" . A_EndChar)
-        return
-    }
-    SendText("they're admitted" . A_EndChar)
-    AC_Reg("there admitted", "they're admitted")
-}
-:C:there after::{
-    if AC_IsDisabled("there after") {
-        SendText("there after" . A_EndChar)
-        return
-    }
-    SendText("thereafter" . A_EndChar)
-    AC_Reg("there after", "thereafter")
-}
-:C:there aide::{
-    if AC_IsDisabled("there aide") {
-        SendText("there aide" . A_EndChar)
-        return
-    }
-    SendText("their aide" . A_EndChar)
-    AC_Reg("there aide", "their aide")
-}
-:C:there all set::{
-    if AC_IsDisabled("there all set") {
-        SendText("there all set" . A_EndChar)
-        return
-    }
-    SendText("they're all set" . A_EndChar)
-    AC_Reg("there all set", "they're all set")
-}
-:C:there almost done::{
-    if AC_IsDisabled("there almost done") {
-        SendText("there almost done" . A_EndChar)
-        return
-    }
-    SendText("they're almost done" . A_EndChar)
-    AC_Reg("there almost done", "they're almost done")
-}
-:C:there assessment::{
-    if AC_IsDisabled("there assessment") {
-        SendText("there assessment" . A_EndChar)
-        return
-    }
-    SendText("their assessment" . A_EndChar)
-    AC_Reg("there assessment", "their assessment")
-}
-:C:there attendance::{
-    if AC_IsDisabled("there attendance") {
-        SendText("there attendance" . A_EndChar)
-        return
-    }
-    SendText("their attendance" . A_EndChar)
-    AC_Reg("there attendance", "their attendance")
-}
-:C:there behavior::{
-    if AC_IsDisabled("there behavior") {
-        SendText("there behavior" . A_EndChar)
-        return
-    }
-    SendText("their behavior" . A_EndChar)
-    AC_Reg("there behavior", "their behavior")
-}
-:C:there best::{
-    if AC_IsDisabled("there best") {
-        SendText("there best" . A_EndChar)
-        return
-    }
-    SendText("their best" . A_EndChar)
-    AC_Reg("there best", "their best")
-}
-:C:there classification::{
-    if AC_IsDisabled("there classification") {
-        SendText("there classification" . A_EndChar)
-        return
-    }
-    SendText("their classification" . A_EndChar)
-    AC_Reg("there classification", "their classification")
-}
-:C:there coming soon::{
-    if AC_IsDisabled("there coming soon") {
-        SendText("there coming soon" . A_EndChar)
-        return
-    }
-    SendText("they're coming soon" . A_EndChar)
-    AC_Reg("there coming soon", "they're coming soon")
-}
-:C:there coming::{
-    if AC_IsDisabled("there coming") {
-        SendText("there coming" . A_EndChar)
-        return
-    }
-    SendText("they're coming" . A_EndChar)
-    AC_Reg("there coming", "they're coming")
-}
-:C:there connected::{
-    if AC_IsDisabled("there connected") {
-        SendText("there connected" . A_EndChar)
-        return
-    }
-    SendText("they're connected" . A_EndChar)
-    AC_Reg("there connected", "they're connected")
-}
-:C:there diagnos::{
-    if AC_IsDisabled("there diagnos") {
-        SendText("there diagnos" . A_EndChar)
-        return
-    }
-    SendText("their diagnos" . A_EndChar)
-    AC_Reg("there diagnos", "their diagnos")
-}
-:C:there doing fine::{
-    if AC_IsDisabled("there doing fine") {
-        SendText("there doing fine" . A_EndChar)
-        return
-    }
-    SendText("they're doing fine" . A_EndChar)
-    AC_Reg("there doing fine", "they're doing fine")
-}
-:C:there done::{
-    if AC_IsDisabled("there done") {
-        SendText("there done" . A_EndChar)
-        return
-    }
-    SendText("they're done" . A_EndChar)
-    AC_Reg("there done", "they're done")
-}
-:C:there downloading::{
-    if AC_IsDisabled("there downloading") {
-        SendText("there downloading" . A_EndChar)
-        return
-    }
-    SendText("they're downloading" . A_EndChar)
-    AC_Reg("there downloading", "they're downloading")
-}
-:C:there eligibility::{
-    if AC_IsDisabled("there eligibility") {
-        SendText("there eligibility" . A_EndChar)
-        return
-    }
-    SendText("their eligibility" . A_EndChar)
-    AC_Reg("there eligibility", "their eligibility")
-}
-:C:there eligible::{
-    if AC_IsDisabled("there eligible") {
-        SendText("there eligible" . A_EndChar)
-        return
-    }
-    SendText("they're eligible" . A_EndChar)
-    AC_Reg("there eligible", "they're eligible")
-}
-:C:there enrolled::{
-    if AC_IsDisabled("there enrolled") {
-        SendText("there enrolled" . A_EndChar)
-        return
-    }
-    SendText("they're enrolled" . A_EndChar)
-    AC_Reg("there enrolled", "they're enrolled")
-}
-:C:there final::{
-    if AC_IsDisabled("there final") {
-        SendText("there final" . A_EndChar)
-        return
-    }
-    SendText("their final" . A_EndChar)
-    AC_Reg("there final", "their final")
-}
-:C:there finished::{
-    if AC_IsDisabled("there finished") {
-        SendText("there finished" . A_EndChar)
-        return
-    }
-    SendText("they're finished" . A_EndChar)
-    AC_Reg("there finished", "they're finished")
-}
-:C:there first::{
-    if AC_IsDisabled("there first") {
-        SendText("there first" . A_EndChar)
-        return
-    }
-    SendText("their first" . A_EndChar)
-    AC_Reg("there first", "their first")
-}
-:C:there getting ready::{
-    if AC_IsDisabled("there getting ready") {
-        SendText("there getting ready" . A_EndChar)
-        return
-    }
-    SendText("they're getting ready" . A_EndChar)
-    AC_Reg("there getting ready", "they're getting ready")
-}
-:C:there goal::{
-    if AC_IsDisabled("there goal") {
-        SendText("there goal" . A_EndChar)
-        return
-    }
-    SendText("their goal" . A_EndChar)
-    AC_Reg("there goal", "their goal")
-}
-:C:there going away::{
-    if AC_IsDisabled("there going away") {
-        SendText("there going away" . A_EndChar)
-        return
-    }
-    SendText("they're going away" . A_EndChar)
-    AC_Reg("there going away", "they're going away")
-}
-:C:there going home::{
-    if AC_IsDisabled("there going home") {
-        SendText("there going home" . A_EndChar)
-        return
-    }
-    SendText("they're going home" . A_EndChar)
-    AC_Reg("there going home", "they're going home")
-}
-:C:there going to::{
-    if AC_IsDisabled("there going to") {
-        SendText("there going to" . A_EndChar)
-        return
-    }
-    SendText("they're going to" . A_EndChar)
-    AC_Reg("there going to", "they're going to")
-}
-:C:there gone::{
-    if AC_IsDisabled("there gone") {
-        SendText("there gone" . A_EndChar)
-        return
-    }
-    SendText("they're gone" . A_EndChar)
-    AC_Reg("there gone", "they're gone")
-}
-:C:there grades::{
-    if AC_IsDisabled("there grades") {
-        SendText("there grades" . A_EndChar)
-        return
-    }
-    SendText("their grades" . A_EndChar)
-    AC_Reg("there grades", "their grades")
-}
-:C:there habit::{
-    if AC_IsDisabled("there habit") {
-        SendText("there habit" . A_EndChar)
-        return
-    }
-    SendText("their habit" . A_EndChar)
-    AC_Reg("there habit", "their habit")
-}
-:C:there homework::{
-    if AC_IsDisabled("there homework") {
-        SendText("there homework" . A_EndChar)
-        return
-    }
-    SendText("their homework" . A_EndChar)
-    AC_Reg("there homework", "their homework")
-}
-:C:there hosting::{
-    if AC_IsDisabled("there hosting") {
-        SendText("there hosting" . A_EndChar)
-        return
-    }
-    SendText("they're hosting" . A_EndChar)
-    AC_Reg("there hosting", "they're hosting")
-}
-:C:there late::{
-    if AC_IsDisabled("there late") {
-        SendText("there late" . A_EndChar)
-        return
-    }
-    SendText("they're late" . A_EndChar)
-    AC_Reg("there late", "they're late")
-}
-:C:there learning::{
-    if AC_IsDisabled("there learning") {
-        SendText("there learning" . A_EndChar)
-        return
-    }
-    SendText("they're learning" . A_EndChar)
-    AC_Reg("there learning", "they're learning")
-}
-:C:there leaving::{
-    if AC_IsDisabled("there leaving") {
-        SendText("there leaving" . A_EndChar)
-        return
-    }
-    SendText("they're leaving" . A_EndChar)
-    AC_Reg("there leaving", "they're leaving")
-}
-:C:there modification::{
-    if AC_IsDisabled("there modification") {
-        SendText("there modification" . A_EndChar)
-        return
-    }
-    SendText("their modification" . A_EndChar)
-    AC_Reg("there modification", "their modification")
-}
-:C:there motivation::{
-    if AC_IsDisabled("there motivation") {
-        SendText("there motivation" . A_EndChar)
-        return
-    }
-    SendText("their motivation" . A_EndChar)
-    AC_Reg("there motivation", "their motivation")
-}
-:C:there moving in::{
-    if AC_IsDisabled("there moving in") {
-        SendText("there moving in" . A_EndChar)
-        return
-    }
-    SendText("they're moving in" . A_EndChar)
-    AC_Reg("there moving in", "they're moving in")
-}
-:C:there moving out::{
-    if AC_IsDisabled("there moving out") {
-        SendText("there moving out" . A_EndChar)
-        return
-    }
-    SendText("they're moving out" . A_EndChar)
-    AC_Reg("there moving out", "they're moving out")
-}
-:C:there new::{
-    if AC_IsDisabled("there new") {
-        SendText("there new" . A_EndChar)
-        return
-    }
-    SendText("their new" . A_EndChar)
-    AC_Reg("there new", "their new")
-}
-:C:there not ready::{
-    if AC_IsDisabled("there not ready") {
-        SendText("there not ready" . A_EndChar)
-        return
-    }
-    SendText("they're not ready" . A_EndChar)
-    AC_Reg("there not ready", "they're not ready")
-}
-:C:there observing::{
-    if AC_IsDisabled("there observing") {
-        SendText("there observing" . A_EndChar)
-        return
-    }
-    SendText("they're observing" . A_EndChar)
-    AC_Reg("there observing", "they're observing")
-}
-:C:there of::{
-    if AC_IsDisabled("there of") {
-        SendText("there of" . A_EndChar)
-        return
-    }
-    SendText("thereof" . A_EndChar)
-    AC_Reg("there of", "thereof")
-}
-:C:there on time::{
-    if AC_IsDisabled("there on time") {
-        SendText("there on time" . A_EndChar)
-        return
-    }
-    SendText("they're on time" . A_EndChar)
-    AC_Reg("there on time", "they're on time")
-}
-:C:there online::{
-    if AC_IsDisabled("there online") {
-        SendText("there online" . A_EndChar)
-        return
-    }
-    SendText("they're online" . A_EndChar)
-    AC_Reg("there online", "they're online")
-}
-:C:there out there::{
-    if AC_IsDisabled("there out there") {
-        SendText("there out there" . A_EndChar)
-        return
-    }
-    SendText("they're out there" . A_EndChar)
-    AC_Reg("there out there", "they're out there")
-}
-:C:there own::{
-    if AC_IsDisabled("there own") {
-        SendText("there own" . A_EndChar)
-        return
-    }
-    SendText("their own" . A_EndChar)
-    AC_Reg("there own", "their own")
-}
-:C:there passing::{
-    if AC_IsDisabled("there passing") {
-        SendText("there passing" . A_EndChar)
-        return
-    }
-    SendText("they're passing" . A_EndChar)
-    AC_Reg("there passing", "they're passing")
-}
-:C:there path::{
-    if AC_IsDisabled("there path") {
-        SendText("there path" . A_EndChar)
-        return
-    }
-    SendText("their path" . A_EndChar)
-    AC_Reg("there path", "their path")
-}
-:C:there placement::{
-    if AC_IsDisabled("there placement") {
-        SendText("there placement" . A_EndChar)
-        return
-    }
-    SendText("their placement" . A_EndChar)
-    AC_Reg("there placement", "their placement")
-}
-:C:there processing::{
-    if AC_IsDisabled("there processing") {
-        SendText("there processing" . A_EndChar)
-        return
-    }
-    SendText("they're processing" . A_EndChar)
-    AC_Reg("there processing", "they're processing")
-}
-:C:there productivity::{
-    if AC_IsDisabled("there productivity") {
-        SendText("there productivity" . A_EndChar)
-        return
-    }
-    SendText("their productivity" . A_EndChar)
-    AC_Reg("there productivity", "their productivity")
-}
-:C:there progress::{
-    if AC_IsDisabled("there progress") {
-        SendText("there progress" . A_EndChar)
-        return
-    }
-    SendText("their progress" . A_EndChar)
-    AC_Reg("there progress", "their progress")
-}
-:C:there promot::{
-    if AC_IsDisabled("there promot") {
-        SendText("there promot" . A_EndChar)
-        return
-    }
-    SendText("they're promot" . A_EndChar)
-    AC_Reg("there promot", "they're promot")
-}
-:C:there provider::{
-    if AC_IsDisabled("there provider") {
-        SendText("there provider" . A_EndChar)
-        return
-    }
-    SendText("their provider" . A_EndChar)
-    AC_Reg("there provider", "their provider")
-}
-:C:there ready::{
-    if AC_IsDisabled("there ready") {
-        SendText("there ready" . A_EndChar)
-        return
-    }
-    SendText("they're ready" . A_EndChar)
-    AC_Reg("there ready", "they're ready")
-}
-:C:there receiving::{
-    if AC_IsDisabled("there receiving") {
-        SendText("there receiving" . A_EndChar)
-        return
-    }
-    SendText("they're receiving" . A_EndChar)
-    AC_Reg("there receiving", "they're receiving")
-}
-:C:there routine::{
-    if AC_IsDisabled("there routine") {
-        SendText("there routine" . A_EndChar)
-        return
-    }
-    SendText("their routine" . A_EndChar)
-    AC_Reg("there routine", "their routine")
-}
-:C:there schedule::{
-    if AC_IsDisabled("there schedule") {
-        SendText("there schedule" . A_EndChar)
-        return
-    }
-    SendText("their schedule" . A_EndChar)
-    AC_Reg("there schedule", "their schedule")
-}
-:C:there server::{
-    if AC_IsDisabled("there server") {
-        SendText("there server" . A_EndChar)
-        return
-    }
-    SendText("their server" . A_EndChar)
-    AC_Reg("there server", "their server")
-}
-:C:there servic::{
-    if AC_IsDisabled("there servic") {
-        SendText("there servic" . A_EndChar)
-        return
-    }
-    SendText("their servic" . A_EndChar)
-    AC_Reg("there servic", "their servic")
-}
-:C:there staying home::{
-    if AC_IsDisabled("there staying home") {
-        SendText("there staying home" . A_EndChar)
-        return
-    }
-    SendText("they're staying home" . A_EndChar)
-    AC_Reg("there staying home", "they're staying home")
-}
-:C:there staying put::{
-    if AC_IsDisabled("there staying put") {
-        SendText("there staying put" . A_EndChar)
-        return
-    }
-    SendText("they're staying put" . A_EndChar)
-    AC_Reg("there staying put", "they're staying put")
-}
-:C:there support::{
-    if AC_IsDisabled("there support") {
-        SendText("there support" . A_EndChar)
-        return
-    }
-    SendText("their support" . A_EndChar)
-    AC_Reg("there support", "their support")
-}
-:C:there system::{
-    if AC_IsDisabled("there system") {
-        SendText("there system" . A_EndChar)
-        return
-    }
-    SendText("their system" . A_EndChar)
-    AC_Reg("there system", "their system")
-}
-:C:there testing::{
-    if AC_IsDisabled("there testing") {
-        SendText("there testing" . A_EndChar)
-        return
-    }
-    SendText("they're testing" . A_EndChar)
-    AC_Reg("there testing", "they're testing")
-}
-:C:there the best::{
-    if AC_IsDisabled("there the best") {
-        SendText("there the best" . A_EndChar)
-        return
-    }
-    SendText("they're the best" . A_EndChar)
-    AC_Reg("there the best", "they're the best")
-}
-:C:there transition::{
-    if AC_IsDisabled("there transition") {
-        SendText("there transition" . A_EndChar)
-        return
-    }
-    SendText("their transition" . A_EndChar)
-    AC_Reg("there transition", "their transition")
-}
-:C:there uploading::{
-    if AC_IsDisabled("there uploading") {
-        SendText("there uploading" . A_EndChar)
-        return
-    }
-    SendText("they're uploading" . A_EndChar)
-    AC_Reg("there uploading", "they're uploading")
-}
-:C:there where::{
-    if AC_IsDisabled("there where") {
-        SendText("there where" . A_EndChar)
-        return
-    }
-    SendText("there were" . A_EndChar)
-    AC_Reg("there where", "there were")
-}
-:C:there working late::{
-    if AC_IsDisabled("there working late") {
-        SendText("there working late" . A_EndChar)
-        return
-    }
-    SendText("they're working late" . A_EndChar)
-    AC_Reg("there working late", "they're working late")
-}
-:C:there wrong::{
-    if AC_IsDisabled("there wrong") {
-        SendText("there wrong" . A_EndChar)
-        return
-    }
-    SendText("they're wrong" . A_EndChar)
-    AC_Reg("there wrong", "they're wrong")
-}
-:C:there's is::{
-    if AC_IsDisabled("there's is") {
-        SendText("there's is" . A_EndChar)
-        return
-    }
-    SendText("theirs is" . A_EndChar)
-    AC_Reg("there's is", "theirs is")
-}
-:C:there's three::{
-    if AC_IsDisabled("there's three") {
-        SendText("there's three" . A_EndChar)
-        return
-    }
-    SendText("there are three" . A_EndChar)
-    AC_Reg("there's three", "there are three")
-}
-:C:there's two::{
-    if AC_IsDisabled("there's two") {
-        SendText("there's two" . A_EndChar)
-        return
-    }
-    SendText("there are two" . A_EndChar)
-    AC_Reg("there's two", "there are two")
-}
 :C:theres::{
     if AC_IsDisabled("theres") {
         SendText("theres" . A_EndChar)
@@ -73163,30 +60851,6 @@
     SendText("the same" . A_EndChar)
     AC_Reg("thesame", "the same")
 }
-:C:these includes::{
-    if AC_IsDisabled("these includes") {
-        SendText("these includes" . A_EndChar)
-        return
-    }
-    SendText("these include" . A_EndChar)
-    AC_Reg("these includes", "these include")
-}
-:C:these type of::{
-    if AC_IsDisabled("these type of") {
-        SendText("these type of" . A_EndChar)
-        return
-    }
-    SendText("these types of" . A_EndChar)
-    AC_Reg("these type of", "these types of")
-}
-:C:these where::{
-    if AC_IsDisabled("these where") {
-        SendText("these where" . A_EndChar)
-        return
-    }
-    SendText("these were" . A_EndChar)
-    AC_Reg("these where", "these were")
-}
 :C:thet::{
     if AC_IsDisabled("thet") {
         SendText("thet" . A_EndChar)
@@ -73203,38 +60867,6 @@
     SendText("the two" . A_EndChar)
     AC_Reg("thetwo", "the two")
 }
-:C:they begun::{
-    if AC_IsDisabled("they begun") {
-        SendText("they begun" . A_EndChar)
-        return
-    }
-    SendText("they began" . A_EndChar)
-    AC_Reg("they begun", "they began")
-}
-:C:they we're::{
-    if AC_IsDisabled("they we're") {
-        SendText("they we're" . A_EndChar)
-        return
-    }
-    SendText("they were" . A_EndChar)
-    AC_Reg("they we're", "they were")
-}
-:C:they weight::{
-    if AC_IsDisabled("they weight") {
-        SendText("they weight" . A_EndChar)
-        return
-    }
-    SendText("they weigh" . A_EndChar)
-    AC_Reg("they weight", "they weigh")
-}
-:C:they where::{
-    if AC_IsDisabled("they where") {
-        SendText("they where" . A_EndChar)
-        return
-    }
-    SendText("they were" . A_EndChar)
-    AC_Reg("they where", "they were")
-}
 :C:they'nre::{
     if AC_IsDisabled("they'nre") {
         SendText("they'nre" . A_EndChar)
@@ -73242,206 +60874,6 @@
     }
     SendText("they're" . A_EndChar)
     AC_Reg("they'nre", "they're")
-}
-:C:they're after::{
-    if AC_IsDisabled("they're after") {
-        SendText("they're after" . A_EndChar)
-        return
-    }
-    SendText("thereafter" . A_EndChar)
-    AC_Reg("they're after", "thereafter")
-}
-:C:they're aide::{
-    if AC_IsDisabled("they're aide") {
-        SendText("they're aide" . A_EndChar)
-        return
-    }
-    SendText("their aide" . A_EndChar)
-    AC_Reg("they're aide", "their aide")
-}
-:C:they're are::{
-    if AC_IsDisabled("they're are") {
-        SendText("they're are" . A_EndChar)
-        return
-    }
-    SendText("there are" . A_EndChar)
-    AC_Reg("they're are", "there are")
-}
-:C:they're assessment::{
-    if AC_IsDisabled("they're assessment") {
-        SendText("they're assessment" . A_EndChar)
-        return
-    }
-    SendText("their assessment" . A_EndChar)
-    AC_Reg("they're assessment", "their assessment")
-}
-:C:they're attendance::{
-    if AC_IsDisabled("they're attendance") {
-        SendText("they're attendance" . A_EndChar)
-        return
-    }
-    SendText("their attendance" . A_EndChar)
-    AC_Reg("they're attendance", "their attendance")
-}
-:C:they're classification::{
-    if AC_IsDisabled("they're classification") {
-        SendText("they're classification" . A_EndChar)
-        return
-    }
-    SendText("their classification" . A_EndChar)
-    AC_Reg("they're classification", "their classification")
-}
-:C:they're goal::{
-    if AC_IsDisabled("they're goal") {
-        SendText("they're goal" . A_EndChar)
-        return
-    }
-    SendText("their goal" . A_EndChar)
-    AC_Reg("they're goal", "their goal")
-}
-:C:they're grade::{
-    if AC_IsDisabled("they're grade") {
-        SendText("they're grade" . A_EndChar)
-        return
-    }
-    SendText("their grade" . A_EndChar)
-    AC_Reg("they're grade", "their grade")
-}
-:C:they're habit::{
-    if AC_IsDisabled("they're habit") {
-        SendText("they're habit" . A_EndChar)
-        return
-    }
-    SendText("their habit" . A_EndChar)
-    AC_Reg("they're habit", "their habit")
-}
-:C:they're is::{
-    if AC_IsDisabled("they're is") {
-        SendText("they're is" . A_EndChar)
-        return
-    }
-    SendText("there is" . A_EndChar)
-    AC_Reg("they're is", "there is")
-}
-:C:they're it is::{
-    if AC_IsDisabled("they're it is") {
-        SendText("they're it is" . A_EndChar)
-        return
-    }
-    SendText("there it is" . A_EndChar)
-    AC_Reg("they're it is", "there it is")
-}
-:C:they're mindset::{
-    if AC_IsDisabled("they're mindset") {
-        SendText("they're mindset" . A_EndChar)
-        return
-    }
-    SendText("their mindset" . A_EndChar)
-    AC_Reg("they're mindset", "their mindset")
-}
-:C:they're modification::{
-    if AC_IsDisabled("they're modification") {
-        SendText("they're modification" . A_EndChar)
-        return
-    }
-    SendText("their modification" . A_EndChar)
-    AC_Reg("they're modification", "their modification")
-}
-:C:they're motivation::{
-    if AC_IsDisabled("they're motivation") {
-        SendText("they're motivation" . A_EndChar)
-        return
-    }
-    SendText("their motivation" . A_EndChar)
-    AC_Reg("they're motivation", "their motivation")
-}
-:C:they're own accord::{
-    if AC_IsDisabled("they're own accord") {
-        SendText("they're own accord" . A_EndChar)
-        return
-    }
-    SendText("their own accord" . A_EndChar)
-    AC_Reg("they're own accord", "their own accord")
-}
-:C:they're path::{
-    if AC_IsDisabled("they're path") {
-        SendText("they're path" . A_EndChar)
-        return
-    }
-    SendText("their path" . A_EndChar)
-    AC_Reg("they're path", "their path")
-}
-:C:they're placement::{
-    if AC_IsDisabled("they're placement") {
-        SendText("they're placement" . A_EndChar)
-        return
-    }
-    SendText("their placement" . A_EndChar)
-    AC_Reg("they're placement", "their placement")
-}
-:C:they're productivity::{
-    if AC_IsDisabled("they're productivity") {
-        SendText("they're productivity" . A_EndChar)
-        return
-    }
-    SendText("their productivity" . A_EndChar)
-    AC_Reg("they're productivity", "their productivity")
-}
-:C:they're progress::{
-    if AC_IsDisabled("they're progress") {
-        SendText("they're progress" . A_EndChar)
-        return
-    }
-    SendText("their progress" . A_EndChar)
-    AC_Reg("they're progress", "their progress")
-}
-:C:they're provider::{
-    if AC_IsDisabled("they're provider") {
-        SendText("they're provider" . A_EndChar)
-        return
-    }
-    SendText("their provider" . A_EndChar)
-    AC_Reg("they're provider", "their provider")
-}
-:C:they're routine::{
-    if AC_IsDisabled("they're routine") {
-        SendText("they're routine" . A_EndChar)
-        return
-    }
-    SendText("their routine" . A_EndChar)
-    AC_Reg("they're routine", "their routine")
-}
-:C:they're schedule::{
-    if AC_IsDisabled("they're schedule") {
-        SendText("they're schedule" . A_EndChar)
-        return
-    }
-    SendText("their schedule" . A_EndChar)
-    AC_Reg("they're schedule", "their schedule")
-}
-:C:they;l::{
-    if AC_IsDisabled("they;l") {
-        SendText("they;l" . A_EndChar)
-        return
-    }
-    SendText("they'll" . A_EndChar)
-    AC_Reg("they;l", "they'll")
-}
-:C:they;r::{
-    if AC_IsDisabled("they;r") {
-        SendText("they;r" . A_EndChar)
-        return
-    }
-    SendText("they're" . A_EndChar)
-    AC_Reg("they;r", "they're")
-}
-:C:they;v::{
-    if AC_IsDisabled("they;v") {
-        SendText("they;v" . A_EndChar)
-        return
-    }
-    SendText("they've" . A_EndChar)
-    AC_Reg("they;v", "they've")
 }
 :C:theyd::{
     if AC_IsDisabled("theyd") {
@@ -73643,46 +61075,6 @@
     SendText("their" . A_EndChar)
     AC_Reg("thirr", "their")
 }
-:C:this data::{
-    if AC_IsDisabled("this data") {
-        SendText("this data" . A_EndChar)
-        return
-    }
-    SendText("these data" . A_EndChar)
-    AC_Reg("this data", "these data")
-}
-:C:this gut::{
-    if AC_IsDisabled("this gut") {
-        SendText("this gut" . A_EndChar)
-        return
-    }
-    SendText("this guy" . A_EndChar)
-    AC_Reg("this gut", "this guy")
-}
-:C:this lead to::{
-    if AC_IsDisabled("this lead to") {
-        SendText("this lead to" . A_EndChar)
-        return
-    }
-    SendText("this led to" . A_EndChar)
-    AC_Reg("this lead to", "this led to")
-}
-:C:this maybe::{
-    if AC_IsDisabled("this maybe") {
-        SendText("this maybe" . A_EndChar)
-        return
-    }
-    SendText("this may be" . A_EndChar)
-    AC_Reg("this maybe", "this may be")
-}
-:C:this resent::{
-    if AC_IsDisabled("this resent") {
-        SendText("this resent" . A_EndChar)
-        return
-    }
-    SendText("this recent" . A_EndChar)
-    AC_Reg("this resent", "this recent")
-}
 :C:thisgs::{
     if AC_IsDisabled("thisgs") {
         SendText("thisgs" . A_EndChar)
@@ -73795,30 +61187,6 @@
     SendText("thanks" . A_EndChar)
     AC_Reg("thnnks", "thanks")
 }
-:C:thoroughly bread::{
-    if AC_IsDisabled("thoroughly bread") {
-        SendText("thoroughly bread" . A_EndChar)
-        return
-    }
-    SendText("thoroughly bred" . A_EndChar)
-    AC_Reg("thoroughly bread", "thoroughly bred")
-}
-:C:those includes::{
-    if AC_IsDisabled("those includes") {
-        SendText("those includes" . A_EndChar)
-        return
-    }
-    SendText("those include" . A_EndChar)
-    AC_Reg("those includes", "those include")
-}
-:C:those maybe::{
-    if AC_IsDisabled("those maybe") {
-        SendText("those maybe" . A_EndChar)
-        return
-    }
-    SendText("those may be" . A_EndChar)
-    AC_Reg("those maybe", "those may be")
-}
 :C:thoughout::{
     if AC_IsDisabled("thoughout") {
         SendText("thoughout" . A_EndChar)
@@ -73891,14 +61259,6 @@
     SendText("third" . A_EndChar)
     AC_Reg("thrid", "third")
 }
-:C:throne away::{
-    if AC_IsDisabled("throne away") {
-        SendText("throne away" . A_EndChar)
-        return
-    }
-    SendText("throw away" . A_EndChar)
-    AC_Reg("throne away", "throw away")
-}
 :C:thror::{
     if AC_IsDisabled("thror") {
         SendText("thror" . A_EndChar)
@@ -73915,30 +61275,6 @@
     SendText("thorough" . A_EndChar)
     AC_Reg("throrough", "thorough")
 }
-:C:through away::{
-    if AC_IsDisabled("through away") {
-        SendText("through away" . A_EndChar)
-        return
-    }
-    SendText("throw away" . A_EndChar)
-    AC_Reg("through away", "throw away")
-}
-:C:through it's::{
-    if AC_IsDisabled("through it's") {
-        SendText("through it's" . A_EndChar)
-        return
-    }
-    SendText("through its" . A_EndChar)
-    AC_Reg("through it's", "through its")
-}
-:C:through the ringer::{
-    if AC_IsDisabled("through the ringer") {
-        SendText("through the ringer" . A_EndChar)
-        return
-    }
-    SendText("through the wringer" . A_EndChar)
-    AC_Reg("through the ringer", "through the wringer")
-}
 :C:throughly::{
     if AC_IsDisabled("throughly") {
         SendText("throughly" . A_EndChar)
@@ -73946,14 +61282,6 @@
     }
     SendText("thoroughly" . A_EndChar)
     AC_Reg("throughly", "thoroughly")
-}
-:C:throughout it's::{
-    if AC_IsDisabled("throughout it's") {
-        SendText("throughout it's" . A_EndChar)
-        return
-    }
-    SendText("throughout its" . A_EndChar)
-    AC_Reg("throughout it's", "throughout its")
 }
 :C:throught::{
     if AC_IsDisabled("throught") {
@@ -73970,14 +61298,6 @@
     }
     SendText("throughout" . A_EndChar)
     AC_Reg("througout", "throughout")
-}
-:C:throws of passion::{
-    if AC_IsDisabled("throws of passion") {
-        SendText("throws of passion" . A_EndChar)
-        return
-    }
-    SendText("throes of passion" . A_EndChar)
-    AC_Reg("throws of passion", "throes of passion")
 }
 :C:thru::{
     if AC_IsDisabled("thru") {
@@ -74131,14 +61451,6 @@
     SendText("ticul" . A_EndChar)
     AC_Reg("ticlul", "ticul")
 }
-:C:tied and true::{
-    if AC_IsDisabled("tied and true") {
-        SendText("tied and true" . A_EndChar)
-        return
-    }
-    SendText("tried and true" . A_EndChar)
-    AC_Reg("tied and true", "tried and true")
-}
 :C:tiem::{
     if AC_IsDisabled("tiem") {
         SendText("tiem" . A_EndChar)
@@ -74194,22 +61506,6 @@
     }
     SendText("tion" . A_EndChar)
     AC_Reg("tiion", "tion")
-}
-:C:time out::{
-    if AC_IsDisabled("time out") {
-        SendText("time out" . A_EndChar)
-        return
-    }
-    SendText("timeout" . A_EndChar)
-    AC_Reg("time out", "timeout")
-}
-:C:time piece::{
-    if AC_IsDisabled("time piece") {
-        SendText("time piece" . A_EndChar)
-        return
-    }
-    SendText("timepiece" . A_EndChar)
-    AC_Reg("time piece", "timepiece")
 }
 :C:timeschedule::{
     if AC_IsDisabled("timeschedule") {
@@ -74531,638 +61827,6 @@
     SendText("ting" . A_EndChar)
     AC_Reg("tng", "ting")
 }
-:C:to back fire::{
-    if AC_IsDisabled("to back fire") {
-        SendText("to back fire" . A_EndChar)
-        return
-    }
-    SendText("to backfire" . A_EndChar)
-    AC_Reg("to back fire", "to backfire")
-}
-:C:to back-off::{
-    if AC_IsDisabled("to back-off") {
-        SendText("to back-off" . A_EndChar)
-        return
-    }
-    SendText("to back off" . A_EndChar)
-    AC_Reg("to back-off", "to back off")
-}
-:C:to back-out::{
-    if AC_IsDisabled("to back-out") {
-        SendText("to back-out" . A_EndChar)
-        return
-    }
-    SendText("to back out" . A_EndChar)
-    AC_Reg("to back-out", "to back out")
-}
-:C:to back-up::{
-    if AC_IsDisabled("to back-up") {
-        SendText("to back-up" . A_EndChar)
-        return
-    }
-    SendText("to back up" . A_EndChar)
-    AC_Reg("to back-up", "to back up")
-}
-:C:to backoff::{
-    if AC_IsDisabled("to backoff") {
-        SendText("to backoff" . A_EndChar)
-        return
-    }
-    SendText("to back off" . A_EndChar)
-    AC_Reg("to backoff", "to back off")
-}
-:C:to backout::{
-    if AC_IsDisabled("to backout") {
-        SendText("to backout" . A_EndChar)
-        return
-    }
-    SendText("to back out" . A_EndChar)
-    AC_Reg("to backout", "to back out")
-}
-:C:to backup::{
-    if AC_IsDisabled("to backup") {
-        SendText("to backup" . A_EndChar)
-        return
-    }
-    SendText("to back up" . A_EndChar)
-    AC_Reg("to backup", "to back up")
-}
-:C:to bailout::{
-    if AC_IsDisabled("to bailout") {
-        SendText("to bailout" . A_EndChar)
-        return
-    }
-    SendText("to bail out" . A_EndChar)
-    AC_Reg("to bailout", "to bail out")
-}
-:C:to bath::{
-    if AC_IsDisabled("to bath") {
-        SendText("to bath" . A_EndChar)
-        return
-    }
-    SendText("to bathe" . A_EndChar)
-    AC_Reg("to bath", "to bathe")
-}
-:C:to be build::{
-    if AC_IsDisabled("to be build") {
-        SendText("to be build" . A_EndChar)
-        return
-    }
-    SendText("to be built" . A_EndChar)
-    AC_Reg("to be build", "to be built")
-}
-:C:to be setup::{
-    if AC_IsDisabled("to be setup") {
-        SendText("to be setup" . A_EndChar)
-        return
-    }
-    SendText("to be set up" . A_EndChar)
-    AC_Reg("to be setup", "to be set up")
-}
-:C:to blackout::{
-    if AC_IsDisabled("to blackout") {
-        SendText("to blackout" . A_EndChar)
-        return
-    }
-    SendText("to black out" . A_EndChar)
-    AC_Reg("to blackout", "to black out")
-}
-:C:to blastoff::{
-    if AC_IsDisabled("to blastoff") {
-        SendText("to blastoff" . A_EndChar)
-        return
-    }
-    SendText("to blast off" . A_EndChar)
-    AC_Reg("to blastoff", "to blast off")
-}
-:C:to blowout::{
-    if AC_IsDisabled("to blowout") {
-        SendText("to blowout" . A_EndChar)
-        return
-    }
-    SendText("to blow out" . A_EndChar)
-    AC_Reg("to blowout", "to blow out")
-}
-:C:to blowup::{
-    if AC_IsDisabled("to blowup") {
-        SendText("to blowup" . A_EndChar)
-        return
-    }
-    SendText("to blow up" . A_EndChar)
-    AC_Reg("to blowup", "to blow up")
-}
-:C:to breakdown::{
-    if AC_IsDisabled("to breakdown") {
-        SendText("to breakdown" . A_EndChar)
-        return
-    }
-    SendText("to break down" . A_EndChar)
-    AC_Reg("to breakdown", "to break down")
-}
-:C:to breath::{
-    if AC_IsDisabled("to breath") {
-        SendText("to breath" . A_EndChar)
-        return
-    }
-    SendText("to breathe" . A_EndChar)
-    AC_Reg("to breath", "to breathe")
-}
-:C:to buildup::{
-    if AC_IsDisabled("to buildup") {
-        SendText("to buildup" . A_EndChar)
-        return
-    }
-    SendText("to build up" . A_EndChar)
-    AC_Reg("to buildup", "to build up")
-}
-:C:to built::{
-    if AC_IsDisabled("to built") {
-        SendText("to built" . A_EndChar)
-        return
-    }
-    SendText("to build" . A_EndChar)
-    AC_Reg("to built", "to build")
-}
-:C:to buyout::{
-    if AC_IsDisabled("to buyout") {
-        SendText("to buyout" . A_EndChar)
-        return
-    }
-    SendText("to buy out" . A_EndChar)
-    AC_Reg("to buyout", "to buy out")
-}
-:C:to chose::{
-    if AC_IsDisabled("to chose") {
-        SendText("to chose" . A_EndChar)
-        return
-    }
-    SendText("to choose" . A_EndChar)
-    AC_Reg("to chose", "to choose")
-}
-:C:to comeback::{
-    if AC_IsDisabled("to comeback") {
-        SendText("to comeback" . A_EndChar)
-        return
-    }
-    SendText("to come back" . A_EndChar)
-    AC_Reg("to comeback", "to come back")
-}
-:C:to crackdown on::{
-    if AC_IsDisabled("to crackdown on") {
-        SendText("to crackdown on" . A_EndChar)
-        return
-    }
-    SendText("to crack down on" . A_EndChar)
-    AC_Reg("to crackdown on", "to crack down on")
-}
-:C:to cut of::{
-    if AC_IsDisabled("to cut of") {
-        SendText("to cut of" . A_EndChar)
-        return
-    }
-    SendText("to cut off" . A_EndChar)
-    AC_Reg("to cut of", "to cut off")
-}
-:C:to cutback::{
-    if AC_IsDisabled("to cutback") {
-        SendText("to cutback" . A_EndChar)
-        return
-    }
-    SendText("to cut back" . A_EndChar)
-    AC_Reg("to cutback", "to cut back")
-}
-:C:to cutoff::{
-    if AC_IsDisabled("to cutoff") {
-        SendText("to cutoff" . A_EndChar)
-        return
-    }
-    SendText("to cut off" . A_EndChar)
-    AC_Reg("to cutoff", "to cut off")
-}
-:C:to dropout::{
-    if AC_IsDisabled("to dropout") {
-        SendText("to dropout" . A_EndChar)
-        return
-    }
-    SendText("to drop out" . A_EndChar)
-    AC_Reg("to dropout", "to drop out")
-}
-:C:to emphasis the::{
-    if AC_IsDisabled("to emphasis the") {
-        SendText("to emphasis the" . A_EndChar)
-        return
-    }
-    SendText("to emphasise the" . A_EndChar)
-    AC_Reg("to emphasis the", "to emphasise the")
-}
-:C:to fill-in::{
-    if AC_IsDisabled("to fill-in") {
-        SendText("to fill-in" . A_EndChar)
-        return
-    }
-    SendText("to fill in" . A_EndChar)
-    AC_Reg("to fill-in", "to fill in")
-}
-:C:to forego::{
-    if AC_IsDisabled("to forego") {
-        SendText("to forego" . A_EndChar)
-        return
-    }
-    SendText("to forgo" . A_EndChar)
-    AC_Reg("to forego", "to forgo")
-}
-:C:to good to::{
-    if AC_IsDisabled("to good to") {
-        SendText("to good to" . A_EndChar)
-        return
-    }
-    SendText("too good to" . A_EndChar)
-    AC_Reg("to good to", "too good to")
-}
-:C:to happened::{
-    if AC_IsDisabled("to happened") {
-        SendText("to happened" . A_EndChar)
-        return
-    }
-    SendText("to happen" . A_EndChar)
-    AC_Reg("to happened", "to happen")
-}
-:C:to have lead to::{
-    if AC_IsDisabled("to have lead to") {
-        SendText("to have lead to" . A_EndChar)
-        return
-    }
-    SendText("to have led to" . A_EndChar)
-    AC_Reg("to have lead to", "to have led to")
-}
-:C:to he and::{
-    if AC_IsDisabled("to he and") {
-        SendText("to he and" . A_EndChar)
-        return
-    }
-    SendText("to him and" . A_EndChar)
-    AC_Reg("to he and", "to him and")
-}
-:C:to holdout::{
-    if AC_IsDisabled("to holdout") {
-        SendText("to holdout" . A_EndChar)
-        return
-    }
-    SendText("to hold out" . A_EndChar)
-    AC_Reg("to holdout", "to hold out")
-}
-:C:to kickoff::{
-    if AC_IsDisabled("to kickoff") {
-        SendText("to kickoff" . A_EndChar)
-        return
-    }
-    SendText("to kick off" . A_EndChar)
-    AC_Reg("to kickoff", "to kick off")
-}
-:C:to loath::{
-    if AC_IsDisabled("to loath") {
-        SendText("to loath" . A_EndChar)
-        return
-    }
-    SendText("to loathe" . A_EndChar)
-    AC_Reg("to loath", "to loathe")
-}
-:C:to lockout::{
-    if AC_IsDisabled("to lockout") {
-        SendText("to lockout" . A_EndChar)
-        return
-    }
-    SendText("to lock out" . A_EndChar)
-    AC_Reg("to lockout", "to lock out")
-}
-:C:to lockup::{
-    if AC_IsDisabled("to lockup") {
-        SendText("to lockup" . A_EndChar)
-        return
-    }
-    SendText("to lock up" . A_EndChar)
-    AC_Reg("to lockup", "to lock up")
-}
-:C:to login::{
-    if AC_IsDisabled("to login") {
-        SendText("to login" . A_EndChar)
-        return
-    }
-    SendText("to log in" . A_EndChar)
-    AC_Reg("to login", "to log in")
-}
-:C:to logout::{
-    if AC_IsDisabled("to logout") {
-        SendText("to logout" . A_EndChar)
-        return
-    }
-    SendText("to log out" . A_EndChar)
-    AC_Reg("to logout", "to log out")
-}
-:C:to lookup::{
-    if AC_IsDisabled("to lookup") {
-        SendText("to lookup" . A_EndChar)
-        return
-    }
-    SendText("to look up" . A_EndChar)
-    AC_Reg("to lookup", "to look up")
-}
-:C:to markup::{
-    if AC_IsDisabled("to markup") {
-        SendText("to markup" . A_EndChar)
-        return
-    }
-    SendText("to mark up" . A_EndChar)
-    AC_Reg("to markup", "to mark up")
-}
-:C:to much to::{
-    if AC_IsDisabled("to much to") {
-        SendText("to much to" . A_EndChar)
-        return
-    }
-    SendText("too much to" . A_EndChar)
-    AC_Reg("to much to", "too much to")
-}
-:C:to opt-in::{
-    if AC_IsDisabled("to opt-in") {
-        SendText("to opt-in" . A_EndChar)
-        return
-    }
-    SendText("to opt in" . A_EndChar)
-    AC_Reg("to opt-in", "to opt in")
-}
-:C:to opt-out::{
-    if AC_IsDisabled("to opt-out") {
-        SendText("to opt-out" . A_EndChar)
-        return
-    }
-    SendText("to opt out" . A_EndChar)
-    AC_Reg("to opt-out", "to opt out")
-}
-:C:to phaseout::{
-    if AC_IsDisabled("to phaseout") {
-        SendText("to phaseout" . A_EndChar)
-        return
-    }
-    SendText("to phase out" . A_EndChar)
-    AC_Reg("to phaseout", "to phase out")
-}
-:C:to pickup::{
-    if AC_IsDisabled("to pickup") {
-        SendText("to pickup" . A_EndChar)
-        return
-    }
-    SendText("to pick up" . A_EndChar)
-    AC_Reg("to pickup", "to pick up")
-}
-:C:to playback::{
-    if AC_IsDisabled("to playback") {
-        SendText("to playback" . A_EndChar)
-        return
-    }
-    SendText("to play back" . A_EndChar)
-    AC_Reg("to playback", "to play back")
-}
-:C:to rebuilt::{
-    if AC_IsDisabled("to rebuilt") {
-        SendText("to rebuilt" . A_EndChar)
-        return
-    }
-    SendText("to be rebuilt" . A_EndChar)
-    AC_Reg("to rebuilt", "to be rebuilt")
-}
-:C:to rollback::{
-    if AC_IsDisabled("to rollback") {
-        SendText("to rollback" . A_EndChar)
-        return
-    }
-    SendText("to roll back" . A_EndChar)
-    AC_Reg("to rollback", "to roll back")
-}
-:C:to runaway::{
-    if AC_IsDisabled("to runaway") {
-        SendText("to runaway" . A_EndChar)
-        return
-    }
-    SendText("to run away" . A_EndChar)
-    AC_Reg("to runaway", "to run away")
-}
-:C:to seen::{
-    if AC_IsDisabled("to seen") {
-        SendText("to seen" . A_EndChar)
-        return
-    }
-    SendText("to be seen" . A_EndChar)
-    AC_Reg("to seen", "to be seen")
-}
-:C:to sent::{
-    if AC_IsDisabled("to sent") {
-        SendText("to sent" . A_EndChar)
-        return
-    }
-    SendText("to send" . A_EndChar)
-    AC_Reg("to sent", "to send")
-}
-:C:to setup::{
-    if AC_IsDisabled("to setup") {
-        SendText("to setup" . A_EndChar)
-        return
-    }
-    SendText("to set up" . A_EndChar)
-    AC_Reg("to setup", "to set up")
-}
-:C:to shut-down::{
-    if AC_IsDisabled("to shut-down") {
-        SendText("to shut-down" . A_EndChar)
-        return
-    }
-    SendText("to shut down" . A_EndChar)
-    AC_Reg("to shut-down", "to shut down")
-}
-:C:to shutdown::{
-    if AC_IsDisabled("to shutdown") {
-        SendText("to shutdown" . A_EndChar)
-        return
-    }
-    SendText("to shut down" . A_EndChar)
-    AC_Reg("to shutdown", "to shut down")
-}
-:C:to some extend::{
-    if AC_IsDisabled("to some extend") {
-        SendText("to some extend" . A_EndChar)
-        return
-    }
-    SendText("to some extent" . A_EndChar)
-    AC_Reg("to some extend", "to some extent")
-}
-:C:to spent::{
-    if AC_IsDisabled("to spent") {
-        SendText("to spent" . A_EndChar)
-        return
-    }
-    SendText("to spend" . A_EndChar)
-    AC_Reg("to spent", "to spend")
-}
-:C:to spin-off::{
-    if AC_IsDisabled("to spin-off") {
-        SendText("to spin-off" . A_EndChar)
-        return
-    }
-    SendText("to spin off" . A_EndChar)
-    AC_Reg("to spin-off", "to spin off")
-}
-:C:to spinoff::{
-    if AC_IsDisabled("to spinoff") {
-        SendText("to spinoff" . A_EndChar)
-        return
-    }
-    SendText("to spin off" . A_EndChar)
-    AC_Reg("to spinoff", "to spin off")
-}
-:C:to takeover::{
-    if AC_IsDisabled("to takeover") {
-        SendText("to takeover" . A_EndChar)
-        return
-    }
-    SendText("to take over" . A_EndChar)
-    AC_Reg("to takeover", "to take over")
-}
-:C:to that affect::{
-    if AC_IsDisabled("to that affect") {
-        SendText("to that affect" . A_EndChar)
-        return
-    }
-    SendText("to that effect" . A_EndChar)
-    AC_Reg("to that affect", "to that effect")
-}
-:C:to they're::{
-    if AC_IsDisabled("to they're") {
-        SendText("to they're" . A_EndChar)
-        return
-    }
-    SendText("to their" . A_EndChar)
-    AC_Reg("to they're", "to their")
-}
-:C:to touchdown::{
-    if AC_IsDisabled("to touchdown") {
-        SendText("to touchdown" . A_EndChar)
-        return
-    }
-    SendText("to touch down" . A_EndChar)
-    AC_Reg("to touchdown", "to touch down")
-}
-:C:to try and::{
-    if AC_IsDisabled("to try and") {
-        SendText("to try and" . A_EndChar)
-        return
-    }
-    SendText("to try to" . A_EndChar)
-    AC_Reg("to try and", "to try to")
-}
-:C:to try-out::{
-    if AC_IsDisabled("to try-out") {
-        SendText("to try-out" . A_EndChar)
-        return
-    }
-    SendText("to try out" . A_EndChar)
-    AC_Reg("to try-out", "to try out")
-}
-:C:to tryout::{
-    if AC_IsDisabled("to tryout") {
-        SendText("to tryout" . A_EndChar)
-        return
-    }
-    SendText("to try out" . A_EndChar)
-    AC_Reg("to tryout", "to try out")
-}
-:C:to turn-off::{
-    if AC_IsDisabled("to turn-off") {
-        SendText("to turn-off" . A_EndChar)
-        return
-    }
-    SendText("to turn off" . A_EndChar)
-    AC_Reg("to turn-off", "to turn off")
-}
-:C:to turnaround::{
-    if AC_IsDisabled("to turnaround") {
-        SendText("to turnaround" . A_EndChar)
-        return
-    }
-    SendText("to turn around" . A_EndChar)
-    AC_Reg("to turnaround", "to turn around")
-}
-:C:to turnoff::{
-    if AC_IsDisabled("to turnoff") {
-        SendText("to turnoff" . A_EndChar)
-        return
-    }
-    SendText("to turn off" . A_EndChar)
-    AC_Reg("to turnoff", "to turn off")
-}
-:C:to turnout::{
-    if AC_IsDisabled("to turnout") {
-        SendText("to turnout" . A_EndChar)
-        return
-    }
-    SendText("to turn out" . A_EndChar)
-    AC_Reg("to turnout", "to turn out")
-}
-:C:to turnover::{
-    if AC_IsDisabled("to turnover") {
-        SendText("to turnover" . A_EndChar)
-        return
-    }
-    SendText("to turn over" . A_EndChar)
-    AC_Reg("to turnover", "to turn over")
-}
-:C:to wakeup::{
-    if AC_IsDisabled("to wakeup") {
-        SendText("to wakeup" . A_EndChar)
-        return
-    }
-    SendText("to wake up" . A_EndChar)
-    AC_Reg("to wakeup", "to wake up")
-}
-:C:to walkout::{
-    if AC_IsDisabled("to walkout") {
-        SendText("to walkout" . A_EndChar)
-        return
-    }
-    SendText("to walk out" . A_EndChar)
-    AC_Reg("to walkout", "to walk out")
-}
-:C:to wipeout::{
-    if AC_IsDisabled("to wipeout") {
-        SendText("to wipeout" . A_EndChar)
-        return
-    }
-    SendText("to wipe out" . A_EndChar)
-    AC_Reg("to wipeout", "to wipe out")
-}
-:C:to withdrew::{
-    if AC_IsDisabled("to withdrew") {
-        SendText("to withdrew" . A_EndChar)
-        return
-    }
-    SendText("to withdraw" . A_EndChar)
-    AC_Reg("to withdrew", "to withdraw")
-}
-:C:to workaround::{
-    if AC_IsDisabled("to workaround") {
-        SendText("to workaround" . A_EndChar)
-        return
-    }
-    SendText("to work around" . A_EndChar)
-    AC_Reg("to workaround", "to work around")
-}
-:C:to workout::{
-    if AC_IsDisabled("to workout") {
-        SendText("to workout" . A_EndChar)
-        return
-    }
-    SendText("to work out" . A_EndChar)
-    AC_Reg("to workout", "to work out")
-}
 :C:tobbaco::{
     if AC_IsDisabled("tobbaco") {
         SendText("tobbaco" . A_EndChar)
@@ -75178,14 +61842,6 @@
     }
     SendText("together" . A_EndChar)
     AC_Reg("todather", "together")
-}
-:C:today of::{
-    if AC_IsDisabled("today of") {
-        SendText("today of" . A_EndChar)
-        return
-    }
-    SendText("today or" . A_EndChar)
-    AC_Reg("today of", "today or")
 }
 :C:todays::{
     if AC_IsDisabled("todays") {
@@ -75283,14 +61939,6 @@
     SendText("took" . A_EndChar)
     AC_Reg("toke", "took")
 }
-:C:toldt he::{
-    if AC_IsDisabled("toldt he") {
-        SendText("toldt he" . A_EndChar)
-        return
-    }
-    SendText("told the" . A_EndChar)
-    AC_Reg("toldt he", "told the")
-}
 :C:toleren::{
     if AC_IsDisabled("toleren") {
         SendText("toleren" . A_EndChar)
@@ -75322,14 +61970,6 @@
     }
     SendText("Tolkien" . A_EndChar)
     AC_Reg("tolkein", "Tolkien")
-}
-:C:tolled you so::{
-    if AC_IsDisabled("tolled you so") {
-        SendText("tolled you so" . A_EndChar)
-        return
-    }
-    SendText("told you so" . A_EndChar)
-    AC_Reg("tolled you so", "told you so")
 }
 :C:tollu::{
     if AC_IsDisabled("tollu") {
@@ -75386,62 +62026,6 @@
     }
     SendText("tonight" . A_EndChar)
     AC_Reg("tongiht", "tonight")
-}
-:C:too also::{
-    if AC_IsDisabled("too also") {
-        SendText("too also" . A_EndChar)
-        return
-    }
-    SendText("also" . A_EndChar)
-    AC_Reg("too also", "also")
-}
-:C:too be::{
-    if AC_IsDisabled("too be") {
-        SendText("too be" . A_EndChar)
-        return
-    }
-    SendText("to be" . A_EndChar)
-    AC_Reg("too be", "to be")
-}
-:C:took affect::{
-    if AC_IsDisabled("took affect") {
-        SendText("took affect" . A_EndChar)
-        return
-    }
-    SendText("took effect" . A_EndChar)
-    AC_Reg("took affect", "took effect")
-}
-:C:took and interest::{
-    if AC_IsDisabled("took and interest") {
-        SendText("took and interest" . A_EndChar)
-        return
-    }
-    SendText("took an interest" . A_EndChar)
-    AC_Reg("took and interest", "took an interest")
-}
-:C:took awhile::{
-    if AC_IsDisabled("took awhile") {
-        SendText("took awhile" . A_EndChar)
-        return
-    }
-    SendText("took a while" . A_EndChar)
-    AC_Reg("took awhile", "took a while")
-}
-:C:took over the reigns::{
-    if AC_IsDisabled("took over the reigns") {
-        SendText("took over the reigns" . A_EndChar)
-        return
-    }
-    SendText("took over the reins" . A_EndChar)
-    AC_Reg("took over the reigns", "took over the reins")
-}
-:C:took the reigns::{
-    if AC_IsDisabled("took the reigns") {
-        SendText("took the reigns" . A_EndChar)
-        return
-    }
-    SendText("took the reins" . A_EndChar)
-    AC_Reg("took the reigns", "took the reins")
 }
 :C:toolket::{
     if AC_IsDisabled("toolket") {
@@ -75523,14 +62107,6 @@
     SendText("tortoise" . A_EndChar)
     AC_Reg("tortise", "tortoise")
 }
-:C:tot he::{
-    if AC_IsDisabled("tot he") {
-        SendText("tot he" . A_EndChar)
-        return
-    }
-    SendText("to the" . A_EndChar)
-    AC_Reg("tot he", "to the")
-}
 :C:tothe::{
     if AC_IsDisabled("tothe") {
         SendText("tothe" . A_EndChar)
@@ -75602,22 +62178,6 @@
     }
     SendText("though" . A_EndChar)
     AC_Reg("touugh", "though")
-}
-:C:tow of::{
-    if AC_IsDisabled("tow of") {
-        SendText("tow of" . A_EndChar)
-        return
-    }
-    SendText("two of" . A_EndChar)
-    AC_Reg("tow of", "two of")
-}
-:C:tow the line::{
-    if AC_IsDisabled("tow the line") {
-        SendText("tow the line" . A_EndChar)
-        return
-    }
-    SendText("toe the line" . A_EndChar)
-    AC_Reg("tow the line", "toe the line")
 }
 :C:toword::{
     if AC_IsDisabled("toword") {
@@ -76035,14 +62595,6 @@
     SendText("tricity" . A_EndChar)
     AC_Reg("tricty", "tricity")
 }
-:C:tried to used::{
-    if AC_IsDisabled("tried to used") {
-        SendText("tried to used" . A_EndChar)
-        return
-    }
-    SendText("tried to use" . A_EndChar)
-    AC_Reg("tried to used", "tried to use")
-}
 :C:triger::{
     if AC_IsDisabled("triger") {
         SendText("triger" . A_EndChar)
@@ -76195,14 +62747,6 @@
     SendText("trustworthiness" . A_EndChar)
     AC_Reg("trustworthyness", "trustworthiness")
 }
-:C:try and::{
-    if AC_IsDisabled("try and") {
-        SendText("try and" . A_EndChar)
-        return
-    }
-    SendText("try to" . A_EndChar)
-    AC_Reg("try and", "try to")
-}
 :C:tseh::{
     if AC_IsDisabled("tseh") {
         SendText("tseh" . A_EndChar)
@@ -76275,14 +62819,6 @@
     SendText("Tuesday" . A_EndChar)
     AC_Reg("tuesday", "Tuesday")
 }
-:C:turn for the worst::{
-    if AC_IsDisabled("turn for the worst") {
-        SendText("turn for the worst" . A_EndChar)
-        return
-    }
-    SendText("turn for the worse" . A_EndChar)
-    AC_Reg("turn for the worst", "turn for the worse")
-}
 :C:turnk::{
     if AC_IsDisabled("turnk") {
         SendText("turnk" . A_EndChar)
@@ -76338,38 +62874,6 @@
     }
     SendText("twelfth" . A_EndChar)
     AC_Reg("twelth", "twelfth")
-}
-:C:twelve month's::{
-    if AC_IsDisabled("twelve month's") {
-        SendText("twelve month's" . A_EndChar)
-        return
-    }
-    SendText("twelve months" . A_EndChar)
-    AC_Reg("twelve month's", "twelve months")
-}
-:C:twice as much than::{
-    if AC_IsDisabled("twice as much than") {
-        SendText("twice as much than" . A_EndChar)
-        return
-    }
-    SendText("twice as much as" . A_EndChar)
-    AC_Reg("twice as much than", "twice as much as")
-}
-:C:two good to::{
-    if AC_IsDisabled("two good to") {
-        SendText("two good to" . A_EndChar)
-        return
-    }
-    SendText("too good to" . A_EndChar)
-    AC_Reg("two good to", "too good to")
-}
-:C:two in a half::{
-    if AC_IsDisabled("two in a half") {
-        SendText("two in a half" . A_EndChar)
-        return
-    }
-    SendText("two and a half" . A_EndChar)
-    AC_Reg("two in a half", "two and a half")
 }
 :C:twon::{
     if AC_IsDisabled("twon") {
@@ -76995,54 +63499,6 @@
     SendText("undecidable" . A_EndChar)
     AC_Reg("undecideable", "undecidable")
 }
-:C:under go::{
-    if AC_IsDisabled("under go") {
-        SendText("under go" . A_EndChar)
-        return
-    }
-    SendText("undergo" . A_EndChar)
-    AC_Reg("under go", "undergo")
-}
-:C:under it's::{
-    if AC_IsDisabled("under it's") {
-        SendText("under it's" . A_EndChar)
-        return
-    }
-    SendText("under its" . A_EndChar)
-    AC_Reg("under it's", "under its")
-}
-:C:under rate::{
-    if AC_IsDisabled("under rate") {
-        SendText("under rate" . A_EndChar)
-        return
-    }
-    SendText("underrate" . A_EndChar)
-    AC_Reg("under rate", "underrate")
-}
-:C:under take::{
-    if AC_IsDisabled("under take") {
-        SendText("under take" . A_EndChar)
-        return
-    }
-    SendText("undertake" . A_EndChar)
-    AC_Reg("under take", "undertake")
-}
-:C:under wear::{
-    if AC_IsDisabled("under wear") {
-        SendText("under wear" . A_EndChar)
-        return
-    }
-    SendText("underwear" . A_EndChar)
-    AC_Reg("under wear", "underwear")
-}
-:C:under went::{
-    if AC_IsDisabled("under went") {
-        SendText("under went" . A_EndChar)
-        return
-    }
-    SendText("underwent" . A_EndChar)
-    AC_Reg("under went", "underwent")
-}
 :C:underat::{
     if AC_IsDisabled("underat") {
         SendText("underat" . A_EndChar)
@@ -77058,14 +63514,6 @@
     }
     SendText("understood" . A_EndChar)
     AC_Reg("understoon", "understood")
-}
-:C:undert he::{
-    if AC_IsDisabled("undert he") {
-        SendText("undert he" . A_EndChar)
-        return
-    }
-    SendText("under the" . A_EndChar)
-    AC_Reg("undert he", "under the")
 }
 :C:undesireable::{
     if AC_IsDisabled("undesireable") {
@@ -77723,22 +64171,6 @@
     SendText("under" . A_EndChar)
     AC_Reg("unter", "under")
 }
-:C:until march::{
-    if AC_IsDisabled("until march") {
-        SendText("until march" . A_EndChar)
-        return
-    }
-    SendText("until March" . A_EndChar)
-    AC_Reg("until march", "until March")
-}
-:C:until may::{
-    if AC_IsDisabled("until may") {
-        SendText("until may" . A_EndChar)
-        return
-    }
-    SendText("until May" . A_EndChar)
-    AC_Reg("until may", "until May")
-}
 :C:untill::{
     if AC_IsDisabled("untill") {
         SendText("untill" . A_EndChar)
@@ -77835,30 +64267,6 @@
     SendText("oul" . A_EndChar)
     AC_Reg("uoul", "oul")
 }
-:C:up field::{
-    if AC_IsDisabled("up field") {
-        SendText("up field" . A_EndChar)
-        return
-    }
-    SendText("upfield" . A_EndChar)
-    AC_Reg("up field", "upfield")
-}
-:C:up it's::{
-    if AC_IsDisabled("up it's") {
-        SendText("up it's" . A_EndChar)
-        return
-    }
-    SendText("up its" . A_EndChar)
-    AC_Reg("up it's", "up its")
-}
-:C:up side::{
-    if AC_IsDisabled("up side") {
-        SendText("up side" . A_EndChar)
-        return
-    }
-    SendText("upside" . A_EndChar)
-    AC_Reg("up side", "upside")
-}
 :C:upaat::{
     if AC_IsDisabled("upaat") {
         SendText("upaat" . A_EndChar)
@@ -77890,14 +64298,6 @@
     }
     SendText("uploaded" . A_EndChar)
     AC_Reg("uplodded", "uploaded")
-}
-:C:upon it's::{
-    if AC_IsDisabled("upon it's") {
-        SendText("upon it's" . A_EndChar)
-        return
-    }
-    SendText("upon its" . A_EndChar)
-    AC_Reg("upon it's", "upon its")
 }
 :C:upresp::{
     if AC_IsDisabled("upresp") {
@@ -77986,14 +64386,6 @@
     }
     SendText("usually" . A_EndChar)
     AC_Reg("usally", "usually")
-}
-:C:use to::{
-    if AC_IsDisabled("use to") {
-        SendText("use to" . A_EndChar)
-        return
-    }
-    SendText("used to" . A_EndChar)
-    AC_Reg("use to", "used to")
 }
 :C:useage::{
     if AC_IsDisabled("useage") {
@@ -78307,14 +64699,6 @@
     SendText("valuable" . A_EndChar)
     AC_Reg("valueable", "valuable")
 }
-:C:vane attempt::{
-    if AC_IsDisabled("vane attempt") {
-        SendText("vane attempt" . A_EndChar)
-        return
-    }
-    SendText("vain attempt" . A_EndChar)
-    AC_Reg("vane attempt", "vain attempt")
-}
 :C:vanella::{
     if AC_IsDisabled("vanella") {
         SendText("vanella" . A_EndChar)
@@ -78619,14 +65003,6 @@
     SendText("vengeance" . A_EndChar)
     AC_Reg("vengence", "vengeance")
 }
-:C:ventre a terre::{
-    if AC_IsDisabled("ventre a terre") {
-        SendText("ventre a terre" . A_EndChar)
-        return
-    }
-    SendText("ventre à terre" . A_EndChar)
-    AC_Reg("ventre a terre", "ventre à terre")
-}
 :C:verd::{
     if AC_IsDisabled("verd") {
         SendText("verd" . A_EndChar)
@@ -78682,14 +65058,6 @@
     }
     SendText("vermilion" . A_EndChar)
     AC_Reg("vermillion", "vermilion")
-}
-:C:verses time::{
-    if AC_IsDisabled("verses time") {
-        SendText("verses time" . A_EndChar)
-        return
-    }
-    SendText("versus time" . A_EndChar)
-    AC_Reg("verses time", "versus time")
 }
 :C:versitilat::{
     if AC_IsDisabled("versitilat") {
@@ -78787,14 +65155,6 @@
     SendText("very" . A_EndChar)
     AC_Reg("veyr", "very")
 }
-:C:via it's::{
-    if AC_IsDisabled("via it's") {
-        SendText("via it's" . A_EndChar)
-        return
-    }
-    SendText("via its" . A_EndChar)
-    AC_Reg("via it's", "via its")
-}
 :C:viathe::{
     if AC_IsDisabled("viathe") {
         SendText("viathe" . A_EndChar)
@@ -78802,14 +65162,6 @@
     }
     SendText("via the" . A_EndChar)
     AC_Reg("viathe", "via the")
-}
-:C:vice principle::{
-    if AC_IsDisabled("vice principle") {
-        SendText("vice principle" . A_EndChar)
-        return
-    }
-    SendText("vice principal" . A_EndChar)
-    AC_Reg("vice principle", "vice principal")
 }
 :C:vicuna::{
     if AC_IsDisabled("vicuna") {
@@ -78907,14 +65259,6 @@
     SendText("villi" . A_EndChar)
     AC_Reg("villin", "villi")
 }
-:C:vin rose::{
-    if AC_IsDisabled("vin rose") {
-        SendText("vin rose" . A_EndChar)
-        return
-    }
-    SendText("vin rosé" . A_EndChar)
-    AC_Reg("vin rose", "vin rosé")
-}
 :C:vincinit::{
     if AC_IsDisabled("vincinit") {
         SendText("vincinit" . A_EndChar)
@@ -78938,14 +65282,6 @@
     }
     SendText("ving" . A_EndChar)
     AC_Reg("vinf", "ving")
-}
-:C:vins rose::{
-    if AC_IsDisabled("vins rose") {
-        SendText("vins rose" . A_EndChar)
-        return
-    }
-    SendText("vins rosé" . A_EndChar)
-    AC_Reg("vins rose", "vins rosé")
 }
 :C:violentce::{
     if AC_IsDisabled("violentce") {
@@ -78979,22 +65315,6 @@
     SendText("virtually" . A_EndChar)
     AC_Reg("virutally", "virtually")
 }
-:C:vis a vis::{
-    if AC_IsDisabled("vis a vis") {
-        SendText("vis a vis" . A_EndChar)
-        return
-    }
-    SendText("vis à vis" . A_EndChar)
-    AC_Reg("vis a vis", "vis à vis")
-}
-:C:vis-a-vis::{
-    if AC_IsDisabled("vis-a-vis") {
-        SendText("vis-a-vis" . A_EndChar)
-        return
-    }
-    SendText("vis-à-vis" . A_EndChar)
-    AC_Reg("vis-a-vis", "vis-à-vis")
-}
 :C:visabl::{
     if AC_IsDisabled("visabl") {
         SendText("visabl" . A_EndChar)
@@ -79018,14 +65338,6 @@
     }
     SendText("visibly" . A_EndChar)
     AC_Reg("visably", "visibly")
-}
-:C:vise versa::{
-    if AC_IsDisabled("vise versa") {
-        SendText("vise versa" . A_EndChar)
-        return
-    }
-    SendText("vice versa" . A_EndChar)
-    AC_Reg("vise versa", "vice versa")
 }
 :C:visial::{
     if AC_IsDisabled("visial") {
@@ -79178,14 +65490,6 @@
     }
     SendText("vant" . A_EndChar)
     AC_Reg("vnat", "vant")
-}
-:C:vocal chord::{
-    if AC_IsDisabled("vocal chord") {
-        SendText("vocal chord" . A_EndChar)
-        return
-    }
-    SendText("vocal cord" . A_EndChar)
-    AC_Reg("vocal chord", "vocal cord")
 }
 :C:voidemail::{
     if AC_IsDisabled("voidemail") {
@@ -79443,14 +65747,6 @@
     SendText("vies" . A_EndChar)
     AC_Reg("vys", "vies")
 }
-:C:wa snot::{
-    if AC_IsDisabled("wa snot") {
-        SendText("wa snot" . A_EndChar)
-        return
-    }
-    SendText("was not" . A_EndChar)
-    AC_Reg("wa snot", "was not")
-}
 :C:waer::{
     if AC_IsDisabled("waer") {
         SendText("waer" . A_EndChar)
@@ -79499,94 +65795,6 @@
     SendText("what" . A_EndChar)
     AC_Reg("waht", "what")
 }
-:C:waist effort::{
-    if AC_IsDisabled("waist effort") {
-        SendText("waist effort" . A_EndChar)
-        return
-    }
-    SendText("waste effort" . A_EndChar)
-    AC_Reg("waist effort", "waste effort")
-}
-:C:waist of::{
-    if AC_IsDisabled("waist of") {
-        SendText("waist of" . A_EndChar)
-        return
-    }
-    SendText("waste of" . A_EndChar)
-    AC_Reg("waist of", "waste of")
-}
-:C:waist resources::{
-    if AC_IsDisabled("waist resources") {
-        SendText("waist resources" . A_EndChar)
-        return
-    }
-    SendText("waste resources" . A_EndChar)
-    AC_Reg("waist resources", "waste resources")
-}
-:C:waist space::{
-    if AC_IsDisabled("waist space") {
-        SendText("waist space" . A_EndChar)
-        return
-    }
-    SendText("waste space" . A_EndChar)
-    AC_Reg("waist space", "waste space")
-}
-:C:waist time::{
-    if AC_IsDisabled("waist time") {
-        SendText("waist time" . A_EndChar)
-        return
-    }
-    SendText("waste time" . A_EndChar)
-    AC_Reg("waist time", "waste time")
-}
-:C:waisting energy::{
-    if AC_IsDisabled("waisting energy") {
-        SendText("waisting energy" . A_EndChar)
-        return
-    }
-    SendText("wasting energy" . A_EndChar)
-    AC_Reg("waisting energy", "wasting energy")
-}
-:C:waisting opportunities::{
-    if AC_IsDisabled("waisting opportunities") {
-        SendText("waisting opportunities" . A_EndChar)
-        return
-    }
-    SendText("wasting opportunities" . A_EndChar)
-    AC_Reg("waisting opportunities", "wasting opportunities")
-}
-:C:waisting time::{
-    if AC_IsDisabled("waisting time") {
-        SendText("waisting time" . A_EndChar)
-        return
-    }
-    SendText("wasting time" . A_EndChar)
-    AC_Reg("waisting time", "wasting time")
-}
-:C:waive goodbye::{
-    if AC_IsDisabled("waive goodbye") {
-        SendText("waive goodbye" . A_EndChar)
-        return
-    }
-    SendText("wave goodbye" . A_EndChar)
-    AC_Reg("waive goodbye", "wave goodbye")
-}
-:C:waived off::{
-    if AC_IsDisabled("waived off") {
-        SendText("waived off" . A_EndChar)
-        return
-    }
-    SendText("waved off" . A_EndChar)
-    AC_Reg("waived off", "waved off")
-}
-:C:wan tit::{
-    if AC_IsDisabled("wan tit") {
-        SendText("wan tit" . A_EndChar)
-        return
-    }
-    SendText("want it" . A_EndChar)
-    AC_Reg("wan tit", "want it")
-}
 :C:wanna::{
     if AC_IsDisabled("wanna") {
         SendText("wanna" . A_EndChar)
@@ -79619,30 +65827,6 @@
     SendText("wardrobe" . A_EndChar)
     AC_Reg("wardobe", "wardrobe")
 }
-:C:warn away::{
-    if AC_IsDisabled("warn away") {
-        SendText("warn away" . A_EndChar)
-        return
-    }
-    SendText("worn away" . A_EndChar)
-    AC_Reg("warn away", "worn away")
-}
-:C:warn down::{
-    if AC_IsDisabled("warn down") {
-        SendText("warn down" . A_EndChar)
-        return
-    }
-    SendText("worn down" . A_EndChar)
-    AC_Reg("warn down", "worn down")
-}
-:C:warn out::{
-    if AC_IsDisabled("warn out") {
-        SendText("warn out" . A_EndChar)
-        return
-    }
-    SendText("worn out" . A_EndChar)
-    AC_Reg("warn out", "worn out")
-}
 :C:warrent::{
     if AC_IsDisabled("warrent") {
         SendText("warrent" . A_EndChar)
@@ -79658,430 +65842,6 @@
     }
     SendText("warriors" . A_EndChar)
     AC_Reg("warrriors", "warriors")
-}
-:C:was apart of::{
-    if AC_IsDisabled("was apart of") {
-        SendText("was apart of" . A_EndChar)
-        return
-    }
-    SendText("was a part of" . A_EndChar)
-    AC_Reg("was apart of", "was a part of")
-}
-:C:was been::{
-    if AC_IsDisabled("was been") {
-        SendText("was been" . A_EndChar)
-        return
-    }
-    SendText("has been" . A_EndChar)
-    AC_Reg("was been", "has been")
-}
-:C:was began::{
-    if AC_IsDisabled("was began") {
-        SendText("was began" . A_EndChar)
-        return
-    }
-    SendText("began" . A_EndChar)
-    AC_Reg("was began", "began")
-}
-:C:was build::{
-    if AC_IsDisabled("was build") {
-        SendText("was build" . A_EndChar)
-        return
-    }
-    SendText("was built" . A_EndChar)
-    AC_Reg("was build", "was built")
-}
-:C:was cable of::{
-    if AC_IsDisabled("was cable of") {
-        SendText("was cable of" . A_EndChar)
-        return
-    }
-    SendText("was capable of" . A_EndChar)
-    AC_Reg("was cable of", "was capable of")
-}
-:C:was cutoff::{
-    if AC_IsDisabled("was cutoff") {
-        SendText("was cutoff" . A_EndChar)
-        return
-    }
-    SendText("was cut off" . A_EndChar)
-    AC_Reg("was cutoff", "was cut off")
-}
-:C:was do to::{
-    if AC_IsDisabled("was do to") {
-        SendText("was do to" . A_EndChar)
-        return
-    }
-    SendText("was due to" . A_EndChar)
-    AC_Reg("was do to", "was due to")
-}
-:C:was drank::{
-    if AC_IsDisabled("was drank") {
-        SendText("was drank" . A_EndChar)
-        return
-    }
-    SendText("was drunk" . A_EndChar)
-    AC_Reg("was drank", "was drunk")
-}
-:C:was establish::{
-    if AC_IsDisabled("was establish") {
-        SendText("was establish" . A_EndChar)
-        return
-    }
-    SendText("was established" . A_EndChar)
-    AC_Reg("was establish", "was established")
-}
-:C:was extend::{
-    if AC_IsDisabled("was extend") {
-        SendText("was extend" . A_EndChar)
-        return
-    }
-    SendText("was extended" . A_EndChar)
-    AC_Reg("was extend", "was extended")
-}
-:C:was it's::{
-    if AC_IsDisabled("was it's") {
-        SendText("was it's" . A_EndChar)
-        return
-    }
-    SendText("was its" . A_EndChar)
-    AC_Reg("was it's", "was its")
-}
-:C:was knew::{
-    if AC_IsDisabled("was knew") {
-        SendText("was knew" . A_EndChar)
-        return
-    }
-    SendText("was known" . A_EndChar)
-    AC_Reg("was knew", "was known")
-}
-:C:was know::{
-    if AC_IsDisabled("was know") {
-        SendText("was know" . A_EndChar)
-        return
-    }
-    SendText("was known" . A_EndChar)
-    AC_Reg("was know", "was known")
-}
-:C:was lain::{
-    if AC_IsDisabled("was lain") {
-        SendText("was lain" . A_EndChar)
-        return
-    }
-    SendText("was laid" . A_EndChar)
-    AC_Reg("was lain", "was laid")
-}
-:C:was laying on::{
-    if AC_IsDisabled("was laying on") {
-        SendText("was laying on" . A_EndChar)
-        return
-    }
-    SendText("was lying on" . A_EndChar)
-    AC_Reg("was laying on", "was lying on")
-}
-:C:was lead by::{
-    if AC_IsDisabled("was lead by") {
-        SendText("was lead by" . A_EndChar)
-        return
-    }
-    SendText("was led by" . A_EndChar)
-    AC_Reg("was lead by", "was led by")
-}
-:C:was lead to::{
-    if AC_IsDisabled("was lead to") {
-        SendText("was lead to" . A_EndChar)
-        return
-    }
-    SendText("was led to" . A_EndChar)
-    AC_Reg("was lead to", "was led to")
-}
-:C:was leaded by::{
-    if AC_IsDisabled("was leaded by") {
-        SendText("was leaded by" . A_EndChar)
-        return
-    }
-    SendText("was led by" . A_EndChar)
-    AC_Reg("was leaded by", "was led by")
-}
-:C:was loathe to::{
-    if AC_IsDisabled("was loathe to") {
-        SendText("was loathe to" . A_EndChar)
-        return
-    }
-    SendText("was loath to" . A_EndChar)
-    AC_Reg("was loathe to", "was loath to")
-}
-:C:was loathed to::{
-    if AC_IsDisabled("was loathed to") {
-        SendText("was loathed to" . A_EndChar)
-        return
-    }
-    SendText("was loath to" . A_EndChar)
-    AC_Reg("was loathed to", "was loath to")
-}
-:C:was meet by::{
-    if AC_IsDisabled("was meet by") {
-        SendText("was meet by" . A_EndChar)
-        return
-    }
-    SendText("was met by" . A_EndChar)
-    AC_Reg("was meet by", "was met by")
-}
-:C:was meet with::{
-    if AC_IsDisabled("was meet with") {
-        SendText("was meet with" . A_EndChar)
-        return
-    }
-    SendText("was met with" . A_EndChar)
-    AC_Reg("was meet with", "was met with")
-}
-:C:was mislead::{
-    if AC_IsDisabled("was mislead") {
-        SendText("was mislead" . A_EndChar)
-        return
-    }
-    SendText("was misled" . A_EndChar)
-    AC_Reg("was mislead", "was misled")
-}
-:C:was ran::{
-    if AC_IsDisabled("was ran") {
-        SendText("was ran" . A_EndChar)
-        return
-    }
-    SendText("was run" . A_EndChar)
-    AC_Reg("was ran", "was run")
-}
-:C:was rebuild::{
-    if AC_IsDisabled("was rebuild") {
-        SendText("was rebuild" . A_EndChar)
-        return
-    }
-    SendText("was rebuilt" . A_EndChar)
-    AC_Reg("was rebuild", "was rebuilt")
-}
-:C:was release by::{
-    if AC_IsDisabled("was release by") {
-        SendText("was release by" . A_EndChar)
-        return
-    }
-    SendText("was released by" . A_EndChar)
-    AC_Reg("was release by", "was released by")
-}
-:C:was release on::{
-    if AC_IsDisabled("was release on") {
-        SendText("was release on" . A_EndChar)
-        return
-    }
-    SendText("was released on" . A_EndChar)
-    AC_Reg("was release on", "was released on")
-}
-:C:was reran::{
-    if AC_IsDisabled("was reran") {
-        SendText("was reran" . A_EndChar)
-        return
-    }
-    SendText("was rerun" . A_EndChar)
-    AC_Reg("was reran", "was rerun")
-}
-:C:was rode::{
-    if AC_IsDisabled("was rode") {
-        SendText("was rode" . A_EndChar)
-        return
-    }
-    SendText("was ridden" . A_EndChar)
-    AC_Reg("was rode", "was ridden")
-}
-:C:was sang::{
-    if AC_IsDisabled("was sang") {
-        SendText("was sang" . A_EndChar)
-        return
-    }
-    SendText("was sung" . A_EndChar)
-    AC_Reg("was sang", "was sung")
-}
-:C:was schedule to::{
-    if AC_IsDisabled("was schedule to") {
-        SendText("was schedule to" . A_EndChar)
-        return
-    }
-    SendText("was scheduled to" . A_EndChar)
-    AC_Reg("was schedule to", "was scheduled to")
-}
-:C:was send::{
-    if AC_IsDisabled("was send") {
-        SendText("was send" . A_EndChar)
-        return
-    }
-    SendText("was sent" . A_EndChar)
-    AC_Reg("was send", "was sent")
-}
-:C:was sentence to::{
-    if AC_IsDisabled("was sentence to") {
-        SendText("was sentence to" . A_EndChar)
-        return
-    }
-    SendText("was sentenced to" . A_EndChar)
-    AC_Reg("was sentence to", "was sentenced to")
-}
-:C:was set-up::{
-    if AC_IsDisabled("was set-up") {
-        SendText("was set-up" . A_EndChar)
-        return
-    }
-    SendText("was set up" . A_EndChar)
-    AC_Reg("was set-up", "was set up")
-}
-:C:was setup::{
-    if AC_IsDisabled("was setup") {
-        SendText("was setup" . A_EndChar)
-        return
-    }
-    SendText("was set up" . A_EndChar)
-    AC_Reg("was setup", "was set up")
-}
-:C:was shook::{
-    if AC_IsDisabled("was shook") {
-        SendText("was shook" . A_EndChar)
-        return
-    }
-    SendText("was shaken" . A_EndChar)
-    AC_Reg("was shook", "was shaken")
-}
-:C:was shoot::{
-    if AC_IsDisabled("was shoot") {
-        SendText("was shoot" . A_EndChar)
-        return
-    }
-    SendText("was shot" . A_EndChar)
-    AC_Reg("was shoot", "was shot")
-}
-:C:was show by::{
-    if AC_IsDisabled("was show by") {
-        SendText("was show by" . A_EndChar)
-        return
-    }
-    SendText("was shown by" . A_EndChar)
-    AC_Reg("was show by", "was shown by")
-}
-:C:was show on::{
-    if AC_IsDisabled("was show on") {
-        SendText("was show on" . A_EndChar)
-        return
-    }
-    SendText("was shown on" . A_EndChar)
-    AC_Reg("was show on", "was shown on")
-}
-:C:was showed::{
-    if AC_IsDisabled("was showed") {
-        SendText("was showed" . A_EndChar)
-        return
-    }
-    SendText("was shown" . A_EndChar)
-    AC_Reg("was showed", "was shown")
-}
-:C:was shut-off::{
-    if AC_IsDisabled("was shut-off") {
-        SendText("was shut-off" . A_EndChar)
-        return
-    }
-    SendText("was shut off" . A_EndChar)
-    AC_Reg("was shut-off", "was shut off")
-}
-:C:was shutdown::{
-    if AC_IsDisabled("was shutdown") {
-        SendText("was shutdown" . A_EndChar)
-        return
-    }
-    SendText("was shut down" . A_EndChar)
-    AC_Reg("was shutdown", "was shut down")
-}
-:C:was shutoff::{
-    if AC_IsDisabled("was shutoff") {
-        SendText("was shutoff" . A_EndChar)
-        return
-    }
-    SendText("was shut off" . A_EndChar)
-    AC_Reg("was shutoff", "was shut off")
-}
-:C:was shutout::{
-    if AC_IsDisabled("was shutout") {
-        SendText("was shutout" . A_EndChar)
-        return
-    }
-    SendText("was shut out" . A_EndChar)
-    AC_Reg("was shutout", "was shut out")
-}
-:C:was sold-out::{
-    if AC_IsDisabled("was sold-out") {
-        SendText("was sold-out" . A_EndChar)
-        return
-    }
-    SendText("was sold out" . A_EndChar)
-    AC_Reg("was sold-out", "was sold out")
-}
-:C:was spend::{
-    if AC_IsDisabled("was spend") {
-        SendText("was spend" . A_EndChar)
-        return
-    }
-    SendText("was spent" . A_EndChar)
-    AC_Reg("was spend", "was spent")
-}
-:C:was succeed by::{
-    if AC_IsDisabled("was succeed by") {
-        SendText("was succeed by" . A_EndChar)
-        return
-    }
-    SendText("was succeeded by" . A_EndChar)
-    AC_Reg("was succeed by", "was succeeded by")
-}
-:C:was suppose to::{
-    if AC_IsDisabled("was suppose to") {
-        SendText("was suppose to" . A_EndChar)
-        return
-    }
-    SendText("was supposed to" . A_EndChar)
-    AC_Reg("was suppose to", "was supposed to")
-}
-:C:was the dominate::{
-    if AC_IsDisabled("was the dominate") {
-        SendText("was the dominate" . A_EndChar)
-        return
-    }
-    SendText("was the dominant" . A_EndChar)
-    AC_Reg("was the dominate", "was the dominant")
-}
-:C:was though that::{
-    if AC_IsDisabled("was though that") {
-        SendText("was though that" . A_EndChar)
-        return
-    }
-    SendText("was thought that" . A_EndChar)
-    AC_Reg("was though that", "was thought that")
-}
-:C:was tore::{
-    if AC_IsDisabled("was tore") {
-        SendText("was tore" . A_EndChar)
-        return
-    }
-    SendText("was torn" . A_EndChar)
-    AC_Reg("was tore", "was torn")
-}
-:C:was use to::{
-    if AC_IsDisabled("was use to") {
-        SendText("was use to" . A_EndChar)
-        return
-    }
-    SendText("was used to" . A_EndChar)
-    AC_Reg("was use to", "was used to")
-}
-:C:was wrote::{
-    if AC_IsDisabled("was wrote") {
-        SendText("was wrote" . A_EndChar)
-        return
-    }
-    SendText("was written" . A_EndChar)
-    AC_Reg("was wrote", "was written")
 }
 :C:wasn'nt::{
     if AC_IsDisabled("wasn'nt") {
@@ -80107,14 +65867,6 @@
     SendText("was" . A_EndChar)
     AC_Reg("wass", "was")
 }
-:C:waste deep in::{
-    if AC_IsDisabled("waste deep in") {
-        SendText("waste deep in" . A_EndChar)
-        return
-    }
-    SendText("waist deep in" . A_EndChar)
-    AC_Reg("waste deep in", "waist deep in")
-}
 :C:wasy::{
     if AC_IsDisabled("wasy") {
         SendText("wasy" . A_EndChar)
@@ -80139,30 +65891,6 @@
     SendText("way" . A_EndChar)
     AC_Reg("waty", "way")
 }
-:C:way fare::{
-    if AC_IsDisabled("way fare") {
-        SendText("way fare" . A_EndChar)
-        return
-    }
-    SendText("wayfare" . A_EndChar)
-    AC_Reg("way fare", "wayfare")
-}
-:C:way side::{
-    if AC_IsDisabled("way side") {
-        SendText("way side" . A_EndChar)
-        return
-    }
-    SendText("wayside" . A_EndChar)
-    AC_Reg("way side", "wayside")
-}
-:C:way the odds::{
-    if AC_IsDisabled("way the odds") {
-        SendText("way the odds" . A_EndChar)
-        return
-    }
-    SendText("weigh the odds" . A_EndChar)
-    AC_Reg("way the odds", "weigh the odds")
-}
 :C:wayword::{
     if AC_IsDisabled("wayword") {
         SendText("wayword" . A_EndChar)
@@ -80170,14 +65898,6 @@
     }
     SendText("wayward" . A_EndChar)
     AC_Reg("wayword", "wayward")
-}
-:C:we;d::{
-    if AC_IsDisabled("we;d") {
-        SendText("we;d" . A_EndChar)
-        return
-    }
-    SendText("we'd" . A_EndChar)
-    AC_Reg("we;d", "we'd")
 }
 :C:weaponar::{
     if AC_IsDisabled("weaponar") {
@@ -80195,14 +65915,6 @@
     SendText("weaponry" . A_EndChar)
     AC_Reg("weaponary", "weaponry")
 }
-:C:wear ever::{
-    if AC_IsDisabled("wear ever") {
-        SendText("wear ever" . A_EndChar)
-        return
-    }
-    SendText("wherever" . A_EndChar)
-    AC_Reg("wear ever", "wherever")
-}
 :C:weas::{
     if AC_IsDisabled("weas") {
         SendText("weas" . A_EndChar)
@@ -80218,142 +65930,6 @@
     }
     SendText("wealth" . A_EndChar)
     AC_Reg("weath", "wealth")
-}
-:C:weather backup::{
-    if AC_IsDisabled("weather backup") {
-        SendText("weather backup" . A_EndChar)
-        return
-    }
-    SendText("whether backup" . A_EndChar)
-    AC_Reg("weather backup", "whether backup")
-}
-:C:weather balanced::{
-    if AC_IsDisabled("weather balanced") {
-        SendText("weather balanced" . A_EndChar)
-        return
-    }
-    SendText("whether balanced" . A_EndChar)
-    AC_Reg("weather balanced", "whether balanced")
-}
-:C:weather committed::{
-    if AC_IsDisabled("weather committed") {
-        SendText("weather committed" . A_EndChar)
-        return
-    }
-    SendText("whether committed" . A_EndChar)
-    AC_Reg("weather committed", "whether committed")
-}
-:C:weather disciplined::{
-    if AC_IsDisabled("weather disciplined") {
-        SendText("weather disciplined" . A_EndChar)
-        return
-    }
-    SendText("whether disciplined" . A_EndChar)
-    AC_Reg("weather disciplined", "whether disciplined")
-}
-:C:weather efficient::{
-    if AC_IsDisabled("weather efficient") {
-        SendText("weather efficient" . A_EndChar)
-        return
-    }
-    SendText("whether efficient" . A_EndChar)
-    AC_Reg("weather efficient", "whether efficient")
-}
-:C:weather eligible::{
-    if AC_IsDisabled("weather eligible") {
-        SendText("weather eligible" . A_EndChar)
-        return
-    }
-    SendText("whether eligible" . A_EndChar)
-    AC_Reg("weather eligible", "whether eligible")
-}
-:C:weather focused::{
-    if AC_IsDisabled("weather focused") {
-        SendText("weather focused" . A_EndChar)
-        return
-    }
-    SendText("whether focused" . A_EndChar)
-    AC_Reg("weather focused", "whether focused")
-}
-:C:weather its right::{
-    if AC_IsDisabled("weather its right") {
-        SendText("weather its right" . A_EndChar)
-        return
-    }
-    SendText("whether it's right" . A_EndChar)
-    AC_Reg("weather its right", "whether it's right")
-}
-:C:weather its true::{
-    if AC_IsDisabled("weather its true") {
-        SendText("weather its true" . A_EndChar)
-        return
-    }
-    SendText("whether it's true" . A_EndChar)
-    AC_Reg("weather its true", "whether it's true")
-}
-:C:weather or not::{
-    if AC_IsDisabled("weather or not") {
-        SendText("weather or not" . A_EndChar)
-        return
-    }
-    SendText("whether or not" . A_EndChar)
-    AC_Reg("weather or not", "whether or not")
-}
-:C:weather organized::{
-    if AC_IsDisabled("weather organized") {
-        SendText("weather organized" . A_EndChar)
-        return
-    }
-    SendText("whether organized" . A_EndChar)
-    AC_Reg("weather organized", "whether organized")
-}
-:C:weather prepared::{
-    if AC_IsDisabled("weather prepared") {
-        SendText("weather prepared" . A_EndChar)
-        return
-    }
-    SendText("whether prepared" . A_EndChar)
-    AC_Reg("weather prepared", "whether prepared")
-}
-:C:weather ready::{
-    if AC_IsDisabled("weather ready") {
-        SendText("weather ready" . A_EndChar)
-        return
-    }
-    SendText("whether ready" . A_EndChar)
-    AC_Reg("weather ready", "whether ready")
-}
-:C:weather remote::{
-    if AC_IsDisabled("weather remote") {
-        SendText("weather remote" . A_EndChar)
-        return
-    }
-    SendText("whether remote" . A_EndChar)
-    AC_Reg("weather remote", "whether remote")
-}
-:C:weather that works::{
-    if AC_IsDisabled("weather that works") {
-        SendText("weather that works" . A_EndChar)
-        return
-    }
-    SendText("whether that works" . A_EndChar)
-    AC_Reg("weather that works", "whether that works")
-}
-:C:weather this works::{
-    if AC_IsDisabled("weather this works") {
-        SendText("weather this works" . A_EndChar)
-        return
-    }
-    SendText("whether this works" . A_EndChar)
-    AC_Reg("weather this works", "whether this works")
-}
-:C:weather to update::{
-    if AC_IsDisabled("weather to update") {
-        SendText("weather to update" . A_EndChar)
-        return
-    }
-    SendText("whether to update" . A_EndChar)
-    AC_Reg("weather to update", "whether to update")
 }
 :C:wednesday::{
     if AC_IsDisabled("wednesday") {
@@ -80387,214 +65963,6 @@
     SendText("when" . A_EndChar)
     AC_Reg("wehn", "when")
 }
-:C:weight a minute::{
-    if AC_IsDisabled("weight a minute") {
-        SendText("weight a minute" . A_EndChar)
-        return
-    }
-    SendText("wait a minute" . A_EndChar)
-    AC_Reg("weight a minute", "wait a minute")
-}
-:C:weight and see::{
-    if AC_IsDisabled("weight and see") {
-        SendText("weight and see" . A_EndChar)
-        return
-    }
-    SendText("wait and see" . A_EndChar)
-    AC_Reg("weight and see", "wait and see")
-}
-:C:weight around::{
-    if AC_IsDisabled("weight around") {
-        SendText("weight around" . A_EndChar)
-        return
-    }
-    SendText("wait around" . A_EndChar)
-    AC_Reg("weight around", "wait around")
-}
-:C:weight for darkness::{
-    if AC_IsDisabled("weight for darkness") {
-        SendText("weight for darkness" . A_EndChar)
-        return
-    }
-    SendText("wait for darkness" . A_EndChar)
-    AC_Reg("weight for darkness", "wait for darkness")
-}
-:C:weight for dawn::{
-    if AC_IsDisabled("weight for dawn") {
-        SendText("weight for dawn" . A_EndChar)
-        return
-    }
-    SendText("wait for dawn" . A_EndChar)
-    AC_Reg("weight for dawn", "wait for dawn")
-}
-:C:weight for dinner::{
-    if AC_IsDisabled("weight for dinner") {
-        SendText("weight for dinner" . A_EndChar)
-        return
-    }
-    SendText("wait for dinner" . A_EndChar)
-    AC_Reg("weight for dinner", "wait for dinner")
-}
-:C:weight for help::{
-    if AC_IsDisabled("weight for help") {
-        SendText("weight for help" . A_EndChar)
-        return
-    }
-    SendText("wait for help" . A_EndChar)
-    AC_Reg("weight for help", "wait for help")
-}
-:C:weight for it::{
-    if AC_IsDisabled("weight for it") {
-        SendText("weight for it" . A_EndChar)
-        return
-    }
-    SendText("wait for it" . A_EndChar)
-    AC_Reg("weight for it", "wait for it")
-}
-:C:weight for me::{
-    if AC_IsDisabled("weight for me") {
-        SendText("weight for me" . A_EndChar)
-        return
-    }
-    SendText("wait for me" . A_EndChar)
-    AC_Reg("weight for me", "wait for me")
-}
-:C:weight for morning::{
-    if AC_IsDisabled("weight for morning") {
-        SendText("weight for morning" . A_EndChar)
-        return
-    }
-    SendText("wait for morning" . A_EndChar)
-    AC_Reg("weight for morning", "wait for morning")
-}
-:C:weight for news::{
-    if AC_IsDisabled("weight for news") {
-        SendText("weight for news" . A_EndChar)
-        return
-    }
-    SendText("wait for news" . A_EndChar)
-    AC_Reg("weight for news", "wait for news")
-}
-:C:weight for signs::{
-    if AC_IsDisabled("weight for signs") {
-        SendText("weight for signs" . A_EndChar)
-        return
-    }
-    SendText("wait for signs" . A_EndChar)
-    AC_Reg("weight for signs", "wait for signs")
-}
-:C:weight for spring::{
-    if AC_IsDisabled("weight for spring") {
-        SendText("weight for spring" . A_EndChar)
-        return
-    }
-    SendText("wait for spring" . A_EndChar)
-    AC_Reg("weight for spring", "wait for spring")
-}
-:C:weight for sunset::{
-    if AC_IsDisabled("weight for sunset") {
-        SendText("weight for sunset" . A_EndChar)
-        return
-    }
-    SendText("wait for sunset" . A_EndChar)
-    AC_Reg("weight for sunset", "wait for sunset")
-}
-:C:weight in line::{
-    if AC_IsDisabled("weight in line") {
-        SendText("weight in line" . A_EndChar)
-        return
-    }
-    SendText("wait in line" . A_EndChar)
-    AC_Reg("weight in line", "wait in line")
-}
-:C:weight in silence::{
-    if AC_IsDisabled("weight in silence") {
-        SendText("weight in silence" . A_EndChar)
-        return
-    }
-    SendText("wait in silence" . A_EndChar)
-    AC_Reg("weight in silence", "wait in silence")
-}
-:C:weight in the balance::{
-    if AC_IsDisabled("weight in the balance") {
-        SendText("weight in the balance" . A_EndChar)
-        return
-    }
-    SendText("wait in the balance" . A_EndChar)
-    AC_Reg("weight in the balance", "wait in the balance")
-}
-:C:weight in the wings::{
-    if AC_IsDisabled("weight in the wings") {
-        SendText("weight in the wings" . A_EndChar)
-        return
-    }
-    SendText("wait in the wings" . A_EndChar)
-    AC_Reg("weight in the wings", "wait in the wings")
-}
-:C:weight it down::{
-    if AC_IsDisabled("weight it down") {
-        SendText("weight it down" . A_EndChar)
-        return
-    }
-    SendText("wait it down" . A_EndChar)
-    AC_Reg("weight it down", "wait it down")
-}
-:C:weight it out::{
-    if AC_IsDisabled("weight it out") {
-        SendText("weight it out" . A_EndChar)
-        return
-    }
-    SendText("wait it out" . A_EndChar)
-    AC_Reg("weight it out", "wait it out")
-}
-:C:weight it through::{
-    if AC_IsDisabled("weight it through") {
-        SendText("weight it through" . A_EndChar)
-        return
-    }
-    SendText("wait it through" . A_EndChar)
-    AC_Reg("weight it through", "wait it through")
-}
-:C:weight list::{
-    if AC_IsDisabled("weight list") {
-        SendText("weight list" . A_EndChar)
-        return
-    }
-    SendText("wait list" . A_EndChar)
-    AC_Reg("weight list", "wait list")
-}
-:C:weight loss::{
-    if AC_IsDisabled("weight loss") {
-        SendText("weight loss" . A_EndChar)
-        return
-    }
-    SendText("wait loss" . A_EndChar)
-    AC_Reg("weight loss", "wait loss")
-}
-:C:weight your chance::{
-    if AC_IsDisabled("weight your chance") {
-        SendText("weight your chance" . A_EndChar)
-        return
-    }
-    SendText("wait your chance" . A_EndChar)
-    AC_Reg("weight your chance", "wait your chance")
-}
-:C:weight your turn::{
-    if AC_IsDisabled("weight your turn") {
-        SendText("weight your turn" . A_EndChar)
-        return
-    }
-    SendText("wait your turn" . A_EndChar)
-    AC_Reg("weight your turn", "wait your turn")
-}
-:C:weighting around::{
-    if AC_IsDisabled("weighting around") {
-        SendText("weighting around" . A_EndChar)
-        return
-    }
-    SendText("waiting around" . A_EndChar)
-    AC_Reg("weighting around", "waiting around")
-}
 :C:weild::{
     if AC_IsDisabled("weild") {
         SendText("weild" . A_EndChar)
@@ -80618,22 +65986,6 @@
     }
     SendText("wiest" . A_EndChar)
     AC_Reg("weist", "wiest")
-}
-:C:well bred::{
-    if AC_IsDisabled("well bred") {
-        SendText("well bred" . A_EndChar)
-        return
-    }
-    SendText("well-bred" . A_EndChar)
-    AC_Reg("well bred", "well-bred")
-}
-:C:well know::{
-    if AC_IsDisabled("well know") {
-        SendText("well know" . A_EndChar)
-        return
-    }
-    SendText("well known" . A_EndChar)
-    AC_Reg("well know", "well known")
 }
 :C:welsome::{
     if AC_IsDisabled("welsome") {
@@ -80659,22 +66011,6 @@
     SendText("Wednesday" . A_EndChar)
     AC_Reg("wensday", "Wednesday")
 }
-:C:went rouge::{
-    if AC_IsDisabled("went rouge") {
-        SendText("went rouge" . A_EndChar)
-        return
-    }
-    SendText("went rogue" . A_EndChar)
-    AC_Reg("went rouge", "went rogue")
-}
-:C:went threw::{
-    if AC_IsDisabled("went threw") {
-        SendText("went threw" . A_EndChar)
-        return
-    }
-    SendText("went through" . A_EndChar)
-    AC_Reg("went threw", "went through")
-}
 :C:wepth::{
     if AC_IsDisabled("wepth") {
         SendText("wepth" . A_EndChar)
@@ -80682,294 +66018,6 @@
     }
     SendText("wept" . A_EndChar)
     AC_Reg("wepth", "wept")
-}
-:C:were apart of::{
-    if AC_IsDisabled("were apart of") {
-        SendText("were apart of" . A_EndChar)
-        return
-    }
-    SendText("were a part of" . A_EndChar)
-    AC_Reg("were apart of", "were a part of")
-}
-:C:were began::{
-    if AC_IsDisabled("were began") {
-        SendText("were began" . A_EndChar)
-        return
-    }
-    SendText("were begun" . A_EndChar)
-    AC_Reg("were began", "were begun")
-}
-:C:were build::{
-    if AC_IsDisabled("were build") {
-        SendText("were build" . A_EndChar)
-        return
-    }
-    SendText("were built" . A_EndChar)
-    AC_Reg("were build", "were built")
-}
-:C:were cutoff::{
-    if AC_IsDisabled("were cutoff") {
-        SendText("were cutoff" . A_EndChar)
-        return
-    }
-    SendText("were cut off" . A_EndChar)
-    AC_Reg("were cutoff", "were cut off")
-}
-:C:were drew::{
-    if AC_IsDisabled("were drew") {
-        SendText("were drew" . A_EndChar)
-        return
-    }
-    SendText("were drawn" . A_EndChar)
-    AC_Reg("were drew", "were drawn")
-}
-:C:were he was::{
-    if AC_IsDisabled("were he was") {
-        SendText("were he was" . A_EndChar)
-        return
-    }
-    SendText("where he was" . A_EndChar)
-    AC_Reg("were he was", "where he was")
-}
-:C:were it was::{
-    if AC_IsDisabled("were it was") {
-        SendText("were it was" . A_EndChar)
-        return
-    }
-    SendText("where it was" . A_EndChar)
-    AC_Reg("were it was", "where it was")
-}
-:C:were it's::{
-    if AC_IsDisabled("were it's") {
-        SendText("were it's" . A_EndChar)
-        return
-    }
-    SendText("were its" . A_EndChar)
-    AC_Reg("were it's", "were its")
-}
-:C:were knew::{
-    if AC_IsDisabled("were knew") {
-        SendText("were knew" . A_EndChar)
-        return
-    }
-    SendText("were known" . A_EndChar)
-    AC_Reg("were knew", "were known")
-}
-:C:were know::{
-    if AC_IsDisabled("were know") {
-        SendText("were know" . A_EndChar)
-        return
-    }
-    SendText("were known" . A_EndChar)
-    AC_Reg("were know", "were known")
-}
-:C:were lain::{
-    if AC_IsDisabled("were lain") {
-        SendText("were lain" . A_EndChar)
-        return
-    }
-    SendText("were laid" . A_EndChar)
-    AC_Reg("were lain", "were laid")
-}
-:C:were lead by::{
-    if AC_IsDisabled("were lead by") {
-        SendText("were lead by" . A_EndChar)
-        return
-    }
-    SendText("were led by" . A_EndChar)
-    AC_Reg("were lead by", "were led by")
-}
-:C:were loathe to::{
-    if AC_IsDisabled("were loathe to") {
-        SendText("were loathe to" . A_EndChar)
-        return
-    }
-    SendText("were loath to" . A_EndChar)
-    AC_Reg("were loathe to", "were loath to")
-}
-:C:were meet by::{
-    if AC_IsDisabled("were meet by") {
-        SendText("were meet by" . A_EndChar)
-        return
-    }
-    SendText("were met by" . A_EndChar)
-    AC_Reg("were meet by", "were met by")
-}
-:C:were meet with::{
-    if AC_IsDisabled("were meet with") {
-        SendText("were meet with" . A_EndChar)
-        return
-    }
-    SendText("were met with" . A_EndChar)
-    AC_Reg("were meet with", "were met with")
-}
-:C:were overran::{
-    if AC_IsDisabled("were overran") {
-        SendText("were overran" . A_EndChar)
-        return
-    }
-    SendText("were overrun" . A_EndChar)
-    AC_Reg("were overran", "were overrun")
-}
-:C:were ran::{
-    if AC_IsDisabled("were ran") {
-        SendText("were ran" . A_EndChar)
-        return
-    }
-    SendText("were run" . A_EndChar)
-    AC_Reg("were ran", "were run")
-}
-:C:were rebuild::{
-    if AC_IsDisabled("were rebuild") {
-        SendText("were rebuild" . A_EndChar)
-        return
-    }
-    SendText("were rebuilt" . A_EndChar)
-    AC_Reg("were rebuild", "were rebuilt")
-}
-:C:were reran::{
-    if AC_IsDisabled("were reran") {
-        SendText("were reran" . A_EndChar)
-        return
-    }
-    SendText("were rerun" . A_EndChar)
-    AC_Reg("were reran", "were rerun")
-}
-:C:were rode::{
-    if AC_IsDisabled("were rode") {
-        SendText("were rode" . A_EndChar)
-        return
-    }
-    SendText("were ridden" . A_EndChar)
-    AC_Reg("were rode", "were ridden")
-}
-:C:were sang::{
-    if AC_IsDisabled("were sang") {
-        SendText("were sang" . A_EndChar)
-        return
-    }
-    SendText("were sung" . A_EndChar)
-    AC_Reg("were sang", "were sung")
-}
-:C:were set-up::{
-    if AC_IsDisabled("were set-up") {
-        SendText("were set-up" . A_EndChar)
-        return
-    }
-    SendText("were set up" . A_EndChar)
-    AC_Reg("were set-up", "were set up")
-}
-:C:were setup::{
-    if AC_IsDisabled("were setup") {
-        SendText("were setup" . A_EndChar)
-        return
-    }
-    SendText("were set up" . A_EndChar)
-    AC_Reg("were setup", "were set up")
-}
-:C:were she was::{
-    if AC_IsDisabled("were she was") {
-        SendText("were she was" . A_EndChar)
-        return
-    }
-    SendText("where she was" . A_EndChar)
-    AC_Reg("were she was", "where she was")
-}
-:C:were showed::{
-    if AC_IsDisabled("were showed") {
-        SendText("were showed" . A_EndChar)
-        return
-    }
-    SendText("were shown" . A_EndChar)
-    AC_Reg("were showed", "were shown")
-}
-:C:were shut-out::{
-    if AC_IsDisabled("were shut-out") {
-        SendText("were shut-out" . A_EndChar)
-        return
-    }
-    SendText("were shut out" . A_EndChar)
-    AC_Reg("were shut-out", "were shut out")
-}
-:C:were shutdown::{
-    if AC_IsDisabled("were shutdown") {
-        SendText("were shutdown" . A_EndChar)
-        return
-    }
-    SendText("were shut down" . A_EndChar)
-    AC_Reg("were shutdown", "were shut down")
-}
-:C:were shutoff::{
-    if AC_IsDisabled("were shutoff") {
-        SendText("were shutoff" . A_EndChar)
-        return
-    }
-    SendText("were shut off" . A_EndChar)
-    AC_Reg("were shutoff", "were shut off")
-}
-:C:were shutout::{
-    if AC_IsDisabled("were shutout") {
-        SendText("were shutout" . A_EndChar)
-        return
-    }
-    SendText("were shut out" . A_EndChar)
-    AC_Reg("were shutout", "were shut out")
-}
-:C:were spend::{
-    if AC_IsDisabled("were spend") {
-        SendText("were spend" . A_EndChar)
-        return
-    }
-    SendText("were spent" . A_EndChar)
-    AC_Reg("were spend", "were spent")
-}
-:C:were suppose to::{
-    if AC_IsDisabled("were suppose to") {
-        SendText("were suppose to" . A_EndChar)
-        return
-    }
-    SendText("were supposed to" . A_EndChar)
-    AC_Reg("were suppose to", "were supposed to")
-}
-:C:were the dominate::{
-    if AC_IsDisabled("were the dominate") {
-        SendText("were the dominate" . A_EndChar)
-        return
-    }
-    SendText("were the dominant" . A_EndChar)
-    AC_Reg("were the dominate", "were the dominant")
-}
-:C:were took::{
-    if AC_IsDisabled("were took") {
-        SendText("were took" . A_EndChar)
-        return
-    }
-    SendText("were taken" . A_EndChar)
-    AC_Reg("were took", "were taken")
-}
-:C:were tore::{
-    if AC_IsDisabled("were tore") {
-        SendText("were tore" . A_EndChar)
-        return
-    }
-    SendText("were torn" . A_EndChar)
-    AC_Reg("were tore", "were torn")
-}
-:C:were use to::{
-    if AC_IsDisabled("were use to") {
-        SendText("were use to" . A_EndChar)
-        return
-    }
-    SendText("were used to" . A_EndChar)
-    AC_Reg("were use to", "were used to")
-}
-:C:were wrote::{
-    if AC_IsDisabled("were wrote") {
-        SendText("were wrote" . A_EndChar)
-        return
-    }
-    SendText("were written" . A_EndChar)
-    AC_Reg("were wrote", "were written")
 }
 :C:werea::{
     if AC_IsDisabled("werea") {
@@ -81019,22 +66067,6 @@
     SendText("wer" . A_EndChar)
     AC_Reg("werr", "wer")
 }
-:C:wet your::{
-    if AC_IsDisabled("wet your") {
-        SendText("wet your" . A_EndChar)
-        return
-    }
-    SendText("whet your" . A_EndChar)
-    AC_Reg("wet your", "whet your")
-}
-:C:wether or not::{
-    if AC_IsDisabled("wether or not") {
-        SendText("wether or not" . A_EndChar)
-        return
-    }
-    SendText("whether or not" . A_EndChar)
-    AC_Reg("wether or not", "whether or not")
-}
 :C:weve::{
     if AC_IsDisabled("weve") {
         SendText("weve" . A_EndChar)
@@ -81066,22 +66098,6 @@
     }
     SendText("wants" . A_EndChar)
     AC_Reg("whants", "wants")
-}
-:C:what lead to::{
-    if AC_IsDisabled("what lead to") {
-        SendText("what lead to" . A_EndChar)
-        return
-    }
-    SendText("what led to" . A_EndChar)
-    AC_Reg("what lead to", "what led to")
-}
-:C:what lied::{
-    if AC_IsDisabled("what lied") {
-        SendText("what lied" . A_EndChar)
-        return
-    }
-    SendText("what lay" . A_EndChar)
-    AC_Reg("what lied", "what lay")
 }
 :C:whather::{
     if AC_IsDisabled("whather") {
@@ -81115,30 +66131,6 @@
     SendText("which" . A_EndChar)
     AC_Reg("whech", "which")
 }
-:C:wheel chair::{
-    if AC_IsDisabled("wheel chair") {
-        SendText("wheel chair" . A_EndChar)
-        return
-    }
-    SendText("wheelchair" . A_EndChar)
-    AC_Reg("wheel chair", "wheelchair")
-}
-:C:when ever::{
-    if AC_IsDisabled("when ever") {
-        SendText("when ever" . A_EndChar)
-        return
-    }
-    SendText("whenever" . A_EndChar)
-    AC_Reg("when ever", "whenever")
-}
-:C:whent he::{
-    if AC_IsDisabled("whent he") {
-        SendText("whent he" . A_EndChar)
-        return
-    }
-    SendText("when the" . A_EndChar)
-    AC_Reg("whent he", "when the")
-}
 :C:wheras::{
     if AC_IsDisabled("wheras") {
         SendText("wheras" . A_EndChar)
@@ -81146,94 +66138,6 @@
     }
     SendText("whereas" . A_EndChar)
     AC_Reg("wheras", "whereas")
-}
-:C:where as::{
-    if AC_IsDisabled("where as") {
-        SendText("where as" . A_EndChar)
-        return
-    }
-    SendText("whereas" . A_EndChar)
-    AC_Reg("where as", "whereas")
-}
-:C:where being::{
-    if AC_IsDisabled("where being") {
-        SendText("where being" . A_EndChar)
-        return
-    }
-    SendText("were being" . A_EndChar)
-    AC_Reg("where being", "were being")
-}
-:C:where by::{
-    if AC_IsDisabled("where by") {
-        SendText("where by" . A_EndChar)
-        return
-    }
-    SendText("whereby" . A_EndChar)
-    AC_Reg("where by", "whereby")
-}
-:C:where ever::{
-    if AC_IsDisabled("where ever") {
-        SendText("where ever" . A_EndChar)
-        return
-    }
-    SendText("wherever" . A_EndChar)
-    AC_Reg("where ever", "wherever")
-}
-:C:where him::{
-    if AC_IsDisabled("where him") {
-        SendText("where him" . A_EndChar)
-        return
-    }
-    SendText("where he" . A_EndChar)
-    AC_Reg("where him", "where he")
-}
-:C:where made::{
-    if AC_IsDisabled("where made") {
-        SendText("where made" . A_EndChar)
-        return
-    }
-    SendText("were made" . A_EndChar)
-    AC_Reg("where made", "were made")
-}
-:C:where taken::{
-    if AC_IsDisabled("where taken") {
-        SendText("where taken" . A_EndChar)
-        return
-    }
-    SendText("were taken" . A_EndChar)
-    AC_Reg("where taken", "were taken")
-}
-:C:where upon::{
-    if AC_IsDisabled("where upon") {
-        SendText("where upon" . A_EndChar)
-        return
-    }
-    SendText("whereupon" . A_EndChar)
-    AC_Reg("where upon", "whereupon")
-}
-:C:where with all::{
-    if AC_IsDisabled("where with all") {
-        SendText("where with all" . A_EndChar)
-        return
-    }
-    SendText("wherewithal" . A_EndChar)
-    AC_Reg("where with all", "wherewithal")
-}
-:C:where won::{
-    if AC_IsDisabled("where won") {
-        SendText("where won" . A_EndChar)
-        return
-    }
-    SendText("were won" . A_EndChar)
-    AC_Reg("where won", "were won")
-}
-:C:whereas as::{
-    if AC_IsDisabled("whereas as") {
-        SendText("whereas as" . A_EndChar)
-        return
-    }
-    SendText("whereas" . A_EndChar)
-    AC_Reg("whereas as", "whereas")
 }
 :C:wherease::{
     if AC_IsDisabled("wherease") {
@@ -81275,38 +66179,6 @@
     SendText("whatev" . A_EndChar)
     AC_Reg("whetev", "whatev")
 }
-:C:whether allows::{
-    if AC_IsDisabled("whether allows") {
-        SendText("whether allows" . A_EndChar)
-        return
-    }
-    SendText("weather allows" . A_EndChar)
-    AC_Reg("whether allows", "weather allows")
-}
-:C:whether forecast::{
-    if AC_IsDisabled("whether forecast") {
-        SendText("whether forecast" . A_EndChar)
-        return
-    }
-    SendText("weather forecast" . A_EndChar)
-    AC_Reg("whether forecast", "weather forecast")
-}
-:C:whether permit::{
-    if AC_IsDisabled("whether permit") {
-        SendText("whether permit" . A_EndChar)
-        return
-    }
-    SendText("weather permit" . A_EndChar)
-    AC_Reg("whether permit", "weather permit")
-}
-:C:whether report::{
-    if AC_IsDisabled("whether report") {
-        SendText("whether report" . A_EndChar)
-        return
-    }
-    SendText("weather report" . A_EndChar)
-    AC_Reg("whether report", "weather report")
-}
 :C:whga::{
     if AC_IsDisabled("whga") {
         SendText("whga" . A_EndChar)
@@ -81331,46 +66203,6 @@
     SendText("which" . A_EndChar)
     AC_Reg("whic", "which")
 }
-:C:which had lead::{
-    if AC_IsDisabled("which had lead") {
-        SendText("which had lead" . A_EndChar)
-        return
-    }
-    SendText("which had led" . A_EndChar)
-    AC_Reg("which had lead", "which had led")
-}
-:C:which has lead::{
-    if AC_IsDisabled("which has lead") {
-        SendText("which has lead" . A_EndChar)
-        return
-    }
-    SendText("which has led" . A_EndChar)
-    AC_Reg("which has lead", "which has led")
-}
-:C:which have lead::{
-    if AC_IsDisabled("which have lead") {
-        SendText("which have lead" . A_EndChar)
-        return
-    }
-    SendText("which have led" . A_EndChar)
-    AC_Reg("which have lead", "which have led")
-}
-:C:which where::{
-    if AC_IsDisabled("which where") {
-        SendText("which where" . A_EndChar)
-        return
-    }
-    SendText("which were" . A_EndChar)
-    AC_Reg("which where", "which were")
-}
-:C:whicht he::{
-    if AC_IsDisabled("whicht he") {
-        SendText("whicht he" . A_EndChar)
-        return
-    }
-    SendText("which the" . A_EndChar)
-    AC_Reg("whicht he", "which the")
-}
 :C:whiel::{
     if AC_IsDisabled("whiel") {
         SendText("whiel" . A_EndChar)
@@ -81386,14 +66218,6 @@
     }
     SendText("which" . A_EndChar)
     AC_Reg("whihc", "which")
-}
-:C:while him::{
-    if AC_IsDisabled("while him") {
-        SendText("while him" . A_EndChar)
-        return
-    }
-    SendText("while he" . A_EndChar)
-    AC_Reg("while him", "while he")
 }
 :C:whith::{
     if AC_IsDisabled("whith") {
@@ -81419,150 +66243,6 @@
     SendText("when" . A_EndChar)
     AC_Reg("whn", "when")
 }
-:C:who had lead::{
-    if AC_IsDisabled("who had lead") {
-        SendText("who had lead" . A_EndChar)
-        return
-    }
-    SendText("who had led" . A_EndChar)
-    AC_Reg("who had lead", "who had led")
-}
-:C:who has lead::{
-    if AC_IsDisabled("who has lead") {
-        SendText("who has lead" . A_EndChar)
-        return
-    }
-    SendText("who has led" . A_EndChar)
-    AC_Reg("who has lead", "who has led")
-}
-:C:who have lead::{
-    if AC_IsDisabled("who have lead") {
-        SendText("who have lead" . A_EndChar)
-        return
-    }
-    SendText("who have led" . A_EndChar)
-    AC_Reg("who have lead", "who have led")
-}
-:C:who setup::{
-    if AC_IsDisabled("who setup") {
-        SendText("who setup" . A_EndChar)
-        return
-    }
-    SendText("who set up" . A_EndChar)
-    AC_Reg("who setup", "who set up")
-}
-:C:who use to::{
-    if AC_IsDisabled("who use to") {
-        SendText("who use to" . A_EndChar)
-        return
-    }
-    SendText("who used to" . A_EndChar)
-    AC_Reg("who use to", "who used to")
-}
-:C:who where::{
-    if AC_IsDisabled("who where") {
-        SendText("who where" . A_EndChar)
-        return
-    }
-    SendText("who were" . A_EndChar)
-    AC_Reg("who where", "who were")
-}
-:C:who's actual::{
-    if AC_IsDisabled("who's actual") {
-        SendText("who's actual" . A_EndChar)
-        return
-    }
-    SendText("whose actual" . A_EndChar)
-    AC_Reg("who's actual", "whose actual")
-}
-:C:who's book::{
-    if AC_IsDisabled("who's book") {
-        SendText("who's book" . A_EndChar)
-        return
-    }
-    SendText("whose book" . A_EndChar)
-    AC_Reg("who's book", "whose book")
-}
-:C:who's brother::{
-    if AC_IsDisabled("who's brother") {
-        SendText("who's brother" . A_EndChar)
-        return
-    }
-    SendText("whose brother" . A_EndChar)
-    AC_Reg("who's brother", "whose brother")
-}
-:C:who's father::{
-    if AC_IsDisabled("who's father") {
-        SendText("who's father" . A_EndChar)
-        return
-    }
-    SendText("whose father" . A_EndChar)
-    AC_Reg("who's father", "whose father")
-}
-:C:who's mother::{
-    if AC_IsDisabled("who's mother") {
-        SendText("who's mother" . A_EndChar)
-        return
-    }
-    SendText("whose mother" . A_EndChar)
-    AC_Reg("who's mother", "whose mother")
-}
-:C:who's name::{
-    if AC_IsDisabled("who's name") {
-        SendText("who's name" . A_EndChar)
-        return
-    }
-    SendText("whose name" . A_EndChar)
-    AC_Reg("who's name", "whose name")
-}
-:C:who's opinion::{
-    if AC_IsDisabled("who's opinion") {
-        SendText("who's opinion" . A_EndChar)
-        return
-    }
-    SendText("whose opinion" . A_EndChar)
-    AC_Reg("who's opinion", "whose opinion")
-}
-:C:who's own::{
-    if AC_IsDisabled("who's own") {
-        SendText("who's own" . A_EndChar)
-        return
-    }
-    SendText("whose own" . A_EndChar)
-    AC_Reg("who's own", "whose own")
-}
-:C:who's parents::{
-    if AC_IsDisabled("who's parents") {
-        SendText("who's parents" . A_EndChar)
-        return
-    }
-    SendText("whose parents" . A_EndChar)
-    AC_Reg("who's parents", "whose parents")
-}
-:C:who's previous::{
-    if AC_IsDisabled("who's previous") {
-        SendText("who's previous" . A_EndChar)
-        return
-    }
-    SendText("whose previous" . A_EndChar)
-    AC_Reg("who's previous", "whose previous")
-}
-:C:who's team::{
-    if AC_IsDisabled("who's team") {
-        SendText("who's team" . A_EndChar)
-        return
-    }
-    SendText("whose team" . A_EndChar)
-    AC_Reg("who's team", "whose team")
-}
-:C:who's turn::{
-    if AC_IsDisabled("who's turn") {
-        SendText("who's turn" . A_EndChar)
-        return
-    }
-    SendText("whose turn" . A_EndChar)
-    AC_Reg("who's turn", "whose turn")
-}
 :C:wholey::{
     if AC_IsDisabled("wholey") {
         SendText("wholey" . A_EndChar)
@@ -81586,14 +66266,6 @@
     }
     SendText("who's" . A_EndChar)
     AC_Reg("whos", "who's")
-}
-:C:whose who::{
-    if AC_IsDisabled("whose who") {
-        SendText("whose who" . A_EndChar)
-        return
-    }
-    SendText("who's who" . A_EndChar)
-    AC_Reg("whose who", "who's who")
 }
 :C:whough::{
     if AC_IsDisabled("whough") {
@@ -81723,54 +66395,6 @@
     SendText("will" . A_EndChar)
     AC_Reg("wiil", "will")
 }
-:C:will backup::{
-    if AC_IsDisabled("will backup") {
-        SendText("will backup" . A_EndChar)
-        return
-    }
-    SendText("will back up" . A_EndChar)
-    AC_Reg("will backup", "will back up")
-}
-:C:will buyout::{
-    if AC_IsDisabled("will buyout") {
-        SendText("will buyout" . A_EndChar)
-        return
-    }
-    SendText("will buy out" . A_EndChar)
-    AC_Reg("will buyout", "will buy out")
-}
-:C:will exact revenge::{
-    if AC_IsDisabled("will exact revenge") {
-        SendText("will exact revenge" . A_EndChar)
-        return
-    }
-    SendText("will extract revenge" . A_EndChar)
-    AC_Reg("will exact revenge", "will extract revenge")
-}
-:C:will of::{
-    if AC_IsDisabled("will of") {
-        SendText("will of" . A_EndChar)
-        return
-    }
-    SendText("will have" . A_EndChar)
-    AC_Reg("will of", "will have")
-}
-:C:will shutdown::{
-    if AC_IsDisabled("will shutdown") {
-        SendText("will shutdown" . A_EndChar)
-        return
-    }
-    SendText("will shut down" . A_EndChar)
-    AC_Reg("will shutdown", "will shut down")
-}
-:C:will shutoff::{
-    if AC_IsDisabled("will shutoff") {
-        SendText("will shutoff" . A_EndChar)
-        return
-    }
-    SendText("will shut off" . A_EndChar)
-    AC_Reg("will shutoff", "will shut off")
-}
 :C:willbe::{
     if AC_IsDisabled("willbe") {
         SendText("willbe" . A_EndChar)
@@ -81835,62 +66459,6 @@
     SendText("writing" . A_EndChar)
     AC_Reg("wirting", "writing")
 }
-:C:with be::{
-    if AC_IsDisabled("with be") {
-        SendText("with be" . A_EndChar)
-        return
-    }
-    SendText("will be" . A_EndChar)
-    AC_Reg("with be", "will be")
-}
-:C:with in::{
-    if AC_IsDisabled("with in") {
-        SendText("with in" . A_EndChar)
-        return
-    }
-    SendText("within" . A_EndChar)
-    AC_Reg("with in", "within")
-}
-:C:with it's::{
-    if AC_IsDisabled("with it's") {
-        SendText("with it's" . A_EndChar)
-        return
-    }
-    SendText("with its" . A_EndChar)
-    AC_Reg("with it's", "with its")
-}
-:C:with on of::{
-    if AC_IsDisabled("with on of") {
-        SendText("with on of" . A_EndChar)
-        return
-    }
-    SendText("with one of" . A_EndChar)
-    AC_Reg("with on of", "with one of")
-}
-:C:with out::{
-    if AC_IsDisabled("with out") {
-        SendText("with out" . A_EndChar)
-        return
-    }
-    SendText("without" . A_EndChar)
-    AC_Reg("with out", "without")
-}
-:C:with regards to::{
-    if AC_IsDisabled("with regards to") {
-        SendText("with regards to" . A_EndChar)
-        return
-    }
-    SendText("with regard to" . A_EndChar)
-    AC_Reg("with regards to", "with regard to")
-}
-:C:with who::{
-    if AC_IsDisabled("with who") {
-        SendText("with who" . A_EndChar)
-        return
-    }
-    SendText("with whom" . A_EndChar)
-    AC_Reg("with who", "with whom")
-}
 :C:witha::{
     if AC_IsDisabled("witha") {
         SendText("witha" . A_EndChar)
@@ -81931,30 +66499,6 @@
     SendText("whether" . A_EndChar)
     AC_Reg("withher", "whether")
 }
-:C:withi t::{
-    if AC_IsDisabled("withi t") {
-        SendText("withi t" . A_EndChar)
-        return
-    }
-    SendText("with it" . A_EndChar)
-    AC_Reg("withi t", "with it")
-}
-:C:within it's::{
-    if AC_IsDisabled("within it's") {
-        SendText("within it's" . A_EndChar)
-        return
-    }
-    SendText("within its" . A_EndChar)
-    AC_Reg("within it's", "within its")
-}
-:C:within site of::{
-    if AC_IsDisabled("within site of") {
-        SendText("within site of" . A_EndChar)
-        return
-    }
-    SendText("within sight of" . A_EndChar)
-    AC_Reg("within site of", "within sight of")
-}
 :C:withing::{
     if AC_IsDisabled("withing") {
         SendText("withing" . A_EndChar)
@@ -81970,22 +66514,6 @@
     }
     SendText("withhold" . A_EndChar)
     AC_Reg("withold", "withhold")
-}
-:C:without further ado::{
-    if AC_IsDisabled("without further ado") {
-        SendText("without further ado" . A_EndChar)
-        return
-    }
-    SendText("without further adieu" . A_EndChar)
-    AC_Reg("without further ado", "without further adieu")
-}
-:C:witht he::{
-    if AC_IsDisabled("witht he") {
-        SendText("witht he" . A_EndChar)
-        return
-    }
-    SendText("with the" . A_EndChar)
-    AC_Reg("witht he", "with the")
 }
 :C:witht::{
     if AC_IsDisabled("witht") {
@@ -82091,22 +66619,6 @@
     SendText("working" . A_EndChar)
     AC_Reg("wokring", "working")
 }
-:C:won it's::{
-    if AC_IsDisabled("won it's") {
-        SendText("won it's" . A_EndChar)
-        return
-    }
-    SendText("won its" . A_EndChar)
-    AC_Reg("won it's", "won its")
-}
-:C:won way::{
-    if AC_IsDisabled("won way") {
-        SendText("won way" . A_EndChar)
-        return
-    }
-    SendText("one way" . A_EndChar)
-    AC_Reg("won way", "one way")
-}
 :C:won'nt::{
     if AC_IsDisabled("won'nt") {
         SendText("won'nt" . A_EndChar)
@@ -82163,14 +66675,6 @@
     SendText("worth" . A_EndChar)
     AC_Reg("workh", "worth")
 }
-:C:working progress::{
-    if AC_IsDisabled("working progress") {
-        SendText("working progress" . A_EndChar)
-        return
-    }
-    SendText("work in progress" . A_EndChar)
-    AC_Reg("working progress", "work in progress")
-}
 :C:workststion::{
     if AC_IsDisabled("workststion") {
         SendText("workststion" . A_EndChar)
@@ -82186,14 +66690,6 @@
     }
     SendText("work" . A_EndChar)
     AC_Reg("worl", "work")
-}
-:C:world wide::{
-    if AC_IsDisabled("world wide") {
-        SendText("world wide" . A_EndChar)
-        return
-    }
-    SendText("worldwide" . A_EndChar)
-    AC_Reg("world wide", "worldwide")
 }
 :C:worls::{
     if AC_IsDisabled("worls") {
@@ -82211,46 +66707,6 @@
     SendText("wrong" . A_EndChar)
     AC_Reg("worng", "wrong")
 }
-:C:worse comes to worse::{
-    if AC_IsDisabled("worse comes to worse") {
-        SendText("worse comes to worse" . A_EndChar)
-        return
-    }
-    SendText("worse comes to worst" . A_EndChar)
-    AC_Reg("worse comes to worse", "worse comes to worst")
-}
-:C:worse then::{
-    if AC_IsDisabled("worse then") {
-        SendText("worse then" . A_EndChar)
-        return
-    }
-    SendText("worse than" . A_EndChar)
-    AC_Reg("worse then", "worse than")
-}
-:C:worse-case scenario::{
-    if AC_IsDisabled("worse-case scenario") {
-        SendText("worse-case scenario" . A_EndChar)
-        return
-    }
-    SendText("worst-case scenario" . A_EndChar)
-    AC_Reg("worse-case scenario", "worst-case scenario")
-}
-:C:worst comes to worst::{
-    if AC_IsDisabled("worst comes to worst") {
-        SendText("worst comes to worst" . A_EndChar)
-        return
-    }
-    SendText("worse comes to worst" . A_EndChar)
-    AC_Reg("worst comes to worst", "worse comes to worst")
-}
-:C:worst than::{
-    if AC_IsDisabled("worst than") {
-        SendText("worst than" . A_EndChar)
-        return
-    }
-    SendText("worse than" . A_EndChar)
-    AC_Reg("worst than", "worse than")
-}
 :C:worsten::{
     if AC_IsDisabled("worsten") {
         SendText("worsten" . A_EndChar)
@@ -82266,30 +66722,6 @@
     }
     SendText("worsened" . A_EndChar)
     AC_Reg("worstened", "worsened")
-}
-:C:worth it's::{
-    if AC_IsDisabled("worth it's") {
-        SendText("worth it's" . A_EndChar)
-        return
-    }
-    SendText("worth its" . A_EndChar)
-    AC_Reg("worth it's", "worth its")
-}
-:C:worth while::{
-    if AC_IsDisabled("worth while") {
-        SendText("worth while" . A_EndChar)
-        return
-    }
-    SendText("worthwhile" . A_EndChar)
-    AC_Reg("worth while", "worthwhile")
-}
-:C:worth wile::{
-    if AC_IsDisabled("worth wile") {
-        SendText("worth wile" . A_EndChar)
-        return
-    }
-    SendText("worthwhile" . A_EndChar)
-    AC_Reg("worth wile", "worthwhile")
 }
 :C:wou::{
     if AC_IsDisabled("wou") {
@@ -82314,62 +66746,6 @@
     }
     SendText("wound" . A_EndChar)
     AC_Reg("woudn", "wound")
-}
-:C:would backup::{
-    if AC_IsDisabled("would backup") {
-        SendText("would backup" . A_EndChar)
-        return
-    }
-    SendText("would back up" . A_EndChar)
-    AC_Reg("would backup", "would back up")
-}
-:C:would comeback::{
-    if AC_IsDisabled("would comeback") {
-        SendText("would comeback" . A_EndChar)
-        return
-    }
-    SendText("would come back" . A_EndChar)
-    AC_Reg("would comeback", "would come back")
-}
-:C:would fair::{
-    if AC_IsDisabled("would fair") {
-        SendText("would fair" . A_EndChar)
-        return
-    }
-    SendText("would fare" . A_EndChar)
-    AC_Reg("would fair", "would fare")
-}
-:C:would forego::{
-    if AC_IsDisabled("would forego") {
-        SendText("would forego" . A_EndChar)
-        return
-    }
-    SendText("would forgo" . A_EndChar)
-    AC_Reg("would forego", "would forgo")
-}
-:C:would of been::{
-    if AC_IsDisabled("would of been") {
-        SendText("would of been" . A_EndChar)
-        return
-    }
-    SendText("would have been" . A_EndChar)
-    AC_Reg("would of been", "would have been")
-}
-:C:would of::{
-    if AC_IsDisabled("would of") {
-        SendText("would of" . A_EndChar)
-        return
-    }
-    SendText("would have" . A_EndChar)
-    AC_Reg("would of", "would have")
-}
-:C:would setup::{
-    if AC_IsDisabled("would setup") {
-        SendText("would setup" . A_EndChar)
-        return
-    }
-    SendText("would set up" . A_EndChar)
-    AC_Reg("would setup", "would set up")
 }
 :C:wouldbe::{
     if AC_IsDisabled("wouldbe") {
@@ -82403,14 +66779,6 @@
     SendText("would've" . A_EndChar)
     AC_Reg("wouldve", "would've")
 }
-:C:wreck havoc::{
-    if AC_IsDisabled("wreck havoc") {
-        SendText("wreck havoc" . A_EndChar)
-        return
-    }
-    SendText("wreak havoc" . A_EndChar)
-    AC_Reg("wreck havoc", "wreak havoc")
-}
 :C:wreckless::{
     if AC_IsDisabled("wreckless") {
         SendText("wreckless" . A_EndChar)
@@ -82418,22 +66786,6 @@
     }
     SendText("reckless" . A_EndChar)
     AC_Reg("wreckless", "reckless")
-}
-:C:wrest assured::{
-    if AC_IsDisabled("wrest assured") {
-        SendText("wrest assured" . A_EndChar)
-        return
-    }
-    SendText("rest assured" . A_EndChar)
-    AC_Reg("wrest assured", "rest assured")
-}
-:C:wrest in peace::{
-    if AC_IsDisabled("wrest in peace") {
-        SendText("wrest in peace" . A_EndChar)
-        return
-    }
-    SendText("rest in peace" . A_EndChar)
-    AC_Reg("wrest in peace", "rest in peace")
 }
 :C:wresters::{
     if AC_IsDisabled("wresters") {
@@ -82459,190 +66811,6 @@
     SendText("writer" . A_EndChar)
     AC_Reg("wrighter", "writer")
 }
-:C:write answer::{
-    if AC_IsDisabled("write answer") {
-        SendText("write answer" . A_EndChar)
-        return
-    }
-    SendText("right answer" . A_EndChar)
-    AC_Reg("write answer", "right answer")
-}
-:C:write away::{
-    if AC_IsDisabled("write away") {
-        SendText("write away" . A_EndChar)
-        return
-    }
-    SendText("right away" . A_EndChar)
-    AC_Reg("write away", "right away")
-}
-:C:write call::{
-    if AC_IsDisabled("write call") {
-        SendText("write call" . A_EndChar)
-        return
-    }
-    SendText("right call" . A_EndChar)
-    AC_Reg("write call", "right call")
-}
-:C:write choice::{
-    if AC_IsDisabled("write choice") {
-        SendText("write choice" . A_EndChar)
-        return
-    }
-    SendText("right choice" . A_EndChar)
-    AC_Reg("write choice", "right choice")
-}
-:C:write conclusion::{
-    if AC_IsDisabled("write conclusion") {
-        SendText("write conclusion" . A_EndChar)
-        return
-    }
-    SendText("right conclusion" . A_EndChar)
-    AC_Reg("write conclusion", "right conclusion")
-}
-:C:write decision::{
-    if AC_IsDisabled("write decision") {
-        SendText("write decision" . A_EndChar)
-        return
-    }
-    SendText("right decision" . A_EndChar)
-    AC_Reg("write decision", "right decision")
-}
-:C:write direction::{
-    if AC_IsDisabled("write direction") {
-        SendText("write direction" . A_EndChar)
-        return
-    }
-    SendText("right direction" . A_EndChar)
-    AC_Reg("write direction", "right direction")
-}
-:C:write guess::{
-    if AC_IsDisabled("write guess") {
-        SendText("write guess" . A_EndChar)
-        return
-    }
-    SendText("right guess" . A_EndChar)
-    AC_Reg("write guess", "right guess")
-}
-:C:write hear::{
-    if AC_IsDisabled("write hear") {
-        SendText("write hear" . A_EndChar)
-        return
-    }
-    SendText("right here" . A_EndChar)
-    AC_Reg("write hear", "right here")
-}
-:C:write idea::{
-    if AC_IsDisabled("write idea") {
-        SendText("write idea" . A_EndChar)
-        return
-    }
-    SendText("right idea" . A_EndChar)
-    AC_Reg("write idea", "right idea")
-}
-:C:write moment::{
-    if AC_IsDisabled("write moment") {
-        SendText("write moment" . A_EndChar)
-        return
-    }
-    SendText("right moment" . A_EndChar)
-    AC_Reg("write moment", "right moment")
-}
-:C:write move::{
-    if AC_IsDisabled("write move") {
-        SendText("write move" . A_EndChar)
-        return
-    }
-    SendText("right move" . A_EndChar)
-    AC_Reg("write move", "right move")
-}
-:C:write now::{
-    if AC_IsDisabled("write now") {
-        SendText("write now" . A_EndChar)
-        return
-    }
-    SendText("right now" . A_EndChar)
-    AC_Reg("write now", "right now")
-}
-:C:write off the bat::{
-    if AC_IsDisabled("write off the bat") {
-        SendText("write off the bat" . A_EndChar)
-        return
-    }
-    SendText("right off the bat" . A_EndChar)
-    AC_Reg("write off the bat", "right off the bat")
-}
-:C:write on time::{
-    if AC_IsDisabled("write on time") {
-        SendText("write on time" . A_EndChar)
-        return
-    }
-    SendText("right on time" . A_EndChar)
-    AC_Reg("write on time", "right on time")
-}
-:C:write path::{
-    if AC_IsDisabled("write path") {
-        SendText("write path" . A_EndChar)
-        return
-    }
-    SendText("right path" . A_EndChar)
-    AC_Reg("write path", "right path")
-}
-:C:write person::{
-    if AC_IsDisabled("write person") {
-        SendText("write person" . A_EndChar)
-        return
-    }
-    SendText("right person" . A_EndChar)
-    AC_Reg("write person", "right person")
-}
-:C:write place::{
-    if AC_IsDisabled("write place") {
-        SendText("write place" . A_EndChar)
-        return
-    }
-    SendText("right place" . A_EndChar)
-    AC_Reg("write place", "right place")
-}
-:C:write time::{
-    if AC_IsDisabled("write time") {
-        SendText("write time" . A_EndChar)
-        return
-    }
-    SendText("right time" . A_EndChar)
-    AC_Reg("write time", "right time")
-}
-:C:write timing::{
-    if AC_IsDisabled("write timing") {
-        SendText("write timing" . A_EndChar)
-        return
-    }
-    SendText("right timing" . A_EndChar)
-    AC_Reg("write timing", "right timing")
-}
-:C:write track::{
-    if AC_IsDisabled("write track") {
-        SendText("write track" . A_EndChar)
-        return
-    }
-    SendText("right track" . A_EndChar)
-    AC_Reg("write track", "right track")
-}
-:C:write way home::{
-    if AC_IsDisabled("write way home") {
-        SendText("write way home" . A_EndChar)
-        return
-    }
-    SendText("right way home" . A_EndChar)
-    AC_Reg("write way home", "right way home")
-}
-:C:write way::{
-    if AC_IsDisabled("write way") {
-        SendText("write way" . A_EndChar)
-        return
-    }
-    SendText("right way" . A_EndChar)
-    AC_Reg("write way", "right way")
-}
 :C:writen::{
     if AC_IsDisabled("writen") {
         SendText("writen" . A_EndChar)
@@ -82650,14 +66818,6 @@
     }
     SendText("written" . A_EndChar)
     AC_Reg("writen", "written")
-}
-:C:writers block::{
-    if AC_IsDisabled("writers block") {
-        SendText("writers block" . A_EndChar)
-        return
-    }
-    SendText("writer's block" . A_EndChar)
-    AC_Reg("writers block", "writer's block")
 }
 :C:writi::{
     if AC_IsDisabled("writi") {
@@ -82939,14 +67099,6 @@
     SendText("yacht" . A_EndChar)
     AC_Reg("yatch", "yacht")
 }
-:C:year old::{
-    if AC_IsDisabled("year old") {
-        SendText("year old" . A_EndChar)
-        return
-    }
-    SendText("year-old" . A_EndChar)
-    AC_Reg("year old", "year-old")
-}
 :C:yearm::{
     if AC_IsDisabled("yearm") {
         SendText("yearm" . A_EndChar)
@@ -83099,54 +67251,6 @@
     SendText("you're" . A_EndChar)
     AC_Reg("you'nre", "you're")
 }
-:C:you're call::{
-    if AC_IsDisabled("you're call") {
-        SendText("you're call" . A_EndChar)
-        return
-    }
-    SendText("your call" . A_EndChar)
-    AC_Reg("you're call", "your call")
-}
-:C:you're goals::{
-    if AC_IsDisabled("you're goals") {
-        SendText("you're goals" . A_EndChar)
-        return
-    }
-    SendText("your goals" . A_EndChar)
-    AC_Reg("you're goals", "your goals")
-}
-:C:you're journey::{
-    if AC_IsDisabled("you're journey") {
-        SendText("you're journey" . A_EndChar)
-        return
-    }
-    SendText("your journey" . A_EndChar)
-    AC_Reg("you're journey", "your journey")
-}
-:C:you're own::{
-    if AC_IsDisabled("you're own") {
-        SendText("you're own" . A_EndChar)
-        return
-    }
-    SendText("your own" . A_EndChar)
-    AC_Reg("you're own", "your own")
-}
-:C:you're self::{
-    if AC_IsDisabled("you're self") {
-        SendText("you're self" . A_EndChar)
-        return
-    }
-    SendText("yourself" . A_EndChar)
-    AC_Reg("you're self", "yourself")
-}
-:C:you;d::{
-    if AC_IsDisabled("you;d") {
-        SendText("you;d" . A_EndChar)
-        return
-    }
-    SendText("you'd" . A_EndChar)
-    AC_Reg("you;d", "you'd")
-}
 :C:youare::{
     if AC_IsDisabled("youare") {
         SendText("youare" . A_EndChar)
@@ -83187,205 +67291,13 @@
     SendText("you'll" . A_EndChar)
     AC_Reg("youll", "you'll")
 }
-:C:your a::{
-    if AC_IsDisabled("your a") {
-        SendText("your a" . A_EndChar)
+:C:youre::{
+    if AC_IsDisabled("youre") {
+        SendText("youre" . A_EndChar)
         return
     }
-    SendText("you're a" . A_EndChar)
-    AC_Reg("your a", "you're a")
-}
-:C:your absent::{
-    if AC_IsDisabled("your absent") {
-        SendText("your absent" . A_EndChar)
-        return
-    }
-    SendText("you're absent" . A_EndChar)
-    AC_Reg("your absent", "you're absent")
-}
-:C:your an::{
-    if AC_IsDisabled("your an") {
-        SendText("your an" . A_EndChar)
-        return
-    }
-    SendText("you're an" . A_EndChar)
-    AC_Reg("your an", "you're an")
-}
-:C:your balanced::{
-    if AC_IsDisabled("your balanced") {
-        SendText("your balanced" . A_EndChar)
-        return
-    }
-    SendText("you're balanced" . A_EndChar)
-    AC_Reg("your balanced", "you're balanced")
-}
-:C:your committed::{
-    if AC_IsDisabled("your committed") {
-        SendText("your committed" . A_EndChar)
-        return
-    }
-    SendText("you're committed" . A_EndChar)
-    AC_Reg("your committed", "you're committed")
-}
-:C:your disciplined::{
-    if AC_IsDisabled("your disciplined") {
-        SendText("your disciplined" . A_EndChar)
-        return
-    }
-    SendText("you're disciplined" . A_EndChar)
-    AC_Reg("your disciplined", "you're disciplined")
-}
-:C:your efficient::{
-    if AC_IsDisabled("your efficient") {
-        SendText("your efficient" . A_EndChar)
-        return
-    }
-    SendText("you're efficient" . A_EndChar)
-    AC_Reg("your efficient", "you're efficient")
-}
-:C:your excused::{
-    if AC_IsDisabled("your excused") {
-        SendText("your excused" . A_EndChar)
-        return
-    }
-    SendText("you're excused" . A_EndChar)
-    AC_Reg("your excused", "you're excused")
-}
-:C:your focused::{
-    if AC_IsDisabled("your focused") {
-        SendText("your focused" . A_EndChar)
-        return
-    }
-    SendText("you're focused" . A_EndChar)
-    AC_Reg("your focused", "you're focused")
-}
-:C:your her::{
-    if AC_IsDisabled("your her") {
-        SendText("your her" . A_EndChar)
-        return
-    }
-    SendText("you're her" . A_EndChar)
-    AC_Reg("your her", "you're her")
-}
-:C:your here::{
-    if AC_IsDisabled("your here") {
-        SendText("your here" . A_EndChar)
-        return
-    }
-    SendText("you're here" . A_EndChar)
-    AC_Reg("your here", "you're here")
-}
-:C:your his::{
-    if AC_IsDisabled("your his") {
-        SendText("your his" . A_EndChar)
-        return
-    }
-    SendText("you're his" . A_EndChar)
-    AC_Reg("your his", "you're his")
-}
-:C:your invited::{
-    if AC_IsDisabled("your invited") {
-        SendText("your invited" . A_EndChar)
-        return
-    }
-    SendText("you're invited" . A_EndChar)
-    AC_Reg("your invited", "you're invited")
-}
-:C:your kidding::{
-    if AC_IsDisabled("your kidding") {
-        SendText("your kidding" . A_EndChar)
-        return
-    }
-    SendText("you're kidding" . A_EndChar)
-    AC_Reg("your kidding", "you're kidding")
-}
-:C:your my::{
-    if AC_IsDisabled("your my") {
-        SendText("your my" . A_EndChar)
-        return
-    }
-    SendText("you're my" . A_EndChar)
-    AC_Reg("your my", "you're my")
-}
-:C:your organized::{
-    if AC_IsDisabled("your organized") {
-        SendText("your organized" . A_EndChar)
-        return
-    }
-    SendText("you're organized" . A_EndChar)
-    AC_Reg("your organized", "you're organized")
-}
-:C:your ready::{
-    if AC_IsDisabled("your ready") {
-        SendText("your ready" . A_EndChar)
-        return
-    }
-    SendText("you're ready" . A_EndChar)
-    AC_Reg("your ready", "you're ready")
-}
-:C:your responsible::{
-    if AC_IsDisabled("your responsible") {
-        SendText("your responsible" . A_EndChar)
-        return
-    }
-    SendText("you're responsible" . A_EndChar)
-    AC_Reg("your responsible", "you're responsible")
-}
-:C:your right about::{
-    if AC_IsDisabled("your right about") {
-        SendText("your right about" . A_EndChar)
-        return
-    }
-    SendText("you're right about" . A_EndChar)
-    AC_Reg("your right about", "you're right about")
-}
-:C:your self::{
-    if AC_IsDisabled("your self") {
-        SendText("your self" . A_EndChar)
-        return
-    }
-    SendText("yourself" . A_EndChar)
-    AC_Reg("your self", "yourself")
-}
-:C:your the best::{
-    if AC_IsDisabled("your the best") {
-        SendText("your the best" . A_EndChar)
-        return
-    }
-    SendText("you're the best" . A_EndChar)
-    AC_Reg("your the best", "you're the best")
-}
-:C:your the::{
-    if AC_IsDisabled("your the") {
-        SendText("your the" . A_EndChar)
-        return
-    }
-    SendText("you're the" . A_EndChar)
-    AC_Reg("your the", "you're the")
-}
-:C:your their::{
-    if AC_IsDisabled("your their") {
-        SendText("your their" . A_EndChar)
-        return
-    }
-    SendText("you're their" . A_EndChar)
-    AC_Reg("your their", "you're their")
-}
-:C:your welcome::{
-    if AC_IsDisabled("your welcome") {
-        SendText("your welcome" . A_EndChar)
-        return
-    }
-    SendText("you're welcome" . A_EndChar)
-    AC_Reg("your welcome", "you're welcome")
-}
-:C:your your::{
-    if AC_IsDisabled("your your") {
-        SendText("your your" . A_EndChar)
-        return
-    }
-    SendText("you're your" . A_EndChar)
-    AC_Reg("your your", "you're your")
+    SendText("you're" . A_EndChar)
+    AC_Reg("youre", "you're")
 }
 :C:youseff::{
     if AC_IsDisabled("youseff") {
