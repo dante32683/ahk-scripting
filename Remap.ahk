@@ -54,6 +54,12 @@ global g_AltTabOpen := false
     if g_AltTabOpen {
         Send "{Blind}{Delete}"
     } else {
+        if !WinExist("A")
+            return
+        hwnd := WinGetID("A")
+        if !_IsOnCurrentDesktop(hwnd)
+            return
+
         if WinActive("ahk_class CabinetWClass")
             Send "!{F4}"
         else
@@ -64,12 +70,21 @@ global g_AltTabOpen := false
     try {
         if !WinExist("A")
             return
-        activePid := WinGetPID("A")
+        hwnd := WinGetID("A")
+        if !_IsOnCurrentDesktop(hwnd)
+            return
+        activePid := WinGetPID("ahk_id " hwnd)
         if activePid
             ProcessClose(activePid)
     }
 }
 !w:: {
+    if !WinExist("A")
+        return
+    hwnd := WinGetID("A")
+    if !_IsOnCurrentDesktop(hwnd)
+        return
+
     if WinActive("ahk_exe WindowsTerminal.exe") {
         Send "^+w"     ; Close Tab in Terminal
         return

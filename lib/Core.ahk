@@ -329,6 +329,19 @@ _IsLiveWindow(hwnd) {
     return true
 }
 
+_IsOnCurrentDesktop(hwnd) {
+    if !VDA_IsLoaded || !GetCurrentDesktopNumber || !GetWindowDesktopNumber
+        return true
+    try {
+        winDesk := DllCall(GetWindowDesktopNumber, "Ptr", hwnd)
+        if (winDesk = -1) ; Pin to all desktops
+            return true
+        curDesk := DllCall(GetCurrentDesktopNumber)
+        return winDesk = curDesk
+    } catch
+        return true
+}
+
 _GetWindowState(hwnd, default := -2) {
     try return WinGetMinMax("ahk_id " hwnd)
     catch
@@ -593,6 +606,8 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
         if !WinExist("A")
             return
         hwnd := WinGetID("A")
+        if !_IsOnCurrentDesktop(hwnd)
+            return
         PrepareWindow()
         GetActiveMonitorWorkArea(&L, &T, &R, &B)
     }
@@ -870,10 +885,13 @@ FloatCenter()     => _ApplyLayout(12, 12, 75, 75)
 ToggleMaximize() {
     if !WinExist("A")
         return
-    if WinGetMinMax("A") = 1
-        WinRestore("A")
+    hwnd := WinGetID("A")
+    if !_IsOnCurrentDesktop(hwnd)
+        return
+    if WinGetMinMax("ahk_id " hwnd) = 1
+        WinRestore("ahk_id " hwnd)
     else
-        WinMaximize("A")
+        WinMaximize("ahk_id " hwnd)
 }
 
 GotoDesktop(n) {
@@ -943,6 +961,8 @@ FocusDirection(dir) {
         cloaked := 0
         DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
         if cloaked
+            continue
+        if !_IsOnCurrentDesktop(hwnd)
             continue
 
         WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " hwnd)
@@ -1018,6 +1038,8 @@ CycleLayout() {
     static layouts := [TileLeft, TileRight, TileLeft60, TileRight40, TileLeftThird, TileRightThird, TileCenterThird, FloatCenter]
     static names   := ["Left Half", "Right Half", "Left 60%", "Right 40%", "Left Third", "Right Third", "Center Third", "Float Center"]
     hwnd := WinGetID("A")
+    if !_IsOnCurrentDesktop(hwnd)
+        return
     idx := LayoutCycleIdx.Has(hwnd) ? Mod(LayoutCycleIdx[hwnd] + 1, layouts.Length) : 0
     LayoutCycleIdx[hwnd] := idx
     layouts[idx + 1]()
