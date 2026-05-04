@@ -111,9 +111,20 @@ global g_MoveEndHook  := DllCall("SetWinEventHook"
     , "UInt", 0
     , "UInt", 0)
 
+global g_DestroyCallbackPtr := CallbackCreate(_OnWindowDestroy, , 7)
+global g_DestroyHook := DllCall("SetWinEventHook"
+    , "UInt", 0x8001 ; EVENT_OBJECT_DESTROY
+    , "UInt", 0x8001
+    , "Ptr", 0
+    , "Ptr", g_DestroyCallbackPtr
+    , "UInt", 0
+    , "UInt", 0
+    , "UInt", 0)
+
 OnExit((*) => DllCall("UnhookWinEvent", "Ptr", hFocusHook))
 OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveStartHook))
 OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveEndHook))
+OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_DestroyHook))
 OnExit(SaveDesktopMemory)
 OnExit(_SaveLayouts)
 OnExit(_202020_SaveState)
@@ -215,21 +226,28 @@ _PersistToMemory(hwnd, xf, yf, wf, hf) {
 }
 
 _AutoSnapFromMemory(hwnd) {
-    global g_TilingMemoryFile, CFG_TilingMemory
+    global g_TilingMemoryFile, CFG_TilingMemory, g_WinMaxState
     if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
         return
     sig := _GetWinSignature(hwnd)
     if sig = ""
         return
-    
+
+    maximized := IniRead(g_TilingMemoryFile, sig, "maximized", "")
+    if maximized = "1" {
+        WinMaximize("ahk_id " hwnd)
+        g_WinMaxState[hwnd] := 1
+        return
+    }
+
     xf := IniRead(g_TilingMemoryFile, sig, "xf", "")
     if xf = ""
         return
-        
+
     yf := IniRead(g_TilingMemoryFile, sig, "yf", "")
     wf := IniRead(g_TilingMemoryFile, sig, "wf", "")
     hf := IniRead(g_TilingMemoryFile, sig, "hf", "")
-    
+
     _ApplyLayout(Integer(xf), Integer(yf), Integer(wf), Integer(hf), hwnd, false)
 }
 
@@ -247,6 +265,8 @@ global g_LastDesktop := 0
 global g_MoveSuppressUntil := Map()
 global g_UserMoveActive    := Map()
 global g_AutoRestoreTimers := Map()
+global g_WinSigCache  := Map()   ; hwnd → signature string
+global g_WinMaxState  := Map()   ; hwnd → 1 if maximized, 0 otherwise
 global g_DebugRestore := false
 global g_DebugLogFile := A_Temp "\ahk_restore_debug.log"
 
@@ -593,7 +613,7 @@ PrepareWindow() {
 }
 
 _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist := true) {
-    global g_MoveSuppressUntil
+    global g_MoveSuppressUntil, g_WinMaxState, g_TilingMemoryFile
     if overrideHwnd {
         hwnd := overrideHwnd
         if !_IsLiveWindow(hwnd)
@@ -666,9 +686,14 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
         " mon=[" L "," T "," R "," B "] target=[" visL "," visT "," visR "," visB "] offs=[" offL "," offT "," offR "," offB "]"
         " pct=[" x_factor "," y_factor "," w_factor "," h_factor "]")
     g_Layouts[hwnd] := [x_factor, y_factor, w_factor, h_factor]
+    g_WinMaxState[hwnd] := 0
     if persist {
         _PersistLayout(hwnd)
         _PersistToMemory(hwnd, x_factor, y_factor, w_factor, h_factor)
+        ; Tiling overrides any prior maximized memory
+        sig := _GetWinSignature(hwnd)
+        if sig != ""
+            try IniDelete(g_TilingMemoryFile, sig, "maximized")
     }
 }
 
@@ -799,6 +824,25 @@ _OnDisplayChange(*) {
     _ScheduleRestoreCurrentDesktop(1800)
 }
 
+_OnWindowDestroy(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+    global g_WinSigCache, g_WinMaxState, g_TilingMemoryFile, CFG_TilingMemory
+    ; Filter to top-level window destruction only
+    if idObject != 0 || idChild != 0
+        return
+    if !g_WinSigCache.Has(hwnd)
+        return
+    if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
+        return
+    sig := g_WinSigCache[hwnd]
+    isMax := g_WinMaxState.Has(hwnd) ? g_WinMaxState[hwnd] : 0
+    if isMax
+        IniWrite(1, g_TilingMemoryFile, sig, "maximized")
+    else
+        try IniDelete(g_TilingMemoryFile, sig, "maximized")
+    g_WinSigCache.Delete(hwnd)
+    g_WinMaxState.Delete(hwnd)
+}
+
 _OnMoveStart(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
     global g_UserMoveActive
     if idObject != 0 || !g_Layouts.Has(hwnd)
@@ -807,9 +851,11 @@ _OnMoveStart(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
 }
 
 _OnMoveEnd(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
-    global g_UserMoveActive
+    global g_UserMoveActive, g_WinMaxState
     if idObject != 0
         return
+    ; Update max-state cache regardless of whether we track layouts
+    try g_WinMaxState[hwnd] := (_GetWindowState(hwnd) = 1) ? 1 : 0
     if !g_Layouts.Has(hwnd)
         return
     try {
@@ -833,12 +879,14 @@ _OnMoveEnd(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
 
 _CheckLayoutRestores() {
     global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive
-    global g_ScriptPaused
+    global g_ScriptPaused, g_WinMaxState
     if g_ScriptPaused
         return
     for hwnd, layout in g_Layouts {
         if !_IsLiveWindow(hwnd)
             continue
+        ; Keep max-state cache fresh for all tracked windows
+        try g_WinMaxState[hwnd] := (_GetWindowState(hwnd) = 1) ? 1 : 0
         if g_UserMoveActive.Has(hwnd)
             continue
         if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount
@@ -883,15 +931,19 @@ TileRight40()     => _ApplyLayout(60, 0, 40, 100)
 FloatCenter()     => _ApplyLayout(12, 12, 75, 75)
 
 ToggleMaximize() {
+    global g_WinMaxState
     if !WinExist("A")
         return
     hwnd := WinGetID("A")
     if !_IsOnCurrentDesktop(hwnd)
         return
-    if WinGetMinMax("ahk_id " hwnd) = 1
+    if WinGetMinMax("ahk_id " hwnd) = 1 {
         WinRestore("ahk_id " hwnd)
-    else
+        g_WinMaxState[hwnd] := 0
+    } else {
         WinMaximize("ahk_id " hwnd)
+        g_WinMaxState[hwnd] := 1
+    }
 }
 
 GotoDesktop(n) {
@@ -998,13 +1050,22 @@ FocusDirection(dir) {
 }
 
 TrackFocusHistory(hHook, event, hwnd, *) {
-    global g_ScriptPaused, g_TilingMode, g_Layouts
+    global g_ScriptPaused, g_TilingMode, g_Layouts, g_WinSigCache, g_WinMaxState
     try {
         if g_ScriptPaused
             return
         _HandleDesktopChange()
         if hwnd = 0
             return
+
+        ; --- CACHE SIG + MAX STATE ---
+        try {
+            sig := _GetWinSignature(hwnd)
+            if sig != "" {
+                g_WinSigCache[hwnd] := sig
+                g_WinMaxState[hwnd] := (_GetWindowState(hwnd) = 1) ? 1 : 0
+            }
+        }
 
         ; --- AUTO-MEMORY SNAP ---
         if g_TilingMode = "Native" && !g_Layouts.Has(hwnd) {
