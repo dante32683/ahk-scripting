@@ -3,6 +3,11 @@ config.ahk
 Tailscale.ahk
 Status.ahk
 Click.ahk
+Tiling_Memory.ini
+Autocorrect_Disabled.txt
+
+# Generated files
+lib/Autocorrect.ahk
 
 # Task Scheduler exports — machine-specific (hardcoded SIDs and paths)
 *.xml
