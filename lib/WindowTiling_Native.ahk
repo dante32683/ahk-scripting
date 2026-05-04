@@ -4,20 +4,25 @@
 
 #HotIf GetKeyState("CapsLock", "P") && g_TilingMode = "Native"
 
-; --- Tiling: halves & quadrants ---
-*z:: TileLeft()
-*x:: TileRight()
-*F1:: TileTopLeft()
-*F2:: TileTopRight()
-*F3:: TileBottomLeft()
-*F4:: TileBottomRight()
+; --- Tiling: Rectangle-style (Alt + CapsLock) ---
+!w:: TileTop()
+!a:: TileLeft()
+!s:: TileBottom()
+!d:: TileRight()
 
-; --- Tiling: thirds & splits ---
-*y:: TileLeft60()
-*u:: TileLeftThird()
-*i:: TileCenterThird()
-*o:: TileRightThird()
-*p:: TileRight40()
+!q:: TileTopLeft()
+!e:: TileTopRight()
+!z:: TileBottomLeft()
+!c:: TileBottomRight()
+
+!u:: TileLeftThird()
+!i:: TileCenterThird()
+!o:: TileRightThird()
+
+!y:: TileLeft60()
+!p:: TileRight40()
+
+!Enter:: ToggleMaximize()
 
 ; --- Layout cycle ---
 Tab:: CycleLayout()
@@ -30,7 +35,7 @@ Tab:: CycleLayout()
 Backspace:: FocusJumpBack()
 
 ; --- Window control ---
-*f:: ToggleMaximize()
-*g:: FloatCenter()
+!f:: ToggleMaximize()
+!g:: FloatCenter()
 
 #HotIf

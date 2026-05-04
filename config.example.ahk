@@ -23,3 +23,6 @@ global CFG_FZ_O := "4"
 ; Autocorrect: automatically fix common Wikipedia misspellings
 global CFG_Autocorrect := true
 
+; Tiling enhancements (Native mode only)
+global CFG_TilingMemory    := true
+

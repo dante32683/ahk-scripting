@@ -51,12 +51,56 @@ global g_AltTabOpen := false
 ; --- Window / Tab Management ---
 !q:: {
     global g_AltTabOpen
-    if g_AltTabOpen
+    if g_AltTabOpen {
         Send "{Blind}{Delete}"
-    else
-        WinClose("A")
+    } else {
+        if WinActive("ahk_class CabinetWClass")
+            Send "!{F4}"
+        else
+            try WinClose("A")
+    }
 }
-!w::Send "^w"      ; Close Tab/Window
+!+q:: {
+    try {
+        if !WinExist("A")
+            return
+        activePid := WinGetPID("A")
+        if activePid
+            ProcessClose(activePid)
+    }
+}
+!w:: {
+    if WinActive("ahk_exe WindowsTerminal.exe") {
+        Send "^+w"     ; Close Tab in Terminal
+        return
+    }
+
+    tabbedApps := [
+        "ahk_exe chrome.exe",
+        "ahk_exe msedge.exe",
+        "ahk_exe firefox.exe",
+        "ahk_exe brave.exe",
+        "ahk_exe vivaldi.exe",
+        "ahk_exe opera.exe",
+        "ahk_class CabinetWClass",
+        "ahk_exe Code.exe",
+        "ahk_exe Cursor.exe",
+        "ahk_exe obsidian.exe",
+        "ahk_exe notepad.exe"
+    ]
+    isTabbed := false
+    for app in tabbedApps {
+        if WinActive(app) {
+            isTabbed := true
+            break
+        }
+    }
+    if isTabbed {
+        Send "^w"      ; Close Tab
+    } else {
+        try WinClose("A")   ; Close App
+    }
+}
 !+w::Send "^+w"    ; Close All Tabs/Window
 !t::Send "^t"      ; New Tab
 !+t::Send "^+t"    ; Restore Closed Tab

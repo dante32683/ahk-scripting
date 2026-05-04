@@ -160,6 +160,79 @@ _DeletePersistedLayout(hwnd) {
 ; TILING GAP, BORDER & WINDOW HISTORY
 ; ============================================================
 global TileGap        := 4
+global g_TilingMemoryFile := A_ScriptDir "\Tiling_Memory.ini"
+
+if !IsSet(CFG_TilingMemory)
+    global CFG_TilingMemory := true
+
+_IsPWA(hwnd) {
+    if !WinExist("ahk_id " hwnd)
+        return false
+    proc := WinGetProcessName("ahk_id " hwnd)
+    if !(proc = "msedge.exe" || proc = "chrome.exe")
+        return false
+    
+    title := WinGetTitle("ahk_id " hwnd)
+    if (proc = "msedge.exe" && !InStr(title, " - Microsoft Edge"))
+        return true
+    if (proc = "chrome.exe" && !InStr(title, " - Google Chrome"))
+        return true
+        
+    pid := WinGetPID("ahk_id " hwnd)
+    try {
+        for process in ComObjGet("winmgmts:").ExecQuery("Select CommandLine from Win32_Process where ProcessId = " pid) {
+            cmd := process.CommandLine
+            if InStr(cmd, "--app-id=") || InStr(cmd, "--app=")
+                return true
+        }
+    }
+    return false
+}
+
+_GetWinSignature(hwnd) {
+    if !WinExist("ahk_id " hwnd)
+        return ""
+    proc := WinGetProcessName("ahk_id " hwnd)
+    if _IsPWA(hwnd) {
+        title := WinGetTitle("ahk_id " hwnd)
+        sig := proc . ":" . RegExReplace(title, "[\[\]=]", "_")
+        return sig
+    }
+    return proc
+}
+
+_PersistToMemory(hwnd, xf, yf, wf, hf) {
+    global g_TilingMemoryFile, CFG_TilingMemory
+    if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
+        return
+    sig := _GetWinSignature(hwnd)
+    if sig = ""
+        return
+    IniWrite(xf, g_TilingMemoryFile, sig, "xf")
+    IniWrite(yf, g_TilingMemoryFile, sig, "yf")
+    IniWrite(wf, g_TilingMemoryFile, sig, "wf")
+    IniWrite(hf, g_TilingMemoryFile, sig, "hf")
+}
+
+_AutoSnapFromMemory(hwnd) {
+    global g_TilingMemoryFile, CFG_TilingMemory
+    if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
+        return
+    sig := _GetWinSignature(hwnd)
+    if sig = ""
+        return
+    
+    xf := IniRead(g_TilingMemoryFile, sig, "xf", "")
+    if xf = ""
+        return
+        
+    yf := IniRead(g_TilingMemoryFile, sig, "yf", "")
+    wf := IniRead(g_TilingMemoryFile, sig, "wf", "")
+    hf := IniRead(g_TilingMemoryFile, sig, "hf", "")
+    
+    _ApplyLayout(Integer(xf), Integer(yf), Integer(wf), Integer(hf), hwnd, false)
+}
+
 global FocusHistory   := []
 global LayoutCycleIdx := Map()
 global g_KeyLockActive := false
@@ -244,7 +317,16 @@ _WinSig(hwnd) {
 }
 
 _IsLiveWindow(hwnd) {
-    return hwnd && DllCall("user32\IsWindow", "Ptr", hwnd, "Int")
+    if !(hwnd && DllCall("user32\IsWindow", "Ptr", hwnd, "Int"))
+        return false
+    
+    ; EXCLUSIONS: Do not tile/track these transient or system windows
+    try {
+        proc := WinGetProcessName("ahk_id " hwnd)
+        if (proc = "Raycast.exe" || proc = "SearchHost.exe" || proc = "ShellExperienceHost.exe" || proc = "StartMenuExperienceHost.exe")
+            return false
+    }
+    return true
 }
 
 _GetWindowState(hwnd, default := -2) {
@@ -305,7 +387,13 @@ _NeedsAutoRestore(hwnd, layout) {
         return false
     WinGetPos(&wx, &wy, , , "ahk_id " hwnd)
     _GetExpectedOuterPos(hwnd, layout[1], layout[2], layout[3], layout[4], &expX, &expY)
-    return Abs(wx - expX) > 12 || Abs(wy - expY) > 12
+    
+    distX := Abs(wx - expX)
+    distY := Abs(wy - expY)
+    
+    ; Only restore if the movement is small (drift/bug).
+    ; If it's a large movement (e.g. > 200px), assume it's intentional and don't fight it.
+    return (distX > 6 && distX < 200) || (distY > 6 && distY < 200)
 }
 
 _AutoRestoreWindow(hwnd) {
@@ -563,8 +651,10 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
         " mon=[" L "," T "," R "," B "] target=[" visL "," visT "," visR "," visB "] offs=[" offL "," offT "," offR "," offB "]"
         " pct=[" x_factor "," y_factor "," w_factor "," h_factor "]")
     g_Layouts[hwnd] := [x_factor, y_factor, w_factor, h_factor]
-    if persist
+    if persist {
         _PersistLayout(hwnd)
+        _PersistToMemory(hwnd, x_factor, y_factor, w_factor, h_factor)
+    }
 }
 
 _RestoreDesktop(n) {
@@ -762,6 +852,8 @@ _HandleDesktopChange() {
     _ScheduleDesktopRestore(currentDesk)
 }
 
+TileTop()         => _ApplyLayout(0, 0, 100, 50)
+TileBottom()      => _ApplyLayout(0, 50, 100, 50)
 TileLeft()        => _ApplyLayout(0, 0, 50, 100)
 TileRight()       => _ApplyLayout(50, 0, 50, 100)
 TileTopLeft()     => _ApplyLayout(0, 0, 50, 50)
@@ -886,13 +978,19 @@ FocusDirection(dir) {
 }
 
 TrackFocusHistory(hHook, event, hwnd, *) {
-    global g_ScriptPaused
+    global g_ScriptPaused, g_TilingMode, g_Layouts
     try {
         if g_ScriptPaused
             return
         _HandleDesktopChange()
         if hwnd = 0
             return
+
+        ; --- AUTO-MEMORY SNAP ---
+        if g_TilingMode = "Native" && !g_Layouts.Has(hwnd) {
+            _AutoSnapFromMemory(hwnd)
+        }
+
         if FocusHistory.Length > 0 && FocusHistory[FocusHistory.Length] = hwnd
             return
         FocusHistory.Push(hwnd)
@@ -923,16 +1021,17 @@ CycleLayout() {
     idx := LayoutCycleIdx.Has(hwnd) ? Mod(LayoutCycleIdx[hwnd] + 1, layouts.Length) : 0
     LayoutCycleIdx[hwnd] := idx
     layouts[idx + 1]()
-    ShowOSD(names[idx + 1])
 }
 
 ; ============================================================
 ; EMERGENCY KILL SWITCH
 ; ============================================================
-^Esc:: {
+#SuspendExempt
+*^Esc:: {
     ReleaseModifiers()
     ExitApp()
 }
+#SuspendExempt False
 
 ; ============================================================
 ; PAUSE / RESUME
@@ -968,6 +1067,10 @@ w::Up
 a::Left
 s::Down
 d::Right
+
+; --- Tab navigation ---
+f::Send "^{PgUp}"   ; Previous Tab
+g::Send "^{PgDn}"   ; Next Tab
 
 ; --- System snap (Alt+CapsLock+W/A/S/D → Win+Arrow) ---
 !w:: Send("#{Up}")
