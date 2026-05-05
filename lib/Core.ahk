@@ -184,9 +184,9 @@ _IsPWA(hwnd) {
         return false
     
     title := WinGetTitle("ahk_id " hwnd)
-    if (proc = "msedge.exe" && !RegExMatch(title, "- Microsoft.Edge\s*$"))
+    if (proc = "msedge.exe" && !RegExMatch(title, "- Microsoft\.Edge\s*$"))
         return true
-    if (proc = "chrome.exe" && !RegExMatch(title, "- Google.Chrome\s*$"))
+    if (proc = "chrome.exe" && !RegExMatch(title, "- Google\.Chrome\s*$"))
         return true
         
     pid := WinGetPID("ahk_id " hwnd)
@@ -947,6 +947,7 @@ ToggleMaximize() {
     if WinGetMinMax("ahk_id " hwnd) = 1 {
         WinRestore("ahk_id " hwnd)
         g_WinMaxState[hwnd] := 0
+        _ScheduleAutoRestore(hwnd, 50)
     } else {
         WinMaximize("ahk_id " hwnd)
         g_WinMaxState[hwnd] := 1
@@ -1262,28 +1263,29 @@ Delete:: {
 *t:: {
     if GetKeyState("Alt", "P") && GetKeyState("Shift", "P") {
         Run 'wt.exe -w new -p Debian', EnvGet("USERPROFILE")
-        if WinWait("ahk_exe WindowsTerminal.exe", , 10)
-            _FocusTerminal()
+        if WinWait("ahk_exe WindowsTerminal.exe", , 2)
+            _FocusTerminal(true)
         return
     }
 
     if GetKeyState("Alt", "P") {
         Run 'wt.exe -p Debian', EnvGet("USERPROFILE")
-        if WinWait("ahk_exe WindowsTerminal.exe", , 10)
-            _FocusTerminal()
+        if WinWait("ahk_exe WindowsTerminal.exe", , 2)
+            _FocusTerminal(true)
         return
     }
 
     if GetKeyState("Shift", "P") {
         Run 'wt.exe -w new', EnvGet("USERPROFILE")
-        if WinWait("ahk_exe WindowsTerminal.exe", , 10)
-            _FocusTerminal()
+        if WinWait("ahk_exe WindowsTerminal.exe", , 2)
+            _FocusTerminal(true)
         return
     }
 
-    _FocusTerminal() {
+    _FocusTerminal(newLaunch := false) {
         WinActivate("ahk_exe WindowsTerminal.exe")
-        FloatCenter()
+        if newLaunch
+            FloatCenter()
     }
 
     if WinActive("ahk_exe Code.exe") {
@@ -1306,13 +1308,13 @@ Delete:: {
                 _FocusTerminal()
         } else {
             Run 'wt.exe', EnvGet("USERPROFILE")
-            if WinWait("ahk_exe WindowsTerminal.exe", , 10)
-                _FocusTerminal()
+            if WinWait("ahk_exe WindowsTerminal.exe", , 2)
+                _FocusTerminal(true)
         }
     } else {
         Run 'wt.exe', EnvGet("USERPROFILE")
-        if WinWait("ahk_exe WindowsTerminal.exe", , 10)
-            _FocusTerminal()
+        if WinWait("ahk_exe WindowsTerminal.exe", , 2)
+            _FocusTerminal(true)
     }
 }
 *r:: {

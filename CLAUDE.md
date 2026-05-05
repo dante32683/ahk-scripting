@@ -49,7 +49,7 @@ Shared logic lives in `lib/Core.ahk`. Entry points are `Master.ahk` (laptop) and
 5. **Layout Persistence / Restore** — `g_Layouts` Map persisted to `%TEMP%\ahk_layouts.ini`.
    - **Tiling Mode Check**: `_RestoreDesktop` and `_RestoreAllDesktops` only execute if `g_TilingMode = "Native"`.
    - **Passive drift correction**: `_CheckLayoutRestores` timer (2s) runs only in Native mode.
-6. **Tiling Memory** — Per-app layout memory persisted to `%TEMP%\Tiling_Memory.ini` (fractional coordinates xf/yf/wf/hf, 0–100). Controlled by `CFG_TilingMemory`.
+6. **Tiling Memory** — Per-app layout memory persisted to `<script dir>\Tiling_Memory.ini` (fractional coordinates xf/yf/wf/hf, 0–100). Controlled by `CFG_TilingMemory`.
    - `_PersistToMemory(hwnd, ...)` — writes fractional layout on every explicit tile.
    - `_AutoSnapFromMemory(hwnd)` — called on focus; snaps window to its last position. If `maximized=1` is stored, maximizes instead.
    - `_OnWindowDestroy` — when a tracked window closes, persists `maximized=1/0` using cached `g_WinSigCache`/`g_WinMaxState`.

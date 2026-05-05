@@ -1,0 +1,8 @@
+# Local configuration
+config.ahk
+
+# Generated / runtime files
+lib/Autocorrect.ahk
+Autocorrect_Disabled.txt
+Tiling_Memory.ini
+Autocorrect_Database.txt
