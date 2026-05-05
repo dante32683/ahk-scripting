@@ -184,9 +184,9 @@ _IsPWA(hwnd) {
         return false
     
     title := WinGetTitle("ahk_id " hwnd)
-    if (proc = "msedge.exe" && !InStr(title, " - Microsoft Edge"))
+    if (proc = "msedge.exe" && !RegExMatch(title, "- Microsoft.Edge\s*$"))
         return true
-    if (proc = "chrome.exe" && !InStr(title, " - Google Chrome"))
+    if (proc = "chrome.exe" && !RegExMatch(title, "- Google.Chrome\s*$"))
         return true
         
     pid := WinGetPID("ahk_id " hwnd)
@@ -200,14 +200,21 @@ _IsPWA(hwnd) {
     return false
 }
 
+_NormalizePWATitle(title) {
+    title := RegExReplace(title, "^\(\d+\)\s+", "")           ; "(7) Instagram" → "Instagram"
+    title := RegExReplace(title, "\s*-\s*\(\d+\)\s+.*$", "")  ; "App - (7) App" → "App"
+    title := RegExReplace(title, "^.+\s+and\s+\d+\s+more\s+pages?\s+-\s+", "") ; "Tab and N more pages - Profile - Edge" → "Profile - Edge"
+    title := RegExReplace(title, ":\s+[^:]+$", "")             ; "App: Trying to connect" → "App"
+    return Trim(title)
+}
+
 _GetWinSignature(hwnd) {
     if !WinExist("ahk_id " hwnd)
         return ""
     proc := WinGetProcessName("ahk_id " hwnd)
     if _IsPWA(hwnd) {
-        title := WinGetTitle("ahk_id " hwnd)
-        sig := proc . ":" . RegExReplace(title, "[\[\]=]", "_")
-        return sig
+        title := _NormalizePWATitle(WinGetTitle("ahk_id " hwnd))
+        return proc . ":" . RegExReplace(title, "[\[\]=]", "_")
     }
     return proc
 }
@@ -667,6 +674,8 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
         offL := 0, offT := 0, offR := 0, offB := 0
     }
 
+    g_Layouts[hwnd] := [x_factor, y_factor, w_factor, h_factor]
+    g_WinMaxState[hwnd] := 0
     WinMove(visL - offL, visT - offT, (visR - visL) + offL + offR, (visB - visT) + offT + offB, "ahk_id " hwnd)
 
     DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 9, "Ptr", dwmRect, "UInt", 16)
@@ -685,8 +694,6 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
     _Dbg("apply mode=" mode " " _WinSig(hwnd) " desk?=" (GetWindowDesktopNumber ? DllCall(GetWindowDesktopNumber, "Ptr", hwnd) + 1 : 0)
         " mon=[" L "," T "," R "," B "] target=[" visL "," visT "," visR "," visB "] offs=[" offL "," offT "," offR "," offB "]"
         " pct=[" x_factor "," y_factor "," w_factor "," h_factor "]")
-    g_Layouts[hwnd] := [x_factor, y_factor, w_factor, h_factor]
-    g_WinMaxState[hwnd] := 0
     if persist {
         _PersistLayout(hwnd)
         _PersistToMemory(hwnd, x_factor, y_factor, w_factor, h_factor)
@@ -1051,6 +1058,7 @@ FocusDirection(dir) {
 
 TrackFocusHistory(hHook, event, hwnd, *) {
     global g_ScriptPaused, g_TilingMode, g_Layouts, g_WinSigCache, g_WinMaxState
+    global g_TilingMemoryFile, CFG_TilingMemory
     try {
         if g_ScriptPaused
             return
@@ -1063,13 +1071,18 @@ TrackFocusHistory(hHook, event, hwnd, *) {
             sig := _GetWinSignature(hwnd)
             if sig != "" {
                 g_WinSigCache[hwnd] := sig
-                g_WinMaxState[hwnd] := (_GetWindowState(hwnd) = 1) ? 1 : 0
+                isMax := (_GetWindowState(hwnd) = 1) ? 1 : 0
+                g_WinMaxState[hwnd] := isMax
+                if isMax && IsSet(CFG_TilingMemory) && CFG_TilingMemory
+                    IniWrite(1, g_TilingMemoryFile, sig, "maximized")
             }
         }
 
         ; --- AUTO-MEMORY SNAP ---
         if g_TilingMode = "Native" && !g_Layouts.Has(hwnd) {
-            _AutoSnapFromMemory(hwnd)
+            ; skip popups/dropdowns: need WS_CAPTION; skip dialogs/tool windows: must have no owner
+            if (WinGetStyle("ahk_id " hwnd) & 0xC00000) && (DllCall("GetWindow", "Ptr", hwnd, "UInt", 4) = 0)
+                _AutoSnapFromMemory(hwnd)
         }
 
         if FocusHistory.Length > 0 && FocusHistory[FocusHistory.Length] = hwnd
