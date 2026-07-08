@@ -1,0 +1,29 @@
+# Agent context ignore rules for Gemini.
+# These files are generated, binary, local-only, or intentionally large.
+
+.git/
+.vs/
+.idea/
+.vscode/
+
+**/bin/
+**/obj/
+TestResults/
+
+release/
+publish/
+dist/
+build/
+node_modules/
+
+*.nupkg
+*.snupkg
+*.pdb
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS noise.
+.DS_Store
+Thumbs.db
+desktop.ini
