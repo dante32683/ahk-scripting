@@ -1,0 +1,29 @@
+# Personal config and local scripts — contain private values, never commit
+custom/
+/*.ahk
+!/Master.ahk
+!/Master-PC.ahk
+!/Remap.ahk
+!/Setup.ahk
+!/config.example.ahk
+Tiling_Memory.ini
+Autocorrect_Disabled.txt
+
+# Generated files
+lib/Autocorrect.ahk
+
+# Task Scheduler exports — machine-specific (hardcoded SIDs and paths)
+*.xml
+
+# Local planning docs
+REFACTOR_PLAN.md
+
+# Local Claude/Cursor agent settings
+.claude/
+.antigravitycli/
+# Local planning and scratchpad
+plans/
+docs/ephemeral-plans/
+
+# Local archives
+archive/
