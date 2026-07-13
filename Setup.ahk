@@ -7,25 +7,63 @@ if !A_IsAdmin {
 }
 
 ; ============================================================
-; HEALTH VALIDATION CHECKS
+; PROFILE RESOLUTION
 ; ============================================================
-configPath := A_ScriptDir "\config.ahk"
-if !FileExist(configPath) {
-    exampleConfig := A_ScriptDir "\config.example.ahk"
-    if FileExist(exampleConfig) {
-        r := MsgBox("config.ahk not found. Copy config.example.ahk to config.ahk?", "Setup Check", "YesNo Icon?")
-        if r = "Yes" {
-            FileCopy(exampleConfig, configPath)
-            MsgBox("config.ahk created. Please edit it with your personal values.", "Setup Info", "Iconi")
-        }
-    } else {
-        MsgBox("Warning: Neither config.ahk nor config.example.ahk was found.", "Setup Warning", "Icon!")
+customDir := A_ScriptDir "\custom"
+configPath := customDir "\config.ahk"
+exampleConfig := A_ScriptDir "\config.example.ahk"
+
+if !DirExist(customDir) {
+    try DirCreate(customDir)
+    catch as e {
+        MsgBox("Error creating custom directory: " e.Message, "Setup Error", "Icon!")
+        ExitApp(1)
     }
 }
 
-vdaDll := A_ScriptDir "\VirtualDesktopAccessor.dll"
-if !FileExist(vdaDll) {
-    MsgBox("Warning: VirtualDesktopAccessor.dll is missing from root.`n`nVirtual desktop navigation hotkeys (CapsLock+1-9 / CapsLock+Left/Right) will fall back to standard Windows shortcuts without support for moving active windows between desktops.", "Setup Warning", "Icon!")
+profile := "laptop" ; Default
+if !FileExist(configPath) {
+    if FileExist(exampleConfig) {
+        r := MsgBox("custom/config.ahk not found. Configure for laptop profile? (Select 'No' for desktop profile)", "Setup Profile Selection", "YesNo Icon?")
+        profile := (r = "Yes") ? "laptop" : "desktop"
+        
+        try {
+            FileCopy(exampleConfig, configPath)
+            ; Modify the default profile in custom/config.ahk based on selection
+            configContent := FileRead(configPath, "UTF-8")
+            configContent := StrReplace(configContent, 'global CFG_MachineProfile := "laptop"', 'global CFG_MachineProfile := "' profile '"')
+            if (profile = "desktop") {
+                configContent := StrReplace(configContent, 'global CFG_EnableVirtualDesktops := true', 'global CFG_EnableVirtualDesktops := false')
+                configContent := StrReplace(configContent, 'global CFG_NumberKeys := "auto"', 'global CFG_NumberKeys := "monitors"')
+            } else {
+                configContent := StrReplace(configContent, 'global CFG_NumberKeys := "auto"', 'global CFG_NumberKeys := "desktops"')
+            }
+            if FileExist(configPath)
+                FileDelete(configPath)
+            FileAppend(configContent, configPath, "UTF-8")
+            MsgBox("custom/config.ahk created and configured as '" profile "' profile. Please edit it with your personal values.", "Setup Info", "Iconi")
+        } catch as e {
+            MsgBox("Error copying/configuring config.example.ahk: " e.Message, "Setup Error", "Icon!")
+            ExitApp(1)
+        }
+    } else {
+        MsgBox("Warning: Neither custom/config.ahk nor config.example.ahk was found.", "Setup Warning", "Icon!")
+    }
+} else {
+    try {
+        configText := FileRead(configPath, "UTF-8")
+        if RegExMatch(configText, "i)CFG_MachineProfile\s*:=\s*`"([^`"]+)`"", &m) {
+            profile := m[1]
+        }
+    }
+}
+
+; Check dependencies based on resolved profile
+if (profile = "laptop") {
+    vdaDll := A_ScriptDir "\VirtualDesktopAccessor.dll"
+    if !FileExist(vdaDll) {
+        MsgBox("Warning: VirtualDesktopAccessor.dll is missing from root.`n`nVirtual desktop navigation hotkeys (CapsLock+1-9 / CapsLock+Left/Right) will fall back to standard Windows shortcuts without support for moving active windows between desktops.", "Setup Warning", "Icon!")
+    }
 }
 
 dbPath := A_ScriptDir "\Autocorrect_Database.txt"
@@ -33,44 +71,57 @@ if !FileExist(dbPath) {
     MsgBox("Warning: Autocorrect_Database.txt is missing from root.`n`nThe autocorrect engine will rely on the static cached lib/Autocorrect.ahk file and cannot be rebuilt.", "Setup Warning", "Icon!")
 }
 
-; Choose entry point.
-
-; If you want deterministic behavior across machines, set a machine flag in config.ahk
-; and use it here instead of A_ComputerName.
-entryPoint := FileExist(A_ScriptDir "\Master-PC.ahk") && (A_ComputerName = "DESKTOP-PC")
-    ? "Master-PC.ahk"
-    : "Master.ahk"
+entryPoint := (profile = "desktop") ? "Master-PC.ahk" : "Master.ahk"
 
 ahkExe := A_ProgramFiles "\AutoHotkey\v2\AutoHotkey64.exe"
 if !FileExist(ahkExe)
     ahkExe := A_ProgramFiles "\AutoHotkey\v2\AutoHotkey.exe"
+if !FileExist(ahkExe) {
+    MsgBox("AutoHotkey v2 executable not found. Setup aborted.", "Setup Error", "Icon!")
+    ExitApp(1)
+}
 
 scriptPath := A_ScriptDir "\" entryPoint
 taskName := "AHK Master Script"
 
-; Get current user SID
-tmpSid := A_Temp "\ahk_sid.txt"
+; Get current user SID via noninteractive PowerShell call
+pid := DllCall("GetCurrentProcessId")
+tmpSid := A_Temp "\ahk_sid_" pid "_" A_TickCount ".txt"
 try FileDelete(tmpSid)
-RunWait(A_ComSpec ' /c wmic useraccount where name="' A_UserName '" get sid /value > "' tmpSid '"', , "Hide")
+RunWait('powershell.exe -NoProfile -Command "[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value" > "' tmpSid '"', , "Hide")
 raw := ""
 try raw := FileRead(tmpSid)
-userSid := ""
-if RegExMatch(raw, "SID=(\S+)", &m)
-    userSid := Trim(m[1])
 try FileDelete(tmpSid)
+userSid := Trim(raw, " `t`r`n")
 
 if !userSid {
     MsgBox("Could not determine user SID. Aborting.", "Setup Error", "Icon!")
-    ExitApp()
+    ExitApp(1)
 }
+
+; XML-escape function
+_XmlEscape(str) {
+    str := StrReplace(str, "&", "&amp;")
+    str := StrReplace(str, "<", "&lt;")
+    str := StrReplace(str, ">", "&gt;")
+    str := StrReplace(str, '"', "&quot;")
+    str := StrReplace(str, "'", "&apos;")
+    return str
+}
+
+eTaskName := _XmlEscape(taskName)
+eAhkExe := _XmlEscape(ahkExe)
+eScriptPath := _XmlEscape(scriptPath)
+eWorkDir := _XmlEscape(A_ScriptDir)
+eUserSid := _XmlEscape(userSid)
 
 ; Build the task XML (UTF-16 required by schtasks /xml)
 xml := '<?xml version="1.0" encoding="UTF-16"?>'
 xml .= '<Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">'
-xml .= '<RegistrationInfo><URI>\' taskName '</URI></RegistrationInfo>'
+xml .= '<RegistrationInfo><URI>\' eTaskName '</URI></RegistrationInfo>'
 xml .= '<Triggers><LogonTrigger><Enabled>true</Enabled></LogonTrigger></Triggers>'
 xml .= '<Principals><Principal id="Author">'
-xml .= '<UserId>' userSid '</UserId>'
+xml .= '<UserId>' eUserSid '</UserId>'
 xml .= '<LogonType>InteractiveToken</LogonType>'
 xml .= '<RunLevel>HighestAvailable</RunLevel>'
 xml .= '</Principal></Principals>'
@@ -84,19 +135,31 @@ xml .= '<Enabled>true</Enabled>'
 xml .= '<RestartOnFailure><Interval>PT1M</Interval><Count>3</Count></RestartOnFailure>'
 xml .= '</Settings>'
 xml .= '<Actions Context="Author"><Exec>'
-xml .= '<Command>"' ahkExe '"</Command>'
-xml .= '<Arguments>"' scriptPath '"</Arguments>'
+xml .= '<Command>' eAhkExe '</Command>'
+xml .= '<Arguments>"' eScriptPath '"</Arguments>'
+xml .= '<WorkingDirectory>' eWorkDir '</WorkingDirectory>'
 xml .= '</Exec></Actions>'
 xml .= '</Task>'
 
-tmpXml := A_Temp "\ahk_setup_task.xml"
+tmpXml := A_Temp "\ahk_setup_task_" pid "_" A_TickCount ".xml"
 FileOpen(tmpXml, "w", "UTF-16").Write(xml)
 
 exitCode := RunWait(A_ComSpec ' /c schtasks /create /xml "' tmpXml '" /tn "' taskName '" /f', , "Hide")
 try FileDelete(tmpXml)
 
-if exitCode = 0
-    MsgBox('Task "' taskName '" registered successfully.`n`nEntry point: ' scriptPath, "Setup Complete", "Iconi")
-else
+if exitCode = 0 {
+    ; Query back task XML to verify correct registration
+    tmpQuery := A_Temp "\ahk_query_" pid "_" A_TickCount ".xml"
+    RunWait(A_ComSpec ' /c schtasks /query /tn "' taskName '" /xml > "' tmpQuery '"', , "Hide")
+    queryXml := ""
+    try queryXml := FileRead(tmpQuery, "UTF-8")
+    try FileDelete(tmpQuery)
+    
+    if !InStr(queryXml, eAhkExe) || !InStr(queryXml, eScriptPath) || !InStr(queryXml, eWorkDir) || !InStr(queryXml, "<RunLevel>HighestAvailable</RunLevel>") {
+        MsgBox("Task validation failed after creation! The registered scheduled task configuration did not match expected values.", "Setup Error", "Icon!")
+        ExitApp(1)
+    }
+    MsgBox('Task "' taskName '" registered and validated successfully.`n`nEntry point: ' scriptPath, "Setup Complete", "Iconi")
+} else {
     MsgBox("schtasks returned exit code " exitCode ". Check that you ran as admin and AutoHotkey v2 is installed.", "Setup Failed", "Icon!")
-
+}
