@@ -407,7 +407,7 @@ global g_AutoRestoreTimers := Map()
 global g_WinSigCache  := Map()   ; hwnd → signature string
 global g_WinMaxState  := Map()   ; hwnd → 1 if maximized, 0 otherwise
 global g_HWNDLayoutCache := Map() ; hwnd → {xf, yf, wf, hf} — ephemeral per-instance position cache
-global g_DebugRestore := false
+global g_DebugRestore := IsSet(CFG_DebugRestore) ? CFG_DebugRestore : false
 global g_DebugLogFile := A_Temp "\ahk_restore_debug.log"
 
 ; ============================================================
