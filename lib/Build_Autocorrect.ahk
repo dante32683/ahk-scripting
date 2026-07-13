@@ -8,6 +8,7 @@ if (IsSet(CFG_Autocorrect) && CFG_Autocorrect) {
 
 ; Returns true if Autocorrect.ahk was rebuilt, false if already up to date.
 BuildAutocorrect() {
+    startTime := A_TickCount
     ; repoRoot is the directory where Master.ahk / Master-PC.ahk live.
     ; A_ScriptDir is reliably the project root for this architecture.
     repoRoot := A_ScriptDir
@@ -15,8 +16,10 @@ BuildAutocorrect() {
     outPath  := repoRoot "\lib\Autocorrect.ahk"
     builderPath := A_LineFile
 
-    if !FileExist(dbPath)
+    if !FileExist(dbPath) {
+        Perf_Log("autocorrect_rebuild", "no_db", A_TickCount - startTime)
         return false
+    }
 
     ; Skip rebuild only when the output is newer than both the database and the builder,
     ; and is not just an empty stub (< 200 bytes = no hotstrings generated yet)
@@ -27,14 +30,18 @@ BuildAutocorrect() {
             outSize := FileGetSize(outPath)
         catch
             outSize := 0
-        if (outSize > 200)
+        if (outSize > 200) {
+            Perf_Log("autocorrect_rebuild", "skip", A_TickCount - startTime)
             return false
+        }
     }
 
     try
         dbContent := FileRead(dbPath, "UTF-8")
-    catch
+    catch {
+        Perf_Log("autocorrect_rebuild", "read_failed", A_TickCount - startTime)
         return false
+    }
 
     ; Collect valid lines, sort them alphabetically (case-insensitive)
     rawLines := ""
@@ -101,8 +108,10 @@ BuildAutocorrect() {
         FileAppend(out, outPath, "UTF-8")
     } catch as e {
         MsgBox("Error writing Autocorrect.ahk: " e.Message)
+        Perf_Log("autocorrect_rebuild", "write_failed", A_TickCount - startTime)
         return false
     }
+    Perf_Log("autocorrect_rebuild", "success", A_TickCount - startTime)
     return true
 }
 
