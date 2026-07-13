@@ -17,6 +17,7 @@ if !IsSet(g_PerfStartupTick)
 #Include ShowOSD.ahk
 #Include Perf.ahk
 #Include StateStore.ahk
+#Include VDA.ahk
 
 global CFG_TestMode := (IsSet(CFG_TestMode) && CFG_TestMode) || (EnvGet("AHK_TEST_MODE") = "1")
 
@@ -25,34 +26,7 @@ Perf_Init()
 ; ============================================================
 ; VIRTUAL DESKTOP ACCESSOR (VDA)
 ; ============================================================
-global GoToDesktopNumber        := 0
-global MoveWindowToDesktopNumber := 0
-global GetCurrentDesktopNumber   := 0
-global GetWindowDesktopNumber    := 0
-global VDA_IsLoaded              := false
-
-if (IsSet(CFG_EnableVirtualDesktops) && CFG_EnableVirtualDesktops) {
-    VDA_DLL := A_ScriptDir "\VirtualDesktopAccessor.dll"
-    if !FileExist(VDA_DLL) {
-        ShowOSD("VDA DLL not found at:`n" VDA_DLL "`nWorkspace 1-9 keys disabled.", 5000)
-    } else {
-        hVDA := DllCall("LoadLibrary", "Str", VDA_DLL, "Ptr")
-        if !hVDA {
-            ShowOSD("VDA DLL failed to load! Bitness mismatch?`nNeed x64 DLL for 64-bit AHK.", 6000)
-        } else {
-            GoToDesktopNumber        := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GoToDesktopNumber",        "Ptr")
-            MoveWindowToDesktopNumber := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "MoveWindowToDesktopNumber", "Ptr")
-            GetCurrentDesktopNumber   := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GetCurrentDesktopNumber",   "Ptr")
-            GetWindowDesktopNumber    := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GetWindowDesktopNumber",    "Ptr")
-
-            if (GoToDesktopNumber && MoveWindowToDesktopNumber && GetCurrentDesktopNumber && GetWindowDesktopNumber) {
-                VDA_IsLoaded := true
-            } else {
-                ShowOSD("VDA loaded but functions missing.`nGet the latest release.", 6000)
-            }
-        }
-    }
-}
+VDA.Init()
 
 ; ============================================================
 ; FAILSAFE: SMART MODIFIER RELEASE
@@ -162,6 +136,7 @@ if !CFG_TestMode {
     OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveEndHook))
     OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_DestroyHook))
     OnExit((*) => State_Shutdown())
+    OnExit((*) => VDA.Cleanup())
     OnMessage(0x001A, _OnSettingChange)  ; WM_SETTINGCHANGE — work area resize (AppBar dock/undock)
     OnMessage(0x0218, _OnPowerBroadcast) ; WM_POWERBROADCAST — wake from sleep
     OnMessage(0x007E, _OnDisplayChange)  ; WM_DISPLAYCHANGE  — resolution change (fullscreen game exit)
@@ -405,8 +380,8 @@ for hwnd, item in g_StateSessionLayouts {
     g_Layouts[hwnd] := item["layout"]
 }
 
-if VDA_IsLoaded && GetCurrentDesktopNumber {
-    g_LastDesktop := DllCall(GetCurrentDesktopNumber) + 1
+if VDA.isLoaded {
+    g_LastDesktop := VDA.GetCurrent()
 }
 
 if (g_TilingMode = "Native" && IsSet(CFG_DriftCorrection) && CFG_DriftCorrection)
@@ -458,13 +433,13 @@ _IsLiveWindow(hwnd) {
 }
 
 _IsOnCurrentDesktop(hwnd) {
-    if !VDA_IsLoaded || !GetCurrentDesktopNumber || !GetWindowDesktopNumber
+    if !VDA.isLoaded
         return true
     try {
-        winDesk := DllCall(GetWindowDesktopNumber, "Ptr", hwnd)
-        if (winDesk = -1) ; Pin to all desktops
+        winDesk := VDA.GetWindowDesktop(hwnd)
+        if (winDesk = 0) ; Pin to all desktops or error
             return true
-        curDesk := DllCall(GetCurrentDesktopNumber)
+        curDesk := VDA.GetCurrent()
         return winDesk = curDesk
     } catch
         return true
@@ -920,7 +895,7 @@ _RestoreDesktop(desktopNumber) {
     global g_ScriptPaused
     if g_ScriptPaused
         return false
-    if !VDA_IsLoaded || !GetWindowDesktopNumber
+    if !VDA.isLoaded
         return false
     _Dbg("restore-desktop-start desk=" desktopNumber " tracked=" g_Layouts.Count)
     anyMoved := false
@@ -932,7 +907,7 @@ _RestoreDesktop(desktopNumber) {
             continue
         }
         try {
-            windowDesktopNumber := DllCall(GetWindowDesktopNumber, "Ptr", windowHandle) + 1
+            windowDesktopNumber := VDA.GetWindowDesktop(windowHandle)
             if windowDesktopNumber != desktopNumber {
                 _Dbg("restore-desktop-skip desk-mismatch want=" desktopNumber " got=" windowDesktopNumber " " _WinSig(windowHandle))
                 continue
@@ -970,9 +945,9 @@ _RestoreAllDesktops() {
 }
 
 _RestoreCurrentDesktop() {
-    if !VDA_IsLoaded || !GetCurrentDesktopNumber
+    if !VDA.isLoaded
         return
-    _RestoreDesktop(DllCall(GetCurrentDesktopNumber) + 1)
+    _RestoreDesktop(VDA.GetCurrent())
 }
 
 _DesktopRestoreTick(n, step) {
@@ -990,9 +965,9 @@ _ScheduleDesktopRestore(n) {
 
 _ScheduleRestoreCurrentDesktop(delay := 600) {
     _Dbg("schedule-current-desktop delay=" delay)
-    if !VDA_IsLoaded || !GetCurrentDesktopNumber
+    if !VDA.isLoaded
         return
-    SetTimer(() => _ScheduleDesktopRestore(DllCall(GetCurrentDesktopNumber) + 1), -delay)
+    SetTimer(() => _ScheduleDesktopRestore(VDA.GetCurrent()), -delay)
 }
 
 _OnSettingChange(wParam, *) {
@@ -1139,10 +1114,18 @@ _HandleDesktopChange() {
     global g_ScriptPaused, g_FocusHistory, g_DesktopLastWindow
     if g_ScriptPaused
         return
-    if !VDA_IsLoaded || !GetCurrentDesktopNumber
+    if !VDA.isLoaded
         return
-    try currentDesk := DllCall(GetCurrentDesktopNumber) + 1
+    try currentDesk := VDA.GetCurrent()
     catch
+        return
+    _HandleDesktopChangeFromMsg(currentDesk)
+}
+
+_HandleDesktopChangeFromMsg(currentDesk) {
+    global g_LastDesktop
+    global g_ScriptPaused, g_FocusHistory, g_DesktopLastWindow
+    if g_ScriptPaused
         return
     if !currentDesk || currentDesk = g_LastDesktop
         return
@@ -1153,6 +1136,7 @@ _HandleDesktopChange() {
         while historyIndex > 0 {
             prevHwnd := g_FocusHistory[historyIndex]
             if WinExist("ahk_id " prevHwnd) && _IsWindowOnDesktop(prevHwnd, g_LastDesktop) {
+                State_SetDesktopWindow(g_LastDesktop, prevHwnd)
                 g_DesktopLastWindow[g_LastDesktop] := prevHwnd
                 break
             }
@@ -1166,13 +1150,13 @@ _HandleDesktopChange() {
 }
 
 _IsWindowOnDesktop(hwnd, deskIndex) {
-    if !VDA_IsLoaded || !GetWindowDesktopNumber
+    if !VDA.isLoaded
         return true
     try {
-        winDesk := DllCall(GetWindowDesktopNumber, "Ptr", hwnd)
-        if (winDesk = -1) ; Pin to all desktops
+        winDesk := VDA.GetWindowDesktop(hwnd)
+        if (winDesk = 0) ; Pin to all desktops or error
             return true
-        return winDesk = (deskIndex - 1)
+        return winDesk = deskIndex
     } catch
         return false
 }
@@ -1211,16 +1195,16 @@ ToggleMaximize() {
 
 GotoDesktop(n) {
     global g_LastDesktop
-    if !VDA_IsLoaded {
+    if !VDA.isLoaded {
         ShowOSD("VDA not loaded — install the DLL first!")
         return
     }
-    currentDesk := DllCall(GetCurrentDesktopNumber) + 1
+    currentDesk := VDA.GetCurrent()
     if WinExist("A")
         g_DesktopLastWindow[currentDesk] := WinGetID("A")
 
     g_LastDesktop := n
-    DllCall(GoToDesktopNumber, "Int", n - 1)
+    VDA.GoTo(n)
 
     SetTimer(() => _RestoreFocusOnDesktop(n), -150)
     _ScheduleDesktopRestore(n)
@@ -1244,9 +1228,9 @@ _RestoreFocusOnDesktop(n) {
 MoveToDesktop(desktopIndex) {
     if !WinExist("A")
         return
-    if VDA_IsLoaded {
+    if VDA.isLoaded {
         windowHandle := WinGetID("A")
-        DllCall(MoveWindowToDesktopNumber, "Ptr", windowHandle, "Int", desktopIndex - 1)
+        VDA.MoveWindow(windowHandle, desktopIndex)
         g_DesktopLastWindow[desktopIndex] := windowHandle
         GotoDesktop(desktopIndex)
     } else {
