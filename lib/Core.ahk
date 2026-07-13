@@ -1383,11 +1383,11 @@ FocusDirection(dir) {
         candidateCount++
         if hwnd = curHwnd
             continue
+        if !_IsLiveWindow(hwnd)
+            continue
         if WinGetMinMax("ahk_id " hwnd) = -1
             continue
-        if !(WinGetStyle("ahk_id " hwnd) & 0x10000000)
-            continue
-        if WinGetExStyle("ahk_id " hwnd) & 0x80
+        if WinGetExStyle("ahk_id " hwnd) & 0x80 ; WS_EX_TOOLWINDOW
             continue
         cloaked := 0
         DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
