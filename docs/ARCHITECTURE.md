@@ -12,10 +12,13 @@
 │   ├── Build_Autocorrect.ahk      # Autocorrect build step
 │   ├── Autocorrect.ahk            # Auto-generated hotstring list — never edit
 │   ├── Autocorrect_Logic.ahk      # Autocorrect runtime (disable, persist)
-│   └── ShowOSD.ahk                # ShowOSD() helper
-├── plans/                         # Local planning notes (non-authoritative)
-├── Master.ahk                     # Laptop entry point
-├── Master-PC.ahk                  # PC entry point
+│   ├── ShowOSD.ahk                # ShowOSD() helper
+│   ├── Perf.ahk                   # Telemetry/instrumentation engine
+│   ├── StateStore.ahk             # Centralized StateStore engine
+│   └── VDA.ahk                    # Object-oriented dynamic VDA wrapper
+├── Main.ahk                       # Central unified entry point
+├── Master.ahk                     # Laptop entry point wrapper
+├── Master-PC.ahk                  # PC entry point wrapper
 ├── Remap.ahk                      # Global Alt→Ctrl remaps (both machines)
 ├── config.example.ahk             # Config template
 ├── custom/                        # User-specific values and local extensions (gitignored)
@@ -25,27 +28,22 @@
 │   ├── Master-PC_custom.ahk       # Optional PC-only local extensions
 │   └── Network_custom.ahk         # Optional local network script
 ├── Autocorrect_Database.txt       # Autocorrect source of truth
-├── Autocorrect_Disabled.txt       # Persisted disabled corrections
-├── Tiling_Memory.ini              # Persisted per-app tiling positions
 ├── VirtualDesktopAccessor.dll     # Virtual desktop COM wrapper (x64)
 └── Setup.ahk                      # Standalone: one-time setup
 ```
 
 ## Startup Sequence
 
-Both entry points follow the same startup order:
+All entry points unify under `Main.ahk`:
 
-1. `#Requires AutoHotkey v2.0+` and performance flags (`ListLines 0`, `KeyHistory 0`).
-2. Admin elevation — if not already elevated, re-launches itself with `RunAs`.
-3. `#Include custom/config.ahk` — loads all local `CFG_` variables.
-4. `#Include lib/Core.ahk` — loads shared logic, registers WinEvent hooks, starts timers.
-5. `#Include lib/WindowTiling_Native.ahk` and `lib/WindowTiling_FancyZones.ahk` — both always included; `CFG_TilingMode` gates which hotkey block is active via `#HotIf`.
-6. `#Include Remap.ahk` — registers global Alt→Ctrl remaps.
-7. `#Include lib/Autocorrect_Logic.ahk` — initializes autocorrect runtime state and registers disable hotkeys.
-8. `#Include lib/Build_Autocorrect.ahk` — rebuilds `lib/Autocorrect.ahk` if the database is newer or the generated file is missing/stale (< 200 bytes), then calls `SafeReload()`.
-9. `#Include *i lib/Autocorrect.ahk` — loads generated hotstrings when present.
-10. Machine-specific hotkeys (virtual desktops or monitor switching).
-11. Optional local extension includes from `custom\`.
+1. Capture startup tick count (`g_PerfStartupTick`).
+2. `#Include custom/config.ahk` — loads local user configuration variables.
+3. Validate and resolve machine profile (`APP_Profile`: `laptop` or `desktop`).
+4. Apply performance settings (`ListLines false`, `KeyHistory`, `SetWinDelay 0`, `ProcessSetPriority`, `InstallKeybdHook`).
+5. `#Include lib/Core.ahk` — includes other core libraries.
+6. Initialize telemetry (`Perf_Init()`), StateStore (`State_Init()`), and VirtualDesktopAccessor (`VDA.Init()`).
+7. Bind conditional hotkeys based on machine profile.
+8. Show startup confirmation OSD message.
 
 ## Core.ahk Module Breakdown
 
@@ -80,13 +78,13 @@ Three `SetWinEventHook` callbacks are registered at startup:
 
 Drift correction: a 2-second timer (`_CheckLayoutRestores`) checks whether tracked windows have drifted from their recorded positions and re-applies the layout. Only active in Native mode.
 
-### Tiling Memory (Cross-Session)
+### Tiling Memory (StateStore.ahk)
 
-Per-app positions persisted to `<script dir>\Tiling_Memory.ini`. Uses a signature-based lookup:
+Per-app positions are persisted to `%LOCALAPPDATA%\AutoHotkeyMaster\layouts.txt` using Section/Key/Value formats managed by the central `StateStore.ahk` engine:
 
 - **Signature** (`_GetWinSignature`) — for normal apps, the signature is the process name (e.g. `WindowsTerminal.exe`). For PWAs, it includes the title: `msedge.exe:Gmail`.
-- **Write** (`_PersistToMemory`) — called on every explicit tile. Writes `xf/yf/wf/hf` under the signature section. Also writes to `g_HWNDLayoutCache` keyed by hwnd for multi-instance support.
-- **Read** (`_AutoSnapFromMemory`) — called on focus. If only one instance of the process is running, reads from the INI. If multiple instances are running, reads from `g_HWNDLayoutCache` (ephemeral, in-memory only). If the hwnd is not in the cache yet (new window, never explicitly tiled), no snap occurs.
+- **Write** (`State_SaveAppLayout`) — called on every explicit tile. Writes `xf/yf/wf/hf` under the signature. Also writes to `g_HWNDLayoutCache` keyed by hwnd for multi-instance support.
+- **Read** (`_AutoSnapFromMemory`) — called on focus. If only one instance of the process is running, reads from the StateStore. If multiple instances are running, reads from `g_HWNDLayoutCache` (ephemeral, in-memory only). If the hwnd is not in the cache yet (new window, never explicitly tiled), no snap occurs.
 - **Maximized state** — when a window closes, `_OnWindowDestroy` writes `maximized=1` or deletes the key. On focus, a `maximized=1` entry causes a `WinMaximize` instead of a position snap. Explicit tiling always clears `maximized`.
 
 #### Fractional Coordinate System
@@ -114,12 +112,11 @@ Example: `xf=50, yf=0, wf=50, hf=100` = right half of the monitor.
 | `g_UserMoveActive` | `Map` | `hwnd → true` — set during user drag |
 | `g_AutoRestoreTimers` | `Map` | `hwnd → timer` — pending drift correction timers |
 | `g_TilingMode` | `String` | `"Native"` or `"FancyZones"` — mirrors `CFG_TilingMode` |
-| `g_TilingMemoryFile` | `String` | Absolute path to `Tiling_Memory.ini` |
-| `g_LayoutFile` | `String` | Absolute path to `%TEMP%\ahk_layouts.ini` |
+| `g_StateDir` | `String` | Central directory for files: `%LOCALAPPDATA%\AutoHotkeyMaster` |
 | `g_LastDesktop` | `Int` | Most recently active virtual desktop number |
 | `g_FocusHistory` | `Array` | Ordered hwnd history for `CapsLock+Backspace` |
 | `g_DesktopLastWindow` | `Map` | `desktop → hwnd` — per-desktop focus memory |
-| `g_ProcNameCache` | `Map` | `hwnd → process name` — initialized before WinEvent hooks so callbacks are safe during startup |
+| `g_ProcNameCache` | `Map` | `hwnd → process name` — initialized before WinEvent hooks |
 | `g_WindowOffsetCache` | `Map` | `hwnd → [left, top, right, bottom]` — cached window border offsets |
 
 ### Hyper Layer (CapsLock)
@@ -155,12 +152,13 @@ Autocorrect_Database.txt
 lib/Autocorrect.ahk  ←── auto-generated; never edit
         │
         ▼ (#Include at startup)
-hotstrings active in all windows
+hotstrings active in all windows (calls AC_Proc in Autocorrect_Logic.ahk)
         │
         ▼ (correction fires)
 Autocorrect_Logic.ahk
-  ├── CapsLock+Alt+Backspace → add to Autocorrect_Disabled.txt, reload
-  └── CapsLock+Alt+D → open Autocorrect_Disabled.txt
+  ├── Checks _AC_IsNonTextArea() & AC_TempSuppressed
+  ├── CapsLock+Alt+Backspace → add to g_StateAutocorrectDisabled via StateStore.ahk
+  └── CapsLock+Alt+D → open autocorrect-disabled.txt
 ```
 
 ## Tiling Focus Flow
@@ -176,7 +174,7 @@ TrackFocusHistory(hwnd)
   ├── caches max state in g_WinMaxState
   └── calls _AutoSnapFromMemory(hwnd)
               │
-              ├── single instance → read Tiling_Memory.ini → _ApplyLayout
+              ├── single instance → read StateStore (layouts.txt) → _ApplyLayout
               └── multiple instances → read g_HWNDLayoutCache → _ApplyLayout
                                         (no-op if hwnd not in cache)
 ```
@@ -185,12 +183,16 @@ TrackFocusHistory(hwnd)
 
 | Concern | Location |
 |---|---|
+| Unified entry point | `Main.ahk` |
 | Shared hotkeys / logic | `lib/Core.ahk` |
 | Virtual desktop navigation | `Master.ahk` |
 | Monitor navigation | `Master-PC.ahk` |
 | Native tiling hotkeys | `lib/WindowTiling_Native.ahk` |
 | FancyZones hotkeys | `lib/WindowTiling_FancyZones.ahk` |
 | Alt→Ctrl remaps | `Remap.ahk` |
+| Central state storage | `lib/StateStore.ahk` |
+| Virtual Desktop logic | `lib/VDA.ahk` |
+| Telemetry & telemetry instrumentation | `lib/Perf.ahk` |
 | User-specific values | `custom/config.ahk` |
 | Optional shared local extensions | `custom/Core_custom.ahk` |
 | Optional laptop local extensions | `custom/Master_custom.ahk` |
