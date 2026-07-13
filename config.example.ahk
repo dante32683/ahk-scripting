@@ -2,8 +2,8 @@
 
 ; ============================================================
 ; PERSONAL CONFIG TEMPLATE
-; Copy this file to config.ahk and fill in your own values
-; config.ahk is gitignored and will never be committed
+; Copy this file to custom\config.ahk and fill in your own values.
+; The custom\ folder is gitignored and will never be committed.
 ; ============================================================
 
 global CFG_Email    := "you@example.com"
@@ -36,8 +36,7 @@ global CFG_Autocorrect := true
 global CFG_TilingMemory    := true
 global CFG_TilePadding     := 4
 
-; List of game process names (e.g. ["cs2.exe", "dota2.exe"]) that should disable Alt+Q and Alt+W remappings
-global CFG_GameProcesses   := []
+global CFG_GameProcesses   := []  ; opt-in list e.g. ["cs2.exe", "javaw.exe"] — no hard-coded games
 
 ; Tiling exclusions (processes to ignore for window tiling/focus restoring)
 global CFG_TilingExclusions := [
@@ -58,7 +57,13 @@ global CFG_MonitorFocusTeleportMouse := true
 
 ; --- Native Tiling Drift Correction Settings ---
 global CFG_DriftCorrection := true
-global CFG_DriftCheckInterval := 2000
+global CFG_DriftCheckInterval := 20000  ; slow fallback reconcile (ms); location-change is primary
+
+; What happens when you manually drag/resize a tracked window (Native mode):
+;   "learn"   — remember the new position as this window's layout (default)
+;   "clear"   — stop tracking the window after a manual move
+;   "restore" — snap the window back to its previous tiled layout
+global CFG_ManualMoveBehavior := "learn"
 
 ; --- Optional local network automation ---
 ; Keep concrete network names, hostnames, user names, and executable paths in
