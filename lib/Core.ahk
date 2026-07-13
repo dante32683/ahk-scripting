@@ -83,6 +83,33 @@ ShowOSD("Script started!")
 ; ============================================================
 ; FOCUS EVENT HOOK (Zero-CPU Focus Tracking)
 ; ============================================================
+global g_WinEventQueue := []
+
+_EnqueueWinEvent(type, args) {
+    global g_WinEventQueue
+    g_WinEventQueue.Push({type: type, args: args})
+    SetTimer(_ProcessWinEvents, -1)
+}
+
+_ProcessWinEvents() {
+    global g_WinEventQueue
+    events := g_WinEventQueue
+    g_WinEventQueue := []
+    
+    for ev in events {
+        try {
+            if ev.type = "focus" {
+                _ProcessFocusEvent(ev.args*)
+            } else if ev.type = "movestart" {
+                _ProcessMoveStartEvent(ev.args*)
+            } else if ev.type = "moveend" {
+                _ProcessMoveEndEvent(ev.args*)
+            } else if ev.type = "destroy" {
+                _ProcessDestroyEvent(ev.args*)
+            }
+        }
+    }
+}
 global hFocusHook := 0
 global g_MoveStartHook := 0
 global g_MoveEndHook := 0
@@ -998,7 +1025,11 @@ _OnDisplayChange(*) {
 }
 
 _OnWindowDestroy(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
-    global g_WinSigCache, g_WinMaxState, g_TilingMemoryFile, CFG_TilingMemory, g_HWNDLayoutCache, g_ProcNameCache, g_WindowOffsetCache
+    _EnqueueWinEvent("destroy", [hHook, event, hwnd, idObject, idChild, dwThread, dwTime])
+}
+
+_ProcessDestroyEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+    global g_WinSigCache, g_WinMaxState, CFG_TilingMemory, g_HWNDLayoutCache, g_ProcNameCache, g_WindowOffsetCache
     global g_Layouts, g_UserMoveActive, g_MoveSuppressUntil, g_PwaCache, g_LayoutCycleIdx
     ; Filter to top-level window destruction only
     if idObject != 0 || idChild != 0
@@ -1040,6 +1071,10 @@ _OnWindowDestroy(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
 }
 
 _OnMoveStart(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+    _EnqueueWinEvent("movestart", [hHook, event, hwnd, idObject, idChild, dwThread, dwTime])
+}
+
+_ProcessMoveStartEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
     global g_UserMoveActive
     if idObject != 0 || !g_Layouts.Has(hwnd)
         return
@@ -1047,6 +1082,10 @@ _OnMoveStart(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
 }
 
 _OnMoveEnd(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+    _EnqueueWinEvent("moveend", [hHook, event, hwnd, idObject, idChild, dwThread, dwTime])
+}
+
+_ProcessMoveEndEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
     global g_UserMoveActive, g_WinMaxState
     if idObject != 0
         return
@@ -1391,11 +1430,15 @@ FocusDirection(dir) {
     Perf_Log("focus_direction", dir, candidateCount, A_TickCount - startTime)
 }
 
-TrackFocusHistory(hHook, event, hwnd, *) {
+TrackFocusHistory(hHook, event, hwnd, idObject := 0, idChild := 0, dwThread := 0, dwTime := 0) {
+    _EnqueueWinEvent("focus", [hHook, event, hwnd, idObject, idChild, dwThread, dwTime])
+}
+
+_ProcessFocusEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
     startTime := A_TickCount
     Perf_Increment("foreground_events")
     global g_ScriptPaused, g_TilingMode, g_Layouts, g_WinSigCache, g_WinMaxState
-    global g_TilingMemoryFile, CFG_TilingMemory
+    global CFG_TilingMemory
     try {
         if g_ScriptPaused {
             Perf_Log("foreground_event", hwnd, "paused", A_TickCount - startTime)
