@@ -22,26 +22,6 @@ global CFG_TestMode := (IsSet(CFG_TestMode) && CFG_TestMode) || (EnvGet("AHK_TES
 Perf_Init()
 
 ; ============================================================
-; OPTIMIZATION: PERFORMANCE & MEMORY
-; ============================================================
-if !CFG_TestMode {
-    ListLines 0
-    KeyHistory 15
-    ProcessSetPriority "High"
-    SetTitleMatchMode 2
-    InstallKeybdHook
-    #UseHook True
-}
-
-; ============================================================
-; AUTOMATIC ADMIN RIGHTS
-; ============================================================
-if !CFG_TestMode && not A_IsAdmin {
-    Run('*RunAs "' A_ScriptFullPath '"')
-    ExitApp()
-}
-
-; ============================================================
 ; VIRTUAL DESKTOP ACCESSOR (VDA)
 ; ============================================================
 global GoToDesktopNumber        := 0
@@ -50,23 +30,25 @@ global GetCurrentDesktopNumber   := 0
 global GetWindowDesktopNumber    := 0
 global VDA_IsLoaded              := false
 
-VDA_DLL := A_ScriptDir "\VirtualDesktopAccessor.dll"
-if !FileExist(VDA_DLL) {
-    ShowOSD("VDA DLL not found at:`n" VDA_DLL "`nWorkspace 1-9 keys disabled.", 5000)
-} else {
-    hVDA := DllCall("LoadLibrary", "Str", VDA_DLL, "Ptr")
-    if !hVDA {
-        ShowOSD("VDA DLL failed to load! Bitness mismatch?`nNeed x64 DLL for 64-bit AHK.", 6000)
+if (IsSet(CFG_EnableVirtualDesktops) && CFG_EnableVirtualDesktops) {
+    VDA_DLL := A_ScriptDir "\VirtualDesktopAccessor.dll"
+    if !FileExist(VDA_DLL) {
+        ShowOSD("VDA DLL not found at:`n" VDA_DLL "`nWorkspace 1-9 keys disabled.", 5000)
     } else {
-        GoToDesktopNumber        := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GoToDesktopNumber",        "Ptr")
-        MoveWindowToDesktopNumber := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "MoveWindowToDesktopNumber", "Ptr")
-        GetCurrentDesktopNumber   := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GetCurrentDesktopNumber",   "Ptr")
-        GetWindowDesktopNumber    := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GetWindowDesktopNumber",    "Ptr")
-
-        if (GoToDesktopNumber && MoveWindowToDesktopNumber && GetCurrentDesktopNumber && GetWindowDesktopNumber) {
-            VDA_IsLoaded := true
+        hVDA := DllCall("LoadLibrary", "Str", VDA_DLL, "Ptr")
+        if !hVDA {
+            ShowOSD("VDA DLL failed to load! Bitness mismatch?`nNeed x64 DLL for 64-bit AHK.", 6000)
         } else {
-            ShowOSD("VDA loaded but functions missing.`nGet the latest release.", 6000)
+            GoToDesktopNumber        := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GoToDesktopNumber",        "Ptr")
+            MoveWindowToDesktopNumber := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "MoveWindowToDesktopNumber", "Ptr")
+            GetCurrentDesktopNumber   := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GetCurrentDesktopNumber",   "Ptr")
+            GetWindowDesktopNumber    := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GetWindowDesktopNumber",    "Ptr")
+
+            if (GoToDesktopNumber && MoveWindowToDesktopNumber && GetCurrentDesktopNumber && GetWindowDesktopNumber) {
+                VDA_IsLoaded := true
+            } else {
+                ShowOSD("VDA loaded but functions missing.`nGet the latest release.", 6000)
+            }
         }
     }
 }
@@ -1670,7 +1652,10 @@ Delete:: {
 *m:: _ActivateOrRunOnCurrentDesktop("ahk_exe Taskmgr.exe", "taskmgr.exe")
 
 SafeReload() {
-    Run('cmd.exe /c taskkill /F /PID ' DllCall("GetCurrentProcessId") ' & start "" "' A_ScriptFullPath '"', , "Hide")
+    _SaveDesktopMemory()
+    _SaveLayouts()
+    ReleaseModifiers()
+    Reload()
 }
 
 *r:: {

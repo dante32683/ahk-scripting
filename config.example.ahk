@@ -12,6 +12,8 @@ global CFG_Username := "your_username"
 global CFG_CameraID := ""                         ; Device Instance ID from Device Manager
                                                   ; Right-click camera → Properties → Details
                                                   ; → Property: "Device instance path"
+global CFG_MachineProfile := "laptop" ; "laptop" or "desktop"
+global CFG_EnableVirtualDesktops := true
 
 ; Tiling mode: "FancyZones" (PowerToys) or "Native" (built-in AHK tiling)
 global CFG_TilingMode := "FancyZones"
@@ -19,7 +21,7 @@ global CFG_TilingMode := "FancyZones"
 ; CapsLock+1–9 / CapsLock+Alt+1–9 behaviour:
 ;   "desktops" — switch to / move window to virtual desktop N  (laptop default)
 ;   "monitors"  — focus / move window to monitor N             (PC default)
-global CFG_NumberKeys := "desktops"
+global CFG_NumberKeys := "auto"
 
 ; FancyZones layout IDs for CapsLock shortcuts
 global CFG_FZ_Z := "1"

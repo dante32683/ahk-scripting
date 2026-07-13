@@ -3,6 +3,7 @@ custom/
 /*.ahk
 !/Master.ahk
 !/Master-PC.ahk
+!/Main.ahk
 !/Remap.ahk
 !/Setup.ahk
 !/config.example.ahk
