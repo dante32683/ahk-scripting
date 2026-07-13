@@ -6,58 +6,19 @@ global AC_LastTypedTrigger := ""
 global AC_LastTypedCorrection := ""
 global AC_LastTick      := 0
 global AC_LastEndChar   := ""
-global AC_DisabledMap   := Map()
-global AC_DisabledPath  := A_ScriptDir "\Autocorrect_Disabled.txt"
 
-AC_EnsureDisabledMap() {
-    global AC_DisabledMap
-    if !IsSet(AC_DisabledMap)
-        AC_DisabledMap := Map()
-}
-
-; Load persisted disabled entries into AC_DisabledMap on startup
-_AC_LoadDisabled() {
-    global AC_DisabledMap, AC_DisabledPath
-    AC_EnsureDisabledMap()
-    if !FileExist(AC_DisabledPath)
+AC_Proc(canonicalTrig, canonicalCorr, typedTrig, typedCorr) {
+    if AC_IsDisabled(canonicalTrig) {
+        SendText(typedTrig . A_EndChar)
         return
-    try {
-        loop parse, FileRead(AC_DisabledPath, "UTF-8"), "`n", "`r" {
-            line := Trim(A_LoopField)
-            if (line = "")
-                continue
-            arrowPos := InStr(line, "->")
-            trigger  := arrowPos ? Trim(SubStr(line, 1, arrowPos - 1)) : line
-            if (trigger != "")
-                AC_DisabledMap[StrLower(trigger)] := line  ; value = "trigger->correction" for re-saving
-        }
     }
+    SendText(typedCorr . A_EndChar)
+    AC_Reg(canonicalTrig, canonicalCorr, typedTrig, typedCorr)
 }
-
-; Persist AC_DisabledMap to file, sorted alphabetically
-AC_SaveDisabled() {
-    global AC_DisabledMap, AC_DisabledPath
-    AC_EnsureDisabledMap()
-    lines := ""
-    for , entry in AC_DisabledMap
-        lines .= entry "`n"
-    lines := Sort(RTrim(lines, "`n"))
-    try {
-        if FileExist(AC_DisabledPath)
-            FileDelete(AC_DisabledPath)
-        if (lines != "")
-            FileAppend(lines "`n", AC_DisabledPath, "UTF-8")
-    } catch as e {
-        MsgBox("Error saving disabled list: " e.Message)
-    }
-}
-
-_AC_LoadDisabled()
 
 AC_IsDisabled(trigger) {
-    global AC_DisabledMap
-    AC_EnsureDisabledMap()
-    return AC_DisabledMap.Has(StrLower(trigger))
+    global g_StateAutocorrectDisabled
+    return g_StateAutocorrectDisabled.Has(StrLower(trigger))
 }
 
 AC_Reg(trigger, correction, typedTrigger := "", typedCorrection := "") {
@@ -159,14 +120,12 @@ AC_ClearLastCorrectionOnUserKey(*) {
 
 ; Permanently disable last autocorrect (CapsLock+Alt+Backspace)
 *Backspace:: {
-    global AC_LastTrigger, AC_LastCorrection, AC_LastTypedTrigger, AC_LastTypedCorrection, AC_DisabledMap, AC_LastTick, AC_LastEndChar
-    AC_EnsureDisabledMap()
+    global AC_LastTrigger, AC_LastCorrection, AC_LastTypedTrigger, AC_LastTypedCorrection, AC_LastTick, AC_LastEndChar
+    global g_StateAutocorrectDisabled
 
-    ; Only allow disabling if the correction happened recently (within 15 seconds)
-    ; to prevent accidentally disabling a correction from a long time ago.
     if (AC_LastTrigger != "" && A_TickCount - AC_LastTick < 15000) {
-        AC_DisabledMap[StrLower(AC_LastTrigger)] := AC_LastTrigger "->" AC_LastCorrection
-        AC_SaveDisabled()
+        g_StateAutocorrectDisabled[StrLower(AC_LastTrigger)] := AC_LastTrigger "->" AC_LastCorrection
+        State_MarkDirty("autocorrect")
 
         Send("{Backspace " (StrLen(AC_LastTypedCorrection) + StrLen(AC_LastEndChar)) "}")
         SendText(AC_LastTypedTrigger . AC_LastEndChar)
@@ -179,11 +138,12 @@ AC_ClearLastCorrectionOnUserKey(*) {
 
 ; Open disabled list in default text editor (CapsLock+Alt+D)
 *d:: {
-    global AC_DisabledPath
-    if !FileExist(AC_DisabledPath)
-        FileAppend("", AC_DisabledPath, "UTF-8")
-    Run('"' AC_DisabledPath '"')
-    ShowOSD("Autocorrect_Disabled.txt opened")
+    global g_StateDir
+    disabledFile := g_StateDir "\autocorrect-disabled.txt"
+    if !FileExist(disabledFile)
+        FileAppend("", disabledFile, "UTF-8")
+    Run('"' disabledFile '"')
+    ShowOSD("autocorrect-disabled.txt opened")
 }
 
 #HotIf

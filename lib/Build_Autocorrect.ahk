@@ -89,14 +89,7 @@ BuildAutocorrect() {
             sTypedTrig := _AC_EscapeStringLiteral(typedTrigger)
             sTypedCorr := _AC_EscapeStringLiteral(typedCorrection)
 
-            out .= ":C:" typedTrigger "::{`n"
-            out .= "    if AC_IsDisabled(" q sCanonicalTrig q ") {`n"
-            out .= "        SendText(" q sTypedTrig q " . A_EndChar)`n"
-            out .= "        return`n"
-            out .= "    }`n"
-            out .= "    SendText(" q sTypedCorr q " . A_EndChar)`n"
-            out .= "    AC_Reg(" q sCanonicalTrig q ", " q sCanonicalCorr q ", " q sTypedTrig q ", " q sTypedCorr q ")`n"
-            out .= "}`n"
+            out .= ":CX:" typedTrigger "::AC_Proc(" q sCanonicalTrig q ", " q sCanonicalCorr q ", " q sTypedTrig q ", " q sTypedCorr q ")`n"
         }
     }
 

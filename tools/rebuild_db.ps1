@@ -13,9 +13,9 @@ Write-Host "Reading $ahkPath..."
 $content = Get-Content -Path $ahkPath -Encoding UTF8 -Raw
 
 Write-Host "Extracting autocorrect entries..."
-# Match lines like: AC_Reg("trigger", "correction")
+# Match lines like: :CX:trigger::AC_Proc("trigger", "correction", ...)
 # Triggers and corrections can contain escaped double quotes (e.g. `")
-$pattern = '(?m)^\s*AC_Reg\("(?<trigger>.*?)",\s*"(?<correction>.*?)"\)'
+$pattern = '(?m)^\s*:CX:.*?::AC_Proc\("(?<trigger>.*?)",\s*"(?<correction>.*?)"'
 $matches = [regex]::Matches($content, $pattern)
 
 $entries = New-Object System.Collections.Generic.List[string]
