@@ -1,4 +1,5 @@
 #Requires AutoHotkey v2.0+
+global g_PerfStartupTick := A_TickCount
 #SingleInstance Force
 #WinActivateForce
 
@@ -39,4 +40,10 @@ Right:: {
 #HotIf
 
 #Include *i custom/Master_custom.ahk
+
+Perf_Log("init_complete", A_TickCount - g_PerfStartupTick)
+
+if CFG_TestMode {
+    ExitApp(0)
+}
 

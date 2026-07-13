@@ -1,5 +1,9 @@
 #Requires AutoHotkey v2.0+
 
+global g_PerfStartupTick
+if !IsSet(g_PerfStartupTick)
+    global g_PerfStartupTick := A_TickCount
+
 ; Shared core: everything both machines use.
 ; Entry points must include:
 ;   - config.ahk
@@ -11,21 +15,28 @@
 #Include WindowTiling_FancyZones.ahk
 #Include WindowTiling_Native.ahk
 #Include ShowOSD.ahk
+#Include Perf.ahk
+
+global CFG_TestMode := (IsSet(CFG_TestMode) && CFG_TestMode) || (EnvGet("AHK_TEST_MODE") = "1")
+
+Perf_Init()
 
 ; ============================================================
 ; OPTIMIZATION: PERFORMANCE & MEMORY
 ; ============================================================
-ListLines 0
-KeyHistory 15
-ProcessSetPriority "High"
-SetTitleMatchMode 2
-InstallKeybdHook
-#UseHook True
+if !CFG_TestMode {
+    ListLines 0
+    KeyHistory 15
+    ProcessSetPriority "High"
+    SetTitleMatchMode 2
+    InstallKeybdHook
+    #UseHook True
+}
 
 ; ============================================================
 ; AUTOMATIC ADMIN RIGHTS
 ; ============================================================
-if not A_IsAdmin {
+if !CFG_TestMode && not A_IsAdmin {
     Run('*RunAs "' A_ScriptFullPath '"')
     ExitApp()
 }
@@ -89,56 +100,64 @@ ShowOSD("Script started!")
 ; ============================================================
 ; FOCUS EVENT HOOK (Zero-CPU Focus Tracking)
 ; ============================================================
-global g_FocusCallbackPtr := CallbackCreate(TrackFocusHistory, "F")
-global hFocusHook := DllCall("SetWinEventHook"
-    , "UInt", 0x0003 ; EVENT_SYSTEM_FOREGROUND
-    , "UInt", 0x0003
-    , "Ptr", 0
-    , "Ptr", g_FocusCallbackPtr
-    , "UInt", 0
-    , "UInt", 0
-    , "UInt", 0)
+global hFocusHook := 0
+global g_MoveStartHook := 0
+global g_MoveEndHook := 0
+global g_DestroyHook := 0
 
-global g_MoveStartCbPtr := CallbackCreate(_OnMoveStart, , 7)
-global g_MoveStartHook  := DllCall("SetWinEventHook"
-    , "UInt", 0x000A ; EVENT_SYSTEM_MOVESIZESTART
-    , "UInt", 0x000A
-    , "Ptr", 0
-    , "Ptr", g_MoveStartCbPtr
-    , "UInt", 0
-    , "UInt", 0
-    , "UInt", 0)
-global g_MoveEndCbPtr := CallbackCreate(_OnMoveEnd, , 7)
-global g_MoveEndHook  := DllCall("SetWinEventHook"
-    , "UInt", 0x000B ; EVENT_SYSTEM_MOVESIZEEND
-    , "UInt", 0x000B
-    , "Ptr", 0
-    , "Ptr", g_MoveEndCbPtr
-    , "UInt", 0
-    , "UInt", 0
-    , "UInt", 0)
+if !CFG_TestMode {
+    global g_FocusCallbackPtr := CallbackCreate(TrackFocusHistory, "F")
+    global hFocusHook := DllCall("SetWinEventHook"
+        , "UInt", 0x0003 ; EVENT_SYSTEM_FOREGROUND
+        , "UInt", 0x0003
+        , "Ptr", 0
+        , "Ptr", g_FocusCallbackPtr
+        , "UInt", 0
+        , "UInt", 0
+        , "UInt", 0)
 
-global g_DestroyCallbackPtr := CallbackCreate(_OnWindowDestroy, , 7)
-global g_DestroyHook := DllCall("SetWinEventHook"
-    , "UInt", 0x8001 ; EVENT_OBJECT_DESTROY
-    , "UInt", 0x8001
-    , "Ptr", 0
-    , "Ptr", g_DestroyCallbackPtr
-    , "UInt", 0
-    , "UInt", 0
-    , "UInt", 0)
+    global g_MoveStartCbPtr := CallbackCreate(_OnMoveStart, , 7)
+    global g_MoveStartHook  := DllCall("SetWinEventHook"
+        , "UInt", 0x000A ; EVENT_SYSTEM_MOVESIZESTART
+        , "UInt", 0x000A
+        , "Ptr", 0
+        , "Ptr", g_MoveStartCbPtr
+        , "UInt", 0
+        , "UInt", 0
+        , "UInt", 0)
+    global g_MoveEndCbPtr := CallbackCreate(_OnMoveEnd, , 7)
+    global g_MoveEndHook  := DllCall("SetWinEventHook"
+        , "UInt", 0x000B ; EVENT_SYSTEM_MOVESIZEEND
+        , "UInt", 0x000B
+        , "Ptr", 0
+        , "Ptr", g_MoveEndCbPtr
+        , "UInt", 0
+        , "UInt", 0
+        , "UInt", 0)
 
-OnExit((*) => DllCall("UnhookWinEvent", "Ptr", hFocusHook))
-OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveStartHook))
-OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveEndHook))
-OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_DestroyHook))
-OnExit(_SaveDesktopMemory)
-OnExit(_SaveLayouts)
-OnMessage(0x001A, _OnSettingChange)  ; WM_SETTINGCHANGE — work area resize (AppBar dock/undock)
-OnMessage(0x0218, _OnPowerBroadcast) ; WM_POWERBROADCAST — wake from sleep
-OnMessage(0x007E, _OnDisplayChange)  ; WM_DISPLAYCHANGE  — resolution change (fullscreen game exit)
+    global g_DestroyCallbackPtr := CallbackCreate(_OnWindowDestroy, , 7)
+    global g_DestroyHook := DllCall("SetWinEventHook"
+        , "UInt", 0x8001 ; EVENT_OBJECT_DESTROY
+        , "UInt", 0x8001
+        , "Ptr", 0
+        , "Ptr", g_DestroyCallbackPtr
+        , "UInt", 0
+        , "UInt", 0
+        , "UInt", 0)
+
+    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", hFocusHook))
+    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveStartHook))
+    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveEndHook))
+    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_DestroyHook))
+    OnExit(_SaveDesktopMemory)
+    OnExit(_SaveLayouts)
+    OnMessage(0x001A, _OnSettingChange)  ; WM_SETTINGCHANGE — work area resize (AppBar dock/undock)
+    OnMessage(0x0218, _OnPowerBroadcast) ; WM_POWERBROADCAST — wake from sleep
+    OnMessage(0x007E, _OnDisplayChange)  ; WM_DISPLAYCHANGE  — resolution change (fullscreen game exit)
+}
 
 _SaveDesktopMemory(*) {
+    Perf_Increment("state_flushes")
     for desk, hwnd in g_DesktopLastWindow {
         if hwnd && WinExist("ahk_id " hwnd)
             IniWrite(hwnd, g_DesktopMemoryFile, "DesktopLastWindow", "d" desk)
@@ -147,6 +166,7 @@ _SaveDesktopMemory(*) {
 
 _SaveLayouts(*) {
     global g_Layouts, g_LayoutFile
+    Perf_Increment("state_flushes")
     try FileDelete(g_LayoutFile)
     for hwnd, layout in g_Layouts
         if _IsLiveWindow(hwnd) {
@@ -161,6 +181,7 @@ _PersistLayout(hwnd) {
     global g_Layouts, g_LayoutFile
     if !g_Layouts.Has(hwnd)
         return
+    Perf_Increment("state_flushes")
     layout := g_Layouts[hwnd]
     IniWrite(layout[1], g_LayoutFile, hwnd, "xf")
     IniWrite(layout[2], g_LayoutFile, hwnd, "yf")
@@ -170,6 +191,7 @@ _PersistLayout(hwnd) {
 
 _DeletePersistedLayout(hwnd) {
     global g_LayoutFile
+    Perf_Increment("state_flushes")
     try IniDelete(g_LayoutFile, hwnd)
 }
 
@@ -222,10 +244,11 @@ _IsPWA(windowHandle) {
 
     processId := WinGetPID("ahk_id " windowHandle)
     isPwa := false
-    try {
+        try {
         static wmi := 0
         if !wmi
             wmi := ComObjGet("winmgmts:")
+        Perf_Increment("wmi_queries")
         for process in wmi.ExecQuery("Select CommandLine from Win32_Process where ProcessId = " processId) {
             commandLine := process.CommandLine
             if InStr(commandLine, "--app-id=") || InStr(commandLine, "--app=") {
@@ -268,6 +291,7 @@ _PersistToMemory(windowHandle, x_factor, y_factor, w_factor, h_factor) {
         return
     g_HWNDLayoutCache[windowHandle] := Map("xf", x_factor, "yf", y_factor, "wf", w_factor, "hf", h_factor)
 
+    Perf_Increment("state_flushes")
     ; Write all coordinates in a single call to minimize disk I/O
     IniWrite(x_factor "," y_factor "," w_factor "," h_factor, g_TilingMemoryFile, windowSignature, "rect")
 
@@ -833,21 +857,28 @@ _PrepareWindow() {
 }
 
 _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist := true) {
+    startTime := A_TickCount
     global g_MoveSuppressUntil, g_WinMaxState, g_TilingMemoryFile
     if overrideHwnd {
         windowHandle := overrideHwnd
-        if !_IsLiveWindow(windowHandle)
+        if !_IsLiveWindow(windowHandle) {
+            Perf_Log("apply_layout", windowHandle, "invalid_hwnd", A_TickCount - startTime)
             return
+        }
         state := _GetWindowState(windowHandle)
         if (state = 1 || state = -1)
             WinRestore("ahk_id " windowHandle)
         _GetMonitorForHwnd(windowHandle, &workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
     } else {
-        if !WinExist("A")
+        if !WinExist("A") {
+            Perf_Log("apply_layout", 0, "no_active_window", A_TickCount - startTime)
             return
+        }
         windowHandle := WinGetID("A")
-        if !_IsOnCurrentDesktop(windowHandle)
+        if !_IsOnCurrentDesktop(windowHandle) {
+            Perf_Log("apply_layout", windowHandle, "wrong_desktop", A_TickCount - startTime)
             return
+        }
         _PrepareWindow()
         GetActiveMonitorWorkArea(&workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
     }
@@ -891,11 +922,13 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
     g_Layouts[windowHandle] := [x_factor, y_factor, w_factor, h_factor]
     g_WinMaxState[windowHandle] := 0
 
+    outcome := "move"
     if (actualLeft = expectedX && actualTop = targetY && actualW = targetW && actualH = targetH) {
         ; Already in the correct position, skip WinMove!
         _Dbg("apply skip-already-in-position " _WinSig(windowHandle))
-        return false
+        outcome := "skip"
     } else {
+        Perf_Increment("win_moves")
         WinMove(targetX, targetY, targetW, targetH, "ahk_id " windowHandle)
 
         ; If the window is too wide for the target slot (e.g. minimum width constraint),
@@ -921,6 +954,8 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
         if windowSignature != ""
             try IniDelete(g_TilingMemoryFile, windowSignature, "maximized")
     }
+    
+    Perf_Log("apply_layout", windowHandle, outcome, A_TickCount - startTime)
     return true
 }
 
@@ -1116,6 +1151,7 @@ _CheckLayoutRestores() {
     global g_ScriptPaused, g_WinMaxState
     if g_ScriptPaused
         return
+    Perf_Increment("drift_reconciliations")
     for hwnd, layout in g_Layouts {
         if !_IsLiveWindow(hwnd)
             continue
@@ -1337,8 +1373,12 @@ _NumberKeyAlt(index) {
 }
 
 FocusDirection(dir) {
-    if !WinExist("A")
+    startTime := A_TickCount
+    candidateCount := 0
+    if !WinExist("A") {
+        Perf_Log("focus_direction", dir, 0, A_TickCount - startTime)
         return
+    }
     curHwnd := WinGetID("A")
     WinGetPos(&cx, &cy, &cw, &ch, "ahk_id " curHwnd)
     curX := cx + cw // 2
@@ -1350,6 +1390,7 @@ FocusDirection(dir) {
 
     list := WinGetList()
     for index, hwnd in list {
+        candidateCount++
         if hwnd = curHwnd
             continue
         if WinGetMinMax("ahk_id " hwnd) = -1
@@ -1419,17 +1460,25 @@ FocusDirection(dir) {
             DllCall("SetCursorPos", "Int", wx + ww // 2, "Int", wy + wh // 2)
         }
     }
+    
+    Perf_Log("focus_direction", dir, candidateCount, A_TickCount - startTime)
 }
 
 TrackFocusHistory(hHook, event, hwnd, *) {
+    startTime := A_TickCount
+    Perf_Increment("foreground_events")
     global g_ScriptPaused, g_TilingMode, g_Layouts, g_WinSigCache, g_WinMaxState
     global g_TilingMemoryFile, CFG_TilingMemory
     try {
-        if g_ScriptPaused
+        if g_ScriptPaused {
+            Perf_Log("foreground_event", hwnd, "paused", A_TickCount - startTime)
             return
+        }
         _HandleDesktopChange()
-        if hwnd = 0 || !_IsLiveWindow(hwnd)
+        if hwnd = 0 || !_IsLiveWindow(hwnd) {
+            Perf_Log("foreground_event", hwnd, "invalid", A_TickCount - startTime)
             return
+        }
 
         ; --- CACHE SIG + MAX STATE ---
         try {
@@ -1450,11 +1499,15 @@ TrackFocusHistory(hHook, event, hwnd, *) {
                 _AutoSnapFromMemory(hwnd)
         }
 
-        if g_FocusHistory.Length > 0 && g_FocusHistory[g_FocusHistory.Length] = hwnd
+        if g_FocusHistory.Length > 0 && g_FocusHistory[g_FocusHistory.Length] = hwnd {
+            Perf_Log("foreground_event", hwnd, "duplicate", A_TickCount - startTime)
             return
+        }
         g_FocusHistory.Push(hwnd)
         if g_FocusHistory.Length > 30
             g_FocusHistory.RemoveAt(1)
+            
+        Perf_Log("foreground_event", hwnd, "success", A_TickCount - startTime)
     }
 }
 
