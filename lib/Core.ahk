@@ -209,16 +209,20 @@ _GetProcessName(hwnd) {
     return proc
 }
 
-_IsPWA(windowHandle) {
-    if !WinExist("ahk_id " windowHandle)
-        return false
-    processName := _GetProcessName(windowHandle)
-    if !(processName = "msedge.exe" || processName = "chrome.exe")
-        return false
+global g_PwaProcessIdCache := Map()
 
-    global g_PwaCache
+_IsPWA(windowHandle) {
+    if !windowHandle
+        return false
+    global g_PwaCache, g_PwaProcessIdCache
     if g_PwaCache.Has(windowHandle)
         return g_PwaCache[windowHandle]
+
+    processName := _GetProcessName(windowHandle)
+    if !(processName = "msedge.exe" || processName = "chrome.exe") {
+        g_PwaCache[windowHandle] := false
+        return false
+    }
 
     windowTitle := WinGetTitle("ahk_id " windowHandle)
     if (processName = "msedge.exe" && !RegExMatch(windowTitle, "i)[\-–—]\s+(?:InPrivate\s+[\-–—]\s+|InPrivate\s+)?Microsoft\s+Edge\s*$")) {
@@ -230,14 +234,35 @@ _IsPWA(windowHandle) {
         return true
     }
 
-    processId := WinGetPID("ahk_id " windowHandle)
+    try {
+        processId := WinGetPID("ahk_id " windowHandle)
+    } catch {
+        return false
+    }
+
+    if g_PwaProcessIdCache.Has(processId) {
+        isPwa := g_PwaProcessIdCache[processId]
+        g_PwaCache[windowHandle] := isPwa
+        return isPwa
+    }
+
+    g_PwaCache[windowHandle] := false ; Default for now
+    SetTimer(() => _AsyncCheckPWA(windowHandle, processId), -50)
+    return false
+}
+
+_AsyncCheckPWA(hwnd, pid) {
+    global g_PwaProcessIdCache, g_PwaCache
+    if !DllCall("IsWindow", "Ptr", hwnd)
+        return
+        
     isPwa := false
-        try {
+    try {
         static wmi := 0
         if !wmi
             wmi := ComObjGet("winmgmts:")
         Perf_Increment("wmi_queries")
-        for process in wmi.ExecQuery("Select CommandLine from Win32_Process where ProcessId = " processId) {
+        for process in wmi.ExecQuery("Select CommandLine from Win32_Process where ProcessId = " pid) {
             commandLine := process.CommandLine
             if InStr(commandLine, "--app-id=") || InStr(commandLine, "--app=") {
                 isPwa := true
@@ -245,8 +270,14 @@ _IsPWA(windowHandle) {
             }
         }
     }
-    g_PwaCache[windowHandle] := isPwa
-    return isPwa
+    g_PwaProcessIdCache[pid] := isPwa
+    if DllCall("IsWindow", "Ptr", hwnd) {
+        g_PwaCache[hwnd] := isPwa
+        if isPwa {
+            _AutoSnapFromMemory(hwnd)
+        }
+    }
+}
 }
 
 _NormalizePWATitle(windowTitle) {
