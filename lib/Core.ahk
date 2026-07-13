@@ -409,7 +409,7 @@ _WinSig(hwnd) {
 }
 
 _IsLiveWindow(hwnd) {
-    if !(hwnd && DllCall("user32\IsWindow", "Ptr", hwnd, "Int"))
+    if !(hwnd && DllCall("IsWindow", "Ptr", hwnd) && DllCall("IsWindowVisible", "Ptr", hwnd))
         return false
 
     proc := _GetProcessName(hwnd)
@@ -748,16 +748,10 @@ SoftReset() {
 }
 
 GetActiveMonitorWorkArea(&workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom) {
-    try {
-        WinGetPos(&windowX, &windowY, &windowWidth, &windowHeight, "A")
-        centerX := windowX + windowWidth // 2
-        centerY := windowY + windowHeight // 2
-        loop MonitorGetCount() {
-            MonitorGetWorkArea(A_Index, &monitorLeft, &monitorTop, &monitorRight, &monitorBottom)
-            if (centerX >= monitorLeft && centerX < monitorRight && centerY >= monitorTop && centerY < monitorBottom) {
-                workAreaLeft := monitorLeft, workAreaTop := monitorTop, workAreaRight := monitorRight, workAreaBottom := monitorBottom
-                return
-            }
+    if WinExist("A") {
+        try {
+            _GetMonitorForHwnd(WinGetID("A"), &workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
+            return
         }
     }
     MonitorGetWorkArea(MonitorGetPrimary(), &workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
@@ -765,14 +759,16 @@ GetActiveMonitorWorkArea(&workAreaLeft, &workAreaTop, &workAreaRight, &workAreaB
 
 _GetMonitorForHwnd(windowHandle, &workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom) {
     try {
-        WinGetPos(&windowX, &windowY, &windowWidth, &windowHeight, "ahk_id " windowHandle)
-        centerX := windowX + windowWidth // 2
-        centerY := windowY + windowHeight // 2
-        loop MonitorGetCount() {
-            MonitorGetWorkArea(A_Index, &monitorLeft, &monitorTop, &monitorRight, &monitorBottom)
-            if (centerX >= monitorLeft && centerX < monitorRight && centerY >= monitorTop && centerY < monitorBottom) {
-                workAreaLeft := monitorLeft, workAreaTop := monitorTop, workAreaRight := monitorRight, workAreaBottom := monitorBottom
-                return
+        if WinExist("ahk_id " windowHandle) {
+            WinGetPos(&windowX, &windowY, &windowWidth, &windowHeight, "ahk_id " windowHandle)
+            centerX := windowX + windowWidth // 2
+            centerY := windowY + windowHeight // 2
+            loop MonitorGetCount() {
+                MonitorGetWorkArea(A_Index, &monitorLeft, &monitorTop, &monitorRight, &monitorBottom)
+                if (centerX >= monitorLeft && centerX < monitorRight && centerY >= monitorTop && centerY < monitorBottom) {
+                    workAreaLeft := monitorLeft, workAreaTop := monitorTop, workAreaRight := monitorRight, workAreaBottom := monitorBottom
+                    return
+                }
             }
         }
     }
