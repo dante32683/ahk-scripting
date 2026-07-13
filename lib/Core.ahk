@@ -16,6 +16,7 @@ if !IsSet(g_PerfStartupTick)
 #Include WindowTiling_Native.ahk
 #Include ShowOSD.ahk
 #Include Perf.ahk
+#Include StateStore.ahk
 
 global CFG_TestMode := (IsSet(CFG_TestMode) && CFG_TestMode) || (EnvGet("AHK_TEST_MODE") = "1")
 
@@ -87,6 +88,8 @@ global g_MoveStartHook := 0
 global g_MoveEndHook := 0
 global g_DestroyHook := 0
 
+State_Init()
+
 if !CFG_TestMode {
     global g_FocusCallbackPtr := CallbackCreate(TrackFocusHistory, "F")
     global hFocusHook := DllCall("SetWinEventHook"
@@ -131,50 +134,37 @@ if !CFG_TestMode {
     OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveStartHook))
     OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveEndHook))
     OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_DestroyHook))
-    OnExit(_SaveDesktopMemory)
-    OnExit(_SaveLayouts)
+    OnExit((*) => State_Shutdown())
     OnMessage(0x001A, _OnSettingChange)  ; WM_SETTINGCHANGE — work area resize (AppBar dock/undock)
     OnMessage(0x0218, _OnPowerBroadcast) ; WM_POWERBROADCAST — wake from sleep
     OnMessage(0x007E, _OnDisplayChange)  ; WM_DISPLAYCHANGE  — resolution change (fullscreen game exit)
 }
 
 _SaveDesktopMemory(*) {
-    Perf_Increment("state_flushes")
     for desk, hwnd in g_DesktopLastWindow {
         if hwnd && WinExist("ahk_id " hwnd)
-            IniWrite(hwnd, g_DesktopMemoryFile, "DesktopLastWindow", "d" desk)
+            State_SetDesktopWindow(desk, hwnd)
     }
 }
 
 _SaveLayouts(*) {
-    global g_Layouts, g_LayoutFile
-    Perf_Increment("state_flushes")
-    try FileDelete(g_LayoutFile)
-    for hwnd, layout in g_Layouts
+    for hwnd, layout in g_Layouts {
         if _IsLiveWindow(hwnd) {
-            IniWrite(layout[1], g_LayoutFile, hwnd, "xf")
-            IniWrite(layout[2], g_LayoutFile, hwnd, "yf")
-            IniWrite(layout[3], g_LayoutFile, hwnd, "wf")
-            IniWrite(layout[4], g_LayoutFile, hwnd, "hf")
+            sig := _GetWinSignature(hwnd)
+            State_SetSessionLayout(hwnd, sig, layout)
         }
+    }
 }
 
 _PersistLayout(hwnd) {
-    global g_Layouts, g_LayoutFile
     if !g_Layouts.Has(hwnd)
         return
-    Perf_Increment("state_flushes")
-    layout := g_Layouts[hwnd]
-    IniWrite(layout[1], g_LayoutFile, hwnd, "xf")
-    IniWrite(layout[2], g_LayoutFile, hwnd, "yf")
-    IniWrite(layout[3], g_LayoutFile, hwnd, "wf")
-    IniWrite(layout[4], g_LayoutFile, hwnd, "hf")
+    sig := _GetWinSignature(hwnd)
+    State_SetSessionLayout(hwnd, sig, g_Layouts[hwnd])
 }
 
 _DeletePersistedLayout(hwnd) {
-    global g_LayoutFile
-    Perf_Increment("state_flushes")
-    try IniDelete(g_LayoutFile, hwnd)
+    State_DeleteSessionLayout(hwnd)
 }
 
 ; ============================================================
@@ -265,7 +255,7 @@ _GetWinSignature(windowHandle) {
 }
 
 _PersistToMemory(windowHandle, x_factor, y_factor, w_factor, h_factor) {
-    global g_TilingMemoryFile, CFG_TilingMemory, g_HWNDLayoutCache
+    global CFG_TilingMemory, g_HWNDLayoutCache
     if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
         return
     windowSignature := _GetWinSignature(windowHandle)
@@ -273,15 +263,7 @@ _PersistToMemory(windowHandle, x_factor, y_factor, w_factor, h_factor) {
         return
     g_HWNDLayoutCache[windowHandle] := Map("xf", x_factor, "yf", y_factor, "wf", w_factor, "hf", h_factor)
 
-    Perf_Increment("state_flushes")
-    ; Write all coordinates in a single call to minimize disk I/O
-    IniWrite(x_factor "," y_factor "," w_factor "," h_factor, g_TilingMemoryFile, windowSignature, "rect")
-
-    ; Optional: Clean up legacy keys if they exist to keep the ini file clean
-    try IniDelete(g_TilingMemoryFile, windowSignature, "xf")
-    try IniDelete(g_TilingMemoryFile, windowSignature, "yf")
-    try IniDelete(g_TilingMemoryFile, windowSignature, "wf")
-    try IniDelete(g_TilingMemoryFile, windowSignature, "hf")
+    State_SetAppLayout(windowSignature, x_factor "," y_factor "," w_factor "," h_factor)
 }
 
 _HasOtherWindowWithSignature(windowHandle, windowSignature) {
@@ -300,7 +282,7 @@ _HasOtherWindowWithSignature(windowHandle, windowSignature) {
 }
 
 _AutoSnapFromMemory(windowHandle) {
-    global g_TilingMemoryFile, CFG_TilingMemory, g_WinMaxState, g_HWNDLayoutCache, g_WinSigCache
+    global CFG_TilingMemory, g_WinMaxState, g_HWNDLayoutCache, g_WinSigCache
     if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
         return
     if !_IsLiveWindow(windowHandle)
@@ -309,8 +291,7 @@ _AutoSnapFromMemory(windowHandle) {
     if windowSignature = ""
         return
 
-    ; Per-HWND session memory wins over the shared INI. This keeps explicitly tiled
-    ; instances stable when a sibling closes and the process count drops back to one.
+    ; Per-HWND session memory wins over the shared INI.
     if g_HWNDLayoutCache.Has(windowHandle) {
         cachedLayout := g_HWNDLayoutCache[windowHandle]
         _ApplyLayout(Integer(cachedLayout["xf"]), Integer(cachedLayout["yf"]),
@@ -318,8 +299,7 @@ _AutoSnapFromMemory(windowHandle) {
         return
     }
 
-    ; If another live window has the exact same signature, do not guess from shared
-    ; app memory. New multi-instance windows must be tiled once before they get a slot.
+    ; If another live window has the exact same signature, do not guess from shared app memory.
     try {
         if _HasOtherWindowWithSignature(windowHandle, windowSignature)
             return
@@ -328,15 +308,13 @@ _AutoSnapFromMemory(windowHandle) {
         return
     }
 
-    isMaximized := IniRead(g_TilingMemoryFile, windowSignature, "maximized", "")
-    if isMaximized = "1" {
+    if g_StateAppMaximized.Has(windowSignature) && g_StateAppMaximized[windowSignature] {
         WinMaximize("ahk_id " windowHandle)
         g_WinMaxState[windowHandle] := 1
         return
     }
 
-    ; Try reading optimized single rect key first
-    rectStr := IniRead(g_TilingMemoryFile, windowSignature, "rect", "")
+    rectStr := State_GetAppLayout(windowSignature)
     if rectStr != "" {
         parts := StrSplit(rectStr, ",")
         if parts.Length = 4 {
@@ -345,18 +323,6 @@ _AutoSnapFromMemory(windowHandle) {
             return
         }
     }
-
-    ; Fallback to individual legacy keys for backwards-compatibility
-    x_factor := IniRead(g_TilingMemoryFile, windowSignature, "xf", "")
-    if x_factor = ""
-        return
-
-    y_factor := IniRead(g_TilingMemoryFile, windowSignature, "yf", "")
-    w_factor := IniRead(g_TilingMemoryFile, windowSignature, "wf", "")
-    h_factor := IniRead(g_TilingMemoryFile, windowSignature, "hf", "")
-
-    g_HWNDLayoutCache[windowHandle] := Map("xf", x_factor, "yf", y_factor, "wf", w_factor, "hf", h_factor)
-    _ApplyLayout(Integer(x_factor), Integer(y_factor), Integer(w_factor), Integer(h_factor), windowHandle, false)
 }
 
 global g_FocusHistory   := []
@@ -401,37 +367,16 @@ global g_DebugLogFile := A_Temp "\ahk_restore_debug.log"
 ; PER-DESKTOP FOCUS MEMORY
 ; ============================================================
 global g_DesktopLastWindow := Map()
-global g_DesktopMemoryFile := A_Temp "\ahk_desktop_memory.ini"
 
 loop 9 {
-    try {
-        val := IniRead(g_DesktopMemoryFile, "DesktopLastWindow", "d" A_Index, "")
-        if val != ""
-            g_DesktopLastWindow[A_Index] := Integer(val)
-    }
+    lastWnd := State_GetDesktopWindow(A_Index)
+    if lastWnd && DllCall("IsWindow", "Ptr", lastWnd)
+        g_DesktopLastWindow[A_Index] := lastWnd
 }
 
-_LoadLayoutsFrom(file) {
-    global g_Layouts
-    try {
-        sections := IniRead(file)
-        loop parse, sections, "`n" {
-            s := Trim(A_LoopField)
-            if !s
-                continue
-            hwnd := Integer(s)
-            if !_IsLiveWindow(hwnd)
-                continue
-            xf := IniRead(file, s, "xf", "")
-            yf := IniRead(file, s, "yf", "")
-            wf := IniRead(file, s, "wf", "")
-            hf := IniRead(file, s, "hf", "")
-            if xf != "" && Integer(wf) > 0
-                g_Layouts[hwnd] := [Integer(xf), Integer(yf), Integer(wf), Integer(hf)]
-        }
-    }
+for hwnd, item in g_StateSessionLayouts {
+    g_Layouts[hwnd] := item["layout"]
 }
-_LoadLayoutsFrom(g_LayoutFile)
 
 if VDA_IsLoaded && GetCurrentDesktopNumber {
     g_LastDesktop := DllCall(GetCurrentDesktopNumber) + 1
@@ -934,7 +879,7 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
         ; Tiling overrides any prior maximized memory
         windowSignature := _GetWinSignature(windowHandle)
         if windowSignature != ""
-            try IniDelete(g_TilingMemoryFile, windowSignature, "maximized")
+            State_SetAppMaximized(windowSignature, false)
     }
     
     Perf_Log("apply_layout", windowHandle, outcome, A_TickCount - startTime)
@@ -1089,9 +1034,9 @@ _OnWindowDestroy(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
     if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
         return
     if isMax
-        IniWrite(1, g_TilingMemoryFile, sig, "maximized")
+        State_SetAppMaximized(sig, true)
     else
-        try IniDelete(g_TilingMemoryFile, sig, "maximized")
+        State_SetAppMaximized(sig, false)
 }
 
 _OnMoveStart(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
@@ -1470,7 +1415,7 @@ TrackFocusHistory(hHook, event, hwnd, *) {
                 isMax := (_GetWindowState(hwnd) = 1) ? 1 : 0
                 g_WinMaxState[hwnd] := isMax
                 if isMax && IsSet(CFG_TilingMemory) && CFG_TilingMemory
-                    IniWrite(1, g_TilingMemoryFile, sig, "maximized")
+                    State_SetAppMaximized(sig, true)
             }
         }
 
