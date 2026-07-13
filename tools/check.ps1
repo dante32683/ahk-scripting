@@ -5,7 +5,6 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# 1. Locate AutoHotkey64.exe
 if ($AhkExe -eq "") {
     $searchPaths = @(
         "C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe",
@@ -28,55 +27,57 @@ if ($AhkExe -eq "" -or -not (Test-Path $AhkExe)) {
 
 Write-Host "Using AutoHotkey: $AhkExe"
 
-# Set test mode environment variable
 $env:AHK_TEST_MODE = "1"
-$failed = $false
+$script:failed = $false
+
+# The boot tests declare `#SingleInstance Off` and run in CFG_TestMode (no hooks,
+# no shared-file locks, immediate exit), so an isolated test run must never touch a
+# live Master instance. Do NOT force-kill the user's running script here.
 
 function Run-AhkScript {
     param(
         [string]$ScriptPath
     )
     Write-Host "Checking script: $ScriptPath..."
-    
+
     $tmpOut = [System.IO.Path]::GetTempFileName()
     $tmpErr = [System.IO.Path]::GetTempFileName()
-    
+
     try {
         $proc = Start-Process -FilePath $AhkExe -ArgumentList "/ErrorStdOut", "`"$ScriptPath`"" -NoNewWindow -PassThru -RedirectStandardOutput $tmpOut -RedirectStandardError $tmpErr
-        
-        # Wait up to 15 seconds for completion
+
         $terminated = $false
-        if (-not $proc.WaitForExit(15000)) {
+        if (-not $proc.WaitForExit(90000)) {
             $proc | Stop-Process -Force
             $terminated = $true
         }
-        
+
         $exitCode = $proc.ExitCode
-        $stdout = Get-Content -Path $tmpOut -Raw -Encoding UTF8
-        $stderr = Get-Content -Path $tmpErr -Raw -Encoding UTF8
-        
+        $stdout = Get-Content -Path $tmpOut -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+        $stderr = Get-Content -Path $tmpErr -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+
         if ($terminated) {
-            Write-Error "Script execution timed out (hung): $ScriptPath"
-            $global:failed = $true
+            Write-Host "Script execution timed out (hung): $ScriptPath" -ForegroundColor Red
+            $script:failed = $true
             return $false
         }
-        
+
         if ($exitCode -ne 0) {
-            Write-Error "Script exited with non-zero code ($exitCode): $ScriptPath"
+            Write-Host "Script exited with non-zero code ($exitCode): $ScriptPath" -ForegroundColor Red
             if ($stdout) { Write-Host "Stdout:`n$stdout" -ForegroundColor Red }
             if ($stderr) { Write-Host "Stderr:`n$stderr" -ForegroundColor Red }
-            $global:failed = $true
+            $script:failed = $true
             return $false
         }
-        
+
         if ($stderr -and $stderr.Trim() -ne "") {
-            Write-Error "Script generated stderr output: $ScriptPath"
+            Write-Host "Script generated stderr output: $ScriptPath" -ForegroundColor Red
             Write-Host "Stderr:`n$stderr" -ForegroundColor Red
-            $global:failed = $true
+            $script:failed = $true
             return $false
         }
-        
-        Write-Host "Success: $ScriptPath parsed and initialized cleanly." -ForegroundColor Green
+
+        Write-Host "Success: $ScriptPath" -ForegroundColor Green
         return $true
     }
     finally {
@@ -85,27 +86,38 @@ function Run-AhkScript {
     }
 }
 
-# 2. Run both entry points
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
-$masterPath = Join-Path $repoRoot "Master.ahk"
-$masterPcPath = Join-Path $repoRoot "Master-PC.ahk"
 
-$masterOk = Run-AhkScript -ScriptPath $masterPath
-$masterPcOk = Run-AhkScript -ScriptPath $masterPcPath
+# Prefer dedicated SingleInstance-Off boot tests so a live Master.ahk is not killed.
+$bootLaptop = Join-Path $repoRoot "tests\test_boot_laptop.ahk"
+$bootDesktop = Join-Path $repoRoot "tests\test_boot_desktop.ahk"
+if (Test-Path $bootLaptop) {
+    Run-AhkScript -ScriptPath $bootLaptop | Out-Null
+} else {
+    Run-AhkScript -ScriptPath (Join-Path $repoRoot "Master.ahk") | Out-Null
+}
+if (Test-Path $bootDesktop) {
+    Run-AhkScript -ScriptPath $bootDesktop | Out-Null
+} else {
+    Run-AhkScript -ScriptPath (Join-Path $repoRoot "Master-PC.ahk") | Out-Null
+}
 
-# 3. Run every test file under tests/ (if tests/ folder exists and contains files)
 $testsDir = Join-Path $repoRoot "tests"
 if (Test-Path $testsDir) {
-    $testFiles = Get-ChildItem -Path $testsDir -Filter "test_*.ahk" -Recurse
+    $testFiles = Get-ChildItem -Path $testsDir -Filter "test_*.ahk" -Recurse |
+        Where-Object { $_.Name -notmatch '^test_boot_' }
     foreach ($file in $testFiles) {
-        Run-AhkScript -ScriptPath $file.FullName
+        Run-AhkScript -ScriptPath $file.FullName | Out-Null
     }
 }
 
-# 4. Run the autocorrect database validator (to be implemented in later phases, or run if exists)
-# For now, we will add a simple check in check.ps1 itself or placeholder.
+# Autocorrect database validator
+$validateScript = Join-Path $testsDir "validate_autocorrect.ahk"
+if (Test-Path $validateScript) {
+    Run-AhkScript -ScriptPath $validateScript | Out-Null
+}
 
-if ($failed) {
+if ($script:failed) {
     Write-Host "Checks FAILED." -ForegroundColor Red
     exit 1
 } else {

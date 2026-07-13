@@ -2,9 +2,27 @@
 
 This is the active issue ledger for the script. Log bugs here instead of leaving TODO comments in code.
 
-## Open
+## Open / Deferred (perf-reliability-overhaul)
 
-_No open bugs at this time._
+These are known limitations deferred during the performance & reliability overhaul. None
+block normal use; they are tracked here rather than left as silent gaps.
+
+- **DEFER-001 (Low, State):** Legacy state files (`Tiling_Memory.ini`, `%TEMP%\ahk_layouts.ini`,
+  `%TEMP%\ahk_desktop_memory.ini`, `Autocorrect_Disabled.txt`) are migrated into
+  `%LOCALAPPDATA%\AutoHotkeyMaster` and backed up (`*.bak`) but the originals are never
+  deleted. This is deliberate (safer to leave the user's old files in place); it just
+  leaves harmless clutter. Migration is not persisted across runs, so migration re-checks
+  on every startup — but it only copies when the new file is absent, so it is a no-op after
+  the first run.
+- **DEFER-002 (Low, Perf):** Baseline vs. after performance measurements (working set, idle
+  CPU, tiling/focus P50/P95) require running on the target Windows machine over time. Set
+  `CFG_PerfLogging := true` to emit `%TEMP%\AutoHotkeyMaster\perf.csv`; no numbers are
+  committed to the repo because they cannot be gathered in a static/CI environment.
+- **DEFER-003 (Low, State):** INI escaping (`State_EscapeIni`) uses sequential replacement.
+  A window signature containing a literal backtick followed by an escape letter is a
+  theoretical corruption case shared with the pre-existing scheme; process/class/title
+  values in practice do not contain backticks. The `|` delimiter is now encoded, which was
+  the real reported risk.
 
 ---
 
@@ -33,9 +51,15 @@ Mitigation: tile each new terminal window once after opening it. The position is
 Priority: Low
 Area: Tiling / drift correction
 
-The 2-second drift correction timer (`_CheckLayoutRestores`) can re-snap a window the user intentionally moved if they release it and then do not interact with it for 2 seconds. `_OnMoveStart`/`_OnMoveEnd` suppress correction during the drag, and `g_MoveSuppressUntil` extends that grace period after the drag ends.
+Drift correction is now event-driven: `EVENT_OBJECT_LOCATIONCHANGE` marks a tracked window
+dirty and a ~150 ms debounce reconciles it, with a slow safety pass (`_CheckLayoutRestores`,
+`CFG_DriftCheckInterval`, default 20 s) only to recover missed events. `_OnMoveStart`/
+`_OnMoveEnd` suppress correction during a drag and `g_MoveSuppressUntil` extends the grace
+period afterward. Manual-move behavior is configurable via `CFG_ManualMoveBehavior`
+(`learn` / `clear` / `restore`).
 
-Mitigation: if a window keeps snapping back unexpectedly, press `CapsLock+Delete` to clear its tiling layout for the session.
+Mitigation: set `CFG_ManualMoveBehavior := "learn"` (default) so a manual move is remembered
+rather than reverted; or `"clear"` to stop tracking a window after you move it.
 
 ### RISK-004: Admin Elevation And UAC Prompts
 

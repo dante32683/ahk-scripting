@@ -18,27 +18,21 @@ if !IsSet(g_PerfStartupTick)
 #Include Perf.ahk
 #Include StateStore.ahk
 #Include VDA.ahk
-
-global CFG_TestMode := (IsSet(CFG_TestMode) && CFG_TestMode) || (EnvGet("AHK_TEST_MODE") = "1")
-
-Perf_Init()
-
-; ============================================================
-; VIRTUAL DESKTOP ACCESSOR (VDA)
-; ============================================================
-VDA.Init()
+#Include Layout.ahk
 
 ; ============================================================
 ; FAILSAFE: SMART MODIFIER RELEASE
 ; ============================================================
-OnExit ReleaseModifiers
-
 ReleaseModifiers(ExitReason := "", ExitCode := "") {
-    global g_PrivacyBlackoutActive
+    global g_PrivacyBlackoutActive, g_KeyLockActive
     if IsSet(g_PrivacyBlackoutActive) && g_PrivacyBlackoutActive
         _PrivacyBlackoutOff(false)
-    for mod in ["LCtrl", "RCtrl", "LShift", "RShift", "LAlt", "RAlt", "LWin", "RWin", "CapsLock"]
-        Send "{" mod " up}"
+    if IsSet(g_KeyLockActive) && g_KeyLockActive {
+        g_KeyLockActive := false
+        try BlockInput(false)
+    }
+    for modifierKey in ["LCtrl", "RCtrl", "LShift", "RShift", "LAlt", "RAlt", "LWin", "RWin", "CapsLock"]
+        Send "{" modifierKey " up}"
 }
 
 ; ============================================================
@@ -51,109 +45,201 @@ global g_PnPUtilPath := (A_Is64bitOS && A_PtrSize = 4)
 global g_ProcNameCache := Map()
 global g_WindowOffsetCache := Map()
 global g_PwaCache := Map()
-
-ShowOSD("Script started!")
+global g_PwaProcessIdCache := Map()
+global g_SigToHwndIndex := Map()  ; signature -> Map of hwnd -> true
 
 ; ============================================================
-; FOCUS EVENT HOOK (Zero-CPU Focus Tracking)
+; WINEVENT PENDING STATE (coalesced; processed on AHK thread)
 ; ============================================================
-global g_WinEventQueue := []
-
-_EnqueueWinEvent(type, args) {
-    global g_WinEventQueue
-    g_WinEventQueue.Push({type: type, args: args})
-    SetTimer(_ProcessWinEvents, -1)
-}
-
-_ProcessWinEvents() {
-    global g_WinEventQueue
-    events := g_WinEventQueue
-    g_WinEventQueue := []
-    
-    for ev in events {
-        try {
-            if ev.type = "focus" {
-                _ProcessFocusEvent(ev.args*)
-            } else if ev.type = "movestart" {
-                _ProcessMoveStartEvent(ev.args*)
-            } else if ev.type = "moveend" {
-                _ProcessMoveEndEvent(ev.args*)
-            } else if ev.type = "destroy" {
-                _ProcessDestroyEvent(ev.args*)
-            } else if ev.type = "locationchange" {
-                _ProcessLocationChangeEvent(ev.args*)
-            }
-        }
-    }
-}
+global g_PendingForegroundHwnd := 0
+global g_PendingLocationDirty := Map()
+global g_PendingMoveStart := Map()
+global g_PendingMoveEnd := Map()
+global g_PendingDestroy := Map()
+global g_WinEventProcessScheduled := false
 global hFocusHook := 0
 global g_MoveStartHook := 0
 global g_MoveEndHook := 0
 global g_DestroyHook := 0
 global g_LocationHook := 0
+global g_FocusCallbackPtr := 0
+global g_MoveStartCbPtr := 0
+global g_MoveEndCbPtr := 0
+global g_DestroyCallbackPtr := 0
+global g_LocationCbPtr := 0
+global g_AppShuttingDown := false
 
-State_Init()
+_ScheduleWinEventProcess() {
+    global g_WinEventProcessScheduled
+    if g_WinEventProcessScheduled
+        return
+    g_WinEventProcessScheduled := true
+    SetTimer(_ProcessWinEvents, -1)
+}
 
-if !CFG_TestMode {
-    global g_FocusCallbackPtr := CallbackCreate(TrackFocusHistory, "F")
-    global hFocusHook := DllCall("SetWinEventHook"
-        , "UInt", 0x0003 ; EVENT_SYSTEM_FOREGROUND
-        , "UInt", 0x0003
-        , "Ptr", 0
-        , "Ptr", g_FocusCallbackPtr
-        , "UInt", 0
-        , "UInt", 0
-        , "UInt", 0)
+_ProcessWinEvents() {
+    global g_PendingForegroundHwnd, g_PendingLocationDirty, g_PendingMoveStart
+    global g_PendingMoveEnd, g_PendingDestroy, g_WinEventProcessScheduled, g_AppShuttingDown
+    g_WinEventProcessScheduled := false
+    if g_AppShuttingDown
+        return
 
-    global g_MoveStartCbPtr := CallbackCreate(_OnMoveStart, , 7)
-    global g_MoveStartHook  := DllCall("SetWinEventHook"
-        , "UInt", 0x000A ; EVENT_SYSTEM_MOVESIZESTART
-        , "UInt", 0x000A
-        , "Ptr", 0
-        , "Ptr", g_MoveStartCbPtr
-        , "UInt", 0
-        , "UInt", 0
-        , "UInt", 0)
-    global g_MoveEndCbPtr := CallbackCreate(_OnMoveEnd, , 7)
-    global g_MoveEndHook  := DllCall("SetWinEventHook"
-        , "UInt", 0x000B ; EVENT_SYSTEM_MOVESIZEEND
-        , "UInt", 0x000B
-        , "Ptr", 0
-        , "Ptr", g_MoveEndCbPtr
-        , "UInt", 0
-        , "UInt", 0
-        , "UInt", 0)
+    focusHwnd := g_PendingForegroundHwnd
+    g_PendingForegroundHwnd := 0
+    moveStarts := g_PendingMoveStart
+    g_PendingMoveStart := Map()
+    moveEnds := g_PendingMoveEnd
+    g_PendingMoveEnd := Map()
+    destroys := g_PendingDestroy
+    g_PendingDestroy := Map()
+    locationDirty := g_PendingLocationDirty
+    g_PendingLocationDirty := Map()
 
-     global g_DestroyCallbackPtr := CallbackCreate(_OnWindowDestroy, , 7)
-    global g_DestroyHook := DllCall("SetWinEventHook"
-        , "UInt", 0x8001 ; EVENT_OBJECT_DESTROY
-        , "UInt", 0x8001
-        , "Ptr", 0
-        , "Ptr", g_DestroyCallbackPtr
-        , "UInt", 0
-        , "UInt", 0
-        , "UInt", 0)
+    for hwnd, _ in moveStarts {
+        try _ProcessMoveStartEvent(hwnd)
+    }
+    for hwnd, _ in moveEnds {
+        try _ProcessMoveEndEvent(hwnd)
+    }
+    for hwnd, info in destroys {
+        try _ProcessDestroyEvent(hwnd, info)
+    }
+    if focusHwnd {
+        try _ProcessFocusEvent(focusHwnd)
+    }
+    for hwnd, _ in locationDirty {
+        try _ProcessLocationChangeEvent(hwnd)
+    }
+}
 
-    global g_LocationCbPtr := CallbackCreate(_OnLocationChange, , 7)
-    global g_LocationHook := DllCall("SetWinEventHook"
-        , "UInt", 0x800B ; EVENT_OBJECT_LOCATIONCHANGE
-        , "UInt", 0x800B
-        , "Ptr", 0
-        , "Ptr", g_LocationCbPtr
-        , "UInt", 0
-        , "UInt", 0
-        , "UInt", 0)
+WindowEvents_Init() {
+    global CFG_TestMode, hFocusHook, g_MoveStartHook, g_MoveEndHook, g_DestroyHook, g_LocationHook
+    global g_FocusCallbackPtr, g_MoveStartCbPtr, g_MoveEndCbPtr, g_DestroyCallbackPtr, g_LocationCbPtr
+    if CFG_TestMode
+        return
 
-    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", hFocusHook))
-    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveStartHook))
-    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveEndHook))
-    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_DestroyHook))
-    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_LocationHook))
-    OnExit((*) => State_Shutdown())
-    OnExit((*) => VDA.Cleanup())
-    OnMessage(0x001A, _OnSettingChange)  ; WM_SETTINGCHANGE — work area resize (AppBar dock/undock)
-    OnMessage(0x0218, _OnPowerBroadcast) ; WM_POWERBROADCAST — wake from sleep
-    OnMessage(0x007E, _OnDisplayChange)  ; WM_DISPLAYCHANGE  — resolution change (fullscreen game exit)
+    ; WINEVENT_OUTOFCONTEXT (0) | WINEVENT_SKIPOWNPROCESS (2) = 2
+    flags := 2
+
+    g_FocusCallbackPtr := CallbackCreate(TrackFocusHistory, , 7)
+    hFocusHook := DllCall("SetWinEventHook"
+        , "UInt", 0x0003, "UInt", 0x0003, "Ptr", 0
+        , "Ptr", g_FocusCallbackPtr, "UInt", 0, "UInt", 0, "UInt", flags)
+    if !hFocusHook
+        _Dbg("SetWinEventHook FOREGROUND failed")
+
+    g_MoveStartCbPtr := CallbackCreate(_OnMoveStart, , 7)
+    g_MoveStartHook := DllCall("SetWinEventHook"
+        , "UInt", 0x000A, "UInt", 0x000A, "Ptr", 0
+        , "Ptr", g_MoveStartCbPtr, "UInt", 0, "UInt", 0, "UInt", flags)
+
+    g_MoveEndCbPtr := CallbackCreate(_OnMoveEnd, , 7)
+    g_MoveEndHook := DllCall("SetWinEventHook"
+        , "UInt", 0x000B, "UInt", 0x000B, "Ptr", 0
+        , "Ptr", g_MoveEndCbPtr, "UInt", 0, "UInt", 0, "UInt", flags)
+
+    g_DestroyCallbackPtr := CallbackCreate(_OnWindowDestroy, , 7)
+    g_DestroyHook := DllCall("SetWinEventHook"
+        , "UInt", 0x8001, "UInt", 0x8001, "Ptr", 0
+        , "Ptr", g_DestroyCallbackPtr, "UInt", 0, "UInt", 0, "UInt", flags)
+
+    g_LocationCbPtr := CallbackCreate(_OnLocationChange, , 7)
+    g_LocationHook := DllCall("SetWinEventHook"
+        , "UInt", 0x800B, "UInt", 0x800B, "Ptr", 0
+        , "Ptr", g_LocationCbPtr, "UInt", 0, "UInt", 0, "UInt", flags)
+
+    OnMessage(0x001A, _OnSettingChange)
+    OnMessage(0x0218, _OnPowerBroadcast)
+    OnMessage(0x007E, _OnDisplayChange)
+}
+
+Core_SessionInit() {
+    global g_Layouts, g_DesktopLastWindow, g_LastDesktop, g_TilingMode, g_DebugRestore, g_DebugLogFile
+    global g_StateSessionLayouts
+
+    ; Iterate the real desktop count when known; fall back to a bounded scan only
+    ; to recover stored entries (never as an assumed desktop maximum).
+    deskCount := VDA.isLoaded ? VDA.GetDesktopCount() : 0
+    if deskCount <= 0
+        deskCount := 16
+    loop deskCount {
+        lastWnd := State_GetDesktopWindow(A_Index)
+        if lastWnd {
+            identity := State_GetDesktopWindowIdentity(A_Index)
+            if _ValidateWindowIdentity(lastWnd, identity)
+                g_DesktopLastWindow[A_Index] := lastWnd
+        }
+    }
+
+    for hwnd, item in g_StateSessionLayouts {
+        layout := item["layout"]
+        if layout is Map
+            g_Layouts[hwnd] := layout
+        else if layout is Array && layout.Length = 4
+            g_Layouts[hwnd] := Layout_FromLegacyPct(layout[1], layout[2], layout[3], layout[4])
+    }
+
+    if VDA.isLoaded
+        g_LastDesktop := VDA.GetCurrent()
+
+    if !CFG_TestMode && g_TilingMode = "Native" && IsSet(CFG_DriftCorrection) && CFG_DriftCorrection {
+        interval := IsSet(CFG_DriftCheckInterval) ? CFG_DriftCheckInterval : 20000
+        if interval < 15000
+            interval := 20000
+        SetTimer(_CheckLayoutRestores, interval)
+    }
+
+    if g_DebugRestore
+        try FileDelete(g_DebugLogFile)
+    _Dbg("script-start lastDesk=" g_LastDesktop " layouts=" g_Layouts.Count)
+}
+
+App_Shutdown(*) {
+    global g_AppShuttingDown, hFocusHook, g_MoveStartHook, g_MoveEndHook, g_DestroyHook, g_LocationHook
+    global g_FocusCallbackPtr, g_MoveStartCbPtr, g_MoveEndCbPtr, g_DestroyCallbackPtr, g_LocationCbPtr
+    global g_AutoRestoreTimers, g_KeyLockActive
+    if g_AppShuttingDown
+        return
+    g_AppShuttingDown := true
+
+    try SetTimer(_ProcessWinEvents, 0)
+    try SetTimer(_CheckLayoutRestores, 0)
+    try SetTimer(_FlushLocationDirty, 0)
+    try SetTimer(Perf_Flush, 0)
+    try AC_StopInputHook()
+
+    for hwnd, timer in g_AutoRestoreTimers {
+        try SetTimer(timer, 0)
+    }
+    g_AutoRestoreTimers := Map()
+
+    try State_FlushNow()
+    try Perf_Flush()
+    try VDA.Cleanup()
+
+    for hook in [hFocusHook, g_MoveStartHook, g_MoveEndHook, g_DestroyHook, g_LocationHook] {
+        if hook
+            try DllCall("UnhookWinEvent", "Ptr", hook)
+    }
+    hFocusHook := g_MoveStartHook := g_MoveEndHook := g_DestroyHook := g_LocationHook := 0
+
+    for ptr in [g_FocusCallbackPtr, g_MoveStartCbPtr, g_MoveEndCbPtr, g_DestroyCallbackPtr, g_LocationCbPtr] {
+        if ptr
+            try CallbackFree(ptr)
+    }
+    g_FocusCallbackPtr := g_MoveStartCbPtr := g_MoveEndCbPtr := g_DestroyCallbackPtr := g_LocationCbPtr := 0
+
+    ; Disable any keyboard lock BEFORE releasing modifiers so input is never left
+    ; blocked if a later step throws.
+    if IsSet(g_KeyLockActive) && g_KeyLockActive {
+        g_KeyLockActive := false
+        try BlockInput(false)
+    }
+    global g_PrivacyBlackoutActive
+    if IsSet(g_PrivacyBlackoutActive) && g_PrivacyBlackoutActive
+        try _PrivacyBlackoutOff(false)
+    try _OsdShutdown()
+    try ReleaseModifiers()
 }
 
 _SaveDesktopMemory(*) {
@@ -209,12 +295,10 @@ _GetProcessName(hwnd) {
     return proc
 }
 
-global g_PwaProcessIdCache := Map()
-
 _IsPWA(windowHandle) {
     if !windowHandle
         return false
-    global g_PwaCache, g_PwaProcessIdCache
+    global g_PwaCache
     if g_PwaCache.Has(windowHandle)
         return g_PwaCache[windowHandle]
 
@@ -240,22 +324,22 @@ _IsPWA(windowHandle) {
         return false
     }
 
-    if g_PwaProcessIdCache.Has(processId) {
-        isPwa := g_PwaProcessIdCache[processId]
-        g_PwaCache[windowHandle] := isPwa
-        return isPwa
-    }
-
-    g_PwaCache[windowHandle] := false ; Default for now
+    g_PwaCache[windowHandle] := false ; provisional until async check completes
     SetTimer(() => _AsyncCheckPWA(windowHandle, processId), -50)
     return false
 }
 
 _AsyncCheckPWA(hwnd, pid) {
-    global g_PwaProcessIdCache, g_PwaCache
+    global g_PwaCache
     if !DllCall("IsWindow", "Ptr", hwnd)
         return
-        
+    try {
+        if WinGetPID("ahk_id " hwnd) != pid
+            return
+    } catch {
+        return
+    }
+
     isPwa := false
     try {
         static wmi := 0
@@ -270,14 +354,18 @@ _AsyncCheckPWA(hwnd, pid) {
             }
         }
     }
-    g_PwaProcessIdCache[pid] := isPwa
+    ; Cache by HWND only — Chromium PIDs can host mixed window types
     if DllCall("IsWindow", "Ptr", hwnd) {
-        g_PwaCache[hwnd] := isPwa
-        if isPwa {
-            _AutoSnapFromMemory(hwnd)
+        try {
+            if WinGetPID("ahk_id " hwnd) != pid
+                return
+        } catch {
+            return
         }
+        g_PwaCache[hwnd] := isPwa
+        if isPwa
+            _AutoSnapFromMemory(hwnd)
     }
-}
 }
 
 _NormalizePWATitle(windowTitle) {
@@ -301,20 +389,31 @@ _GetWinSignature(windowHandle) {
     return processName
 }
 
-_PersistToMemory(windowHandle, x_factor, y_factor, w_factor, h_factor) {
+_PersistToMemory(windowHandle, recordOrXf, yf := unset, wf := unset, hf := unset) {
     global CFG_TilingMemory, g_HWNDLayoutCache
     if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
         return
     windowSignature := _GetWinSignature(windowHandle)
     if windowSignature = ""
         return
-    g_HWNDLayoutCache[windowHandle] := Map("xf", x_factor, "yf", y_factor, "wf", w_factor, "hf", h_factor)
-
-    State_SetAppLayout(windowSignature, x_factor "," y_factor "," w_factor "," h_factor)
+    if recordOrXf is Map {
+        record := recordOrXf
+    } else {
+        record := Layout_Slot(recordOrXf, yf, wf, hf)
+    }
+    g_HWNDLayoutCache[windowHandle] := record
+    State_SetAppLayout(windowSignature, record)
 }
 
 _HasOtherWindowWithSignature(windowHandle, windowSignature) {
-    global g_WinSigCache
+    global g_SigToHwndIndex, g_WinSigCache
+    if g_SigToHwndIndex.Has(windowSignature) {
+        for otherHwnd, _ in g_SigToHwndIndex[windowSignature] {
+            if otherHwnd != windowHandle && _IsLiveWindow(otherHwnd)
+                return true
+        }
+        return false
+    }
     signatureProcess := InStr(windowSignature, ":") ? StrSplit(windowSignature, ":")[1] : windowSignature
     for otherHwnd in WinGetList() {
         if otherHwnd = windowHandle || !_IsLiveWindow(otherHwnd)
@@ -338,20 +437,19 @@ _AutoSnapFromMemory(windowHandle) {
     if windowSignature = ""
         return
 
-    ; Per-HWND session memory wins over the shared INI.
     if g_HWNDLayoutCache.Has(windowHandle) {
-        cachedLayout := g_HWNDLayoutCache[windowHandle]
-        _ApplyLayout(Integer(cachedLayout["xf"]), Integer(cachedLayout["yf"]),
-                     Integer(cachedLayout["wf"]), Integer(cachedLayout["hf"]), windowHandle, false)
+        cached := g_HWNDLayoutCache[windowHandle]
+        if cached is Map && cached.Has("kind")
+            _ApplyLayoutRecord(cached, windowHandle, false)
+        else if cached is Map && cached.Has("xf")
+            _ApplyLayout(Integer(cached["xf"]), Integer(cached["yf"]), Integer(cached["wf"]), Integer(cached["hf"]), windowHandle, false)
         return
     }
 
-    ; If another live window has the exact same signature, do not guess from shared app memory.
     try {
         if _HasOtherWindowWithSignature(windowHandle, windowSignature)
             return
-    }
-    catch {
+    } catch {
         return
     }
 
@@ -361,13 +459,19 @@ _AutoSnapFromMemory(windowHandle) {
         return
     }
 
-    rectStr := State_GetAppLayout(windowSignature)
-    if rectStr != "" {
-        parts := StrSplit(rectStr, ",")
-        if parts.Length = 4 {
-            g_HWNDLayoutCache[windowHandle] := Map("xf", parts[1], "yf", parts[2], "wf", parts[3], "hf", parts[4])
-            _ApplyLayout(Integer(parts[1]), Integer(parts[2]), Integer(parts[3]), Integer(parts[4]), windowHandle, false)
-            return
+    stored := State_GetAppLayout(windowSignature)
+    if stored = "" || stored = 0
+        return
+    if stored is Map {
+        g_HWNDLayoutCache[windowHandle] := stored
+        _ApplyLayoutRecord(stored, windowHandle, false)
+        return
+    }
+    if stored is String {
+        rec := Layout_Deserialize(stored)
+        if rec {
+            g_HWNDLayoutCache[windowHandle] := rec
+            _ApplyLayoutRecord(rec, windowHandle, false)
         }
     }
 }
@@ -398,7 +502,7 @@ if !IsSet(CFG_DriftCheckInterval)
 ; config.ahk (default "desktops"). This fallback is a last-resort safety net only.
 global CFG_NumberKeys  := IsSet(CFG_NumberKeys) ? CFG_NumberKeys : "desktops"
 
-global g_Layouts    := Map()   ; hwnd → [xf, yf, wf, hf]
+global g_Layouts    := Map()   ; hwnd → LayoutRecord
 global g_LayoutFile := A_Temp "\ahk_layouts.ini"
 global g_LastDesktop := 0
 global g_MoveSuppressUntil := Map()
@@ -406,43 +510,41 @@ global g_UserMoveActive    := Map()
 global g_AutoRestoreTimers := Map()
 global g_WinSigCache  := Map()   ; hwnd → signature string
 global g_WinMaxState  := Map()   ; hwnd → 1 if maximized, 0 otherwise
-global g_HWNDLayoutCache := Map() ; hwnd → {xf, yf, wf, hf} — ephemeral per-instance position cache
+global g_HWNDLayoutCache := Map() ; hwnd → LayoutRecord — ephemeral per-instance position cache
+global g_AcceptedGeometryCache := Map() ; hwnd → accepted visible rect (constrained windows)
 global g_DebugRestore := IsSet(CFG_DebugRestore) ? CFG_DebugRestore : false
 global g_DebugLogFile := A_Temp "\ahk_restore_debug.log"
+global g_DbgBuffer := []
+global g_DbgFlushScheduled := false
 
 ; ============================================================
 ; PER-DESKTOP FOCUS MEMORY
 ; ============================================================
 global g_DesktopLastWindow := Map()
 
-loop 9 {
-    lastWnd := State_GetDesktopWindow(A_Index)
-    if lastWnd && DllCall("IsWindow", "Ptr", lastWnd)
-        g_DesktopLastWindow[A_Index] := lastWnd
-}
-
-for hwnd, item in g_StateSessionLayouts {
-    g_Layouts[hwnd] := item["layout"]
-}
-
-if VDA.isLoaded {
-    g_LastDesktop := VDA.GetCurrent()
-}
-
-if (g_TilingMode = "Native" && IsSet(CFG_DriftCorrection) && CFG_DriftCorrection)
-    SetTimer(_CheckLayoutRestores, IsSet(CFG_DriftCheckInterval) ? CFG_DriftCheckInterval : 5000)
-
-if g_DebugRestore
-    try FileDelete(g_DebugLogFile)
-_Dbg("script-start lastDesk=" g_LastDesktop " layouts=" g_Layouts.Count)
-
 _Dbg(msg) {
-    global g_DebugRestore, g_DebugLogFile
+    global g_DebugRestore, g_DbgBuffer, g_DbgFlushScheduled
     if !g_DebugRestore
         return
     ts := FormatTime(, "yyyy-MM-dd HH:mm:ss")
     ms := Mod(A_TickCount, 1000000)
-    FileAppend(ts "." Format("{:06}", ms) " " msg "`n", g_DebugLogFile, "UTF-8")
+    g_DbgBuffer.Push(ts "." Format("{:06}", ms) " " msg)
+    if !g_DbgFlushScheduled {
+        g_DbgFlushScheduled := true
+        SetTimer(_DbgFlush, -250)
+    }
+}
+
+_DbgFlush() {
+    global g_DebugRestore, g_DebugLogFile, g_DbgBuffer, g_DbgFlushScheduled
+    g_DbgFlushScheduled := false
+    if !g_DebugRestore || g_DbgBuffer.Length = 0
+        return
+    content := ""
+    for line in g_DbgBuffer
+        content .= line "`n"
+    g_DbgBuffer := []
+    try FileAppend(content, g_DebugLogFile, "UTF-8")
 }
 
 _WinSig(hwnd) {
@@ -481,11 +583,13 @@ _IsOnCurrentDesktop(hwnd) {
     if !VDA.isLoaded
         return true
     try {
-        winDesk := VDA.GetWindowDesktop(hwnd)
-        if (winDesk = 0) ; Pin to all desktops or error
+        onDesk := VDA.IsOnCurrentDesktop(hwnd)
+        if onDesk = 1
             return true
-        curDesk := VDA.GetCurrent()
-        return winDesk = curDesk
+        if onDesk = 0
+            return false
+        ; unknown: do not treat error as pinned
+        return true
     } catch
         return true
 }
@@ -497,101 +601,36 @@ _GetWindowState(hwnd, default := -2) {
 }
 
 _GetWindowOffsets(windowHandle, &offsetLeft, &offsetTop, &offsetRight, &offsetBottom) {
+    off := Window_GetFrameOffsets(windowHandle)
+    offsetLeft := off.left
+    offsetTop := off.top
+    offsetRight := off.right
+    offsetBottom := off.bottom
     global g_WindowOffsetCache
-    if g_WindowOffsetCache.Has(windowHandle) {
-        offsets := g_WindowOffsetCache[windowHandle]
-        offsetLeft := offsets[1]
-        offsetTop := offsets[2]
-        offsetRight := offsets[3]
-        offsetBottom := offsets[4]
-        return
-    }
-
-    rect := Buffer(16)
-    DllCall("user32\GetWindowRect", "Ptr", windowHandle, "Ptr", rect)
-    actualLeft := NumGet(rect, 0, "Int"), actualTop := NumGet(rect, 4, "Int")
-    actualRight := NumGet(rect, 8, "Int"), actualBottom := NumGet(rect, 12, "Int")
-
-    dwmRect := Buffer(16)
-    dwmOk := DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", windowHandle, "UInt", 9, "Ptr", dwmRect, "UInt", 16) = 0
-    visibleL := NumGet(dwmRect, 0, "Int"), visibleT := NumGet(dwmRect, 4, "Int")
-    visibleR := NumGet(dwmRect, 8, "Int"), visibleB := NumGet(dwmRect, 12, "Int")
-
-    if (dwmOk && visibleL >= actualLeft && visibleR <= actualRight
-              && visibleT >= actualTop && visibleB <= actualBottom
-              && (visibleR - visibleL) > 0 && (visibleB - visibleT) > 0) {
-        offsetLeft := visibleL - actualLeft, offsetTop := visibleT - actualTop
-        offsetRight := actualRight - visibleR, offsetBottom := actualBottom - visibleB
-    } else {
-        offsetLeft := 0, offsetTop := 0, offsetRight := 0, offsetBottom := 0
-    }
-
     g_WindowOffsetCache[windowHandle] := [offsetLeft, offsetTop, offsetRight, offsetBottom]
 }
 
-; Compute the compensated outer (left) X for a window that is wider than its slot
-; (e.g. DWM minimum-width constraints, common for Terminal / Settings / Slack). The
-; window's interior edge — the one facing screen center — is aligned to the slot
-; boundary and the overflow spills toward the outer screen edge, so the split line
-; between adjacent tiles stays clean. A middle slot that touches neither screen edge
-; (e.g. the center third) centers its overflow symmetrically. Full-width / spanning
-; slots get no compensation. Returns defaultX when no adjustment applies. This single
-; helper is shared by _ApplyLayout (pre- and post-move) and _GetExpectedOuterPos so
-; the applier and the drift checker can never disagree and fight each other.
-_CompensateWideX(x_factor, w_factor, visibleLeft, visibleRight, visibleWidth, requiredWidth, offsetLeft, defaultX) {
-    if (visibleWidth <= requiredWidth)
-        return defaultX
-    if (x_factor = 0 && w_factor < 100)                    ; left-anchored: align interior (right) edge
-        return visibleRight - visibleWidth - offsetLeft
-    if (x_factor + w_factor = 100 && x_factor > 0)         ; right-anchored: align interior (left) edge
-        return visibleLeft - offsetLeft
-    if (x_factor > 0 && x_factor + w_factor < 100)         ; free-floating middle slot: center the overflow
-        return visibleLeft - offsetLeft - (visibleWidth - requiredWidth) // 2
-    return defaultX                                        ; full-width / spanning: no compensation
-}
-
-_GetExpectedOuterPos(windowHandle, x_factor, y_factor, w_factor, h_factor, &expectedX, &expectedY) {
-    _GetMonitorForHwnd(windowHandle, &workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
-    gapSize  := g_TileGap
-    workAreaWidth := workAreaRight - workAreaLeft
-    workAreaHeight := workAreaBottom - workAreaTop
-
-    slotLeft := workAreaLeft + (workAreaWidth * x_factor // 100)
-    slotRight := workAreaLeft + (workAreaWidth * (x_factor + w_factor) // 100)
-    slotTop := workAreaTop + (workAreaHeight * y_factor // 100)
-    slotBottom := workAreaTop + (workAreaHeight * (y_factor + h_factor) // 100)
-
-    visibleLeft := slotLeft + (x_factor = 0 ? gapSize : gapSize // 2)
-    visibleRight := slotRight - (x_factor + w_factor >= 100 ? gapSize : gapSize // 2)
-    visibleTop := slotTop + (y_factor = 0 ? gapSize : gapSize // 2)
-
-    _GetWindowOffsets(windowHandle, &offsetLeft, &offsetTop, &offsetRight, &offsetBottom)
-
-    expectedX := visibleLeft - offsetLeft
-    expectedY := visibleTop - offsetTop
-
-    rect := Buffer(16)
-    DllCall("user32\GetWindowRect", "Ptr", windowHandle, "Ptr", rect)
-    actualLeft := NumGet(rect, 0, "Int"), actualRight := NumGet(rect, 8, "Int")
-    actualW := actualRight - actualLeft
-
-    requiredWidth := visibleRight - visibleLeft
-    currentVisibleWidth := actualW - offsetLeft - offsetRight
-    expectedX := _CompensateWideX(x_factor, w_factor, visibleLeft, visibleRight, currentVisibleWidth, requiredWidth, offsetLeft, expectedX)
-}
-
 _NeedsAutoRestore(windowHandle, layout) {
+    if !(layout is Map)
+        return false
     if !_IsLiveWindow(windowHandle)
         return false
-    WinGetPos(&windowX, &windowY, , , "ahk_id " windowHandle)
-    _GetExpectedOuterPos(windowHandle, layout[1], layout[2], layout[3], layout[4], &expectedX, &expectedY)
-
-    distanceX := Abs(windowX - expectedX)
-    distanceY := Abs(windowY - expectedY)
-
-    ; Only restore if the movement is small (drift/bug).
-    ; If it's a large movement (e.g. > 200px), assume it's intentional and don't fight it.
-    return (distanceX > 6 && distanceX < 200) || (distanceY > 6 && distanceY < 200)
+    if _GetWindowState(windowHandle) != 0
+        return false
+    global g_AcceptedGeometryCache, g_TileGap
+    _GetMonitorForHwnd(windowHandle, &L, &T, &R, &B)
+    expected := Layout_ResolveVisibleRect(layout, L, T, R, B, layout["kind"] = "slot" ? g_TileGap : 0)
+    if !expected
+        return false
+    actual := Window_GetVisibleRect(windowHandle)
+    if !actual
+        return false
+    if g_AcceptedGeometryCache.Has(windowHandle) {
+        accepted := g_AcceptedGeometryCache[windowHandle]
+        if !Layout_RectsDiffer(actual, accepted, 4)
+            return false
+    }
+    return Layout_RectsDiffer(actual, expected, 4)
 }
 
 _AutoRestoreWindow(hwnd) {
@@ -613,7 +652,7 @@ _AutoRestoreWindow(hwnd) {
     if !_NeedsAutoRestore(hwnd, layout)
         return
     _Dbg("auto-restore " _WinSig(hwnd))
-    _ApplyLayout(layout[1], layout[2], layout[3], layout[4], hwnd, false)
+    _ApplyLayoutRecord(layout, hwnd, false)
 }
 
 _ScheduleAutoRestore(hwnd, delay := 120) {
@@ -655,13 +694,20 @@ RunAsUser(target, args := "", workdir := "") {
 _HwndOnCurrentDesktop(winSelector) {
     if !WinExist(winSelector)
         return 0
-    if !(GetCurrentDesktopNumber && GetWindowDesktopNumber)
+    if !VDA.isLoaded
         return WinGetID(winSelector)
-    curDesk := DllCall(GetCurrentDesktopNumber)
     for hwnd in WinGetList(winSelector) {
         try {
-            if DllCall(GetWindowDesktopNumber, "Ptr", hwnd) = curDesk
+            onDesk := VDA.IsOnCurrentDesktop(hwnd)
+            if onDesk = 1
                 return hwnd
+            if onDesk = -1 {
+                ; fallback compare when API unknown
+                winDesk := VDA.GetWindowDesktop(hwnd)
+                curDesk := VDA.GetCurrent()
+                if winDesk != VDA.DESKTOP_UNKNOWN && winDesk = curDesk
+                    return hwnd
+            }
         }
     }
     return 0
@@ -792,6 +838,17 @@ SoftReset() {
     g_CapsN_LastHiddenHwnd := 0
 }
 
+SafeReload() {
+    State_PrepareHandoff()
+    _SaveDesktopMemory()
+    _SaveLayouts()
+    State_FlushNow()
+    ReleaseModifiers()
+    try App_Shutdown()
+    Run('"' A_AhkPath '" /restart "' A_ScriptFullPath '"')
+    ExitApp()
+}
+
 GetActiveMonitorWorkArea(&workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom) {
     if WinExist("A") {
         try {
@@ -827,104 +884,112 @@ _PrepareWindow() {
 }
 
 _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist := true) {
+    return _ApplyLayoutRecord(Layout_Slot(x_factor, y_factor, w_factor, h_factor), overrideHwnd, persist)
+}
+
+_ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 0) {
     startTime := A_TickCount
-    global g_MoveSuppressUntil, g_WinMaxState, g_TilingMemoryFile
+    global g_MoveSuppressUntil, g_WinMaxState, g_Layouts, g_AcceptedGeometryCache, g_TileGap
+    if !Layout_Validate(record) {
+        Perf_Log("apply_layout", 0, "invalid_record", A_TickCount - startTime)
+        return false
+    }
+
     if overrideHwnd {
         windowHandle := overrideHwnd
         if !_IsLiveWindow(windowHandle) {
             Perf_Log("apply_layout", windowHandle, "invalid_hwnd", A_TickCount - startTime)
-            return
+            return false
         }
         state := _GetWindowState(windowHandle)
-        if (state = 1 || state = -1)
+        if (state = 1 || state = -1) {
             WinRestore("ahk_id " windowHandle)
-        _GetMonitorForHwnd(windowHandle, &workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
+            Sleep(30)
+        }
+        if targetMonitor > 0 {
+            MonitorGetWorkArea(targetMonitor, &workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
+        } else {
+            _GetMonitorForHwnd(windowHandle, &workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
+        }
     } else {
         if !WinExist("A") {
             Perf_Log("apply_layout", 0, "no_active_window", A_TickCount - startTime)
-            return
+            return false
         }
         windowHandle := WinGetID("A")
         if !_IsOnCurrentDesktop(windowHandle) {
             Perf_Log("apply_layout", windowHandle, "wrong_desktop", A_TickCount - startTime)
-            return
+            return false
         }
         _PrepareWindow()
-        GetActiveMonitorWorkArea(&workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
+        if targetMonitor > 0
+            MonitorGetWorkArea(targetMonitor, &workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
+        else
+            GetActiveMonitorWorkArea(&workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
     }
 
-    mode := persist ? "store" : "restore"
     g_MoveSuppressUntil[windowHandle] := A_TickCount + 1500
-    gapSize   := g_TileGap
-    workAreaWidth  := workAreaRight - workAreaLeft
-    workAreaHeight := workAreaBottom - workAreaTop
-
-    slotLeft   := workAreaLeft + (workAreaWidth * x_factor // 100)
-    slotRight  := workAreaLeft + (workAreaWidth * (x_factor + w_factor) // 100)
-    slotTop    := workAreaTop + (workAreaHeight * y_factor // 100)
-    slotBottom := workAreaTop + (workAreaHeight * (y_factor + h_factor) // 100)
-
-    visibleLeft   := slotLeft + (x_factor = 0 ? gapSize : gapSize // 2)
-    visibleRight  := slotRight - (x_factor + w_factor >= 100 ? gapSize : gapSize // 2)
-    visibleTop    := slotTop + (y_factor = 0 ? gapSize : gapSize // 2)
-    visibleBottom := slotBottom - (y_factor + h_factor >= 100 ? gapSize : gapSize // 2)
+    gap := record["kind"] = "slot" ? g_TileGap : 0
+    expectedVis := Layout_ResolveVisibleRect(record, workAreaLeft, workAreaTop, workAreaRight, workAreaBottom, gap)
+    if !expectedVis {
+        Perf_Log("apply_layout", windowHandle, "resolve_failed", A_TickCount - startTime)
+        return false
+    }
 
     _GetWindowOffsets(windowHandle, &offsetLeft, &offsetTop, &offsetRight, &offsetBottom)
+    outer := Window_OuterFromVisibleRect(windowHandle, expectedVis)
+    ; Initial target is always the left/top-anchored placement. Compensation for a
+    ; window that rejects the requested size happens AFTER the move, based on the
+    ; geometry the window actually accepted — never on its pre-move size.
+    targetX := outer.x, targetY := outer.y, targetW := outer.w, targetH := outer.h
+    requiredW := expectedVis.w
+    requiredH := expectedVis.h
 
-    targetX := visibleLeft - offsetLeft
-    targetY := visibleTop - offsetTop
-    targetW := (visibleRight - visibleLeft) + offsetLeft + offsetRight
-    targetH := (visibleBottom - visibleTop) + offsetTop + offsetBottom
+    actualOuter := Window_GetOuterRect(windowHandle)
 
-    ; Get current window position
-    rect := Buffer(16)
-    DllCall("user32\GetWindowRect", "Ptr", windowHandle, "Ptr", rect)
-    actualLeft := NumGet(rect, 0, "Int"), actualTop := NumGet(rect, 4, "Int")
-    actualRight := NumGet(rect, 8, "Int"), actualBottom := NumGet(rect, 12, "Int")
-    actualW := actualRight - actualLeft
-    actualH := actualBottom - actualTop
-
-    ; Account for DWM width adjustments (e.g., minimum width constraints) in the expected X coordinate
-    visibleWidth := actualW - offsetLeft - offsetRight
-    requiredWidth := visibleRight - visibleLeft
-    expectedX := _CompensateWideX(x_factor, w_factor, visibleLeft, visibleRight, visibleWidth, requiredWidth, offsetLeft, targetX)
-
-    g_Layouts[windowHandle] := [x_factor, y_factor, w_factor, h_factor]
+    g_Layouts[windowHandle] := record
     g_WinMaxState[windowHandle] := 0
 
     outcome := "move"
-    if (actualLeft = expectedX && actualTop = targetY && actualW = targetW && actualH = targetH) {
-        ; Already in the correct position, skip WinMove!
-        _Dbg("apply skip-already-in-position " _WinSig(windowHandle))
+    if actualOuter && actualOuter.x = targetX && actualOuter.y = targetY && actualOuter.w = targetW && actualOuter.h = targetH {
         outcome := "skip"
+        _Dbg("apply skip-already-in-position " _WinSig(windowHandle))
+        finalVis := Window_GetVisibleRect(windowHandle)
+        if finalVis
+            g_AcceptedGeometryCache[windowHandle] := finalVis
     } else {
         Perf_Increment("win_moves")
+        ; 1. Apply the initial move.
         WinMove(targetX, targetY, targetW, targetH, "ahk_id " windowHandle)
-
-        ; If the window is too wide for the target slot (e.g. minimum width constraint),
-        ; adjust its X position so it aligns with the correct screen edge.
-        dwmRectAfter := Buffer(16)
-        DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", windowHandle, "UInt", 9, "Ptr", dwmRectAfter, "UInt", 16)
-        visibleWidthAfter := NumGet(dwmRectAfter, 8, "Int") - NumGet(dwmRectAfter, 0, "Int")
-        if (visibleWidthAfter > requiredWidth) {
-            newX := _CompensateWideX(x_factor, w_factor, visibleLeft, visibleRight, visibleWidthAfter, requiredWidth, offsetLeft, targetX)
-            if (newX != targetX)
-                WinMove(newX, targetY, , , "ahk_id " windowHandle)
+        ; 2-4. Read what the window accepted; detect a minimum-size overflow.
+        afterVis := Window_GetVisibleRect(windowHandle)
+        finalVis := afterVis
+        if afterVis && (afterVis.w > requiredW + 2 || afterVis.h > requiredH + 2) {
+            ; 5. Compensate position according to the record's anchors.
+            adj := _CompensateConstrainedPosition(record, afterVis, requiredW, requiredH, offsetLeft, offsetTop, targetX, targetY)
+            if adj.x != targetX || adj.y != targetY {
+                WinMove(adj.x, adj.y, , , "ahk_id " windowHandle)
+                ; 6. Cache the FINAL post-compensation rectangle (re-read), so drift
+                ; detection compares against where the window truly ended up.
+                finalVis := Window_GetVisibleRect(windowHandle)
+            }
         }
+        if finalVis
+            g_AcceptedGeometryCache[windowHandle] := finalVis
     }
 
-    _Dbg("apply mode=" mode " " _WinSig(windowHandle) " desk?=" (GetWindowDesktopNumber ? DllCall(GetWindowDesktopNumber, "Ptr", windowHandle) + 1 : 0)
-        " mon=[" workAreaLeft "," workAreaTop "," workAreaRight "," workAreaBottom "] target=[" visibleLeft "," visibleTop "," visibleRight "," visibleBottom "] offs=[" offsetLeft "," offsetTop "," offsetRight "," offsetBottom "]"
-        " pct=[" x_factor "," y_factor "," w_factor "," h_factor "]")
+    desk := VDA.isLoaded ? VDA.GetWindowDesktop(windowHandle) : 0
+    _Dbg("apply " _WinSig(windowHandle) " desk=" desk " kind=" record["kind"])
+
     if persist {
         _PersistLayout(windowHandle)
-        _PersistToMemory(windowHandle, x_factor, y_factor, w_factor, h_factor)
-        ; Tiling overrides any prior maximized memory
+        legacy := Layout_ToLegacyPct(record)
+        _PersistToMemory(windowHandle, record)
         windowSignature := _GetWinSignature(windowHandle)
         if windowSignature != ""
             State_SetAppMaximized(windowSignature, false)
     }
-    
+
     Perf_Log("apply_layout", windowHandle, outcome, A_TickCount - startTime)
     return true
 }
@@ -957,7 +1022,7 @@ _RestoreDesktop(desktopNumber) {
         state := _GetWindowState(windowHandle)
         if state != 0
             continue
-        if _ApplyLayout(windowLayout[1], windowLayout[2], windowLayout[3], windowLayout[4], windowHandle, false) {
+        if _ApplyLayoutRecord(windowLayout, windowHandle, false) {
             anyMoved := true
         }
     }
@@ -981,7 +1046,7 @@ _RestoreAllDesktops() {
         state := _GetWindowState(windowHandle)
         if state != 0
             continue
-        try _ApplyLayout(windowLayout[1], windowLayout[2], windowLayout[3], windowLayout[4], windowHandle, false)
+        try _ApplyLayoutRecord(windowLayout, windowHandle, false)
     }
 }
 
@@ -1033,7 +1098,13 @@ _OnPowerBroadcast(wParam, lParam, *) {
 }
 
 _OnDisplayChange(*) {
-    global g_ScriptPaused
+    global g_ScriptPaused, g_WindowOffsetCache, g_AcceptedGeometryCache, g_PrivacyBlackoutActive
+    g_WindowOffsetCache := Map()
+    g_AcceptedGeometryCache := Map()
+    if g_PrivacyBlackoutActive {
+        _PrivacyBlackoutOff(false)
+        _PrivacyBlackoutOn()
+    }
     if g_ScriptPaused
         return
     SetTimer(_RestoreAllDesktops, -1000)
@@ -1041,15 +1112,22 @@ _OnDisplayChange(*) {
 }
 
 _OnWindowDestroy(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
-    _EnqueueWinEvent("destroy", [hHook, event, hwnd, idObject, idChild, dwThread, dwTime])
-}
-
-_ProcessDestroyEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
-    global g_WinSigCache, g_WinMaxState, CFG_TilingMemory, g_HWNDLayoutCache, g_ProcNameCache, g_WindowOffsetCache
-    global g_Layouts, g_UserMoveActive, g_MoveSuppressUntil, g_PwaCache, g_LayoutCycleIdx
-    ; Filter to top-level window destruction only
     if idObject != 0 || idChild != 0
         return
+    global g_PendingDestroy, g_WinSigCache, g_WinMaxState
+    info := Map(
+        "sig", g_WinSigCache.Has(hwnd) ? g_WinSigCache[hwnd] : "",
+        "max", g_WinMaxState.Has(hwnd) ? g_WinMaxState[hwnd] : 0
+    )
+    g_PendingDestroy[hwnd] := info
+    _ScheduleWinEventProcess()
+}
+
+_ProcessDestroyEvent(hwnd, info) {
+    global g_WinSigCache, g_WinMaxState, CFG_TilingMemory, g_HWNDLayoutCache, g_ProcNameCache, g_WindowOffsetCache
+    global g_Layouts, g_UserMoveActive, g_MoveSuppressUntil, g_PwaCache, g_LayoutCycleIdx
+    global g_AutoRestoreTimers, g_AcceptedGeometryCache, g_SigToHwndIndex
+
     if g_ProcNameCache.Has(hwnd)
         g_ProcNameCache.Delete(hwnd)
     if g_LayoutCycleIdx.Has(hwnd)
@@ -1066,83 +1144,114 @@ _ProcessDestroyEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
         g_MoveSuppressUntil.Delete(hwnd)
     if g_PwaCache.Has(hwnd)
         g_PwaCache.Delete(hwnd)
-    if g_AutoRestoreTimers.Has(hwnd)
+    if g_AcceptedGeometryCache.Has(hwnd)
+        g_AcceptedGeometryCache.Delete(hwnd)
+    if g_AutoRestoreTimers.Has(hwnd) {
+        try SetTimer(g_AutoRestoreTimers[hwnd], 0)
         g_AutoRestoreTimers.Delete(hwnd)
+    }
     if g_HWNDLayoutCache.Has(hwnd)
         g_HWNDLayoutCache.Delete(hwnd)
 
-    if !g_WinSigCache.Has(hwnd)
-        return
-    sig := g_WinSigCache[hwnd]
-    isMax := g_WinMaxState.Has(hwnd) ? g_WinMaxState[hwnd] : 0
-    g_WinSigCache.Delete(hwnd)
+    sig := info is Map && info.Has("sig") ? info["sig"] : ""
+    isMax := info is Map && info.Has("max") ? info["max"] : 0
+    if sig != "" && g_SigToHwndIndex.Has(sig) && g_SigToHwndIndex[sig].Has(hwnd)
+        g_SigToHwndIndex[sig].Delete(hwnd)
+
+    if g_WinSigCache.Has(hwnd)
+        g_WinSigCache.Delete(hwnd)
     if g_WinMaxState.Has(hwnd)
         g_WinMaxState.Delete(hwnd)
-    if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
+
+    if sig = "" || !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
         return
-    if isMax
-        State_SetAppMaximized(sig, true)
-    else
-        State_SetAppMaximized(sig, false)
+    State_SetAppMaximized(sig, isMax ? true : false)
 }
 
 _OnMoveStart(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
-    _EnqueueWinEvent("movestart", [hHook, event, hwnd, idObject, idChild, dwThread, dwTime])
+    if idObject != 0 || idChild != 0
+        return
+    global g_PendingMoveStart
+    g_PendingMoveStart[hwnd] := true
+    _ScheduleWinEventProcess()
 }
 
-_ProcessMoveStartEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
-    global g_UserMoveActive
-    if idObject != 0 || !g_Layouts.Has(hwnd)
+_ProcessMoveStartEvent(hwnd) {
+    global g_UserMoveActive, g_Layouts
+    if !g_Layouts.Has(hwnd)
         return
     g_UserMoveActive[hwnd] := true
 }
 
 _OnMoveEnd(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
-    _EnqueueWinEvent("moveend", [hHook, event, hwnd, idObject, idChild, dwThread, dwTime])
+    if idObject != 0 || idChild != 0
+        return
+    global g_PendingMoveEnd
+    g_PendingMoveEnd[hwnd] := true
+    _ScheduleWinEventProcess()
 }
 
-_ProcessMoveEndEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
-    global g_UserMoveActive, g_WinMaxState
-    if idObject != 0
-        return
-    ; Update max-state cache regardless of whether we track layouts
+_ProcessMoveEndEvent(hwnd) {
+    global g_UserMoveActive, g_WinMaxState, g_Layouts, g_AcceptedGeometryCache
     try g_WinMaxState[hwnd] := (_GetWindowState(hwnd) = 1) ? 1 : 0
     if !g_Layouts.Has(hwnd)
         return
     try {
-        g_UserMoveActive.Delete(hwnd)
+        if g_UserMoveActive.Has(hwnd)
+            g_UserMoveActive.Delete(hwnd)
+
+        mode := IsSet(CFG_ManualMoveBehavior) ? CFG_ManualMoveBehavior : "learn"
+
+        if mode = "clear" {
+            ; Stop tracking this window entirely after a manual move.
+            g_Layouts.Delete(hwnd)
+            _DeletePersistedLayout(hwnd)
+            if g_AcceptedGeometryCache.Has(hwnd)
+                g_AcceptedGeometryCache.Delete(hwnd)
+            return
+        }
+
+        if mode = "restore" {
+            ; Keep the prior record and snap the window back once the move settles.
+            _ScheduleAutoRestore(hwnd, 120)
+            return
+        }
+
+        ; Default "learn": capture where the user put the window as a visible-frame
+        ; record, then update both session state and cross-session app memory.
         if _GetWindowState(hwnd) != 0
             return
-        WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " hwnd)
-        _GetMonitorForHwnd(hwnd, &L, &T, &R, &B)
-        MW := R - L, MH := B - T
-        if !MW || !MH
+        rec := Layout_VisibleFromWindow(hwnd)
+        if !rec
             return
-        g_Layouts[hwnd] := [
-            Round((wx - L) * 100 / MW),
-            Round((wy - T) * 100 / MH),
-            Round(ww       * 100 / MW),
-            Round(wh       * 100 / MH)
-        ]
+        g_Layouts[hwnd] := rec
+        newVis := Window_GetVisibleRect(hwnd)
+        if newVis
+            g_AcceptedGeometryCache[hwnd] := newVis
         _PersistLayout(hwnd)
+        _PersistToMemory(hwnd, rec)
     }
 }
 
 _OnLocationChange(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+    ; Raw callback: primitives only
     if idObject != 0 || idChild != 0
         return
-    global g_Layouts, g_UserMoveActive, g_ScriptPaused
-    if g_ScriptPaused
+    global g_PendingLocationDirty
+    g_PendingLocationDirty[hwnd] := true
+    SetTimer(_FlushLocationDirty, -150)
+}
+
+_FlushLocationDirty() {
+    global g_PendingLocationDirty
+    if g_PendingLocationDirty.Count = 0
         return
-    if !g_Layouts.Has(hwnd)
-        return
-    if g_UserMoveActive.Has(hwnd)
-        return
-    _EnqueueWinEvent("locationchange", [hwnd])
+    _ScheduleWinEventProcess()
 }
 
 _ProcessLocationChangeEvent(hwnd) {
     global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive, g_ScriptPaused
+    Perf_Increment("location_changes")
     if g_ScriptPaused
         return
     if !g_Layouts.Has(hwnd)
@@ -1151,11 +1260,9 @@ _ProcessLocationChangeEvent(hwnd) {
         return
     if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount
         return
-        
     layout := g_Layouts[hwnd]
-    if _NeedsAutoRestore(hwnd, layout) {
+    if _NeedsAutoRestore(hwnd, layout)
         _ScheduleAutoRestore(hwnd)
-    }
 }
 
 _CheckLayoutRestores() {
@@ -1224,9 +1331,12 @@ _IsWindowOnDesktop(hwnd, deskIndex) {
     if !VDA.isLoaded
         return true
     try {
-        winDesk := VDA.GetWindowDesktop(hwnd)
-        if (winDesk = 0) ; Pin to all desktops or error
+        pinned := VDA.IsPinned(hwnd)
+        if pinned = 1
             return true
+        winDesk := VDA.GetWindowDesktop(hwnd)
+        if winDesk = VDA.DESKTOP_UNKNOWN
+            return false
         return winDesk = deskIndex
     } catch
         return false
@@ -1271,12 +1381,15 @@ GotoDesktop(n) {
         return
     }
     currentDesk := VDA.GetCurrent()
-    if WinExist("A")
+    if currentDesk != VDA.DESKTOP_UNKNOWN && WinExist("A")
         g_DesktopLastWindow[currentDesk] := WinGetID("A")
 
-    g_LastDesktop := n
-    VDA.GoTo(n)
+    ; Only commit internal desktop state and schedule restores if the switch
+    ; actually succeeded; otherwise g_LastDesktop would diverge from reality.
+    if !VDA.GoTo(n)
+        return
 
+    g_LastDesktop := n
     SetTimer(() => _RestoreFocusOnDesktop(n), -150)
     _ScheduleDesktopRestore(n)
 }
@@ -1301,7 +1414,12 @@ MoveToDesktop(desktopIndex) {
         return
     if VDA.isLoaded {
         windowHandle := WinGetID("A")
-        VDA.MoveWindow(windowHandle, desktopIndex)
+        ; Do not follow the window or record it as the desktop's last window
+        ; unless the move actually succeeded.
+        if !VDA.MoveWindow(windowHandle, desktopIndex) {
+            ShowOSD("Move to desktop " desktopIndex " failed")
+            return
+        }
         g_DesktopLastWindow[desktopIndex] := windowHandle
         GotoDesktop(desktopIndex)
     } else {
@@ -1357,23 +1475,13 @@ _MoveWindowToMonitor(monitorIndex) {
         return
     }
     windowHandle := WinGetID("A")
-    MonitorGetWorkArea(monitorIndex, &monitorLeft, &monitorTop, &monitorRight, &monitorBottom)
-    if g_Layouts.Has(windowHandle) {
-        layout := g_Layouts[windowHandle]
-        x_factor := layout[1], y_factor := layout[2], w_factor := layout[3], h_factor := layout[4]
-    } else {
-        x_factor := 12, y_factor := 12, w_factor := 75, h_factor := 75
-    }
-    monitorWidth := monitorRight - monitorLeft, monitorHeight := monitorBottom - monitorTop
-    targetX := monitorLeft + (monitorWidth * x_factor // 100)
-    targetY := monitorTop + (monitorHeight * y_factor // 100)
-    targetWidth := monitorWidth * w_factor // 100
-    targetHeight := monitorHeight * h_factor // 100
+    if g_Layouts.Has(windowHandle)
+        record := g_Layouts[windowHandle]
+    else
+        record := Layout_Slot(12, 12, 75, 75)
     if WinGetMinMax("ahk_id " windowHandle) != 0
         WinRestore("ahk_id " windowHandle)
-    WinMove(targetX, targetY, targetWidth, targetHeight, "ahk_id " windowHandle)
-    g_Layouts[windowHandle] := [x_factor, y_factor, w_factor, h_factor]
-    _PersistLayout(windowHandle)
+    _ApplyLayoutRecord(record, windowHandle, true, monitorIndex)
     ShowOSD("→ Monitor " monitorIndex)
 }
 
@@ -1401,115 +1509,107 @@ FocusDirection(dir) {
         return
     }
     curHwnd := WinGetID("A")
-    WinGetPos(&cx, &cy, &cw, &ch, "ahk_id " curHwnd)
-    curX := cx + cw // 2
-    curY := cy + ch // 2
-    gapSize := g_TileGap
-
-    bestHwnd := 0
-    bestScore := 0x7FFFFFFF
-
+    snapshots := []
+    curSnap := 0
     list := WinGetList()
     for index, hwnd in list {
         candidateCount++
-        if hwnd = curHwnd
-            continue
         if !_IsLiveWindow(hwnd)
             continue
-        if WinGetMinMax("ahk_id " hwnd) = -1
-            continue
-        if WinGetExStyle("ahk_id " hwnd) & 0x80 ; WS_EX_TOOLWINDOW
-            continue
-        cloaked := 0
-        DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
-        if cloaked
-            continue
-        if !_IsOnCurrentDesktop(hwnd)
-            continue
-
-        WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " hwnd)
-        wX := wx + ww // 2
-        wY := wy + wh // 2
-
-        edgeDist := 0
-        overlap := 0
-        spanLimit := 0
-        valid := false
-        if dir = "left" && wX < curX {
-            edgeDist := cx - (wx + ww)
-            overlap := ((wx + ww) - cx > 0) ? (wx + ww) - cx : 0
-            spanLimit := cw
-            valid := true
-        } else if dir = "right" && wX > curX {
-            edgeDist := wx - (cx + cw)
-            overlap := ((cx + cw) - wx > 0) ? (cx + cw) - wx : 0
-            spanLimit := cw
-            valid := true
-        } else if dir = "up" && wY < curY {
-            edgeDist := cy - (wy + wh)
-            overlap := ((wy + wh) - cy > 0) ? (wy + wh) - cy : 0
-            spanLimit := ch
-            valid := true
-        } else if dir = "down" && wY > curY {
-            edgeDist := wy - (cy + ch)
-            overlap := ((cy + ch) - wy > 0) ? (cy + ch) - wy : 0
-            spanLimit := ch
-            valid := true
+        try {
+            if WinGetMinMax("ahk_id " hwnd) = -1
+                continue
+            if WinGetExStyle("ahk_id " hwnd) & 0x80
+                continue
+            cloaked := 0
+            DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
+            if cloaked
+                continue
+            if !_IsOnCurrentDesktop(hwnd)
+                continue
+            WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " hwnd)
+            mon := MonitorFromPoint(wx + ww // 2, wy + wh // 2)
+            snap := {hwnd: hwnd, x: wx, y: wy, w: ww, h: wh, cx: wx + ww // 2, cy: wy + wh // 2, mon: mon, index: index}
+            snapshots.Push(snap)
+            if hwnd = curHwnd
+                curSnap := snap
         }
+    }
+    if !curSnap {
+        Perf_Log("focus_direction", dir, candidateCount, A_TickCount - startTime)
+        return
+    }
 
-        if !valid
+    tileGap := g_TileGap
+    bestCandidateSnapshot := 0
+    bestCandidateScore := 0
+    for candidateSnapshot in snapshots {
+        if candidateSnapshot.hwnd = curHwnd
             continue
-        ; Occluded fullscreen windows span nearly the full active width/height.
-        if overlap >= spanLimit - gapSize
+        if _CandidateIsBackdropWindow(curSnap, candidateSnapshot)
             continue
-
-        dist := edgeDist > 0 ? edgeDist : ((dir = "left" || dir = "right") ? Abs(wX - curX) : Abs(wY - curY))
-        ; Penalize off-axis distance so navigation lands on a visually adjacent window
-        ; rather than one far above/below (for left/right) or left/right (for up/down).
-        perpDist := (dir = "left" || dir = "right") ? Abs(wY - curY) : Abs(wX - curX)
-        score := dist + (overlap * 2) + (perpDist * 0.5) + (index * 50)
-        if score < bestScore {
-            bestScore := score
-            bestHwnd := hwnd
+        candidateScore := _EvaluateFocusCandidate(curSnap, candidateSnapshot, dir, tileGap)
+        if !candidateScore
+            continue
+        if _FocusScoreIsBetter(candidateScore, bestCandidateScore) {
+            bestCandidateScore := candidateScore
+            bestCandidateSnapshot := candidateSnapshot
         }
     }
 
-    if bestHwnd {
-        WinActivate("ahk_id " bestHwnd)
-        if (IsSet(CFG_FocusTeleportMouse) && CFG_FocusTeleportMouse) {
-            WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " bestHwnd)
-            DllCall("SetCursorPos", "Int", wx + ww // 2, "Int", wy + wh // 2)
-        }
+    winner := bestCandidateSnapshot ? bestCandidateSnapshot.hwnd : 0
+    winnerSnap := bestCandidateSnapshot
+    if winner {
+        WinActivate("ahk_id " winner)
+        if (IsSet(CFG_FocusTeleportMouse) && CFG_FocusTeleportMouse && winnerSnap)
+            DllCall("SetCursorPos", "Int", winnerSnap.cx, "Int", winnerSnap.cy)
     }
-    
     Perf_Log("focus_direction", dir, candidateCount, A_TickCount - startTime)
 }
 
-TrackFocusHistory(hHook, event, hwnd, idObject := 0, idChild := 0, dwThread := 0, dwTime := 0) {
-    _EnqueueWinEvent("focus", [hHook, event, hwnd, idObject, idChild, dwThread, dwTime])
+MonitorFromPoint(x, y) {
+    loop MonitorGetCount() {
+        MonitorGetWorkArea(A_Index, &L, &T, &R, &B)
+        if x >= L && x < R && y >= T && y < B
+            return A_Index
+    }
+    return MonitorGetPrimary()
 }
 
-_ProcessFocusEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+TrackFocusHistory(hHook, event, hwnd, idObject := 0, idChild := 0, dwThread := 0, dwTime := 0) {
+    if idObject != 0 || idChild != 0
+        return
+    global g_PendingForegroundHwnd
+    g_PendingForegroundHwnd := hwnd
+    _ScheduleWinEventProcess()
+}
+
+_ProcessFocusEvent(hwnd) {
     startTime := A_TickCount
     Perf_Increment("foreground_events")
     global g_ScriptPaused, g_TilingMode, g_Layouts, g_WinSigCache, g_WinMaxState
-    global CFG_TilingMemory
+    global CFG_TilingMemory, g_SigToHwndIndex
     try {
+        AC_OnFocusChanged(hwnd)
         if g_ScriptPaused {
             Perf_Log("foreground_event", hwnd, "paused", A_TickCount - startTime)
             return
         }
-        _HandleDesktopChange()
+        ; Desktop-change polling is recovery only when message hook is missing
+        if VDA.isLoaded && !VDA.hasHookRegistered
+            _HandleDesktopChange()
         if hwnd = 0 || !_IsLiveWindow(hwnd) {
             Perf_Log("foreground_event", hwnd, "invalid", A_TickCount - startTime)
             return
         }
 
-        ; --- CACHE SIG + MAX STATE ---
         try {
             sig := g_WinSigCache.Has(hwnd) ? g_WinSigCache[hwnd] : _GetWinSignature(hwnd)
             if sig != "" {
                 g_WinSigCache[hwnd] := sig
+                if !g_SigToHwndIndex.Has(sig)
+                    g_SigToHwndIndex[sig] := Map()
+                g_SigToHwndIndex[sig][hwnd] := true
                 isMax := (_GetWindowState(hwnd) = 1) ? 1 : 0
                 g_WinMaxState[hwnd] := isMax
                 if isMax && IsSet(CFG_TilingMemory) && CFG_TilingMemory
@@ -1693,13 +1793,6 @@ Delete:: {
 }
 
 *m:: _ActivateOrRunOnCurrentDesktop("ahk_exe Taskmgr.exe", "taskmgr.exe")
-
-SafeReload() {
-    _SaveDesktopMemory()
-    _SaveLayouts()
-    ReleaseModifiers()
-    Reload()
-}
 
 *r:: {
     if g_PrivacyBlackoutActive

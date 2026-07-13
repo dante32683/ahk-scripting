@@ -278,11 +278,20 @@ _IsGameActive() {
         }
 
         if !isGame {
-            commonGames := ["minecraft.windows.exe", "javaw.exe", "robloxplayerbeta.exe"]
+            ; Built-in titles only; additional games come from CFG_GameProcesses
+            commonGames := ["minecraft.windows.exe", "robloxplayerbeta.exe"]
             for game in commonGames {
                 if (StrLower(procName) = game) {
                     isGame := true
                     break
+                }
+            }
+            if IsSet(CFG_GameProcesses) {
+                for game in CFG_GameProcesses {
+                    if (StrLower(procName) = StrLower(game)) {
+                        isGame := true
+                        break
+                    }
                 }
             }
         }
