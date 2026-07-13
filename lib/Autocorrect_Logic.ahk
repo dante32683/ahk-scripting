@@ -6,11 +6,50 @@ global AC_LastTypedTrigger := ""
 global AC_LastTypedCorrection := ""
 global AC_LastTick      := 0
 global AC_LastEndChar   := ""
+global AC_TempSuppressed := Map()
+
+_AC_IsNonTextArea() {
+    if !WinExist("A")
+        return false
+    try {
+        className := WinGetClass("A")
+        procName := WinGetProcessName("A")
+        
+        if (className = "VirtualConsoleClass" || className = "ConsoleWindowClass" || className = "TermWindow")
+            return true
+            
+        if (procName = "cmd.exe" || procName = "powershell.exe" || procName = "wsl.exe" || procName = "WindowsTerminal.exe")
+            return true
+            
+        style := WinGetStyle("A")
+        if !(style & 0xC00000) { ; No WS_CAPTION
+            if IsSet(CFG_GameProcesses) {
+                for game in CFG_GameProcesses {
+                    if (procName = game)
+                        return true
+                }
+            }
+        }
+    }
+    return false
+}
 
 AC_Proc(canonicalTrig, canonicalCorr, typedTrig, typedCorr) {
+    if _AC_IsNonTextArea() {
+        SendText(typedTrig . A_EndChar)
+        return
+    }
     if AC_IsDisabled(canonicalTrig) {
         SendText(typedTrig . A_EndChar)
         return
+    }
+    global AC_TempSuppressed
+    if AC_TempSuppressed.Has(StrLower(canonicalTrig)) {
+        if A_TickCount - AC_TempSuppressed[StrLower(canonicalTrig)] < 2000 {
+            SendText(typedTrig . A_EndChar)
+            return
+        }
+        AC_TempSuppressed.Delete(StrLower(canonicalTrig))
     }
     SendText(typedCorr . A_EndChar)
     AC_Reg(canonicalTrig, canonicalCorr, typedTrig, typedCorr)
@@ -126,6 +165,8 @@ AC_ClearLastCorrectionOnUserKey(*) {
     if (AC_LastTrigger != "" && A_TickCount - AC_LastTick < 15000) {
         g_StateAutocorrectDisabled[StrLower(AC_LastTrigger)] := AC_LastTrigger "->" AC_LastCorrection
         State_MarkDirty("autocorrect")
+        global AC_TempSuppressed
+        AC_TempSuppressed[StrLower(AC_LastTrigger)] := A_TickCount
 
         Send("{Backspace " (StrLen(AC_LastTypedCorrection) + StrLen(AC_LastEndChar)) "}")
         SendText(AC_LastTypedTrigger . AC_LastEndChar)
