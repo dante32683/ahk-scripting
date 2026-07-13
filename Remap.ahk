@@ -202,13 +202,15 @@ _CycleSameAppWindow(dir) {
     windows := []
     for hwnd in WinGetList("ahk_exe " proc) {
         if hwnd != curHwnd {
-            if WinGetMinMax("ahk_id " hwnd) = -1
+            if !_IsLiveWindow(hwnd)
                 continue
-            if !(WinGetStyle("ahk_id " hwnd) & 0x10000000)
+            if WinGetMinMax("ahk_id " hwnd) = -1
                 continue
             cloaked := 0
             DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
             if cloaked
+                continue
+            if !_IsOnCurrentDesktop(hwnd)
                 continue
         }
         windows.Push(hwnd)
