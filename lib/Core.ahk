@@ -80,6 +80,8 @@ _ProcessWinEvents() {
                 _ProcessMoveEndEvent(ev.args*)
             } else if ev.type = "destroy" {
                 _ProcessDestroyEvent(ev.args*)
+            } else if ev.type = "locationchange" {
+                _ProcessLocationChangeEvent(ev.args*)
             }
         }
     }
@@ -88,6 +90,7 @@ global hFocusHook := 0
 global g_MoveStartHook := 0
 global g_MoveEndHook := 0
 global g_DestroyHook := 0
+global g_LocationHook := 0
 
 State_Init()
 
@@ -121,7 +124,7 @@ if !CFG_TestMode {
         , "UInt", 0
         , "UInt", 0)
 
-    global g_DestroyCallbackPtr := CallbackCreate(_OnWindowDestroy, , 7)
+     global g_DestroyCallbackPtr := CallbackCreate(_OnWindowDestroy, , 7)
     global g_DestroyHook := DllCall("SetWinEventHook"
         , "UInt", 0x8001 ; EVENT_OBJECT_DESTROY
         , "UInt", 0x8001
@@ -131,10 +134,21 @@ if !CFG_TestMode {
         , "UInt", 0
         , "UInt", 0)
 
+    global g_LocationCbPtr := CallbackCreate(_OnLocationChange, , 7)
+    global g_LocationHook := DllCall("SetWinEventHook"
+        , "UInt", 0x800B ; EVENT_OBJECT_LOCATIONCHANGE
+        , "UInt", 0x800B
+        , "Ptr", 0
+        , "Ptr", g_LocationCbPtr
+        , "UInt", 0
+        , "UInt", 0
+        , "UInt", 0)
+
     OnExit((*) => DllCall("UnhookWinEvent", "Ptr", hFocusHook))
     OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveStartHook))
     OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_MoveEndHook))
     OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_DestroyHook))
+    OnExit((*) => DllCall("UnhookWinEvent", "Ptr", g_LocationHook))
     OnExit((*) => State_Shutdown())
     OnExit((*) => VDA.Cleanup())
     OnMessage(0x001A, _OnSettingChange)  ; WM_SETTINGCHANGE — work area resize (AppBar dock/undock)
@@ -385,7 +399,7 @@ if VDA.isLoaded {
 }
 
 if (g_TilingMode = "Native" && IsSet(CFG_DriftCorrection) && CFG_DriftCorrection)
-    SetTimer(_CheckLayoutRestores, IsSet(CFG_DriftCheckInterval) ? CFG_DriftCheckInterval : 2000)
+    SetTimer(_CheckLayoutRestores, IsSet(CFG_DriftCheckInterval) ? CFG_DriftCheckInterval : 5000)
 
 if g_DebugRestore
     try FileDelete(g_DebugLogFile)
@@ -1080,6 +1094,36 @@ _ProcessMoveEndEvent(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
             Round(wh       * 100 / MH)
         ]
         _PersistLayout(hwnd)
+    }
+}
+
+_OnLocationChange(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
+    if idObject != 0 || idChild != 0
+        return
+    global g_Layouts, g_UserMoveActive, g_ScriptPaused
+    if g_ScriptPaused
+        return
+    if !g_Layouts.Has(hwnd)
+        return
+    if g_UserMoveActive.Has(hwnd)
+        return
+    _EnqueueWinEvent("locationchange", [hwnd])
+}
+
+_ProcessLocationChangeEvent(hwnd) {
+    global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive, g_ScriptPaused
+    if g_ScriptPaused
+        return
+    if !g_Layouts.Has(hwnd)
+        return
+    if g_UserMoveActive.Has(hwnd)
+        return
+    if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount
+        return
+        
+    layout := g_Layouts[hwnd]
+    if _NeedsAutoRestore(hwnd, layout) {
+        _ScheduleAutoRestore(hwnd)
     }
 }
 
