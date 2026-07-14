@@ -150,9 +150,10 @@ class VDA {
     }
 
     static OnDesktopChangeMessage(wParam, lParam, msg, hwnd) {
-        ; Official VDA v2 example: wParam = old desktop (0-based), lParam = new desktop (0-based)
+        ; Official VDA v2 example: wParam = old desktop (0-based), lParam = new desktop (0-based).
+        ; Defer substantial bookkeeping off the raw message callback.
         newDesktop := Integer(lParam) + 1
-        _HandleDesktopChangeFromMsg(newDesktop)
+        SetTimer(_HandleDesktopChangeFromMsg.Bind(newDesktop), -1)
     }
 
     static Cleanup() {
