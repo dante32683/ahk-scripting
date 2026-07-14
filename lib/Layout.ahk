@@ -39,14 +39,15 @@ _DeriveSlotAnchor(startPercent, sizePercent, lowEdgeAnchorName, highEdgeAnchorNa
 }
 
 Layout_FromLegacyPct(xf, yf, wf, hf, kind := "slot") {
+    xPct := Integer(xf), yPct := Integer(yf), wPct := Integer(wf), hPct := Integer(hf)
     return Map(
         "kind", kind,
-        "x", Round(Integer(xf) * 100),
-        "y", Round(Integer(yf) * 100),
-        "w", Round(Integer(wf) * 100),
-        "h", Round(Integer(hf) * 100),
-        "anchorX", "left",
-        "anchorY", "top"
+        "x", Round(xPct * 100),
+        "y", Round(yPct * 100),
+        "w", Round(wPct * 100),
+        "h", Round(hPct * 100),
+        "anchorX", _DeriveSlotAnchor(xPct, wPct, "left", "right"),
+        "anchorY", _DeriveSlotAnchor(yPct, hPct, "top", "bottom")
     )
 }
 
@@ -90,14 +91,25 @@ Layout_Validate(record) {
         return false
     if record["kind"] != "slot" && record["kind"] != "visible"
         return false
+    static validAnchorX := Map("left", true, "center", true, "right", true, "stretch", true)
+    static validAnchorY := Map("top", true, "center", true, "bottom", true, "stretch", true)
+    if record.Has("anchorX") && !validAnchorX.Has(record["anchorX"])
+        return false
+    if record.Has("anchorY") && !validAnchorY.Has(record["anchorY"])
+        return false
     for key in ["x", "y", "w", "h"] {
         v := record[key]
         if !(v is Integer) && !(v is Float)
             return false
-        if v < -500 || v > 15000
+        ; Basis points: allow a modest off-screen margin, reject absurd values.
+        if v < -1000 || v > 11000
             return false
     }
     if record["w"] <= 0 || record["h"] <= 0
+        return false
+    if record["x"] + record["w"] < -1000 || record["x"] + record["w"] > 12000
+        return false
+    if record["y"] + record["h"] < -1000 || record["y"] + record["h"] > 12000
         return false
     return true
 }
