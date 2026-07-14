@@ -12,12 +12,13 @@ global g_StateFlushTimerActive := false
 global g_StateMigrationValidated := 0
 global g_StateHandoffPendingWrite := false
 global g_StateSchemaVersion := 2
+global g_StateFutureVersionBlocked := false
 
 State_Init() {
     global g_StateDir, g_StateAppLayouts, g_StateAppMaximized, g_StateDesktopWindows
     global g_StateDesktopIdentities, g_StateSessionLayouts, g_StateAutocorrectDisabled
     global g_StateDirtyAreas, g_StateFlushTimerActive, g_StateHandoffPendingWrite
-    global g_StateMigrationValidated, CFG_TestMode
+    global g_StateMigrationValidated, g_StateFutureVersionBlocked, CFG_TestMode
 
     ; Always reset maps so a re-init (tests or SoftReset paths) cannot leak prior state.
     g_StateAppLayouts := Map()
@@ -30,6 +31,7 @@ State_Init() {
     g_StateFlushTimerActive := false
     g_StateHandoffPendingWrite := false
     g_StateMigrationValidated := 0
+    g_StateFutureVersionBlocked := false
 
     if IsSet(CFG_StateDir) && CFG_StateDir != ""
         g_StateDir := CFG_StateDir
@@ -111,7 +113,8 @@ State_UnescapeIni(value) {
 }
 
 State_LoadStateFile(stateFile) {
-    global g_StateAppLayouts, g_StateAppMaximized, g_StateDesktopWindows, g_StateDesktopIdentities, g_StateSchemaVersion
+    global g_StateAppLayouts, g_StateAppMaximized, g_StateDesktopWindows, g_StateDesktopIdentities
+    global g_StateSchemaVersion, g_StateFutureVersionBlocked
 
     ; A state file with no schema version is not a valid v2 file; require it explicitly
     ; rather than assuming "2" and parsing potentially-incompatible content.
@@ -119,8 +122,14 @@ State_LoadStateFile(stateFile) {
     if ver = "" || !IsInteger(ver)
         throw Error("State file missing schema version")
     verNum := Integer(ver)
-    if verNum < 1 || verNum > g_StateSchemaVersion
+    if verNum > g_StateSchemaVersion {
+        ; Do not load, and block later flushes from overwriting a future-format file.
+        g_StateFutureVersionBlocked := true
         throw Error("Unsupported state schema version: " ver)
+    }
+    if verNum != g_StateSchemaVersion
+        throw Error("Unsupported state schema version: " ver " (expected " g_StateSchemaVersion ")")
+    g_StateFutureVersionBlocked := false
 
     sectionsStr := IniRead(stateFile)
     loop parse, sectionsStr, "`n", "`r" {
@@ -146,10 +155,16 @@ State_LoadStateFile(stateFile) {
 
     try {
         desktopKeys := IniRead(stateFile, "DesktopLastWindow")
-        loop parse, desktopKeys, "`n", "`r" {
-            line := Trim(A_LoopField)
-            if line = ""
-                continue
+    } catch as e {
+        State_LogError("load_desktop_section", e.Message)
+        return
+    }
+    loop parse, desktopKeys, "`n", "`r" {
+        line := Trim(A_LoopField)
+        if line = ""
+            continue
+        ; Isolate each desktop entry so one bad value cannot stop later ones.
+        try {
             eq := InStr(line, "=")
             if !eq
                 continue
@@ -174,7 +189,8 @@ State_LoadStateFile(stateFile) {
                 ; skip rather than restoring a potentially wrong window.
                 State_LogError("load_desktop", "skipping raw HWND for desktop " deskNum " (no identity)")
             }
-        }
+        } catch as e
+            State_LogError("load_desktop_entry", e.Message)
     }
 }
 
@@ -277,8 +293,11 @@ _ValidateWindowIdentity(hwnd, identity) {
     if identity.Has("sig") && identity["sig"] != "" {
         try {
             liveSig := _GetWinSignature(hwnd)
-            if liveSig != "" && liveSig != identity["sig"]
+            ; Fail closed: if we expected a signature but cannot compute one, reject.
+            if liveSig = "" || liveSig != identity["sig"]
                 return false
+        } catch {
+            return false
         }
     }
     return true
@@ -357,10 +376,23 @@ State_SetDesktopWindow(desktop, hwnd, identity := "") {
             }
         }
     }
-    changed := !g_StateDesktopWindows.Has(desktop) || g_StateDesktopWindows[desktop] != hwnd
+    hwndChanged := !g_StateDesktopWindows.Has(desktop) || g_StateDesktopWindows[desktop] != hwnd
+    oldId := g_StateDesktopIdentities.Has(desktop) ? g_StateDesktopIdentities[desktop] : 0
+    idChanged := true
+    if oldId is Map {
+        idChanged := false
+        for key in ["pid", "proc", "class", "sig"] {
+            oldVal := oldId.Has(key) ? oldId[key] : ""
+            newVal := identity.Has(key) ? identity[key] : ""
+            if oldVal != newVal {
+                idChanged := true
+                break
+            }
+        }
+    }
     g_StateDesktopWindows[desktop] := hwnd
     g_StateDesktopIdentities[desktop] := identity
-    if changed
+    if hwndChanged || idChanged
         State_MarkDirty("state")
 }
 
@@ -414,7 +446,7 @@ State_FlushNow(*) {
     global g_StateDirtyAreas, g_StateFlushTimerActive, g_StateDir
     global g_StateAppLayouts, g_StateAppMaximized, g_StateDesktopWindows, g_StateDesktopIdentities
     global g_StateSessionLayouts, g_StateAutocorrectDisabled, g_StateHandoffPendingWrite
-    global CFG_TestMode
+    global g_StateFutureVersionBlocked, CFG_TestMode
 
     g_StateFlushTimerActive := false
     if IsSet(CFG_TestMode) && CFG_TestMode
@@ -428,6 +460,11 @@ State_FlushNow(*) {
 
     if g_StateDirtyAreas.Has("state") || g_StateDirtyAreas.Has("autocorrect") {
         if g_StateDirtyAreas.Has("state") {
+            if g_StateFutureVersionBlocked {
+                ; Preserve an unsupported future-format file; do not clobber it with v2.
+                State_LogError("write_state", "blocked: future schema on disk")
+                ok := false
+            } else {
             stateFile := g_StateDir "\state-v2.ini"
             content := "[Schema]`nversion=2`nwrite_time_utc=" State_UtcNowUnix() "`n`n"
 
@@ -458,12 +495,13 @@ State_FlushNow(*) {
                 }
             }
 
-            if State_AtomicWrite(stateFile, content) {
+            if State_AtomicWrite(stateFile, content, "UTF-8-RAW") {
                 g_StateDirtyAreas.Delete("state")
             } else {
                 ok := false
                 State_LogError("write_state", "atomic write failed")
             }
+            } ; end else (not future-blocked)
         }
 
         if g_StateDirtyAreas.Has("autocorrect") {
@@ -503,7 +541,7 @@ State_FlushNow(*) {
             }
         }
 
-        if State_AtomicWrite(sessionFile, content) {
+        if State_AtomicWrite(sessionFile, content, "UTF-8-RAW") {
             g_StateDirtyAreas.Delete("session")
             g_StateHandoffPendingWrite := false
         } else {

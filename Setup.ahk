@@ -26,7 +26,7 @@ if !DirExist(customDir) {
     }
 }
 
-profile := "laptop" ; Default
+profile := "" ; Existing config must supply an explicit profile; never silently default.
 if !FileExist(configPath) {
     if FileExist(exampleConfig) {
         r := MsgBox("custom/config.ahk not found. Configure for laptop profile? (Select 'No' for desktop profile)", "Setup Profile Selection", "YesNo Icon?")
@@ -65,7 +65,13 @@ if !FileExist(configPath) {
         configText := FileRead(configPath, "UTF-8")
         if RegExMatch(configText, "i)CFG_MachineProfile\s*:=\s*`"([^`"]+)`"", &m) {
             profile := m[1]
+        } else {
+            MsgBox("custom/config.ahk exists but has no parseable CFG_MachineProfile. Valid values are 'laptop' or 'desktop'. Setup aborted.", "Setup Error", "Icon!")
+            ExitApp(1)
         }
+    } catch as e {
+        MsgBox("Could not read custom/config.ahk: " e.Message "`nSetup aborted.", "Setup Error", "Icon!")
+        ExitApp(1)
     }
 }
 
