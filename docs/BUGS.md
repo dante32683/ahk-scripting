@@ -8,12 +8,10 @@ These are known limitations deferred during the performance & reliability overha
 block normal use; they are tracked here rather than left as silent gaps.
 
 - **DEFER-001 (Low, State):** Legacy state files (`Tiling_Memory.ini`, `%TEMP%\ahk_layouts.ini`,
-  `%TEMP%\ahk_desktop_memory.ini`, `Autocorrect_Disabled.txt`) are migrated into
-  `%LOCALAPPDATA%\AutoHotkeyMaster` and backed up (`*.bak`) but the originals are never
-  deleted. This is deliberate (safer to leave the user's old files in place); it just
-  leaves harmless clutter. Migration is not persisted across runs, so migration re-checks
-  on every startup — but it only copies when the new file is absent, so it is a no-op after
-  the first run.
+  `Autocorrect_Disabled.txt`) are migrated into `%LOCALAPPDATA%\AutoHotkeyMaster` and backed
+  up (`*.bak`) but the originals are never deleted (deliberate). Legacy desktop memory
+  (`%TEMP%\ahk_desktop_memory.ini`) is consumed once without importing raw HWNDs, because
+  those handles cannot be identity-verified after reboot.
 - **DEFER-002 (Low, Perf):** Baseline vs. after performance measurements (working set, idle
   CPU, tiling/focus P50/P95) require running on the target Windows machine over time. Set
   `CFG_PerfLogging := true` to emit `%TEMP%\AutoHotkeyMaster\perf.csv`; no numbers are
