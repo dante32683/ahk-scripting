@@ -8,6 +8,7 @@ global g_LastDesktop := 1
 global g_FocusHistory := []
 global g_DesktopLastWindow := Map()
 global g_DesktopExcludeHwnd := 0
+global g_PendingDesktopNotify := 0
 global g_ScriptPaused := false
 global g_SavedDesktops := Map()
 
@@ -38,6 +39,11 @@ _RestoreFocusOnDesktop(n) {
 _ScheduleDesktopRestore(n) {
 }
 
+_HandleDesktopChangeFromMsg(currentDesk) {
+    global g_PendingDesktopNotify
+    g_PendingDesktopNotify := currentDesk
+}
+
 _CommitDesktopTransition(newDesk, excludeHwnd := 0) {
     global g_LastDesktop, g_FocusHistory, g_DesktopLastWindow, g_ScriptPaused, g_SavedDesktops
     if g_ScriptPaused
@@ -56,7 +62,6 @@ _CommitDesktopTransition(newDesk, excludeHwnd := 0) {
                 historyIndex--
                 continue
             }
-            ; WinExist stubbed via numeric handles in this unit test.
             if prevHwnd && _IsWindowOnDesktop(prevHwnd, fromDesk) {
                 State_SetDesktopWindow(fromDesk, prevHwnd)
                 g_DesktopLastWindow[fromDesk] := prevHwnd
@@ -70,7 +75,10 @@ _CommitDesktopTransition(newDesk, excludeHwnd := 0) {
 }
 
 RunDesktopTransitionTest() {
-    global g_LastDesktop, g_FocusHistory, g_DesktopLastWindow, g_DesktopExcludeHwnd, g_SavedDesktops
+    ; Must declare every global touched here — otherwise assignments create locals
+    ; that shadow the real maps updated by helper functions.
+    global g_LastDesktop, g_FocusHistory, g_DesktopLastWindow, g_DesktopExcludeHwnd
+    global g_SavedDesktops, g_PendingDesktopNotify
 
     ; Departing desk should remember the last eligible window, not a moved-away one.
     g_LastDesktop := 1
@@ -92,6 +100,17 @@ RunDesktopTransitionTest() {
     g_LastDesktop := 2
     _CommitDesktopTransition(VDA.DESKTOP_UNKNOWN, 0)
     AssertEq(g_LastDesktop, 2, "unknown desktop does not commit")
+
+    ; Coalesce: latest pending notify wins.
+    g_PendingDesktopNotify := 0
+    g_LastDesktop := 1
+    g_FocusHistory := [100]
+    g_DesktopLastWindow := Map()
+    g_SavedDesktops := Map()
+    g_DesktopExcludeHwnd := 0
+    _HandleDesktopChangeFromMsg(3)
+    _HandleDesktopChangeFromMsg(4)
+    AssertEq(g_PendingDesktopNotify, 4, "rapid notifies keep latest target")
 }
 
 RunDesktopTransitionTest()
