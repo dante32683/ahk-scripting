@@ -46,6 +46,9 @@ global g_ProcNameCache := Map()
 global g_WindowOffsetCache := Map()
 global g_PwaCache := Map()
 global g_SigToHwndIndex := Map()  ; signature -> Map of hwnd -> true
+; HWNDs that must not auto-snap from persistent memory this session
+; (cleared on explicit tile, destroy, or script reload via Map reset).
+global g_SessionNoAutoSnap := Map()
 
 ; ============================================================
 ; WINEVENT PENDING STATE (coalesced; processed on AHK thread)
@@ -240,6 +243,13 @@ App_Shutdown(*) {
         try SetTimer(timer, 0)
     }
     g_AutoRestoreTimers := Map()
+    global g_GeometrySettleTimers
+    if IsSet(g_GeometrySettleTimers) {
+        for hwnd, timer in g_GeometrySettleTimers {
+            try SetTimer(timer, 0)
+        }
+        g_GeometrySettleTimers := Map()
+    }
 
     ; Collect live maps into StateStore before the final flush so reload/exit
     ; does not lose session layouts or desktop-last-window entries that were
@@ -309,8 +319,11 @@ _DeletePersistedLayout(hwnd) {
 ; clearPersistent=false: drop this HWND's session layout only.
 ; clearPersistent=true: also forget the app's remembered cross-session layout so it
 ; cannot return after focus changes or script restart.
+; Either way, suppress auto-snap for this HWND for the rest of the session so a
+; remaining persistent layout cannot immediately return on the next focus.
 _ClearWindowLayout(clearPersistent := false) {
-    global g_Layouts, g_HWNDLayoutCache, g_AcceptedGeometryCache, g_WinSigCache, CFG_TilingMemory
+    global g_Layouts, g_HWNDLayoutCache, g_AcceptedGeometryCache, g_WinSigCache
+    global g_SessionNoAutoSnap, CFG_TilingMemory
     hwnd := WinExist("A") ? WinGetID("A") : 0
     if !hwnd
         return
@@ -324,6 +337,7 @@ _ClearWindowLayout(clearPersistent := false) {
         g_AcceptedGeometryCache.Delete(hwnd)
     if g_HWNDLayoutCache.Has(hwnd)
         g_HWNDLayoutCache.Delete(hwnd)
+    g_SessionNoAutoSnap[hwnd] := true
 
     if clearPersistent && IsSet(CFG_TilingMemory) && CFG_TilingMemory {
         sig := g_WinSigCache.Has(hwnd) ? g_WinSigCache[hwnd] : _GetWinSignature(hwnd)
@@ -333,7 +347,7 @@ _ClearWindowLayout(clearPersistent := false) {
             return
         }
     }
-    if hadSession
+    if hadSession || clearPersistent
         ShowOSD("Layout cleared")
 }
 
@@ -411,6 +425,9 @@ _IndexWinSignature(hwnd, sig) {
     global g_SigToHwndIndex, g_WinSigCache
     if sig = ""
         return
+    ; Drop any previous signature for this HWND before indexing the new one.
+    if g_WinSigCache.Has(hwnd) && g_WinSigCache[hwnd] != sig
+        _RemoveFromSigIndex(hwnd, g_WinSigCache[hwnd])
     g_WinSigCache[hwnd] := sig
     if !g_SigToHwndIndex.Has(sig)
         g_SigToHwndIndex[sig] := Map()
@@ -519,12 +536,15 @@ _PersistToMemory(windowHandle, recordOrXf, yf := unset, wf := unset, hf := unset
 
 _HasOtherWindowWithSignature(windowHandle, windowSignature) {
     global g_SigToHwndIndex, g_WinSigCache
+    ; Index is an optimization only. An existing bucket that lacks another live
+    ; HWND is NOT proof that no peer exists — unfocused windows may never have
+    ; been indexed. Always fall through to enumeration when the index is empty
+    ; or inconclusive.
     if g_SigToHwndIndex.Has(windowSignature) {
         for otherHwnd, _ in g_SigToHwndIndex[windowSignature] {
             if otherHwnd != windowHandle && _IsLiveWindow(otherHwnd)
                 return true
         }
-        return false
     }
     signatureProcess := InStr(windowSignature, ":") ? StrSplit(windowSignature, ":")[1] : windowSignature
     for otherHwnd in WinGetList() {
@@ -533,17 +553,23 @@ _HasOtherWindowWithSignature(windowHandle, windowSignature) {
         if _GetProcessName(otherHwnd) != signatureProcess
             continue
         otherSignature := g_WinSigCache.Has(otherHwnd) ? g_WinSigCache[otherHwnd] : _GetWinSignature(otherHwnd)
-        if otherSignature = windowSignature
+        if otherSignature = windowSignature {
+            ; Opportunistically index discovered peers for later fast path.
+            if otherSignature != ""
+                _IndexWinSignature(otherHwnd, otherSignature)
             return true
+        }
     }
     return false
 }
 
 _AutoSnapFromMemory(windowHandle) {
-    global CFG_TilingMemory, g_WinMaxState, g_HWNDLayoutCache, g_WinSigCache
+    global CFG_TilingMemory, g_WinMaxState, g_HWNDLayoutCache, g_WinSigCache, g_SessionNoAutoSnap
     if !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
         return
     if !_IsLiveWindow(windowHandle)
+        return
+    if g_SessionNoAutoSnap.Has(windowHandle)
         return
     windowSignature := g_WinSigCache.Has(windowHandle) ? g_WinSigCache[windowHandle] : _GetWinSignature(windowHandle)
     if windowSignature = ""
@@ -1090,6 +1116,10 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
 
     g_Layouts[windowHandle] := record
     g_WinMaxState[windowHandle] := 0
+    ; Explicit tiling re-enables auto-snap for this HWND.
+    global g_SessionNoAutoSnap
+    if g_SessionNoAutoSnap.Has(windowHandle)
+        g_SessionNoAutoSnap.Delete(windowHandle)
 
     outcome := "move"
     if actualOuter && actualOuter.x = targetX && actualOuter.y = targetY && actualOuter.w = targetW && actualOuter.h = targetH {
@@ -1117,6 +1147,9 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
         }
         if finalVis
             g_AcceptedGeometryCache[windowHandle] := finalVis
+        ; Some apps enforce min size / adjust frames shortly after WinMove.
+        ; Schedule a short bounded settle so transient geometry is not fought forever.
+        _ScheduleGeometrySettle(windowHandle, record, requiredW, requiredH, offsetLeft, offsetTop, targetX, targetY)
     }
 
     desk := VDA.isLoaded ? VDA.GetWindowDesktop(windowHandle) : 0
@@ -1133,6 +1166,52 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
 
     Perf_Log("apply_layout", windowHandle, outcome, A_TickCount - startTime)
     return true
+}
+
+; Bounded settle: 3 checks over ~50/100/150 ms after WinMove so apps that
+; enforce minimum size shortly after the move get a corrected accepted rect.
+global g_GeometrySettleTimers := Map()
+
+_ScheduleGeometrySettle(hwnd, record, requiredW, requiredH, offsetLeft, offsetTop, targetX, targetY) {
+    global g_GeometrySettleTimers
+    if g_GeometrySettleTimers.Has(hwnd) {
+        try SetTimer(g_GeometrySettleTimers[hwnd], 0)
+        g_GeometrySettleTimers.Delete(hwnd)
+    }
+    state := Map("n", 0, "record", record, "reqW", requiredW, "reqH", requiredH
+        , "ol", offsetLeft, "ot", offsetTop, "tx", targetX, "ty", targetY)
+    tick := () => _GeometrySettleTick(hwnd, state)
+    g_GeometrySettleTimers[hwnd] := tick
+    SetTimer(tick, -50)
+}
+
+_GeometrySettleTick(hwnd, state) {
+    global g_GeometrySettleTimers, g_AcceptedGeometryCache, g_Layouts, g_MoveSuppressUntil
+    state["n"] += 1
+    if !DllCall("IsWindow", "Ptr", hwnd) || !g_Layouts.Has(hwnd) {
+        if g_GeometrySettleTimers.Has(hwnd)
+            g_GeometrySettleTimers.Delete(hwnd)
+        return
+    }
+    vis := Window_GetVisibleRect(hwnd)
+    if vis {
+        if (vis.w > state["reqW"] + 2 || vis.h > state["reqH"] + 2) {
+            adj := _CompensateConstrainedPosition(state["record"], vis, state["reqW"], state["reqH"]
+                , state["ol"], state["ot"], state["tx"], state["ty"])
+            if adj.x != state["tx"] || adj.y != state["ty"] {
+                WinMove(adj.x, adj.y, , , "ahk_id " hwnd)
+                vis := Window_GetVisibleRect(hwnd)
+            }
+        }
+        if vis
+            g_AcceptedGeometryCache[hwnd] := vis
+    }
+    if state["n"] < 3 {
+        delays := [50, 100, 150]
+        SetTimer(g_GeometrySettleTimers[hwnd], -delays[state["n"]])
+        return
+    }
+    g_GeometrySettleTimers.Delete(hwnd)
 }
 
 _RestoreDesktop(desktopNumber) {
@@ -1217,12 +1296,19 @@ _ScheduleRestoreCurrentDesktop(delay := 600) {
     SetTimer(() => _ScheduleDesktopRestore(VDA.GetCurrent()), -delay)
 }
 
+_InvalidateGeometryCaches() {
+    global g_WindowOffsetCache, g_AcceptedGeometryCache
+    g_WindowOffsetCache := Map()
+    g_AcceptedGeometryCache := Map()
+}
+
 _OnSettingChange(wParam, *) {
     global g_ScriptPaused
     if g_ScriptPaused
         return
     if wParam = 0x2F {
         _Dbg("wm-settingchange SPI_SETWORKAREA")
+        _InvalidateGeometryCaches()
         SetTimer(_RestoreAllDesktops, -300)
         _ScheduleRestoreCurrentDesktop(1200)
     }
@@ -1233,15 +1319,15 @@ _OnPowerBroadcast(wParam, lParam, *) {
     if g_ScriptPaused
         return
     if wParam = 0x12 || wParam = 0x7 {
+        _InvalidateGeometryCaches()
         SetTimer(_RestoreAllDesktops, -5000)
         _ScheduleRestoreCurrentDesktop(6200)
     }
 }
 
 _OnDisplayChange(*) {
-    global g_ScriptPaused, g_WindowOffsetCache, g_AcceptedGeometryCache, g_PrivacyBlackoutActive
-    g_WindowOffsetCache := Map()
-    g_AcceptedGeometryCache := Map()
+    global g_ScriptPaused, g_PrivacyBlackoutActive
+    _InvalidateGeometryCaches()
     if g_PrivacyBlackoutActive {
         _PrivacyBlackoutOff(false)
         _PrivacyBlackoutOn()
@@ -1267,7 +1353,8 @@ _OnWindowDestroy(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
 _ProcessDestroyEvent(hwnd, info) {
     global g_WinSigCache, g_WinMaxState, CFG_TilingMemory, g_HWNDLayoutCache, g_ProcNameCache, g_WindowOffsetCache
     global g_Layouts, g_UserMoveActive, g_MoveSuppressUntil, g_PwaCache, g_LayoutCycleIdx
-    global g_AutoRestoreTimers, g_AcceptedGeometryCache, g_SigToHwndIndex
+    global g_AutoRestoreTimers, g_AcceptedGeometryCache, g_SigToHwndIndex, g_SessionNoAutoSnap
+    global g_GeometrySettleTimers
 
     if g_ProcNameCache.Has(hwnd)
         g_ProcNameCache.Delete(hwnd)
@@ -1287,17 +1374,23 @@ _ProcessDestroyEvent(hwnd, info) {
         g_PwaCache.Delete(hwnd)
     if g_AcceptedGeometryCache.Has(hwnd)
         g_AcceptedGeometryCache.Delete(hwnd)
+    if g_SessionNoAutoSnap.Has(hwnd)
+        g_SessionNoAutoSnap.Delete(hwnd)
     if g_AutoRestoreTimers.Has(hwnd) {
         try SetTimer(g_AutoRestoreTimers[hwnd], 0)
         g_AutoRestoreTimers.Delete(hwnd)
+    }
+    if g_GeometrySettleTimers.Has(hwnd) {
+        try SetTimer(g_GeometrySettleTimers[hwnd], 0)
+        g_GeometrySettleTimers.Delete(hwnd)
     }
     if g_HWNDLayoutCache.Has(hwnd)
         g_HWNDLayoutCache.Delete(hwnd)
 
     sig := info is Map && info.Has("sig") ? info["sig"] : ""
     isMax := info is Map && info.Has("max") ? info["max"] : 0
-    if sig != "" && g_SigToHwndIndex.Has(sig) && g_SigToHwndIndex[sig].Has(hwnd)
-        g_SigToHwndIndex[sig].Delete(hwnd)
+    if sig != ""
+        _RemoveFromSigIndex(hwnd, sig)
     ; Drop any pending location/move work for the destroyed HWND so it cannot
     ; be processed after the handle is reused.
     global g_PendingLocationDirty, g_PendingMoveStart, g_PendingMoveEnd
@@ -1353,11 +1446,16 @@ _ProcessMoveEndEvent(hwnd) {
         mode := IsSet(CFG_ManualMoveBehavior) ? CFG_ManualMoveBehavior : "learn"
 
         if mode = "clear" {
-            ; Stop tracking this window entirely after a manual move.
+            ; Stop tracking this window entirely after a manual move, and suppress
+            ; persistent auto-snap for the rest of the session (same as Delete).
+            global g_SessionNoAutoSnap, g_HWNDLayoutCache
             g_Layouts.Delete(hwnd)
             _DeletePersistedLayout(hwnd)
             if g_AcceptedGeometryCache.Has(hwnd)
                 g_AcceptedGeometryCache.Delete(hwnd)
+            if g_HWNDLayoutCache.Has(hwnd)
+                g_HWNDLayoutCache.Delete(hwnd)
+            g_SessionNoAutoSnap[hwnd] := true
             return
         }
 
@@ -1457,19 +1555,32 @@ _HandleDesktopChange() {
 ; HWND that was just moved off the departing desktop; must not be saved as that
 ; desktop's last window when the subsequent switch notification arrives.
 global g_DesktopExcludeHwnd := 0
+global g_PendingDesktopNotify := 0
+global g_DesktopWatchdogTarget := 0
 
 _HandleDesktopChangeFromMsg(currentDesk) {
-    global g_DesktopExcludeHwnd
+    global g_DesktopExcludeHwnd, g_PendingDesktopNotify
+    ; Coalesce rapid notifications: keep only the latest target and process once.
+    g_PendingDesktopNotify := currentDesk
+    SetTimer(_FlushDesktopNotify, -1)
+}
+
+_FlushDesktopNotify() {
+    global g_PendingDesktopNotify, g_DesktopExcludeHwnd
+    target := g_PendingDesktopNotify
+    g_PendingDesktopNotify := 0
+    if !target
+        return
     exclude := g_DesktopExcludeHwnd
     g_DesktopExcludeHwnd := 0
-    _CommitDesktopTransition(currentDesk, exclude)
+    _CommitDesktopTransition(target, exclude)
 }
 
 ; Central desktop-transition bookkeeping. Only commits after the caller has
 ; confirmed VDA success (or a VDA notification delivered a real new desktop).
 ; Deduplicates command-driven switches and VDA notifications via g_LastDesktop.
 _CommitDesktopTransition(newDesk, excludeHwnd := 0) {
-    global g_LastDesktop, g_FocusHistory, g_DesktopLastWindow, g_ScriptPaused
+    global g_LastDesktop, g_FocusHistory, g_DesktopLastWindow, g_ScriptPaused, g_DesktopWatchdogTarget
     if g_ScriptPaused
         return
     if !newDesk || newDesk = VDA.DESKTOP_UNKNOWN
@@ -1496,8 +1607,34 @@ _CommitDesktopTransition(newDesk, excludeHwnd := 0) {
     }
 
     g_LastDesktop := newDesk
+    g_DesktopWatchdogTarget := 0
     SetTimer(() => _RestoreFocusOnDesktop(newDesk), -150)
     _ScheduleDesktopRestore(newDesk)
+}
+
+_ScheduleDesktopWatchdog(expectedDesk) {
+    global g_DesktopWatchdogTarget
+    g_DesktopWatchdogTarget := expectedDesk
+    SetTimer(_DesktopSwitchWatchdog, -250)
+}
+
+_DesktopSwitchWatchdog() {
+    global g_DesktopWatchdogTarget, g_DesktopExcludeHwnd, g_LastDesktop
+    expected := g_DesktopWatchdogTarget
+    g_DesktopWatchdogTarget := 0
+    if !expected || !VDA.isLoaded
+        return
+    try cur := VDA.GetCurrent()
+    catch
+        return
+    if cur = VDA.DESKTOP_UNKNOWN
+        return
+    if cur = g_LastDesktop
+        return
+    ; Notification was missed or delayed — reconcile from the real current desktop.
+    exclude := g_DesktopExcludeHwnd
+    g_DesktopExcludeHwnd := 0
+    _CommitDesktopTransition(cur, exclude)
 }
 
 _IsWindowOnDesktop(hwnd, deskIndex) {
@@ -1566,23 +1703,32 @@ GotoDesktop(n) {
     ; do not process the same transition twice; without a hook, commit here.
     if !VDA.GoTo(n)
         return
-    if !VDA.hasHookRegistered
+    if VDA.hasHookRegistered
+        _ScheduleDesktopWatchdog(n)
+    else
         _CommitDesktopTransition(n)
 }
 
 _RestoreFocusOnDesktop(n) {
-    if g_DesktopLastWindow.Has(n) {
-        hwnd := g_DesktopLastWindow[n]
-        if WinExist("ahk_id " hwnd) {
-            if _IsOnCurrentDesktop(hwnd) {
-                if WinGetMinMax("ahk_id " hwnd) = -1
-                    WinRestore("ahk_id " hwnd)
-                WinActivate("ahk_id " hwnd)
-                return
-            }
-        }
+    if !g_DesktopLastWindow.Has(n)
+        return
+    hwnd := g_DesktopLastWindow[n]
+    if !WinExist("ahk_id " hwnd) {
         g_DesktopLastWindow.Delete(n)
+        return
     }
+    ; Strict membership for restore: unknown/error is not acceptable.
+    if VDA.isLoaded {
+        onDesk := VDA.IsOnCurrentDesktop(hwnd)
+        if onDesk != 1 {
+            if onDesk = 0
+                g_DesktopLastWindow.Delete(n)
+            return
+        }
+    }
+    if WinGetMinMax("ahk_id " hwnd) = -1
+        WinRestore("ahk_id " hwnd)
+    WinActivate("ahk_id " hwnd)
 }
 
 MoveToDesktop(desktopIndex) {
@@ -1607,7 +1753,9 @@ MoveToDesktop(desktopIndex) {
         g_DesktopExcludeHwnd := 0
         return
     }
-    if !VDA.hasHookRegistered
+    if VDA.hasHookRegistered
+        _ScheduleDesktopWatchdog(desktopIndex)
+    else
         _CommitDesktopTransition(desktopIndex, windowHandle)
 }
 
@@ -1623,7 +1771,7 @@ _FocusMonitor(monitorIndex) {
     historyIndex := g_FocusHistory.Length
     while historyIndex > 0 {
         windowHandle := g_FocusHistory[historyIndex]
-        if WinExist("ahk_id " windowHandle) && WinGetMinMax("ahk_id " windowHandle) != -1 {
+        if _IsFocusEligible(windowHandle) {
             WinGetPos(&windowX, &windowY, &windowWidth, &windowHeight, "ahk_id " windowHandle)
             centerX := windowX + windowWidth // 2
             centerY := windowY + windowHeight // 2
@@ -1637,14 +1785,14 @@ _FocusMonitor(monitorIndex) {
         historyIndex--
     }
     for windowHandle in WinGetList() {
-        if WinGetMinMax("ahk_id " windowHandle) = -1
-            continue
-        if !(WinGetStyle("ahk_id " windowHandle) & 0x10000000)
+        if !_IsFocusEligible(windowHandle)
             continue
         WinGetPos(&windowX, &windowY, &windowWidth, &windowHeight, "ahk_id " windowHandle)
         centerX := windowX + windowWidth // 2, centerY := windowY + windowHeight // 2
         if centerX >= monitorLeft && centerX < monitorRight && centerY >= monitorTop && centerY < monitorBottom {
             WinActivate("ahk_id " windowHandle)
+            if (IsSet(CFG_MonitorFocusTeleportMouse) && CFG_MonitorFocusTeleportMouse)
+                DllCall("SetCursorPos", "Int", centerX, "Int", centerY)
             return
         }
     }
@@ -1813,10 +1961,27 @@ FocusJumpBack() {
         if g_FocusHistory.Length = 0
             return
         hwnd := g_FocusHistory.Pop()
-        if hwnd != curHwnd && WinExist("ahk_id " hwnd) {
-            WinActivate("ahk_id " hwnd)
-            return
+        if hwnd = curHwnd || !WinExist("ahk_id " hwnd)
+            continue
+        ; Same eligibility as directional/monitor focus, but allow minimized targets.
+        try {
+            if WinGetExStyle("ahk_id " hwnd) & 0x80
+                continue
+            cloaked := 0
+            DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
+            if cloaked
+                continue
+            if VDA.isLoaded && VDA.IsOnCurrentDesktop(hwnd) != 1
+                continue
+            if !_IsLiveWindow(hwnd) && WinGetMinMax("ahk_id " hwnd) != -1
+                continue
+        } catch {
+            continue
         }
+        if WinGetMinMax("ahk_id " hwnd) = -1
+            WinRestore("ahk_id " hwnd)
+        WinActivate("ahk_id " hwnd)
+        return
     }
 }
 
