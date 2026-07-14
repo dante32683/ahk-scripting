@@ -396,6 +396,40 @@ State_SetDesktopWindow(desktop, hwnd, identity := "") {
         State_MarkDirty("state")
 }
 
+State_DeleteDesktopWindow(desktop) {
+    global g_StateDesktopWindows, g_StateDesktopIdentities
+    changed := false
+    if g_StateDesktopWindows.Has(desktop) {
+        g_StateDesktopWindows.Delete(desktop)
+        changed := true
+    }
+    if g_StateDesktopIdentities.Has(desktop) {
+        g_StateDesktopIdentities.Delete(desktop)
+        changed := true
+    }
+    if changed
+        State_MarkDirty("state")
+}
+
+State_ClearDesktopWindowByHwnd(hwnd) {
+    global g_StateDesktopWindows, g_StateDesktopIdentities
+    if !hwnd
+        return
+    toDelete := []
+    for desk, mappedHwnd in g_StateDesktopWindows {
+        if mappedHwnd = hwnd
+            toDelete.Push(desk)
+    }
+    if !toDelete.Length
+        return
+    for desk in toDelete {
+        g_StateDesktopWindows.Delete(desk)
+        if g_StateDesktopIdentities.Has(desk)
+            g_StateDesktopIdentities.Delete(desk)
+    }
+    State_MarkDirty("state")
+}
+
 State_SetSessionLayout(hwnd, identity, record) {
     global g_StateSessionLayouts
     if record is Array && record.Length = 4
@@ -495,7 +529,8 @@ State_FlushNow(*) {
                 }
             }
 
-            if State_AtomicWrite(stateFile, content, "UTF-8-RAW") {
+            ; Win32 IniRead only supports Unicode via UTF-16 INI files.
+            if State_AtomicWrite(stateFile, content, "UTF-16") {
                 g_StateDirtyAreas.Delete("state")
             } else {
                 ok := false
@@ -541,7 +576,7 @@ State_FlushNow(*) {
             }
         }
 
-        if State_AtomicWrite(sessionFile, content, "UTF-8-RAW") {
+        if State_AtomicWrite(sessionFile, content, "UTF-16") {
             g_StateDirtyAreas.Delete("session")
             g_StateHandoffPendingWrite := false
         } else {
