@@ -1699,10 +1699,24 @@ _RememberDepartingDesktopFromHistory(fromDesk, excludeHwnd := 0) {
     }
 }
 
+; Focus restore timing:
+; - CapsLock+N is already on the target desktop quickly → short delay
+; - Trackpad/OS swipe needs more settle time → 150 ms (main-branch default)
+global g_DesktopFocusHotkeyDelay := 50
+global g_DesktopFocusSwipeDelay := 150
+
+_ScheduleDesktopFocusRestore(desk, gen, delayMs) {
+    global g_DesktopRestoreCallback
+    _CancelDesktopFocusRestore()
+    g_DesktopRestoreCallback := _RestoreFocusOnDesktop.Bind(desk, gen)
+    SetTimer(g_DesktopRestoreCallback, -delayMs)
+}
+
 ; Bookkeeping for external/OS desktop changes (swipe, Win+Ctrl+Left, VDA hook).
 ; Hotkey GotoDesktop does its own immediate remember+restore like main.
 _CommitDesktopTransition(newDesk, excludeHwnd := 0) {
     global g_LastDesktop, g_ScriptPaused, g_DesktopWatchdogTarget, g_DesktopFocusGeneration
+    global g_DesktopFocusSwipeDelay
     if g_ScriptPaused
         return
     if !newDesk || newDesk = VDA.DESKTOP_UNKNOWN
@@ -1716,10 +1730,7 @@ _CommitDesktopTransition(newDesk, excludeHwnd := 0) {
     g_LastDesktop := newDesk
     g_DesktopWatchdogTarget := 0
     g_DesktopFocusGeneration += 1
-    _CancelDesktopFocusRestore()
-    global g_DesktopRestoreCallback
-    g_DesktopRestoreCallback := _RestoreFocusOnDesktop.Bind(newDesk, g_DesktopFocusGeneration)
-    SetTimer(g_DesktopRestoreCallback, -150)
+    _ScheduleDesktopFocusRestore(newDesk, g_DesktopFocusGeneration, g_DesktopFocusSwipeDelay)
     _ScheduleDesktopRestore(newDesk)
 }
 
@@ -1811,10 +1822,10 @@ ToggleMaximize() {
     }
 }
 
-; Restored main-branch behavior: save active HWND before switch, activate after 150ms.
+; Restored main-branch behavior: save active HWND before switch, activate after a short delay.
 GotoDesktop(n) {
     global g_LastDesktop, g_DesktopLastWindow, g_DesktopFocusGeneration, g_DesktopExcludeHwnd
-    global g_DesktopRestoreCallback
+    global g_DesktopFocusHotkeyDelay
     if !VDA.isLoaded {
         ShowOSD("VDA not loaded — install the DLL first!")
         return
@@ -1835,10 +1846,8 @@ GotoDesktop(n) {
 
     g_LastDesktop := n
     g_DesktopFocusGeneration += 1
-    gen := g_DesktopFocusGeneration
-    _CancelDesktopFocusRestore()
-    g_DesktopRestoreCallback := _RestoreFocusOnDesktop.Bind(n, gen)
-    SetTimer(g_DesktopRestoreCallback, -150)
+    ; CapsLock+N: switch is intentional and already settling — restore sooner than swipe.
+    _ScheduleDesktopFocusRestore(n, g_DesktopFocusGeneration, g_DesktopFocusHotkeyDelay)
     _ScheduleDesktopRestore(n)
     if VDA.hasHookRegistered
         _ScheduleDesktopWatchdog(n)
