@@ -12,6 +12,12 @@ if !IsSet(g_PerfStartupTick)
 ; ============================================================
 ; MODULAR WINDOW TILING — both loaded; CFG_TilingMode selects active set
 ; ============================================================
+; Must be set BEFORE the tiling #Include files: CapsLock+Esc reload often
+; keeps CapsLock held, so #HotIf can evaluate during load. An unset
+; g_TilingMode throws a brief error dialog mentioning FancyZones/Native.
+global g_TilingMode := IsSet(CFG_TilingMode) ? CFG_TilingMode : "Native"
+if g_TilingMode != "Native" && g_TilingMode != "FancyZones"
+    g_TilingMode := "Native"
 #Include WindowTiling_FancyZones.ahk
 #Include WindowTiling_Native.ahk
 #Include ShowOSD.ahk
@@ -621,7 +627,7 @@ global g_ScriptPaused  := false
 global g_CapsN_LastHiddenHwnd := 0
 global g_PrivacyBlackoutActive := false
 global g_PrivacyBlackoutGuis := []
-global g_TilingMode    := CFG_TilingMode
+; g_TilingMode is initialized above, before WindowTiling_* includes.
 
 ; --- Safe Global Fallbacks ---
 if !IsSet(CFG_Autocorrect)
