@@ -1632,12 +1632,11 @@ _HandleDesktopChange() {
 global g_DesktopExcludeHwnd := 0
 global g_PendingDesktopNotify := 0
 global g_DesktopWatchdogTarget := 0
-global g_PendingDeparture := 0          ; pre-switch active-window snapshot (Map) or 0
 global g_DesktopFocusGeneration := 0
 global g_DesktopRestoreCallback := 0
 
 _HandleDesktopChangeFromMsg(currentDesk) {
-    global g_DesktopExcludeHwnd, g_PendingDesktopNotify
+    global g_PendingDesktopNotify
     ; Coalesce rapid notifications: keep only the latest target and process once.
     g_PendingDesktopNotify := currentDesk
     SetTimer(_FlushDesktopNotify, -1)
@@ -1654,49 +1653,6 @@ _FlushDesktopNotify() {
     _CommitDesktopTransition(target, exclude)
 }
 
-_CaptureDepartureSnapshot() {
-    global g_PendingDeparture, g_LastDesktop, g_DesktopFocusGeneration
-    snapshot := Map("desk", 0, "hwnd", 0, "pid", 0, "proc", "", "class", "", "sig", ""
-        , "gen", g_DesktopFocusGeneration)
-    desk := g_LastDesktop
-    if VDA.isLoaded {
-        try {
-            cur := VDA.GetCurrent()
-            if cur && cur != VDA.DESKTOP_UNKNOWN
-                desk := cur
-        }
-    }
-    snapshot["desk"] := desk
-    if WinExist("A") {
-        try {
-            hwnd := WinGetID("A")
-            if hwnd && DllCall("IsWindow", "Ptr", hwnd) {
-                snapshot["hwnd"] := hwnd
-                snapshot["pid"] := WinGetPID("ahk_id " hwnd)
-                snapshot["proc"] := WinGetProcessName("ahk_id " hwnd)
-                snapshot["class"] := WinGetClass("ahk_id " hwnd)
-                snapshot["sig"] := _GetWinSignature(hwnd)
-            }
-        }
-    }
-    g_PendingDeparture := snapshot
-}
-
-_DepartureSnapshotValid(snapshot, fromDesk, excludeHwnd := 0) {
-    if !(snapshot is Map) || !snapshot["hwnd"]
-        return false
-    if snapshot["desk"] != fromDesk
-        return false
-    hwnd := snapshot["hwnd"]
-    if excludeHwnd && hwnd = excludeHwnd
-        return false
-    if !WinExist("ahk_id " hwnd)
-        return false
-    identity := Map("pid", snapshot["pid"], "proc", snapshot["proc"]
-        , "class", snapshot["class"], "sig", snapshot["sig"])
-    return _ValidateWindowIdentity(hwnd, identity)
-}
-
 _ForgetDesktopWindow(desk) {
     global g_DesktopLastWindow
     if g_DesktopLastWindow.Has(desk)
@@ -1704,22 +1660,29 @@ _ForgetDesktopWindow(desk) {
     State_DeleteDesktopWindow(desk)
 }
 
-_RememberDepartingDesktop(fromDesk, excludeHwnd := 0) {
-    global g_PendingDeparture, g_FocusHistory, g_DesktopLastWindow
-    snap := g_PendingDeparture
-    g_PendingDeparture := 0
+; Hotkey path: capture WinGetID("A") BEFORE the switch (main-branch behavior).
+_RememberActiveWindowForDesktop(desk, excludeHwnd := 0) {
+    global g_DesktopLastWindow
+    if desk <= 0
+        return
+    if !WinExist("A")
+        return
+    try hwnd := WinGetID("A")
+    catch
+        return
+    if !hwnd || (excludeHwnd && hwnd = excludeHwnd)
+        return
+    if !WinExist("ahk_id " hwnd)
+        return
+    g_DesktopLastWindow[desk] := hwnd
+    State_SetDesktopWindow(desk, hwnd)
+}
+
+; External/OS path: after the switch, "A" is already on the new desk — use history.
+_RememberDepartingDesktopFromHistory(fromDesk, excludeHwnd := 0) {
+    global g_DesktopLastWindow, g_FocusHistory
     if fromDesk <= 0
         return
-
-    if _DepartureSnapshotValid(snap, fromDesk, excludeHwnd) {
-        identity := Map("pid", snap["pid"], "proc", snap["proc"]
-            , "class", snap["class"], "sig", snap["sig"])
-        State_SetDesktopWindow(fromDesk, snap["hwnd"], identity)
-        g_DesktopLastWindow[fromDesk] := snap["hwnd"]
-        return
-    }
-
-    ; Focus-history fallback. Skip pinned windows — they are not desk-specific.
     historyIndex := g_FocusHistory.Length
     while historyIndex > 0 {
         prevHwnd := g_FocusHistory[historyIndex]
@@ -1727,53 +1690,36 @@ _RememberDepartingDesktop(fromDesk, excludeHwnd := 0) {
             historyIndex--
             continue
         }
-        if !prevHwnd || !WinExist("ahk_id " prevHwnd) {
-            historyIndex--
-            continue
-        }
-        if VDA.isLoaded {
-            try {
-                if VDA.IsPinned(prevHwnd) = 1 {
-                    historyIndex--
-                    continue
-                }
-            }
-        }
-        if _IsWindowOnDesktop(prevHwnd, fromDesk) {
-            State_SetDesktopWindow(fromDesk, prevHwnd)
+        if prevHwnd && WinExist("ahk_id " prevHwnd) && _IsWindowOnDesktop(prevHwnd, fromDesk) {
             g_DesktopLastWindow[fromDesk] := prevHwnd
-            break
+            State_SetDesktopWindow(fromDesk, prevHwnd)
+            return
         }
         historyIndex--
     }
 }
 
-; Central desktop-transition bookkeeping. Only commits after the caller has
-; confirmed VDA success (or a VDA notification delivered a real new desktop).
-; Deduplicates command-driven switches and VDA notifications via g_LastDesktop.
+; Bookkeeping for external/OS desktop changes (swipe, Win+Ctrl+Left, VDA hook).
+; Hotkey GotoDesktop does its own immediate remember+restore like main.
 _CommitDesktopTransition(newDesk, excludeHwnd := 0) {
     global g_LastDesktop, g_ScriptPaused, g_DesktopWatchdogTarget, g_DesktopFocusGeneration
-    global g_PendingDeparture
-    if g_ScriptPaused {
-        g_PendingDeparture := 0
+    if g_ScriptPaused
         return
-    }
-    if !newDesk || newDesk = VDA.DESKTOP_UNKNOWN {
-        g_PendingDeparture := 0
+    if !newDesk || newDesk = VDA.DESKTOP_UNKNOWN
         return
-    }
-    if newDesk = g_LastDesktop {
-        g_PendingDeparture := 0
+    if newDesk = g_LastDesktop
         return
-    }
 
     fromDesk := g_LastDesktop
-    _RememberDepartingDesktop(fromDesk, excludeHwnd)
+    _RememberDepartingDesktopFromHistory(fromDesk, excludeHwnd)
 
     g_LastDesktop := newDesk
     g_DesktopWatchdogTarget := 0
     g_DesktopFocusGeneration += 1
-    _ScheduleDesktopFocusRestore(newDesk, g_DesktopFocusGeneration, 1)
+    _CancelDesktopFocusRestore()
+    global g_DesktopRestoreCallback
+    g_DesktopRestoreCallback := _RestoreFocusOnDesktop.Bind(newDesk, g_DesktopFocusGeneration)
+    SetTimer(g_DesktopRestoreCallback, -150)
     _ScheduleDesktopRestore(newDesk)
 }
 
@@ -1783,17 +1729,6 @@ _CancelDesktopFocusRestore() {
         try SetTimer(g_DesktopRestoreCallback, 0)
         g_DesktopRestoreCallback := 0
     }
-}
-
-_ScheduleDesktopFocusRestore(desk, gen, attempt) {
-    global g_DesktopRestoreCallback
-    static delays := [150, 300, 550]
-    if attempt < 1 || attempt > delays.Length
-        return
-    _CancelDesktopFocusRestore()
-    cb := () => _RestoreFocusOnDesktop(desk, gen, attempt)
-    g_DesktopRestoreCallback := cb
-    SetTimer(cb, -delays[attempt])
 }
 
 _ScheduleDesktopWatchdog(expectedDesk) {
@@ -1815,7 +1750,6 @@ _DesktopSwitchWatchdog() {
         return
     if cur = g_LastDesktop
         return
-    ; Notification was missed or delayed — reconcile from the real current desktop.
     exclude := g_DesktopExcludeHwnd
     g_DesktopExcludeHwnd := 0
     _CommitDesktopTransition(cur, exclude)
@@ -1877,84 +1811,85 @@ ToggleMaximize() {
     }
 }
 
+; Restored main-branch behavior: save active HWND before switch, activate after 150ms.
 GotoDesktop(n) {
-    global g_PendingDeparture
+    global g_LastDesktop, g_DesktopLastWindow, g_DesktopFocusGeneration, g_DesktopExcludeHwnd
+    global g_DesktopRestoreCallback
     if !VDA.isLoaded {
         ShowOSD("VDA not loaded — install the DLL first!")
         return
     }
-    ; Capture the real active top-level window BEFORE switching. Textbox focus
-    ; inside a window often never creates a new focus-history entry.
-    _CaptureDepartureSnapshot()
-    if !VDA.GoTo(n) {
-        g_PendingDeparture := 0
-        return
+
+    currentDesk := g_LastDesktop
+    try {
+        cur := VDA.GetCurrent()
+        if cur && cur != VDA.DESKTOP_UNKNOWN
+            currentDesk := cur
     }
+    exclude := g_DesktopExcludeHwnd
+    g_DesktopExcludeHwnd := 0
+    _RememberActiveWindowForDesktop(currentDesk, exclude)
+
+    if !VDA.GoTo(n)
+        return
+
+    g_LastDesktop := n
+    g_DesktopFocusGeneration += 1
+    gen := g_DesktopFocusGeneration
+    _CancelDesktopFocusRestore()
+    g_DesktopRestoreCallback := _RestoreFocusOnDesktop.Bind(n, gen)
+    SetTimer(g_DesktopRestoreCallback, -150)
+    _ScheduleDesktopRestore(n)
     if VDA.hasHookRegistered
         _ScheduleDesktopWatchdog(n)
-    else
-        _CommitDesktopTransition(n)
 }
 
-_RestoreFocusOnDesktop(n, gen := 0, attempt := 1) {
+; Simple restore (main-branch). Generation ignores stale timers from rapid switches.
+_RestoreFocusOnDesktop(n, gen := 0) {
     global g_DesktopFocusGeneration, g_DesktopLastWindow, g_DesktopRestoreCallback
     g_DesktopRestoreCallback := 0
     if gen && gen != g_DesktopFocusGeneration
         return
     if VDA.isLoaded {
-        try cur := VDA.GetCurrent()
-        catch
-            cur := VDA.DESKTOP_UNKNOWN
-        if cur = VDA.DESKTOP_UNKNOWN {
-            if attempt < 3
-                _ScheduleDesktopFocusRestore(n, gen, attempt + 1)
-            return
+        try {
+            cur := VDA.GetCurrent()
+            if cur != VDA.DESKTOP_UNKNOWN && cur != n
+                return
         }
-        if cur != n
-            return
     }
     if !g_DesktopLastWindow.Has(n)
         return
     hwnd := g_DesktopLastWindow[n]
-    if !WinExist("ahk_id " hwnd) {
-        _ForgetDesktopWindow(n)
-        return
-    }
-    identity := State_GetDesktopWindowIdentity(n)
-    if identity is Map && identity.Count && !_ValidateWindowIdentity(hwnd, identity) {
-        _ForgetDesktopWindow(n)
-        return
-    }
-    ; Strict membership for restore: unknown/error retries; known-elsewhere deletes.
-    if VDA.isLoaded {
-        onDesk := VDA.IsOnCurrentDesktop(hwnd)
-        if onDesk != 1 {
-            if onDesk = 0 {
-                _ForgetDesktopWindow(n)
-                return
+    if WinExist("ahk_id " hwnd) {
+        ; Match main: compare window desktop to current. Unknown → try activate anyway.
+        ; Do NOT use IsWindowOnCurrentVirtualDesktop here — it often returns 0 mid-switch
+        ; and the old strict path deleted the mapping, which broke focus restore.
+        canActivate := true
+        if VDA.isLoaded {
+            try {
+                pinned := VDA.IsPinned(hwnd)
+                winDesk := VDA.GetWindowDesktop(hwnd)
+                cur := VDA.GetCurrent()
+                if pinned = 1 {
+                    canActivate := true
+                } else if winDesk != VDA.DESKTOP_UNKNOWN && cur != VDA.DESKTOP_UNKNOWN {
+                    canActivate := (winDesk = cur)
+                }
             }
-            ; Unknown / error — retry without deleting.
-            if attempt < 3
-                _ScheduleDesktopFocusRestore(n, gen, attempt + 1)
+        }
+        if canActivate {
+            if WinGetMinMax("ahk_id " hwnd) = -1
+                WinRestore("ahk_id " hwnd)
+            WinActivate("ahk_id " hwnd)
             return
         }
     }
-    if WinGetMinMax("ahk_id " hwnd) = -1
-        WinRestore("ahk_id " hwnd)
-    WinActivate("ahk_id " hwnd)
-    try {
-        if WinGetID("A") != hwnd {
-            if attempt < 3
-                _ScheduleDesktopFocusRestore(n, gen, attempt + 1)
-        }
-    } catch {
-        if attempt < 3
-            _ScheduleDesktopFocusRestore(n, gen, attempt + 1)
-    }
+    g_DesktopLastWindow.Delete(n)
+    State_DeleteDesktopWindow(n)
 }
 
 MoveToDesktop(desktopIndex) {
-    global g_DesktopExcludeHwnd, g_DesktopLastWindow, g_PendingDeparture
+    global g_DesktopExcludeHwnd, g_DesktopLastWindow
     if !WinExist("A")
         return
     if !VDA.isLoaded {
@@ -1962,28 +1897,15 @@ MoveToDesktop(desktopIndex) {
         return
     }
     windowHandle := WinGetID("A")
-    ; Capture departure before the move so history fallback can find the prior window.
-    _CaptureDepartureSnapshot()
     if !VDA.MoveWindow(windowHandle, desktopIndex) {
-        g_PendingDeparture := 0
         ShowOSD("Move to desktop " desktopIndex " failed")
         return
     }
-    ; Remember the moved window on the destination desktop, but exclude it from
-    ; the departing desktop's last-window save when the switch notification fires.
+    ; Destination remembers the moved window; exclude it from the departing desk save.
     g_DesktopLastWindow[desktopIndex] := windowHandle
     State_SetDesktopWindow(desktopIndex, windowHandle)
     g_DesktopExcludeHwnd := windowHandle
-    if !VDA.GoTo(desktopIndex) {
-        g_DesktopExcludeHwnd := 0
-        g_PendingDeparture := 0
-        ShowOSD("Moved to desktop " desktopIndex " — switch failed")
-        return
-    }
-    if VDA.hasHookRegistered
-        _ScheduleDesktopWatchdog(desktopIndex)
-    else
-        _CommitDesktopTransition(desktopIndex, windowHandle)
+    GotoDesktop(desktopIndex)
 }
 
 ; ============================================================
