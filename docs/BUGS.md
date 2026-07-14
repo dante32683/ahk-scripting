@@ -5,7 +5,8 @@ This is the active issue ledger for the script. Log bugs here instead of leaving
 ## Open / Deferred (perf-reliability-overhaul)
 
 These are known limitations deferred during the performance & reliability overhaul. None
-block normal use; they are tracked here rather than left as silent gaps.
+block normal use after the desktop-focus and state-encoding repairs; remaining items are
+edge-case hardening.
 
 - **DEFER-001 (Low, State):** Legacy state files (`Tiling_Memory.ini`, `%TEMP%\ahk_layouts.ini`,
   `Autocorrect_Disabled.txt`) are migrated into `%LOCALAPPDATA%\AutoHotkeyMaster` and backed
@@ -21,6 +22,12 @@ block normal use; they are tracked here rather than left as silent gaps.
   theoretical corruption case shared with the pre-existing scheme; process/class/title
   values in practice do not contain backticks. The `|` delimiter is now encoded, which was
   the real reported risk.
+- **DEFER-004 (Medium, Focus):** Same-app cycling still uses fail-open desktop membership when
+  VDA returns unknown; directional/monitor focus fail closed. Unifying that remains open.
+- **DEFER-005 (Low, PWA):** Stable `--app-id` identity (instead of normalized title) is not
+  yet preferred for final PWA signatures; WMI verification now corrects title heuristics.
+- **MANUAL-001 (High, Desktop):** Two-desktop textbox caret restore must be verified manually
+  (click textbox A → switch → textbox B → switch back → type without clicking).
 
 ---
 

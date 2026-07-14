@@ -18,6 +18,7 @@ global g_SessionNoAutoSnap := Map()
 
 RunReliabilityFixesTest() {
     global g_StateAppLayouts, g_StateAppMaximized, g_StateFutureVersionBlocked, g_SessionNoAutoSnap
+    global g_StateDesktopWindows, g_StateDesktopIdentities
 
     ; --- State_Init resets maps (no leftover from prior mutations) ---
     State_SetAppLayout("leftover.exe", Layout_Slot(0, 0, 50, 100))
@@ -87,6 +88,31 @@ RunReliabilityFixesTest() {
     AssertTrue(FileExist(existing), "existing good file still present after unrelated failure")
     ; Compare to the pre-failure bytes (UTF-8 BOM can make a literal string compare fail).
     AssertEq(FileRead(existing, "UTF-8"), beforeContent, "existing content preserved")
+
+    ; --- UTF-16 INI round-trip for non-ASCII (IniRead-compatible) ---
+    unicodeFile := schemaDir "\unicode.ini"
+    unicodeContent := "[Schema]`nversion=2`n`n[DesktopLastWindow]`n"
+        . "d1=1|1|" State_EscapeIni("café.exe") "|" State_EscapeIni("Класс") "|" State_EscapeIni("アプリ😊") "`n"
+    AssertTrue(State_AtomicWrite(unicodeFile, unicodeContent, "UTF-16"), "UTF-16 atomic write succeeds")
+    AssertEq(IniRead(unicodeFile, "Schema", "version", ""), "2", "UTF-16 schema readable via IniRead")
+    deskLine := IniRead(unicodeFile, "DesktopLastWindow", "d1", "")
+    AssertTrue(InStr(deskLine, "café.exe"), "UTF-16 preserves accented Latin")
+    AssertTrue(InStr(deskLine, "Класс"), "UTF-16 preserves Cyrillic")
+    AssertTrue(InStr(deskLine, "アプリ"), "UTF-16 preserves CJK")
+
+    ; --- Desktop mapping delete clears Core-facing StateStore entries ---
+    State_Init()
+    g_StateDesktopWindows[3] := 42
+    g_StateDesktopIdentities[3] := Map("pid", 1, "proc", "x.exe")
+    State_DeleteDesktopWindow(3)
+    AssertFalse(g_StateDesktopWindows.Has(3), "DeleteDesktopWindow removes hwnd")
+    AssertFalse(g_StateDesktopIdentities.Has(3), "DeleteDesktopWindow removes identity")
+    g_StateDesktopWindows[4] := 99
+    g_StateDesktopWindows[5] := 99
+    g_StateDesktopIdentities[4] := Map("pid", 1, "proc", "y.exe")
+    State_ClearDesktopWindowByHwnd(99)
+    AssertFalse(g_StateDesktopWindows.Has(4), "ClearByHwnd removes desk 4")
+    AssertFalse(g_StateDesktopWindows.Has(5), "ClearByHwnd removes desk 5")
 
     ; --- Autocorrect: empty corrections rejected; InputHook path is test-mode safe ---
     emptyCorrPath := A_Temp "\ac_empty_" DllCall("GetCurrentProcessId") ".txt"

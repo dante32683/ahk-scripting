@@ -55,6 +55,11 @@ function Run-AhkScript {
         }
 
         $exitCode = $proc.ExitCode
+        if ($null -eq $exitCode -and $proc.HasExited) {
+            # Some hosts leave ExitCode null briefly after WaitForExit; treat clean exit as 0.
+            $proc.Refresh()
+            $exitCode = if ($null -eq $proc.ExitCode) { 0 } else { $proc.ExitCode }
+        }
         $stdout = Get-Content -Path $tmpOut -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
         $stderr = Get-Content -Path $tmpErr -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
 
@@ -64,7 +69,7 @@ function Run-AhkScript {
             return $false
         }
 
-        if ($exitCode -ne 0) {
+        if ($null -eq $exitCode -or $exitCode -ne 0) {
             Write-Host "Script exited with non-zero code ($exitCode): $ScriptPath" -ForegroundColor Red
             if ($stdout) { Write-Host "Stdout:`n$stdout" -ForegroundColor Red }
             if ($stderr) { Write-Host "Stderr:`n$stderr" -ForegroundColor Red }

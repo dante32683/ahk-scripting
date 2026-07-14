@@ -22,6 +22,19 @@ RunLayoutGeometryTest() {
     legacyRecord := Layout_Deserialize("12,12,75,75")
     AssertTrue(Layout_Validate(legacyRecord), "legacy pct validates")
     AssertEq(legacyRecord["x"], 1200)
+    AssertEq(legacyRecord["anchorX"], "center", "legacy interior slot derives center X")
+    AssertEq(legacyRecord["anchorY"], "center", "legacy interior slot derives center Y")
+
+    rightLegacy := Layout_FromLegacyPct(50, 0, 50, 100)
+    AssertEq(rightLegacy["anchorX"], "right", "legacy right half derives right anchor")
+
+    ; --- Reject impossible / malformed layout records ---
+    AssertFalse(Layout_Validate(Map("kind", "slot", "x", 0, "y", 0, "w", 50, "h", 100
+        , "anchorX", "nope", "anchorY", "top")), "invalid anchorX rejected")
+    AssertFalse(Layout_Validate(Map("kind", "slot", "x", 0, "y", 0, "w", 20000, "h", 100
+        , "anchorX", "left", "anchorY", "top")), "oversized width rejected")
+    AssertFalse(Layout_Validate(Map("kind", "slot", "x", 9000, "y", 0, "w", 5000, "h", 100
+        , "anchorX", "left", "anchorY", "top")), "x+w beyond margin rejected")
 
     resolvedRect := Layout_ResolveVisibleRect(Layout_Slot(0, 0, 50, 100), 0, 0, 1000, 800, 4)
     AssertTrue(resolvedRect != 0, "resolve returns rect")
