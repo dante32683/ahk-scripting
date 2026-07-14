@@ -79,7 +79,8 @@ Hold CapsLock to activate. CapsLock itself is disabled as a toggle — use `Shif
 | `C` | Color picker (`Alt+Shift+C`) |
 | `Alt+L` | Toggle keyboard lock (`BlockInput`) |
 | `Alt+K` | Toggle privacy blackout overlay |
-| `Delete` | Clear tiling layout for active window |
+| `Delete` | Clear session tiling layout for the active window (does not forget app memory) |
+| `Shift+Delete` | Forget persistent remembered layout for the active app |
 | `Shift+Space` | Toggle script pause |
 
 ### Tiling mode behavior

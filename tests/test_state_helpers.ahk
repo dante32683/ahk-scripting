@@ -25,7 +25,16 @@ RunStateHelpersTest() {
     AssertEq(legacyRecord["x"], 1200, "legacy pct scaled to basis points")
 
     ; --- Identity validation ---
-    AssertFalse(_ValidateWindowIdentity(0, Map("pid", 1)), "hwnd 0 rejected")
+    AssertFalse(_ValidateWindowIdentity(0, Map("pid", 1, "proc", "x.exe")), "hwnd 0 rejected")
+    AssertFalse(_ValidateWindowIdentity(1, Map()), "empty identity cannot verify HWND")
+    AssertFalse(_ValidateWindowIdentity(1, Map("pid", 5)), "identity without proc rejected")
+
+    ; --- Persistent layout clear ---
+    State_SetAppLayout("clear-me.exe", Layout_Slot(10, 10, 40, 40))
+    State_SetAppMaximized("clear-me.exe", true)
+    State_DeleteAppLayout("clear-me.exe")
+    AssertEq(State_GetAppLayout("clear-me.exe"), "", "cleared persistent layout is gone")
+    AssertFalse(g_StateAppMaximized.Has("clear-me.exe"), "cleared maximized flag is gone")
 
     ; --- INI escaping roundtrips (strict; no `|| true` escape hatch) ---
     AssertEq(State_UnescapeIni(State_EscapeIni("hello")), "hello", "plain roundtrip")

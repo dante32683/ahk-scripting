@@ -8,7 +8,11 @@ custom/
 !/Setup.ahk
 !/config.example.ahk
 Tiling_Memory.ini
+Tiling_Memory.ini.bak
 Autocorrect_Disabled.txt
+Autocorrect_Disabled.txt.bak
+*.bak
+
 
 # Generated files
 lib/Autocorrect.ahk

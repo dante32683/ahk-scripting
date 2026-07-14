@@ -43,6 +43,11 @@ RunAutocorrectParserTest() {
     emptyTriggerPath := WriteTemporaryDatabase("empty", "->the`n")
     createdDatabaseFiles.Push(emptyTriggerPath)
     AssertFalse(AC_ParseDatabase(emptyTriggerPath)["ok"], "empty trigger rejected")
+    emptyCorrPath := WriteTemporaryDatabase("emptycorr", "teh->`n")
+    createdDatabaseFiles.Push(emptyCorrPath)
+    emptyCorrResult := AC_ParseDatabase(emptyCorrPath)
+    AssertFalse(emptyCorrResult["ok"], "empty correction rejected")
+    AssertTrue(InStr(emptyCorrResult["error"], "empty correction"), "empty correction names the problem")
 
     ; --- Comments and blank lines are ignored ---
     withCommentsPath := WriteTemporaryDatabase("comments", "; header comment`n`nteh->the`n")
