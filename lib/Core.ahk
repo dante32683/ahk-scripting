@@ -238,6 +238,7 @@ App_Shutdown(*) {
     try SetTimer(_FlushLocationDirty, 0)
     try SetTimer(Perf_Flush, 0)
     try AC_StopInputHook()
+    try _CancelDesktopFocusRestore()
 
     for hwnd, timer in g_AutoRestoreTimers {
         try SetTimer(timer, 0)
@@ -390,25 +391,23 @@ _IsPWA(windowHandle) {
         return false
     }
 
-    windowTitle := WinGetTitle("ahk_id " windowHandle)
-    if (processName = "msedge.exe" && !RegExMatch(windowTitle, "i)[\-–—]\s+(?:InPrivate\s+[\-–—]\s+|InPrivate\s+)?Microsoft\s+Edge\s*$")) {
-        g_PwaCache[windowHandle] := true
-        return true
-    }
-    if (processName = "chrome.exe" && !RegExMatch(windowTitle, "i)[\-–—]\s+Google\s+Chrome\s*$")) {
-        g_PwaCache[windowHandle] := true
-        return true
-    }
-
     try {
         processId := WinGetPID("ahk_id " windowHandle)
     } catch {
         return false
     }
 
-    g_PwaCache[windowHandle] := false ; provisional until async check completes
+    windowTitle := WinGetTitle("ahk_id " windowHandle)
+    titleLooksLikePwa := false
+    if (processName = "msedge.exe" && !RegExMatch(windowTitle, "i)[\-–—]\s+(?:InPrivate\s+[\-–—]\s+|InPrivate\s+)?Microsoft\s+Edge\s*$"))
+        titleLooksLikePwa := true
+    if (processName = "chrome.exe" && !RegExMatch(windowTitle, "i)[\-–—]\s+Google\s+Chrome\s*$"))
+        titleLooksLikePwa := true
+
+    ; Title heuristic is provisional only — always verify via command line.
+    g_PwaCache[windowHandle] := titleLooksLikePwa
     SetTimer(() => _AsyncCheckPWA(windowHandle, processId), -50)
-    return false
+    return titleLooksLikePwa
 }
 
 _RemoveFromSigIndex(hwnd, sig) {
@@ -804,15 +803,27 @@ _AutoRestoreWindow(hwnd) {
     if g_TilingMode != "Native"
         return
     global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive
-    global g_ScriptPaused
+    global g_ScriptPaused, g_AutoRestoreRetryCount
     if g_ScriptPaused
         return
     if !g_Layouts.Has(hwnd) || !_IsLiveWindow(hwnd)
         return
     if g_UserMoveActive.Has(hwnd)
         return
-    if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount
+    if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount {
+        ; Do not drop restores that fire during move suppression — reschedule.
+        if !IsSet(g_AutoRestoreRetryCount)
+            g_AutoRestoreRetryCount := Map()
+        retries := g_AutoRestoreRetryCount.Has(hwnd) ? g_AutoRestoreRetryCount[hwnd] : 0
+        if retries >= 5
+            return
+        g_AutoRestoreRetryCount[hwnd] := retries + 1
+        remaining := g_MoveSuppressUntil[hwnd] - A_TickCount
+        _ScheduleAutoRestore(hwnd, Min(Max(remaining + 20, 50), 2000))
         return
+    }
+    if IsSet(g_AutoRestoreRetryCount) && g_AutoRestoreRetryCount.Has(hwnd)
+        g_AutoRestoreRetryCount.Delete(hwnd)
     if _GetWindowState(hwnd) != 0
         return
     layout := g_Layouts[hwnd]
@@ -1057,6 +1068,9 @@ _ApplyLayout(x_factor, y_factor, w_factor, h_factor, overrideHwnd := 0, persist 
 _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 0) {
     startTime := A_TickCount
     global g_MoveSuppressUntil, g_WinMaxState, g_Layouts, g_AcceptedGeometryCache, g_TileGap
+    global g_LayoutApplyGeneration
+    if !IsSet(g_LayoutApplyGeneration)
+        g_LayoutApplyGeneration := Map()
     if !Layout_Validate(record) {
         Perf_Log("apply_layout", 0, "invalid_record", A_TickCount - startTime)
         return false
@@ -1068,6 +1082,8 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
             Perf_Log("apply_layout", windowHandle, "invalid_hwnd", A_TickCount - startTime)
             return false
         }
+        ; Cancel any prior settle before skip/fail paths can leave a stale timer.
+        _CancelGeometrySettle(windowHandle)
         state := _GetWindowState(windowHandle)
         if (state = 1 || state = -1) {
             WinRestore("ahk_id " windowHandle)
@@ -1084,6 +1100,7 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
             return false
         }
         windowHandle := WinGetID("A")
+        _CancelGeometrySettle(windowHandle)
         if !_IsOnCurrentDesktop(windowHandle) {
             Perf_Log("apply_layout", windowHandle, "wrong_desktop", A_TickCount - startTime)
             return false
@@ -1094,6 +1111,9 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
         else
             GetActiveMonitorWorkArea(&workAreaLeft, &workAreaTop, &workAreaRight, &workAreaBottom)
     }
+
+    applyGen := (g_LayoutApplyGeneration.Has(windowHandle) ? g_LayoutApplyGeneration[windowHandle] : 0) + 1
+    g_LayoutApplyGeneration[windowHandle] := applyGen
 
     g_MoveSuppressUntil[windowHandle] := A_TickCount + 1500
     gap := record["kind"] = "slot" ? g_TileGap : 0
@@ -1149,7 +1169,7 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
             g_AcceptedGeometryCache[windowHandle] := finalVis
         ; Some apps enforce min size / adjust frames shortly after WinMove.
         ; Schedule a short bounded settle so transient geometry is not fought forever.
-        _ScheduleGeometrySettle(windowHandle, record, requiredW, requiredH, offsetLeft, offsetTop, targetX, targetY)
+        _ScheduleGeometrySettle(windowHandle, record, requiredW, requiredH, offsetLeft, offsetTop, targetX, targetY, applyGen)
     }
 
     desk := VDA.isLoaded ? VDA.GetWindowDesktop(windowHandle) : 0
@@ -1171,14 +1191,22 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
 ; Bounded settle: 3 checks over ~50/100/150 ms after WinMove so apps that
 ; enforce minimum size shortly after the move get a corrected accepted rect.
 global g_GeometrySettleTimers := Map()
+global g_LayoutApplyGeneration := Map()
+global g_AutoRestoreRetryCount := Map()
 
-_ScheduleGeometrySettle(hwnd, record, requiredW, requiredH, offsetLeft, offsetTop, targetX, targetY) {
+_CancelGeometrySettle(hwnd) {
     global g_GeometrySettleTimers
-    if g_GeometrySettleTimers.Has(hwnd) {
-        try SetTimer(g_GeometrySettleTimers[hwnd], 0)
-        g_GeometrySettleTimers.Delete(hwnd)
-    }
-    state := Map("n", 0, "record", record, "reqW", requiredW, "reqH", requiredH
+    if !g_GeometrySettleTimers.Has(hwnd)
+        return
+    try SetTimer(g_GeometrySettleTimers[hwnd], 0)
+    g_GeometrySettleTimers.Delete(hwnd)
+}
+
+_ScheduleGeometrySettle(hwnd, record, requiredW, requiredH, offsetLeft, offsetTop, targetX, targetY, applyGen := 0) {
+    global g_GeometrySettleTimers
+    _CancelGeometrySettle(hwnd)
+    state := Map("n", 0, "gen", applyGen, "layoutKey", Layout_Serialize(record)
+        , "record", record, "reqW", requiredW, "reqH", requiredH
         , "ol", offsetLeft, "ot", offsetTop, "tx", targetX, "ty", targetY)
     tick := () => _GeometrySettleTick(hwnd, state)
     g_GeometrySettleTimers[hwnd] := tick
@@ -1187,8 +1215,29 @@ _ScheduleGeometrySettle(hwnd, record, requiredW, requiredH, offsetLeft, offsetTo
 
 _GeometrySettleTick(hwnd, state) {
     global g_GeometrySettleTimers, g_AcceptedGeometryCache, g_Layouts, g_MoveSuppressUntil
+    global g_LayoutApplyGeneration, g_UserMoveActive
     state["n"] += 1
     if !DllCall("IsWindow", "Ptr", hwnd) || !g_Layouts.Has(hwnd) {
+        if g_GeometrySettleTimers.Has(hwnd)
+            g_GeometrySettleTimers.Delete(hwnd)
+        return
+    }
+    if state["gen"] && g_LayoutApplyGeneration.Has(hwnd) && g_LayoutApplyGeneration[hwnd] != state["gen"] {
+        if g_GeometrySettleTimers.Has(hwnd)
+            g_GeometrySettleTimers.Delete(hwnd)
+        return
+    }
+    if Layout_Serialize(g_Layouts[hwnd]) != state["layoutKey"] {
+        if g_GeometrySettleTimers.Has(hwnd)
+            g_GeometrySettleTimers.Delete(hwnd)
+        return
+    }
+    if g_UserMoveActive.Has(hwnd) {
+        if g_GeometrySettleTimers.Has(hwnd)
+            g_GeometrySettleTimers.Delete(hwnd)
+        return
+    }
+    if _GetWindowState(hwnd) != 0 {
         if g_GeometrySettleTimers.Has(hwnd)
             g_GeometrySettleTimers.Delete(hwnd)
         return
@@ -1199,6 +1248,7 @@ _GeometrySettleTick(hwnd, state) {
             adj := _CompensateConstrainedPosition(state["record"], vis, state["reqW"], state["reqH"]
                 , state["ol"], state["ot"], state["tx"], state["ty"])
             if adj.x != state["tx"] || adj.y != state["ty"] {
+                g_MoveSuppressUntil[hwnd] := A_TickCount + 1500
                 WinMove(adj.x, adj.y, , , "ahk_id " hwnd)
                 vis := Window_GetVisibleRect(hwnd)
             }
@@ -1207,11 +1257,12 @@ _GeometrySettleTick(hwnd, state) {
             g_AcceptedGeometryCache[hwnd] := vis
     }
     if state["n"] < 3 {
-        delays := [50, 100, 150]
-        SetTimer(g_GeometrySettleTimers[hwnd], -delays[state["n"]])
+        ; Inter-tick delays of 50 ms → fires near 50 / 100 / 150 ms from start.
+        SetTimer(g_GeometrySettleTimers[hwnd], -50)
         return
     }
-    g_GeometrySettleTimers.Delete(hwnd)
+    if g_GeometrySettleTimers.Has(hwnd)
+        g_GeometrySettleTimers.Delete(hwnd)
 }
 
 _RestoreDesktop(desktopNumber) {
@@ -1354,7 +1405,7 @@ _ProcessDestroyEvent(hwnd, info) {
     global g_WinSigCache, g_WinMaxState, CFG_TilingMemory, g_HWNDLayoutCache, g_ProcNameCache, g_WindowOffsetCache
     global g_Layouts, g_UserMoveActive, g_MoveSuppressUntil, g_PwaCache, g_LayoutCycleIdx
     global g_AutoRestoreTimers, g_AcceptedGeometryCache, g_SigToHwndIndex, g_SessionNoAutoSnap
-    global g_GeometrySettleTimers
+    global g_GeometrySettleTimers, g_DesktopLastWindow, g_AutoRestoreRetryCount, g_LayoutApplyGeneration
 
     if g_ProcNameCache.Has(hwnd)
         g_ProcNameCache.Delete(hwnd)
@@ -1380,12 +1431,33 @@ _ProcessDestroyEvent(hwnd, info) {
         try SetTimer(g_AutoRestoreTimers[hwnd], 0)
         g_AutoRestoreTimers.Delete(hwnd)
     }
+    if g_AutoRestoreRetryCount.Has(hwnd)
+        g_AutoRestoreRetryCount.Delete(hwnd)
+    if g_LayoutApplyGeneration.Has(hwnd)
+        g_LayoutApplyGeneration.Delete(hwnd)
     if g_GeometrySettleTimers.Has(hwnd) {
         try SetTimer(g_GeometrySettleTimers[hwnd], 0)
         g_GeometrySettleTimers.Delete(hwnd)
     }
     if g_HWNDLayoutCache.Has(hwnd)
         g_HWNDLayoutCache.Delete(hwnd)
+
+    ; Drop dead HWND from desktop memory (Core + persistent StateStore).
+    desksToForget := []
+    for desk, mappedHwnd in g_DesktopLastWindow {
+        if mappedHwnd = hwnd
+            desksToForget.Push(desk)
+    }
+    for desk in desksToForget {
+        g_DesktopLastWindow.Delete(desk)
+        State_DeleteDesktopWindow(desk)
+    }
+    State_ClearDesktopWindowByHwnd(hwnd)
+
+    ; Pending autocorrect undo must not survive HWND reuse.
+    global AC_LastHwnd
+    if IsSet(AC_LastHwnd) && AC_LastHwnd = hwnd
+        AC_ClearLastCorrection()
 
     sig := info is Map && info.Has("sig") ? info["sig"] : ""
     isMax := info is Map && info.Has("max") ? info["max"] : 0
@@ -1408,7 +1480,10 @@ _ProcessDestroyEvent(hwnd, info) {
 
     if sig = "" || !IsSet(CFG_TilingMemory) || !CFG_TilingMemory
         return
-    State_SetAppMaximized(sig, isMax ? true : false)
+    ; Only persist maximize=true on destroy. Writing false when a non-max peer
+    ; closes would wipe maximize memory for other same-signature windows.
+    if isMax
+        State_SetAppMaximized(sig, true)
 }
 
 _OnMoveStart(hHook, event, hwnd, idObject, idChild, dwThread, dwTime) {
@@ -1557,6 +1632,9 @@ _HandleDesktopChange() {
 global g_DesktopExcludeHwnd := 0
 global g_PendingDesktopNotify := 0
 global g_DesktopWatchdogTarget := 0
+global g_PendingDeparture := 0          ; pre-switch active-window snapshot (Map) or 0
+global g_DesktopFocusGeneration := 0
+global g_DesktopRestoreCallback := 0
 
 _HandleDesktopChangeFromMsg(currentDesk) {
     global g_DesktopExcludeHwnd, g_PendingDesktopNotify
@@ -1576,40 +1654,146 @@ _FlushDesktopNotify() {
     _CommitDesktopTransition(target, exclude)
 }
 
+_CaptureDepartureSnapshot() {
+    global g_PendingDeparture, g_LastDesktop, g_DesktopFocusGeneration
+    snapshot := Map("desk", 0, "hwnd", 0, "pid", 0, "proc", "", "class", "", "sig", ""
+        , "gen", g_DesktopFocusGeneration)
+    desk := g_LastDesktop
+    if VDA.isLoaded {
+        try {
+            cur := VDA.GetCurrent()
+            if cur && cur != VDA.DESKTOP_UNKNOWN
+                desk := cur
+        }
+    }
+    snapshot["desk"] := desk
+    if WinExist("A") {
+        try {
+            hwnd := WinGetID("A")
+            if hwnd && DllCall("IsWindow", "Ptr", hwnd) {
+                snapshot["hwnd"] := hwnd
+                snapshot["pid"] := WinGetPID("ahk_id " hwnd)
+                snapshot["proc"] := WinGetProcessName("ahk_id " hwnd)
+                snapshot["class"] := WinGetClass("ahk_id " hwnd)
+                snapshot["sig"] := _GetWinSignature(hwnd)
+            }
+        }
+    }
+    g_PendingDeparture := snapshot
+}
+
+_DepartureSnapshotValid(snapshot, fromDesk, excludeHwnd := 0) {
+    if !(snapshot is Map) || !snapshot["hwnd"]
+        return false
+    if snapshot["desk"] != fromDesk
+        return false
+    hwnd := snapshot["hwnd"]
+    if excludeHwnd && hwnd = excludeHwnd
+        return false
+    if !WinExist("ahk_id " hwnd)
+        return false
+    identity := Map("pid", snapshot["pid"], "proc", snapshot["proc"]
+        , "class", snapshot["class"], "sig", snapshot["sig"])
+    return _ValidateWindowIdentity(hwnd, identity)
+}
+
+_ForgetDesktopWindow(desk) {
+    global g_DesktopLastWindow
+    if g_DesktopLastWindow.Has(desk)
+        g_DesktopLastWindow.Delete(desk)
+    State_DeleteDesktopWindow(desk)
+}
+
+_RememberDepartingDesktop(fromDesk, excludeHwnd := 0) {
+    global g_PendingDeparture, g_FocusHistory, g_DesktopLastWindow
+    snap := g_PendingDeparture
+    g_PendingDeparture := 0
+    if fromDesk <= 0
+        return
+
+    if _DepartureSnapshotValid(snap, fromDesk, excludeHwnd) {
+        identity := Map("pid", snap["pid"], "proc", snap["proc"]
+            , "class", snap["class"], "sig", snap["sig"])
+        State_SetDesktopWindow(fromDesk, snap["hwnd"], identity)
+        g_DesktopLastWindow[fromDesk] := snap["hwnd"]
+        return
+    }
+
+    ; Focus-history fallback. Skip pinned windows — they are not desk-specific.
+    historyIndex := g_FocusHistory.Length
+    while historyIndex > 0 {
+        prevHwnd := g_FocusHistory[historyIndex]
+        if excludeHwnd && prevHwnd = excludeHwnd {
+            historyIndex--
+            continue
+        }
+        if !prevHwnd || !WinExist("ahk_id " prevHwnd) {
+            historyIndex--
+            continue
+        }
+        if VDA.isLoaded {
+            try {
+                if VDA.IsPinned(prevHwnd) = 1 {
+                    historyIndex--
+                    continue
+                }
+            }
+        }
+        if _IsWindowOnDesktop(prevHwnd, fromDesk) {
+            State_SetDesktopWindow(fromDesk, prevHwnd)
+            g_DesktopLastWindow[fromDesk] := prevHwnd
+            break
+        }
+        historyIndex--
+    }
+}
+
 ; Central desktop-transition bookkeeping. Only commits after the caller has
 ; confirmed VDA success (or a VDA notification delivered a real new desktop).
 ; Deduplicates command-driven switches and VDA notifications via g_LastDesktop.
 _CommitDesktopTransition(newDesk, excludeHwnd := 0) {
-    global g_LastDesktop, g_FocusHistory, g_DesktopLastWindow, g_ScriptPaused, g_DesktopWatchdogTarget
-    if g_ScriptPaused
+    global g_LastDesktop, g_ScriptPaused, g_DesktopWatchdogTarget, g_DesktopFocusGeneration
+    global g_PendingDeparture
+    if g_ScriptPaused {
+        g_PendingDeparture := 0
         return
-    if !newDesk || newDesk = VDA.DESKTOP_UNKNOWN
+    }
+    if !newDesk || newDesk = VDA.DESKTOP_UNKNOWN {
+        g_PendingDeparture := 0
         return
-    if newDesk = g_LastDesktop
+    }
+    if newDesk = g_LastDesktop {
+        g_PendingDeparture := 0
         return
+    }
 
     fromDesk := g_LastDesktop
-    if fromDesk > 0 {
-        historyIndex := g_FocusHistory.Length
-        while historyIndex > 0 {
-            prevHwnd := g_FocusHistory[historyIndex]
-            if excludeHwnd && prevHwnd = excludeHwnd {
-                historyIndex--
-                continue
-            }
-            if WinExist("ahk_id " prevHwnd) && _IsWindowOnDesktop(prevHwnd, fromDesk) {
-                State_SetDesktopWindow(fromDesk, prevHwnd)
-                g_DesktopLastWindow[fromDesk] := prevHwnd
-                break
-            }
-            historyIndex--
-        }
-    }
+    _RememberDepartingDesktop(fromDesk, excludeHwnd)
 
     g_LastDesktop := newDesk
     g_DesktopWatchdogTarget := 0
-    SetTimer(() => _RestoreFocusOnDesktop(newDesk), -150)
+    g_DesktopFocusGeneration += 1
+    _ScheduleDesktopFocusRestore(newDesk, g_DesktopFocusGeneration, 1)
     _ScheduleDesktopRestore(newDesk)
+}
+
+_CancelDesktopFocusRestore() {
+    global g_DesktopRestoreCallback
+    if g_DesktopRestoreCallback {
+        try SetTimer(g_DesktopRestoreCallback, 0)
+        g_DesktopRestoreCallback := 0
+    }
+}
+
+_ScheduleDesktopFocusRestore(desk, gen, attempt) {
+    global g_DesktopRestoreCallback
+    static delays := [150, 300, 550]
+    if attempt < 1 || attempt > delays.Length
+        return
+    _CancelDesktopFocusRestore()
+    cb := () => _RestoreFocusOnDesktop(desk, gen, attempt)
+    g_DesktopRestoreCallback := cb
+    SetTimer(cb, -delays[attempt])
 }
 
 _ScheduleDesktopWatchdog(expectedDesk) {
@@ -1694,45 +1878,83 @@ ToggleMaximize() {
 }
 
 GotoDesktop(n) {
+    global g_PendingDeparture
     if !VDA.isLoaded {
         ShowOSD("VDA not loaded — install the DLL first!")
         return
     }
-    ; Do not update internal desktop state until VDA confirms success. When the
-    ; post-message hook is registered, the notification owns bookkeeping so we
-    ; do not process the same transition twice; without a hook, commit here.
-    if !VDA.GoTo(n)
+    ; Capture the real active top-level window BEFORE switching. Textbox focus
+    ; inside a window often never creates a new focus-history entry.
+    _CaptureDepartureSnapshot()
+    if !VDA.GoTo(n) {
+        g_PendingDeparture := 0
         return
+    }
     if VDA.hasHookRegistered
         _ScheduleDesktopWatchdog(n)
     else
         _CommitDesktopTransition(n)
 }
 
-_RestoreFocusOnDesktop(n) {
+_RestoreFocusOnDesktop(n, gen := 0, attempt := 1) {
+    global g_DesktopFocusGeneration, g_DesktopLastWindow, g_DesktopRestoreCallback
+    g_DesktopRestoreCallback := 0
+    if gen && gen != g_DesktopFocusGeneration
+        return
+    if VDA.isLoaded {
+        try cur := VDA.GetCurrent()
+        catch
+            cur := VDA.DESKTOP_UNKNOWN
+        if cur = VDA.DESKTOP_UNKNOWN {
+            if attempt < 3
+                _ScheduleDesktopFocusRestore(n, gen, attempt + 1)
+            return
+        }
+        if cur != n
+            return
+    }
     if !g_DesktopLastWindow.Has(n)
         return
     hwnd := g_DesktopLastWindow[n]
     if !WinExist("ahk_id " hwnd) {
-        g_DesktopLastWindow.Delete(n)
+        _ForgetDesktopWindow(n)
         return
     }
-    ; Strict membership for restore: unknown/error is not acceptable.
+    identity := State_GetDesktopWindowIdentity(n)
+    if identity is Map && identity.Count && !_ValidateWindowIdentity(hwnd, identity) {
+        _ForgetDesktopWindow(n)
+        return
+    }
+    ; Strict membership for restore: unknown/error retries; known-elsewhere deletes.
     if VDA.isLoaded {
         onDesk := VDA.IsOnCurrentDesktop(hwnd)
         if onDesk != 1 {
-            if onDesk = 0
-                g_DesktopLastWindow.Delete(n)
+            if onDesk = 0 {
+                _ForgetDesktopWindow(n)
+                return
+            }
+            ; Unknown / error — retry without deleting.
+            if attempt < 3
+                _ScheduleDesktopFocusRestore(n, gen, attempt + 1)
             return
         }
     }
     if WinGetMinMax("ahk_id " hwnd) = -1
         WinRestore("ahk_id " hwnd)
     WinActivate("ahk_id " hwnd)
+    try {
+        if WinGetID("A") != hwnd {
+            if attempt < 3
+                _ScheduleDesktopFocusRestore(n, gen, attempt + 1)
+        }
+    } catch {
+        if attempt < 3
+            _ScheduleDesktopFocusRestore(n, gen, attempt + 1)
+    }
 }
 
 MoveToDesktop(desktopIndex) {
-    global g_DesktopExcludeHwnd, g_DesktopLastWindow
+    global g_DesktopExcludeHwnd, g_DesktopLastWindow, g_PendingDeparture
     if !WinExist("A")
         return
     if !VDA.isLoaded {
@@ -1740,7 +1962,10 @@ MoveToDesktop(desktopIndex) {
         return
     }
     windowHandle := WinGetID("A")
+    ; Capture departure before the move so history fallback can find the prior window.
+    _CaptureDepartureSnapshot()
     if !VDA.MoveWindow(windowHandle, desktopIndex) {
+        g_PendingDeparture := 0
         ShowOSD("Move to desktop " desktopIndex " failed")
         return
     }
@@ -1751,6 +1976,8 @@ MoveToDesktop(desktopIndex) {
     g_DesktopExcludeHwnd := windowHandle
     if !VDA.GoTo(desktopIndex) {
         g_DesktopExcludeHwnd := 0
+        g_PendingDeparture := 0
+        ShowOSD("Moved to desktop " desktopIndex " — switch failed")
         return
     }
     if VDA.hasHookRegistered
