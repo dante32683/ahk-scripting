@@ -16,7 +16,20 @@ global g_StateSchemaVersion := 2
 State_Init() {
     global g_StateDir, g_StateAppLayouts, g_StateAppMaximized, g_StateDesktopWindows
     global g_StateDesktopIdentities, g_StateSessionLayouts, g_StateAutocorrectDisabled
-    global CFG_TestMode
+    global g_StateDirtyAreas, g_StateFlushTimerActive, g_StateHandoffPendingWrite
+    global g_StateMigrationValidated, CFG_TestMode
+
+    ; Always reset maps so a re-init (tests or SoftReset paths) cannot leak prior state.
+    g_StateAppLayouts := Map()
+    g_StateAppMaximized := Map()
+    g_StateDesktopWindows := Map()
+    g_StateDesktopIdentities := Map()
+    g_StateSessionLayouts := Map()
+    g_StateAutocorrectDisabled := Map()
+    g_StateDirtyAreas := Map()
+    g_StateFlushTimerActive := false
+    g_StateHandoffPendingWrite := false
+    g_StateMigrationValidated := 0
 
     if IsSet(CFG_StateDir) && CFG_StateDir != ""
         g_StateDir := CFG_StateDir
@@ -103,9 +116,10 @@ State_LoadStateFile(stateFile) {
     ; A state file with no schema version is not a valid v2 file; require it explicitly
     ; rather than assuming "2" and parsing potentially-incompatible content.
     ver := IniRead(stateFile, "Schema", "version", "")
-    if ver = ""
+    if ver = "" || !IsInteger(ver)
         throw Error("State file missing schema version")
-    if Integer(ver) > g_StateSchemaVersion
+    verNum := Integer(ver)
+    if verNum < 1 || verNum > g_StateSchemaVersion
         throw Error("Unsupported state schema version: " ver)
 
     sectionsStr := IniRead(stateFile)
@@ -156,7 +170,9 @@ State_LoadStateFile(stateFile) {
                 g_StateDesktopWindows[deskNum] := hwnd
                 g_StateDesktopIdentities[deskNum] := identity
             } else {
-                g_StateDesktopWindows[deskNum] := Integer(val)
+                ; Raw HWND without identity cannot be verified after HWND reuse —
+                ; skip rather than restoring a potentially wrong window.
+                State_LogError("load_desktop", "skipping raw HWND for desktop " deskNum " (no identity)")
             }
         }
     }
@@ -238,8 +254,13 @@ State_LoadSessionHandoff() {
 _ValidateWindowIdentity(hwnd, identity) {
     if !hwnd || !DllCall("IsWindow", "Ptr", hwnd)
         return false
+    ; Without a durable identity, an HWND alone is not enough — handles are reused.
     if !(identity is Map)
-        return DllCall("IsWindow", "Ptr", hwnd)
+        return false
+    if !identity.Has("pid") || !identity["pid"]
+        return false
+    if !identity.Has("proc") || identity["proc"] = ""
+        return false
     try {
         actualPid := WinGetPID("ahk_id " hwnd)
         actualProc := WinGetProcessName("ahk_id " hwnd)
@@ -247,9 +268,9 @@ _ValidateWindowIdentity(hwnd, identity) {
     } catch {
         return false
     }
-    if identity.Has("pid") && identity["pid"] && actualPid != identity["pid"]
+    if actualPid != identity["pid"]
         return false
-    if identity.Has("proc") && identity["proc"] != "" && actualProc != identity["proc"]
+    if actualProc != identity["proc"]
         return false
     if identity.Has("class") && identity["class"] != "" && actualClass != identity["class"]
         return false
@@ -294,6 +315,23 @@ State_SetAppMaximized(signature, isMaximized) {
         g_StateAppMaximized[signature] := val
         State_MarkDirty("state")
     }
+}
+
+State_DeleteAppLayout(signature) {
+    global g_StateAppLayouts, g_StateAppMaximized
+    if signature = ""
+        return
+    changed := false
+    if g_StateAppLayouts.Has(signature) {
+        g_StateAppLayouts.Delete(signature)
+        changed := true
+    }
+    if g_StateAppMaximized.Has(signature) {
+        g_StateAppMaximized.Delete(signature)
+        changed := true
+    }
+    if changed
+        State_MarkDirty("state")
 }
 
 State_GetDesktopWindow(desktop) {
@@ -571,34 +609,24 @@ State_MigrateLegacy() {
             State_LogError("migrate_ac", e.Message)
     }
 
-    ; Legacy desktop memory stores raw HWNDs with no durable identity, so it is only
-    ; meaningful as a same-boot handoff before the new state file exists. Import it once,
-    ; then rename it so a later session can never re-import stale reused handles.
+    ; Legacy desktop memory stores raw HWNDs with no durable identity. Do not import
+    ; them into persistent state (HWND reuse after reboot can restore the wrong window).
+    ; Consume the file once so migration is one-time, but never restore the handles.
     legacyDesktopFile := A_Temp "\ahk_desktop_memory.ini"
-    if FileExist(legacyDesktopFile) && !FileExist(stateFile) {
-        try {
-            FileCopy(legacyDesktopFile, legacyDesktopFile ".bak", true)
-            desktopKeys := IniRead(legacyDesktopFile, "DesktopLastWindow")
-            loop parse, desktopKeys, "`n", "`r" {
-                line := Trim(A_LoopField)
-                if line = ""
-                    continue
-                parts := StrSplit(line, "=")
-                if parts.Length = 2 {
-                    deskNum := Integer(SubStr(parts[1], 2))
-                    g_StateDesktopWindows[deskNum] := Integer(parts[2])
-                }
-            }
-            migrated := true
-            State_MarkDirty("state")
-        } catch as e
-            State_LogError("migrate_desktop", e.Message)
-        ; Consume the legacy file so migration is strictly one-time.
+    if FileExist(legacyDesktopFile) {
+        try FileCopy(legacyDesktopFile, legacyDesktopFile ".bak", true)
         try FileMove(legacyDesktopFile, legacyDesktopFile ".imported", true)
+        migrated := true
     }
 
-    if migrated
-        g_StateMigrationValidated += 1
+    if migrated {
+        ; Mark migration complete only after the new state persists successfully.
+        ; Leaving dirty flags set on failure lets the next startup retry.
+        if State_FlushNow()
+            g_StateMigrationValidated += 1
+        else
+            State_LogError("migrate_flush", "migration flush failed; will retry next start")
+    }
 }
 
 State_Shutdown() {
