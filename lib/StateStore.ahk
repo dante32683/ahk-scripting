@@ -100,7 +100,11 @@ State_UnescapeIni(value) {
 State_LoadStateFile(stateFile) {
     global g_StateAppLayouts, g_StateAppMaximized, g_StateDesktopWindows, g_StateDesktopIdentities, g_StateSchemaVersion
 
-    ver := IniRead(stateFile, "Schema", "version", "2")
+    ; A state file with no schema version is not a valid v2 file; require it explicitly
+    ; rather than assuming "2" and parsing potentially-incompatible content.
+    ver := IniRead(stateFile, "Schema", "version", "")
+    if ver = ""
+        throw Error("State file missing schema version")
     if Integer(ver) > g_StateSchemaVersion
         throw Error("Unsupported state schema version: " ver)
 
@@ -567,8 +571,11 @@ State_MigrateLegacy() {
             State_LogError("migrate_ac", e.Message)
     }
 
+    ; Legacy desktop memory stores raw HWNDs with no durable identity, so it is only
+    ; meaningful as a same-boot handoff before the new state file exists. Import it once,
+    ; then rename it so a later session can never re-import stale reused handles.
     legacyDesktopFile := A_Temp "\ahk_desktop_memory.ini"
-    if FileExist(legacyDesktopFile) {
+    if FileExist(legacyDesktopFile) && !FileExist(stateFile) {
         try {
             FileCopy(legacyDesktopFile, legacyDesktopFile ".bak", true)
             desktopKeys := IniRead(legacyDesktopFile, "DesktopLastWindow")
@@ -584,9 +591,10 @@ State_MigrateLegacy() {
             }
             migrated := true
             State_MarkDirty("state")
-            ; Keep original until validated twice; only backup kept permanently
         } catch as e
             State_LogError("migrate_desktop", e.Message)
+        ; Consume the legacy file so migration is strictly one-time.
+        try FileMove(legacyDesktopFile, legacyDesktopFile ".imported", true)
     }
 
     if migrated

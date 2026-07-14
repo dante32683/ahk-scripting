@@ -87,15 +87,15 @@ BuildAutocorrect() {
         FileAppend(out, tempPath, "UTF-8")
         if !InStr(FileRead(tempPath, "UTF-8"), ":CX:")
             throw Error("Generated file missing :CX: hotstrings")
-        ; Atomic replace — never delete the good file first
-        if !DllCall("MoveFileExW", "Str", tempPath, "Str", outPath, "UInt", 9) {
-            ; Fallback for cross-volume issues
-            FileCopy(tempPath, outPath, true)
-            FileDelete(tempPath)
-        }
+        ; Atomic replace only. The temp file lives in the destination directory, so a
+        ; cross-volume move is not expected; on failure keep the existing good file and
+        ; report the error rather than a non-atomic FileCopy that could corrupt it.
+        if !DllCall("MoveFileExW", "Str", tempPath, "Str", outPath, "UInt", 9)
+            throw Error("MoveFileExW failed: " A_LastError)
     } catch as e {
         try FileDelete(tempPath)
-        MsgBox("Error writing Autocorrect.ahk: " e.Message)
+        if !(IsSet(CFG_TestMode) && CFG_TestMode)
+            MsgBox("Error writing Autocorrect.ahk: " e.Message)
         Perf_Log("autocorrect_rebuild", "write_failed", A_TickCount - startTime)
         return false
     }
@@ -133,6 +133,13 @@ AC_ParseDatabase(dbPath) {
         if rawTrigger = "" {
             result["ok"] := false
             result["error"] := "Line " lineNo ": empty trigger"
+            return result
+        }
+        if rawCorrection = "" {
+            ; An empty correction would generate a deletion hotstring (word-> removes the
+            ; typed word). Reject it rather than silently building destructive behavior.
+            result["ok"] := false
+            result["error"] := "Line " lineNo ": empty correction for trigger '" rawTrigger "'"
             return result
         }
         key := StrLower(rawTrigger)

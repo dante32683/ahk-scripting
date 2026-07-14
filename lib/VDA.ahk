@@ -15,6 +15,7 @@ class VDA {
     static pUnregisterHook := 0
     static hookMsg := 0x1400 + 30
     static hasHookRegistered := false
+    static msgCallback := 0  ; exact bound object registered with OnMessage (needed to unregister)
 
     ; Sentinel: unknown/error desktop (never treat as pinned)
     static DESKTOP_UNKNOWN := -1
@@ -58,7 +59,10 @@ class VDA {
             regResult := DllCall(this.pRegisterHook, "Ptr", A_ScriptHwnd, "Int", this.hookMsg, "Int")
             if regResult != -1 {
                 this.hasHookRegistered := true
-                OnMessage(this.hookMsg, this.OnDesktopChangeMessage)
+                ; Keep the exact bound object so Cleanup() can unregister it. A fresh
+                ; .Bind(this) is a different object and would not remove this callback.
+                this.msgCallback := this.OnDesktopChangeMessage.Bind(this)
+                OnMessage(this.hookMsg, this.msgCallback)
             }
         }
         return true
@@ -67,8 +71,12 @@ class VDA {
     static GoTo(desktopNum) {
         if !this.isLoaded
             return false
+        ; A desktop number below 1 is always invalid, even when the count is unknown;
+        ; otherwise desktopNum - 1 becomes a negative zero-based index passed to the DLL.
+        if desktopNum < 1
+            return false
         count := this.GetDesktopCount()
-        if count > 0 && (desktopNum < 1 || desktopNum > count)
+        if count > 0 && desktopNum > count
             return false
         result := DllCall(this.pGoToDesktopNumber, "Int", desktopNum - 1, "Int")
         return result != -1
@@ -77,8 +85,10 @@ class VDA {
     static MoveWindow(hwnd, desktopNum) {
         if !this.isLoaded
             return false
+        if desktopNum < 1
+            return false
         count := this.GetDesktopCount()
-        if count > 0 && (desktopNum < 1 || desktopNum > count)
+        if count > 0 && desktopNum > count
             return false
         result := DllCall(this.pMoveWindowToDesktopNumber, "Ptr", hwnd, "Int", desktopNum - 1, "Int")
         return result != -1
@@ -127,13 +137,15 @@ class VDA {
                 return -1
             return res ? 1 : 0
         }
+        ; Check pin state first: a pinned window is visible on every desktop, so it can
+        ; be resolved even when the current/window desktop queries return unknown.
+        pinned := this.IsPinned(hwnd)
+        if pinned = 1
+            return 1
         cur := this.GetCurrent()
         win := this.GetWindowDesktop(hwnd)
         if cur = this.DESKTOP_UNKNOWN || win = this.DESKTOP_UNKNOWN
             return -1
-        pinned := this.IsPinned(hwnd)
-        if pinned = 1
-            return 1
         return (win = cur) ? 1 : 0
     }
 
@@ -147,6 +159,12 @@ class VDA {
         if this.hasHookRegistered && this.pUnregisterHook {
             try DllCall(this.pUnregisterHook, "Ptr", A_ScriptHwnd)
             this.hasHookRegistered := false
+        }
+        ; Also remove the AutoHotkey message callback; unregistering the DLL hook alone
+        ; leaves the OnMessage handler bound to a stale registration.
+        if this.msgCallback {
+            try OnMessage(this.hookMsg, this.msgCallback, 0)
+            this.msgCallback := 0
         }
         if this.hVDA {
             try DllCall("FreeLibrary", "Ptr", this.hVDA)

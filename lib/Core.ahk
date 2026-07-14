@@ -45,7 +45,6 @@ global g_PnPUtilPath := (A_Is64bitOS && A_PtrSize = 4)
 global g_ProcNameCache := Map()
 global g_WindowOffsetCache := Map()
 global g_PwaCache := Map()
-global g_PwaProcessIdCache := Map()
 global g_SigToHwndIndex := Map()  ; signature -> Map of hwnd -> true
 
 ; ============================================================
@@ -97,18 +96,28 @@ _ProcessWinEvents() {
 
     for hwnd, _ in moveStarts {
         try _ProcessMoveStartEvent(hwnd)
+        catch as e
+            _Dbg("event-error movestart hwnd=" hwnd " " e.Message)
     }
     for hwnd, _ in moveEnds {
         try _ProcessMoveEndEvent(hwnd)
+        catch as e
+            _Dbg("event-error moveend hwnd=" hwnd " " e.Message)
     }
     for hwnd, info in destroys {
         try _ProcessDestroyEvent(hwnd, info)
+        catch as e
+            _Dbg("event-error destroy hwnd=" hwnd " " e.Message)
     }
     if focusHwnd {
         try _ProcessFocusEvent(focusHwnd)
+        catch as e
+            _Dbg("event-error focus hwnd=" focusHwnd " " e.Message)
     }
     for hwnd, _ in locationDirty {
         try _ProcessLocationChangeEvent(hwnd)
+        catch as e
+            _Dbg("event-error location hwnd=" hwnd " " e.Message)
     }
 }
 
@@ -132,21 +141,29 @@ WindowEvents_Init() {
     g_MoveStartHook := DllCall("SetWinEventHook"
         , "UInt", 0x000A, "UInt", 0x000A, "Ptr", 0
         , "Ptr", g_MoveStartCbPtr, "UInt", 0, "UInt", 0, "UInt", flags)
+    if !g_MoveStartHook
+        _Dbg("SetWinEventHook MOVESIZESTART failed")
 
     g_MoveEndCbPtr := CallbackCreate(_OnMoveEnd, , 7)
     g_MoveEndHook := DllCall("SetWinEventHook"
         , "UInt", 0x000B, "UInt", 0x000B, "Ptr", 0
         , "Ptr", g_MoveEndCbPtr, "UInt", 0, "UInt", 0, "UInt", flags)
+    if !g_MoveEndHook
+        _Dbg("SetWinEventHook MOVESIZEEND failed")
 
     g_DestroyCallbackPtr := CallbackCreate(_OnWindowDestroy, , 7)
     g_DestroyHook := DllCall("SetWinEventHook"
         , "UInt", 0x8001, "UInt", 0x8001, "Ptr", 0
         , "Ptr", g_DestroyCallbackPtr, "UInt", 0, "UInt", 0, "UInt", flags)
+    if !g_DestroyHook
+        _Dbg("SetWinEventHook OBJECT_DESTROY failed")
 
     g_LocationCbPtr := CallbackCreate(_OnLocationChange, , 7)
     g_LocationHook := DllCall("SetWinEventHook"
         , "UInt", 0x800B, "UInt", 0x800B, "Ptr", 0
         , "Ptr", g_LocationCbPtr, "UInt", 0, "UInt", 0, "UInt", flags)
+    if !g_LocationHook
+        _Dbg("SetWinEventHook LOCATIONCHANGE failed")
 
     OnMessage(0x001A, _OnSettingChange)
     OnMessage(0x0218, _OnPowerBroadcast)
@@ -155,19 +172,15 @@ WindowEvents_Init() {
 
 Core_SessionInit() {
     global g_Layouts, g_DesktopLastWindow, g_LastDesktop, g_TilingMode, g_DebugRestore, g_DebugLogFile
-    global g_StateSessionLayouts
+    global g_StateSessionLayouts, g_StateDesktopWindows
 
-    ; Iterate the real desktop count when known; fall back to a bounded scan only
-    ; to recover stored entries (never as an assumed desktop maximum).
-    deskCount := VDA.isLoaded ? VDA.GetDesktopCount() : 0
-    if deskCount <= 0
-        deskCount := 16
-    loop deskCount {
-        lastWnd := State_GetDesktopWindow(A_Index)
+    ; Recover exactly the desktop entries that were actually persisted, rather than
+    ; guessing a maximum desktop count and scanning a fixed range.
+    for desk, lastWnd in g_StateDesktopWindows {
         if lastWnd {
-            identity := State_GetDesktopWindowIdentity(A_Index)
+            identity := State_GetDesktopWindowIdentity(desk)
             if _ValidateWindowIdentity(lastWnd, identity)
-                g_DesktopLastWindow[A_Index] := lastWnd
+                g_DesktopLastWindow[desk] := lastWnd
         }
     }
 
@@ -215,6 +228,10 @@ App_Shutdown(*) {
 
     try State_FlushNow()
     try Perf_Flush()
+    ; Flush any buffered debug lines before exit; a pending _DbgFlush one-shot would
+    ; otherwise be canceled by process teardown, losing the final diagnostics.
+    try SetTimer(_DbgFlush, 0)
+    try _DbgFlush()
     try VDA.Cleanup()
 
     for hook in [hFocusHook, g_MoveStartHook, g_MoveEndHook, g_DestroyHook, g_LocationHook] {
@@ -1364,13 +1381,22 @@ ToggleMaximize() {
     hwnd := WinGetID("A")
     if !_IsOnCurrentDesktop(hwnd)
         return
-    if WinGetMinMax("ahk_id " hwnd) = 1 {
+    ; Persist BOTH transitions to app memory. Persisting only the maximize would leave a
+    ; stale maximized=1 after the user restores a window, wrongly maximizing future ones.
+    global CFG_TilingMemory
+    isMaxNow := WinGetMinMax("ahk_id " hwnd) != 1
+    if isMaxNow {
+        WinMaximize("ahk_id " hwnd)
+        g_WinMaxState[hwnd] := 1
+    } else {
         WinRestore("ahk_id " hwnd)
         g_WinMaxState[hwnd] := 0
         _ScheduleAutoRestore(hwnd, 50)
-    } else {
-        WinMaximize("ahk_id " hwnd)
-        g_WinMaxState[hwnd] := 1
+    }
+    if IsSet(CFG_TilingMemory) && CFG_TilingMemory {
+        sig := _GetWinSignature(hwnd)
+        if sig != ""
+            State_SetAppMaximized(sig, isMaxNow)
     }
 }
 

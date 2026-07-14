@@ -122,31 +122,55 @@ Layout_Serialize(record) {
 }
 
 Layout_Deserialize(str) {
+    ; Strict, non-throwing parser: any malformed field returns 0 rather than throwing,
+    ; so a single corrupt persisted record cannot abort a caller mid-load.
     if str = ""
         return 0
     parts := StrSplit(str, ",")
-    if parts.Length = 4 {
-        ; legacy percentage tuple
-        return Layout_FromLegacyPct(parts[1], parts[2], parts[3], parts[4])
-    }
-    if parts.Length >= 5 {
-        kind := parts[1]
-        if kind = "slot" || kind = "visible" {
-            rec := Map(
-                "kind", kind,
-                "x", Integer(parts[2]),
-                "y", Integer(parts[3]),
-                "w", Integer(parts[4]),
-                "h", Integer(parts[5]),
-                "anchorX", parts.Length >= 6 ? parts[6] : "left",
-                "anchorY", parts.Length >= 7 ? parts[7] : "top"
-            )
-            return Layout_Validate(rec) ? rec : 0
+    try {
+        if parts.Length = 4 {
+            ; legacy percentage tuple
+            if !_LayoutPartsAreNumeric(parts, 1, 4)
+                return 0
+            return Layout_FromLegacyPct(parts[1], parts[2], parts[3], parts[4])
         }
-        ; numeric-only legacy with 5 ints unlikely; treat first4 as legacy
-        return Layout_FromLegacyPct(parts[1], parts[2], parts[3], parts[4])
+        if parts.Length >= 5 {
+            kind := parts[1]
+            if kind = "slot" || kind = "visible" {
+                if !_LayoutPartsAreNumeric(parts, 2, 5)
+                    return 0
+                rec := Map(
+                    "kind", kind,
+                    "x", Integer(parts[2]),
+                    "y", Integer(parts[3]),
+                    "w", Integer(parts[4]),
+                    "h", Integer(parts[5]),
+                    "anchorX", parts.Length >= 6 ? parts[6] : "left",
+                    "anchorY", parts.Length >= 7 ? parts[7] : "top"
+                )
+                return Layout_Validate(rec) ? rec : 0
+            }
+            ; Unknown leading kind: only interpretable as a legacy tuple if the first
+            ; four fields are numeric; otherwise the record is unrecoverable.
+            if !_LayoutPartsAreNumeric(parts, 1, 4)
+                return 0
+            return Layout_FromLegacyPct(parts[1], parts[2], parts[3], parts[4])
+        }
+    } catch {
+        return 0
     }
     return 0
+}
+
+_LayoutPartsAreNumeric(parts, fromIndex, toIndex) {
+    loop toIndex - fromIndex + 1 {
+        idx := fromIndex + A_Index - 1
+        if idx > parts.Length
+            return false
+        if !IsNumber(Trim(parts[idx]))
+            return false
+    }
+    return true
 }
 
 Layout_ResolveVisibleRect(record, L, T, R, B, gap := 0) {
@@ -196,7 +220,10 @@ Window_GetVisibleRect(hwnd) {
         top := NumGet(rect, 4, "Int")
         right := NumGet(rect, 8, "Int")
         bottom := NumGet(rect, 12, "Int")
-        return {x: left, y: top, w: right - left, h: bottom - top, r: right, b: bottom}
+        ; A successful HRESULT does not guarantee a sane rectangle; fall back to the
+        ; outer rect on degenerate (zero/negative area) DWM bounds.
+        if right > left && bottom > top
+            return {x: left, y: top, w: right - left, h: bottom - top, r: right, b: bottom}
     }
     return outer
 }
