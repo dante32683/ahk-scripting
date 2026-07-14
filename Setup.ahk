@@ -2,7 +2,12 @@
 #SingleInstance Force
 
 if !A_IsAdmin {
-    Run('*RunAs "' A_ScriptFullPath '"')
+    ; Re-launch through the AutoHotkey interpreter explicitly (matching Main.ahk) rather
+    ; than relying on the .ahk file association, which may be missing or point elsewhere.
+    try
+        Run('*RunAs "' A_AhkPath '" "' A_ScriptFullPath '"')
+    catch
+        Run('*RunAs "' A_ScriptFullPath '"')
     ExitApp()
 }
 
@@ -28,9 +33,9 @@ if !FileExist(configPath) {
         profile := (r = "Yes") ? "laptop" : "desktop"
         
         try {
-            FileCopy(exampleConfig, configPath)
-            ; Modify the default profile in custom/config.ahk based on selection
-            configContent := FileRead(configPath, "UTF-8")
+            ; Build the configured content in memory, then write it atomically so a
+            ; failure can never leave the destination missing (no delete-before-write).
+            configContent := FileRead(exampleConfig, "UTF-8")
             configContent := StrReplace(configContent, 'global CFG_MachineProfile := "laptop"', 'global CFG_MachineProfile := "' profile '"')
             if (profile = "desktop") {
                 configContent := StrReplace(configContent, 'global CFG_EnableVirtualDesktops := true', 'global CFG_EnableVirtualDesktops := false')
@@ -38,16 +43,22 @@ if !FileExist(configPath) {
             } else {
                 configContent := StrReplace(configContent, 'global CFG_NumberKeys := "auto"', 'global CFG_NumberKeys := "desktops"')
             }
-            if FileExist(configPath)
-                FileDelete(configPath)
-            FileAppend(configContent, configPath, "UTF-8")
+            tmpConfig := configPath "." DllCall("GetCurrentProcessId") ".tmp"
+            if FileExist(tmpConfig)
+                FileDelete(tmpConfig)
+            FileOpen(tmpConfig, "w", "UTF-8").Write(configContent)
+            if !DllCall("MoveFileExW", "Str", tmpConfig, "Str", configPath, "UInt", 9) {
+                try FileDelete(tmpConfig)
+                throw Error("Could not write config file (MoveFileExW failed: " A_LastError ")")
+            }
             MsgBox("custom/config.ahk created and configured as '" profile "' profile. Please edit it with your personal values.", "Setup Info", "Iconi")
         } catch as e {
             MsgBox("Error copying/configuring config.example.ahk: " e.Message, "Setup Error", "Icon!")
             ExitApp(1)
         }
     } else {
-        MsgBox("Warning: Neither custom/config.ahk nor config.example.ahk was found.", "Setup Warning", "Icon!")
+        MsgBox("Error: Neither custom/config.ahk nor config.example.ahk was found. Cannot configure the script. Setup aborted.", "Setup Error", "Icon!")
+        ExitApp(1)
     }
 } else {
     try {
@@ -56,6 +67,13 @@ if !FileExist(configPath) {
             profile := m[1]
         }
     }
+}
+
+; Reject any profile value other than the two supported ones instead of silently
+; falling back to laptop behavior for a typo'd or unrecognized profile.
+if (profile != "laptop" && profile != "desktop") {
+    MsgBox("Invalid CFG_MachineProfile '" profile "'. Valid values are 'laptop' or 'desktop'. Setup aborted.", "Setup Error", "Icon!")
+    ExitApp(1)
 }
 
 ; Check dependencies based on resolved profile
@@ -150,11 +168,18 @@ try FileDelete(tmpXml)
 if exitCode = 0 {
     ; Query back task XML to verify correct registration
     tmpQuery := A_Temp "\ahk_query_" pid "_" A_TickCount ".xml"
-    RunWait(A_ComSpec ' /c schtasks /query /tn "' taskName '" /xml > "' tmpQuery '"', , "Hide")
+    queryExit := RunWait(A_ComSpec ' /c schtasks /query /tn "' taskName '" /xml > "' tmpQuery '"', , "Hide")
+    if queryExit != 0 {
+        try FileDelete(tmpQuery)
+        MsgBox("Task created but verification query failed (schtasks exit " queryExit "). The task may still be registered; please verify manually.", "Setup Warning", "Icon!")
+        ExitApp(1)
+    }
     queryXml := ""
-    try queryXml := FileRead(tmpQuery, "UTF-8")
+    ; Read without forcing UTF-8: schtasks XML output is UTF-16/console-encoded. Letting
+    ; FileRead honor the BOM avoids a false validation failure from a decode mismatch.
+    try queryXml := FileRead(tmpQuery)
     try FileDelete(tmpQuery)
-    
+
     if !InStr(queryXml, eAhkExe) || !InStr(queryXml, eScriptPath) || !InStr(queryXml, eWorkDir) || !InStr(queryXml, "<RunLevel>HighestAvailable</RunLevel>") {
         MsgBox("Task validation failed after creation! The registered scheduled task configuration did not match expected values.", "Setup Error", "Icon!")
         ExitApp(1)

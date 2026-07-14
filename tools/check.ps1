@@ -49,6 +49,8 @@ function Run-AhkScript {
         $terminated = $false
         if (-not $proc.WaitForExit(90000)) {
             $proc | Stop-Process -Force
+            # Block until the process has actually exited so ExitCode is populated.
+            $proc.WaitForExit()
             $terminated = $true
         }
 

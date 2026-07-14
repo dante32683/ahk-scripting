@@ -23,7 +23,7 @@ _AC_IsNonTextArea() {
         if (className = "VirtualConsoleClass" || className = "ConsoleWindowClass" || className = "TermWindow")
             return true
 
-        if (procName = "cmd.exe" || procName = "powershell.exe" || procName = "wsl.exe" || procName = "WindowsTerminal.exe")
+        if (procName = "cmd.exe" || procName = "powershell.exe" || procName = "pwsh.exe" || procName = "wsl.exe" || procName = "WindowsTerminal.exe")
             return true
 
         style := WinGetStyle("A")
@@ -110,19 +110,19 @@ AC_StartInputHook() {
     AC_StopInputHook()
     startingGeneration := AC_Generation
     AC_HookGeneration := startingGeneration
-    inputHook := InputHook("V L0 I1 T15")
-    inputHook.KeyOpt("{All}", "N")
+    hookObj := InputHook("V L0 I1 T15")
+    hookObj.KeyOpt("{All}", "N")
     ; Ignore pure modifiers so they don't clear undo state alone
     for modifierKey in ["LCtrl", "RCtrl", "LShift", "RShift", "LAlt", "RAlt", "LWin", "RWin", "CapsLock"]
-        inputHook.KeyOpt("{" modifierKey "}", "-N")
+        hookObj.KeyOpt("{" modifierKey "}", "-N")
     ; Bind the originating generation into the callbacks. A stale hook whose OnEnd
     ; fires after a newer correction started must NOT clear the newer state, and it
     ; can only be recognized as stale by comparing its own captured generation — not
     ; the mutable global AC_HookGeneration, which the newer hook already overwrote.
-    inputHook.OnKeyDown := AC_OnHookKey.Bind(startingGeneration)
-    inputHook.OnEnd := AC_OnHookEnd.Bind(startingGeneration)
-    AC_InputHook := inputHook
-    inputHook.Start()
+    hookObj.OnKeyDown := AC_OnHookKey.Bind(startingGeneration)
+    hookObj.OnEnd := AC_OnHookEnd.Bind(startingGeneration)
+    AC_InputHook := hookObj
+    hookObj.Start()
 }
 
 AC_StopInputHook() {
@@ -160,7 +160,9 @@ AC_OnHookEnd(boundGeneration, inputHook) {
 
 ~*LButton::
 ~*RButton::
-~*MButton:: {
+~*MButton::
+~*XButton1::
+~*XButton2:: {
     AC_ClearLastCorrection()
 }
 

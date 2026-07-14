@@ -1,5 +1,7 @@
 #Requires AutoHotkey v2.0+
-#SingleInstance Force
+; NOTE: Process directives such as #SingleInstance belong in the entry-point wrappers
+; (Master.ahk / Master-PC.ahk both declare `#SingleInstance Force`). Declaring it here
+; — in an included module — would override the boot tests' `#SingleInstance Off`.
 
 ; ==============================================================================
 ; macOS-like Command Key Remapping (Alt -> Ctrl)
@@ -86,7 +88,7 @@ if !IsSet(CFG_GameProcesses)
         return
     }
 
-    tabbedApps := [
+    static tabbedApps := [
         "ahk_exe chrome.exe",
         "ahk_exe msedge.exe",
         "ahk_exe firefox.exe",
@@ -178,7 +180,8 @@ if !IsSet(CFG_GameProcesses)
 !+Up::Send "+^{Home}"
 !+Down::Send "+^{End}"
 
-; Cmd + Backspace -> Delete to start of line
+; Cmd + Backspace -> Delete previous word (Ctrl+Backspace). Note: this is word-wise
+; deletion, not delete-to-line-start, which no Windows shortcut provides safely.
 !Backspace::Send "^{Backspace}"
 
 ; Cmd + Enter -> Send/Submit
@@ -278,20 +281,13 @@ _IsGameActive() {
         }
 
         if !isGame {
-            ; Built-in titles only; additional games come from CFG_GameProcesses
-            commonGames := ["minecraft.windows.exe", "robloxplayerbeta.exe"]
+            ; Built-in titles only; additional games come from CFG_GameProcesses, which
+            ; is already checked above — do not re-scan it here.
+            static commonGames := ["minecraft.windows.exe", "robloxplayerbeta.exe"]
             for game in commonGames {
                 if (StrLower(procName) = game) {
                     isGame := true
                     break
-                }
-            }
-            if IsSet(CFG_GameProcesses) {
-                for game in CFG_GameProcesses {
-                    if (StrLower(procName) = StrLower(game)) {
-                        isGame := true
-                        break
-                    }
                 }
             }
         }

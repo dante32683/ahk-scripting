@@ -43,6 +43,7 @@ ShowOSD(text, ms := 1500) {
     g_OsdGui.GetPos(,, &w, &h)
 
     dpi := DllCall("GetDpiForWindow", "Ptr", g_OsdGui.Hwnd, "UInt")
+    dpi := dpi > 0 ? dpi : 96  ; guard against a zero DPI result (division below)
     scale := dpi / 96
     logicalH := h / scale
     barHeight := logicalH - 28
