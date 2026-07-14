@@ -134,36 +134,51 @@ WindowEvents_Init() {
     hFocusHook := DllCall("SetWinEventHook"
         , "UInt", 0x0003, "UInt", 0x0003, "Ptr", 0
         , "Ptr", g_FocusCallbackPtr, "UInt", 0, "UInt", 0, "UInt", flags)
-    if !hFocusHook
+    if !hFocusHook {
         _Dbg("SetWinEventHook FOREGROUND failed")
+        try CallbackFree(g_FocusCallbackPtr)
+        g_FocusCallbackPtr := 0
+    }
 
     g_MoveStartCbPtr := CallbackCreate(_OnMoveStart, , 7)
     g_MoveStartHook := DllCall("SetWinEventHook"
         , "UInt", 0x000A, "UInt", 0x000A, "Ptr", 0
         , "Ptr", g_MoveStartCbPtr, "UInt", 0, "UInt", 0, "UInt", flags)
-    if !g_MoveStartHook
+    if !g_MoveStartHook {
         _Dbg("SetWinEventHook MOVESIZESTART failed")
+        try CallbackFree(g_MoveStartCbPtr)
+        g_MoveStartCbPtr := 0
+    }
 
     g_MoveEndCbPtr := CallbackCreate(_OnMoveEnd, , 7)
     g_MoveEndHook := DllCall("SetWinEventHook"
         , "UInt", 0x000B, "UInt", 0x000B, "Ptr", 0
         , "Ptr", g_MoveEndCbPtr, "UInt", 0, "UInt", 0, "UInt", flags)
-    if !g_MoveEndHook
+    if !g_MoveEndHook {
         _Dbg("SetWinEventHook MOVESIZEEND failed")
+        try CallbackFree(g_MoveEndCbPtr)
+        g_MoveEndCbPtr := 0
+    }
 
     g_DestroyCallbackPtr := CallbackCreate(_OnWindowDestroy, , 7)
     g_DestroyHook := DllCall("SetWinEventHook"
         , "UInt", 0x8001, "UInt", 0x8001, "Ptr", 0
         , "Ptr", g_DestroyCallbackPtr, "UInt", 0, "UInt", 0, "UInt", flags)
-    if !g_DestroyHook
+    if !g_DestroyHook {
         _Dbg("SetWinEventHook OBJECT_DESTROY failed")
+        try CallbackFree(g_DestroyCallbackPtr)
+        g_DestroyCallbackPtr := 0
+    }
 
     g_LocationCbPtr := CallbackCreate(_OnLocationChange, , 7)
     g_LocationHook := DllCall("SetWinEventHook"
         , "UInt", 0x800B, "UInt", 0x800B, "Ptr", 0
         , "Ptr", g_LocationCbPtr, "UInt", 0, "UInt", 0, "UInt", flags)
-    if !g_LocationHook
+    if !g_LocationHook {
         _Dbg("SetWinEventHook LOCATIONCHANGE failed")
+        try CallbackFree(g_LocationCbPtr)
+        g_LocationCbPtr := 0
+    }
 
     OnMessage(0x001A, _OnSettingChange)
     OnMessage(0x0218, _OnPowerBroadcast)
@@ -226,6 +241,11 @@ App_Shutdown(*) {
     }
     g_AutoRestoreTimers := Map()
 
+    ; Collect live maps into StateStore before the final flush so reload/exit
+    ; does not lose session layouts or desktop-last-window entries that were
+    ; only held in Core globals.
+    try _SaveDesktopMemory()
+    try _SaveLayouts()
     try State_FlushNow()
     try Perf_Flush()
     ; Flush any buffered debug lines before exit; a pending _DbgFlush one-shot would
@@ -284,6 +304,37 @@ _PersistLayout(hwnd) {
 
 _DeletePersistedLayout(hwnd) {
     State_DeleteSessionLayout(hwnd)
+}
+
+; clearPersistent=false: drop this HWND's session layout only.
+; clearPersistent=true: also forget the app's remembered cross-session layout so it
+; cannot return after focus changes or script restart.
+_ClearWindowLayout(clearPersistent := false) {
+    global g_Layouts, g_HWNDLayoutCache, g_AcceptedGeometryCache, g_WinSigCache, CFG_TilingMemory
+    hwnd := WinExist("A") ? WinGetID("A") : 0
+    if !hwnd
+        return
+
+    hadSession := g_Layouts.Has(hwnd)
+    if hadSession {
+        g_Layouts.Delete(hwnd)
+        _DeletePersistedLayout(hwnd)
+    }
+    if g_AcceptedGeometryCache.Has(hwnd)
+        g_AcceptedGeometryCache.Delete(hwnd)
+    if g_HWNDLayoutCache.Has(hwnd)
+        g_HWNDLayoutCache.Delete(hwnd)
+
+    if clearPersistent && IsSet(CFG_TilingMemory) && CFG_TilingMemory {
+        sig := g_WinSigCache.Has(hwnd) ? g_WinSigCache[hwnd] : _GetWinSignature(hwnd)
+        if sig != "" {
+            State_DeleteAppLayout(sig)
+            ShowOSD("Layout forgotten")
+            return
+        }
+    }
+    if hadSession
+        ShowOSD("Layout cleared")
 }
 
 ; ============================================================
@@ -346,8 +397,28 @@ _IsPWA(windowHandle) {
     return false
 }
 
+_RemoveFromSigIndex(hwnd, sig) {
+    global g_SigToHwndIndex
+    if sig = "" || !g_SigToHwndIndex.Has(sig)
+        return
+    if g_SigToHwndIndex[sig].Has(hwnd)
+        g_SigToHwndIndex[sig].Delete(hwnd)
+    if g_SigToHwndIndex[sig].Count = 0
+        g_SigToHwndIndex.Delete(sig)
+}
+
+_IndexWinSignature(hwnd, sig) {
+    global g_SigToHwndIndex, g_WinSigCache
+    if sig = ""
+        return
+    g_WinSigCache[hwnd] := sig
+    if !g_SigToHwndIndex.Has(sig)
+        g_SigToHwndIndex[sig] := Map()
+    g_SigToHwndIndex[sig][hwnd] := true
+}
+
 _AsyncCheckPWA(hwnd, pid) {
-    global g_PwaCache
+    global g_PwaCache, g_WinSigCache
     if !DllCall("IsWindow", "Ptr", hwnd)
         return
     try {
@@ -371,18 +442,42 @@ _AsyncCheckPWA(hwnd, pid) {
             }
         }
     }
-    ; Cache by HWND only — Chromium PIDs can host mixed window types
-    if DllCall("IsWindow", "Ptr", hwnd) {
-        try {
-            if WinGetPID("ahk_id " hwnd) != pid
-                return
-        } catch {
+
+    ; Re-validate after the WMI query: HWND reuse or process exit must abort.
+    if !DllCall("IsWindow", "Ptr", hwnd)
+        return
+    try {
+        if WinGetPID("ahk_id " hwnd) != pid
             return
-        }
-        g_PwaCache[hwnd] := isPwa
+    } catch {
+        return
+    }
+
+    wasPwa := g_PwaCache.Has(hwnd) ? g_PwaCache[hwnd] : false
+    oldSig := g_WinSigCache.Has(hwnd) ? g_WinSigCache[hwnd] : ""
+    ; Final HWND-specific classification (never PID-wide — Chromium hosts mixed types).
+    g_PwaCache[hwnd] := isPwa
+
+    if wasPwa = isPwa && oldSig != "" {
+        ; Classification unchanged and already indexed — nothing to reindex.
         if isPwa
             _AutoSnapFromMemory(hwnd)
+        return
     }
+
+    ; Provisional generic signature (e.g. chrome.exe) may now become chrome.exe:Title.
+    if oldSig != ""
+        _RemoveFromSigIndex(hwnd, oldSig)
+    if g_WinSigCache.Has(hwnd)
+        g_WinSigCache.Delete(hwnd)
+
+    newSig := _GetWinSignature(hwnd)
+    if newSig != ""
+        _IndexWinSignature(hwnd, newSig)
+
+    ; Retry layout lookup under the final signature once identity is known.
+    if isPwa || (oldSig != "" && newSig != "" && oldSig != newSig)
+        _AutoSnapFromMemory(hwnd)
 }
 
 _NormalizePWATitle(windowTitle) {
@@ -605,10 +700,39 @@ _IsOnCurrentDesktop(hwnd) {
             return true
         if onDesk = 0
             return false
-        ; unknown: do not treat error as pinned
+        ; Unknown/error is not success and not pinned. For active-window actions
+        ; (tile/maximize/remap) stay permissive so a flaky VDA query does not
+        ; brick the hotkey; focus candidacy uses the strict check below.
         return true
     } catch
         return true
+}
+
+; Shared eligibility for directional focus / important-window commands.
+; Prefer same-monitor candidates at scoring time; this only gates visibility,
+; tool-window, cloaked, and current-desktop/pinned membership.
+_IsFocusEligible(hwnd) {
+    if !_IsLiveWindow(hwnd)
+        return false
+    try {
+        if WinGetMinMax("ahk_id " hwnd) = -1
+            return false
+        if WinGetExStyle("ahk_id " hwnd) & 0x80  ; WS_EX_TOOLWINDOW
+            return false
+        cloaked := 0
+        DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
+        if cloaked
+            return false
+        if VDA.isLoaded {
+            onDesk := VDA.IsOnCurrentDesktop(hwnd)
+            ; Strict: require an explicit yes. Unknown/error is not success.
+            if onDesk != 1
+                return false
+        }
+    } catch {
+        return false
+    }
+    return true
 }
 
 _GetWindowState(hwnd, default := -2) {
@@ -1174,6 +1298,15 @@ _ProcessDestroyEvent(hwnd, info) {
     isMax := info is Map && info.Has("max") ? info["max"] : 0
     if sig != "" && g_SigToHwndIndex.Has(sig) && g_SigToHwndIndex[sig].Has(hwnd)
         g_SigToHwndIndex[sig].Delete(hwnd)
+    ; Drop any pending location/move work for the destroyed HWND so it cannot
+    ; be processed after the handle is reused.
+    global g_PendingLocationDirty, g_PendingMoveStart, g_PendingMoveEnd
+    if g_PendingLocationDirty.Has(hwnd)
+        g_PendingLocationDirty.Delete(hwnd)
+    if g_PendingMoveStart.Has(hwnd)
+        g_PendingMoveStart.Delete(hwnd)
+    if g_PendingMoveEnd.Has(hwnd)
+        g_PendingMoveEnd.Delete(hwnd)
 
     if g_WinSigCache.Has(hwnd)
         g_WinSigCache.Delete(hwnd)
@@ -1267,7 +1400,7 @@ _FlushLocationDirty() {
 }
 
 _ProcessLocationChangeEvent(hwnd) {
-    global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive, g_ScriptPaused
+    global g_Layouts, g_MoveSuppressUntil, g_UserMoveActive, g_ScriptPaused, g_PendingLocationDirty
     Perf_Increment("location_changes")
     if g_ScriptPaused
         return
@@ -1275,8 +1408,13 @@ _ProcessLocationChangeEvent(hwnd) {
         return
     if g_UserMoveActive.Has(hwnd)
         return
-    if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount
+    if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount {
+        ; Do not discard: keep the HWND dirty and retry after suppression ends.
+        g_PendingLocationDirty[hwnd] := true
+        remaining := g_MoveSuppressUntil[hwnd] - A_TickCount
+        SetTimer(_FlushLocationDirty, -Max(remaining + 30, 50))
         return
+    }
     layout := g_Layouts[hwnd]
     if _NeedsAutoRestore(hwnd, layout)
         _ScheduleAutoRestore(hwnd)
@@ -1305,8 +1443,7 @@ _CheckLayoutRestores() {
 }
 
 _HandleDesktopChange() {
-    global g_LastDesktop
-    global g_ScriptPaused, g_FocusHistory, g_DesktopLastWindow
+    global g_ScriptPaused
     if g_ScriptPaused
         return
     if !VDA.isLoaded
@@ -1317,31 +1454,50 @@ _HandleDesktopChange() {
     _HandleDesktopChangeFromMsg(currentDesk)
 }
 
+; HWND that was just moved off the departing desktop; must not be saved as that
+; desktop's last window when the subsequent switch notification arrives.
+global g_DesktopExcludeHwnd := 0
+
 _HandleDesktopChangeFromMsg(currentDesk) {
-    global g_LastDesktop
-    global g_ScriptPaused, g_FocusHistory, g_DesktopLastWindow
+    global g_DesktopExcludeHwnd
+    exclude := g_DesktopExcludeHwnd
+    g_DesktopExcludeHwnd := 0
+    _CommitDesktopTransition(currentDesk, exclude)
+}
+
+; Central desktop-transition bookkeeping. Only commits after the caller has
+; confirmed VDA success (or a VDA notification delivered a real new desktop).
+; Deduplicates command-driven switches and VDA notifications via g_LastDesktop.
+_CommitDesktopTransition(newDesk, excludeHwnd := 0) {
+    global g_LastDesktop, g_FocusHistory, g_DesktopLastWindow, g_ScriptPaused
     if g_ScriptPaused
         return
-    if !currentDesk || currentDesk = g_LastDesktop
+    if !newDesk || newDesk = VDA.DESKTOP_UNKNOWN
+        return
+    if newDesk = g_LastDesktop
         return
 
-    ; Save the last active window on the departing desktop
-    if g_LastDesktop > 0 {
+    fromDesk := g_LastDesktop
+    if fromDesk > 0 {
         historyIndex := g_FocusHistory.Length
         while historyIndex > 0 {
             prevHwnd := g_FocusHistory[historyIndex]
-            if WinExist("ahk_id " prevHwnd) && _IsWindowOnDesktop(prevHwnd, g_LastDesktop) {
-                State_SetDesktopWindow(g_LastDesktop, prevHwnd)
-                g_DesktopLastWindow[g_LastDesktop] := prevHwnd
+            if excludeHwnd && prevHwnd = excludeHwnd {
+                historyIndex--
+                continue
+            }
+            if WinExist("ahk_id " prevHwnd) && _IsWindowOnDesktop(prevHwnd, fromDesk) {
+                State_SetDesktopWindow(fromDesk, prevHwnd)
+                g_DesktopLastWindow[fromDesk] := prevHwnd
                 break
             }
             historyIndex--
         }
     }
 
-    g_LastDesktop := currentDesk
-    SetTimer(() => _RestoreFocusOnDesktop(currentDesk), -150)
-    _ScheduleDesktopRestore(currentDesk)
+    g_LastDesktop := newDesk
+    SetTimer(() => _RestoreFocusOnDesktop(newDesk), -150)
+    _ScheduleDesktopRestore(newDesk)
 }
 
 _IsWindowOnDesktop(hwnd, deskIndex) {
@@ -1401,23 +1557,17 @@ ToggleMaximize() {
 }
 
 GotoDesktop(n) {
-    global g_LastDesktop
     if !VDA.isLoaded {
         ShowOSD("VDA not loaded — install the DLL first!")
         return
     }
-    currentDesk := VDA.GetCurrent()
-    if currentDesk != VDA.DESKTOP_UNKNOWN && WinExist("A")
-        g_DesktopLastWindow[currentDesk] := WinGetID("A")
-
-    ; Only commit internal desktop state and schedule restores if the switch
-    ; actually succeeded; otherwise g_LastDesktop would diverge from reality.
+    ; Do not update internal desktop state until VDA confirms success. When the
+    ; post-message hook is registered, the notification owns bookkeeping so we
+    ; do not process the same transition twice; without a hook, commit here.
     if !VDA.GoTo(n)
         return
-
-    g_LastDesktop := n
-    SetTimer(() => _RestoreFocusOnDesktop(n), -150)
-    _ScheduleDesktopRestore(n)
+    if !VDA.hasHookRegistered
+        _CommitDesktopTransition(n)
 }
 
 _RestoreFocusOnDesktop(n) {
@@ -1436,21 +1586,29 @@ _RestoreFocusOnDesktop(n) {
 }
 
 MoveToDesktop(desktopIndex) {
+    global g_DesktopExcludeHwnd, g_DesktopLastWindow
     if !WinExist("A")
         return
-    if VDA.isLoaded {
-        windowHandle := WinGetID("A")
-        ; Do not follow the window or record it as the desktop's last window
-        ; unless the move actually succeeded.
-        if !VDA.MoveWindow(windowHandle, desktopIndex) {
-            ShowOSD("Move to desktop " desktopIndex " failed")
-            return
-        }
-        g_DesktopLastWindow[desktopIndex] := windowHandle
-        GotoDesktop(desktopIndex)
-    } else {
+    if !VDA.isLoaded {
         ShowOSD("VDA not loaded — install the DLL first!")
+        return
     }
+    windowHandle := WinGetID("A")
+    if !VDA.MoveWindow(windowHandle, desktopIndex) {
+        ShowOSD("Move to desktop " desktopIndex " failed")
+        return
+    }
+    ; Remember the moved window on the destination desktop, but exclude it from
+    ; the departing desktop's last-window save when the switch notification fires.
+    g_DesktopLastWindow[desktopIndex] := windowHandle
+    State_SetDesktopWindow(desktopIndex, windowHandle)
+    g_DesktopExcludeHwnd := windowHandle
+    if !VDA.GoTo(desktopIndex) {
+        g_DesktopExcludeHwnd := 0
+        return
+    }
+    if !VDA.hasHookRegistered
+        _CommitDesktopTransition(desktopIndex, windowHandle)
 }
 
 ; ============================================================
@@ -1540,19 +1698,9 @@ FocusDirection(dir) {
     list := WinGetList()
     for index, hwnd in list {
         candidateCount++
-        if !_IsLiveWindow(hwnd)
+        if !_IsFocusEligible(hwnd)
             continue
         try {
-            if WinGetMinMax("ahk_id " hwnd) = -1
-                continue
-            if WinGetExStyle("ahk_id " hwnd) & 0x80
-                continue
-            cloaked := 0
-            DllCall("dwmapi\DwmGetWindowAttribute", "Ptr", hwnd, "UInt", 14, "Int*", &cloaked, "UInt", 4)
-            if cloaked
-                continue
-            if !_IsOnCurrentDesktop(hwnd)
-                continue
             WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " hwnd)
             mon := MonitorFromPoint(wx + ww // 2, wy + wh // 2)
             snap := {hwnd: hwnd, x: wx, y: wy, w: ww, h: wh, cx: wx + ww // 2, cy: wy + wh // 2, mon: mon, index: index}
@@ -1632,10 +1780,7 @@ _ProcessFocusEvent(hwnd) {
         try {
             sig := g_WinSigCache.Has(hwnd) ? g_WinSigCache[hwnd] : _GetWinSignature(hwnd)
             if sig != "" {
-                g_WinSigCache[hwnd] := sig
-                if !g_SigToHwndIndex.Has(sig)
-                    g_SigToHwndIndex[sig] := Map()
-                g_SigToHwndIndex[sig][hwnd] := true
+                _IndexWinSignature(hwnd, sig)
                 isMax := (_GetWindowState(hwnd) = 1) ? 1 : 0
                 g_WinMaxState[hwnd] := isMax
                 if isMax && IsSet(CFG_TilingMemory) && CFG_TilingMemory
@@ -1774,14 +1919,8 @@ g::Send "^{PgDn}"   ; Next Tab
     }
 }
 *`:: Send("^#t")
-Delete:: {
-    hwnd := WinExist("A") ? WinGetID("A") : 0
-    if hwnd && g_Layouts.Has(hwnd) {
-        g_Layouts.Delete(hwnd)
-        _DeletePersistedLayout(hwnd)
-        ShowOSD("Layout cleared")
-    }
-}
+Delete:: _ClearWindowLayout(false)   ; session layout only
++Delete:: _ClearWindowLayout(true)    ; also forget persistent app memory
 
 ; --- Media ---
 *[:: Send "{Media_Prev}"
