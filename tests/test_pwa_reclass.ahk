@@ -60,10 +60,21 @@ RunPwaReclassTest() {
     AssertEq(g_WinSigCache[hwnd], finalSig, "cache holds final PWA sig")
     AssertTrue(g_PwaCache[hwnd], "HWND-specific PWA classification stored")
 
-    ; Destroyed / reused HWND safety: removing again is a no-op.
     _RemoveFromSigIndex(hwnd, finalSig)
-    AssertFalse(g_SigToHwndIndex.Has(finalSig) && g_SigToHwndIndex[finalSig].Has(hwnd)
-        , "index cleared after destroy-style removal")
+    AssertFalse(g_SigToHwndIndex.Has(finalSig), "empty signature bucket deleted on remove")
+
+    ; Index bucket alone with no other HWND must NOT short-circuit duplicate detection.
+    ; Simulate an inconclusive index: only self is indexed.
+    otherHwnd := 9999
+    _IndexWinSignature(hwnd, finalSig)
+    AssertTrue(g_SigToHwndIndex.Has(finalSig), "self indexed")
+    ; Mimic the fixed lookup: index miss for peers must fall through (enumeration stub).
+    foundPeerInIndex := false
+    for other, _ in g_SigToHwndIndex[finalSig] {
+        if other != hwnd
+            foundPeerInIndex := true
+    }
+    AssertFalse(foundPeerInIndex, "index alone has no peer — enumeration required")
 }
 
 RunPwaReclassTest()

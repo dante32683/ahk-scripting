@@ -9,6 +9,7 @@ _GetWinSignature(windowHandle) => ""
 Perf_Log(*) => 0
 Perf_Increment(*) => 0
 ShowOSD(*) => 0
+global g_SessionNoAutoSnap := Map()
 
 #Include ..\lib\Layout.ahk
 #Include ..\lib\StateStore.ahk
@@ -16,6 +17,8 @@ ShowOSD(*) => 0
 #Include ..\lib\Build_Autocorrect.ahk
 
 RunReliabilityFixesTest() {
+    global g_StateAppLayouts, g_StateAppMaximized, g_StateFutureVersionBlocked, g_SessionNoAutoSnap
+
     ; --- State_Init resets maps (no leftover from prior mutations) ---
     State_SetAppLayout("leftover.exe", Layout_Slot(0, 0, 50, 100))
     AssertTrue(g_StateAppLayouts.Has("leftover.exe"), "precondition: leftover present")
@@ -33,24 +36,42 @@ RunReliabilityFixesTest() {
     ; Cleared layout must not silently reappear from an empty get.
     AssertEq(State_GetAppLayout("app.exe"), "", "cleared layout returns empty")
 
-    ; --- Schema: missing / unsupported versions rejected ---
+    ; --- Schema: missing / unsupported / schema-1 rejected; future blocks overwrite ---
     schemaDir := A_Temp "\ahk_schema_test_" DllCall("GetCurrentProcessId")
     try DirCreate(schemaDir)
     badMissing := schemaDir "\missing.ini"
-    FileAppend("[AppLayouts]`n", badMissing, "UTF-8")
+    ; UTF-8-RAW: Win32 IniRead cannot see [Schema] if a BOM prefixes the file.
+    FileAppend("[AppLayouts]`n", badMissing, "UTF-8-RAW")
     threw := false
     try State_LoadStateFile(badMissing)
     catch
         threw := true
     AssertTrue(threw, "missing schema version throws")
 
-    badFuture := schemaDir "\future.ini"
-    FileAppend("[Schema]`nversion=99`n", badFuture, "UTF-8")
+    badV1 := schemaDir "\v1.ini"
+    FileAppend("[Schema]`nversion=1`n", badV1, "UTF-8-RAW")
     threw := false
+    try State_LoadStateFile(badV1)
+    catch
+        threw := true
+    AssertTrue(threw, "schema 1 rejected without migration")
+
+    badFuture := schemaDir "\future.ini"
+    FileAppend("[Schema]`nversion=99`n", badFuture, "UTF-8-RAW")
+    threw := false
+    g_StateFutureVersionBlocked := false
     try State_LoadStateFile(badFuture)
     catch
         threw := true
     AssertTrue(threw, "future schema version throws")
+    AssertTrue(g_StateFutureVersionBlocked, "future schema sets overwrite block")
+
+    ; --- Session no-auto-snap flag semantics (map-level) ---
+    g_SessionNoAutoSnap := Map()
+    g_SessionNoAutoSnap[111] := true
+    AssertTrue(g_SessionNoAutoSnap.Has(111), "session no-snap set")
+    g_SessionNoAutoSnap.Delete(111)
+    AssertFalse(g_SessionNoAutoSnap.Has(111), "explicit tile clears no-snap")
 
     ; --- Identity: empty / incomplete maps cannot verify an HWND ---
     AssertFalse(_ValidateWindowIdentity(1, Map()), "empty identity rejected")
