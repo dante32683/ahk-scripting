@@ -2114,7 +2114,7 @@ _ProcessFocusEvent(hwnd) {
         g_FocusHistory.Push(hwnd)
         if g_FocusHistory.Length > 30
             g_FocusHistory.RemoveAt(1)
-            
+
         Perf_Log("foreground_event", hwnd, "success", A_TickCount - startTime)
     }
 }
