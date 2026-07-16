@@ -31,7 +31,7 @@ if !FileExist(configPath) {
     if FileExist(exampleConfig) {
         r := MsgBox("custom/config.ahk not found. Configure for laptop profile? (Select 'No' for desktop profile)", "Setup Profile Selection", "YesNo Icon?")
         profile := (r = "Yes") ? "laptop" : "desktop"
-        
+
         try {
             ; Build the configured content in memory, then write it atomically so a
             ; failure can never leave the destination missing (no delete-before-write).
