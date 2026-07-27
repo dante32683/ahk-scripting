@@ -494,9 +494,12 @@ State_FlushNow(*) {
     stateDirty := g_StateDirtyAreas.Has("state")
     autocorrectDirty := g_StateDirtyAreas.Has("autocorrect")
     sessionDirty := g_StateDirtyAreas.Has("session") || g_StateHandoffPendingWrite
-    g_StateDirtyAreas.Delete("state")
-    g_StateDirtyAreas.Delete("autocorrect")
-    g_StateDirtyAreas.Delete("session")
+    ; Map.Delete throws on a missing key, and a flush routinely runs with only a
+    ; subset of the areas dirty, so each one has to be checked before claiming it.
+    for area in ["state", "autocorrect", "session"] {
+        if g_StateDirtyAreas.Has(area)
+            g_StateDirtyAreas.Delete(area)
+    }
     g_StateHandoffPendingWrite := false
 
     ; Update counters locally so StateStore does not hard-depend on Perf_* load order (#Warn).
