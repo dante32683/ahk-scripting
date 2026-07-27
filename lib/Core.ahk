@@ -1156,8 +1156,20 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
             g_AcceptedGeometryCache[windowHandle] := finalVis
     } else {
         Perf_Increment("win_moves")
+        ; The liveness check above happened before WinRestore/Sleep and several
+        ; geometry queries, so the window may have closed in between. Re-check
+        ; here and treat a vanished window as a normal no-op, not an error.
+        if !DllCall("IsWindow", "Ptr", windowHandle) {
+            Perf_Log("apply_layout", windowHandle, "window_gone", A_TickCount - startTime)
+            return false
+        }
         ; 1. Apply the initial move.
-        WinMove(targetX, targetY, targetW, targetH, "ahk_id " windowHandle)
+        try {
+            WinMove(targetX, targetY, targetW, targetH, "ahk_id " windowHandle)
+        } catch {
+            Perf_Log("apply_layout", windowHandle, "move_failed", A_TickCount - startTime)
+            return false
+        }
         ; 2-4. Read what the window accepted; detect a minimum-size overflow.
         afterVis := Window_GetVisibleRect(windowHandle)
         finalVis := afterVis
@@ -1165,7 +1177,7 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
             ; 5. Compensate position according to the record's anchors.
             adj := _CompensateConstrainedPosition(record, afterVis, requiredW, requiredH, offsetLeft, offsetTop, targetX, targetY)
             if adj.x != targetX || adj.y != targetY {
-                WinMove(adj.x, adj.y, , , "ahk_id " windowHandle)
+                try WinMove(adj.x, adj.y, , , "ahk_id " windowHandle)
                 ; 6. Cache the FINAL post-compensation rectangle (re-read), so drift
                 ; detection compares against where the window truly ended up.
                 finalVis := Window_GetVisibleRect(windowHandle)
@@ -1255,7 +1267,8 @@ _GeometrySettleTick(hwnd, state) {
                 , state["ol"], state["ot"], state["tx"], state["ty"])
             if adj.x != state["tx"] || adj.y != state["ty"] {
                 g_MoveSuppressUntil[hwnd] := A_TickCount + 1500
-                WinMove(adj.x, adj.y, , , "ahk_id " hwnd)
+                ; Runs 50-150 ms after the original move; the window may be gone.
+                try WinMove(adj.x, adj.y, , , "ahk_id " hwnd)
                 vis := Window_GetVisibleRect(hwnd)
             }
         }
@@ -2190,8 +2203,10 @@ CycleLayout() {
 !+CapsLock:: {
     ; Wait up to 300ms: if CapsLock is released it was a toggle tap,
     ; if still held it's being used as a Hyper modifier — don't toggle.
+    ; Do not use A_PriorKey here: KeyHistory is 0 by default (Main.ahk), which
+    ; blanks A_PriorKey and would permanently disable Shift+CapsLock toggling.
     KeyWait "CapsLock", "T0.3"
-    if !GetKeyState("CapsLock", "P") && (A_PriorKey = "CapsLock" || A_PriorKey = "LShift" || A_PriorKey = "RShift" || A_PriorKey = "LAlt" || A_PriorKey = "RAlt" || A_PriorKey = "Shift" || A_PriorKey = "Alt") {
+    if !GetKeyState("CapsLock", "P") {
         if GetKeyState("CapsLock", "T")
             SetCapsLockState "Off"
         else
