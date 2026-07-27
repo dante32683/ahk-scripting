@@ -482,9 +482,22 @@ State_FlushNow(*) {
     global g_StateSessionLayouts, g_StateAutocorrectDisabled, g_StateHandoffPendingWrite
     global g_StateFutureVersionBlocked, CFG_TestMode
 
+    ; Writing a state file yields, so a mutation can land mid-flush. Claim the dirty
+    ; flags up front and re-set them only on failure: clearing them after the write
+    ; would delete a flag set *during* the write and silently lose that change.
+    ; Critical keeps the claim, and the map enumerations below, indivisible.
+    Critical
     g_StateFlushTimerActive := false
     if IsSet(CFG_TestMode) && CFG_TestMode
         return true
+
+    stateDirty := g_StateDirtyAreas.Has("state")
+    autocorrectDirty := g_StateDirtyAreas.Has("autocorrect")
+    sessionDirty := g_StateDirtyAreas.Has("session") || g_StateHandoffPendingWrite
+    g_StateDirtyAreas.Delete("state")
+    g_StateDirtyAreas.Delete("autocorrect")
+    g_StateDirtyAreas.Delete("session")
+    g_StateHandoffPendingWrite := false
 
     ; Update counters locally so StateStore does not hard-depend on Perf_* load order (#Warn).
     global CFG_PerfLogging, g_PerfCounters
@@ -492,11 +505,12 @@ State_FlushNow(*) {
         g_PerfCounters["state_flushes"] := g_PerfCounters["state_flushes"] + 1
     ok := true
 
-    if g_StateDirtyAreas.Has("state") || g_StateDirtyAreas.Has("autocorrect") {
-        if g_StateDirtyAreas.Has("state") {
+    if stateDirty || autocorrectDirty {
+        if stateDirty {
             if g_StateFutureVersionBlocked {
                 ; Preserve an unsupported future-format file; do not clobber it with v2.
                 State_LogError("write_state", "blocked: future schema on disk")
+                g_StateDirtyAreas["state"] := true
                 ok := false
             } else {
             stateFile := g_StateDir "\state-v2.ini"
@@ -530,30 +544,28 @@ State_FlushNow(*) {
             }
 
             ; Win32 IniRead only supports Unicode via UTF-16 INI files.
-            if State_AtomicWrite(stateFile, content, "UTF-16") {
-                g_StateDirtyAreas.Delete("state")
-            } else {
+            if !State_AtomicWrite(stateFile, content, "UTF-16") {
+                g_StateDirtyAreas["state"] := true
                 ok := false
                 State_LogError("write_state", "atomic write failed")
             }
             } ; end else (not future-blocked)
         }
 
-        if g_StateDirtyAreas.Has("autocorrect") {
+        if autocorrectDirty {
             disabledFile := g_StateDir "\autocorrect-disabled.txt"
             acContent := ""
             for , entry in g_StateAutocorrectDisabled
                 acContent .= entry "`n"
-            if State_AtomicWrite(disabledFile, acContent, "UTF-8")
-                g_StateDirtyAreas.Delete("autocorrect")
-            else {
+            if !State_AtomicWrite(disabledFile, acContent, "UTF-8") {
+                g_StateDirtyAreas["autocorrect"] := true
                 ok := false
                 State_LogError("write_autocorrect", "atomic write failed")
             }
         }
     }
 
-    if g_StateHandoffPendingWrite || g_StateDirtyAreas.Has("session") {
+    if sessionDirty {
         sessionFile := g_StateDir "\session-handoff-v2.ini"
         content := "[Schema]`n"
         content .= "version=2`n"
@@ -576,16 +588,15 @@ State_FlushNow(*) {
             }
         }
 
-        if State_AtomicWrite(sessionFile, content, "UTF-16") {
-            g_StateDirtyAreas.Delete("session")
-            g_StateHandoffPendingWrite := false
-        } else {
+        if !State_AtomicWrite(sessionFile, content, "UTF-16") {
+            g_StateDirtyAreas["session"] := true
+            g_StateHandoffPendingWrite := true
             ok := false
             State_LogError("write_handoff", "atomic write failed")
         }
     }
 
-    ; A failed write leaves its dirty flag set (handled above). Schedule a retry so
+    ; A failed write re-sets its dirty flag (handled above). Schedule a retry so
     ; transient file locks recover automatically instead of losing the change until
     ; the next unrelated mutation.
     if !ok && !(IsSet(CFG_TestMode) && CFG_TestMode) && !g_StateFlushTimerActive {

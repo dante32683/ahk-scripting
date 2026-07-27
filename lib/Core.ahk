@@ -64,6 +64,8 @@ global g_PendingLocationDirty := Map()
 global g_PendingMoveStart := Map()
 global g_PendingMoveEnd := Map()
 global g_PendingDestroy := Map()
+; hwnd -> number of suppression-deferred location-change retries (bounded)
+global g_LocationRetryCount := Map()
 global g_WinEventProcessScheduled := false
 global hFocusHook := 0
 global g_MoveStartHook := 0
@@ -88,6 +90,10 @@ _ScheduleWinEventProcess() {
 _ProcessWinEvents() {
     global g_PendingForegroundHwnd, g_PendingLocationDirty, g_PendingMoveStart
     global g_PendingMoveEnd, g_PendingDestroy, g_WinEventProcessScheduled, g_AppShuttingDown
+    ; The handlers below move windows (a yield point), so without Critical a newly
+    ; scheduled _ProcessWinEvents can fire inside this drain and nest window moves.
+    ; Critical also keeps the pending-map swap below indivisible.
+    Critical
     g_WinEventProcessScheduled := false
     if g_AppShuttingDown
         return
@@ -1195,7 +1201,6 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
 
     if persist {
         _PersistLayout(windowHandle)
-        legacy := Layout_ToLegacyPct(record)
         _PersistToMemory(windowHandle, record)
         windowSignature := _GetWinSignature(windowHandle)
         if windowSignature != ""
@@ -1491,6 +1496,9 @@ _ProcessDestroyEvent(hwnd, info) {
         g_PendingMoveStart.Delete(hwnd)
     if g_PendingMoveEnd.Has(hwnd)
         g_PendingMoveEnd.Delete(hwnd)
+    global g_LocationRetryCount
+    if g_LocationRetryCount.Has(hwnd)
+        g_LocationRetryCount.Delete(hwnd)
 
     if g_WinSigCache.Has(hwnd)
         g_WinSigCache.Delete(hwnd)
@@ -1602,11 +1610,23 @@ _ProcessLocationChangeEvent(hwnd) {
         return
     if g_MoveSuppressUntil.Has(hwnd) && g_MoveSuppressUntil[hwnd] > A_TickCount {
         ; Do not discard: keep the HWND dirty and retry after suppression ends.
+        ; Bounded like _AutoRestoreWindow — every tile renews suppression for 1500 ms,
+        ; so a repeatedly tiled window would otherwise reschedule forever.
+        global g_LocationRetryCount
+        retries := g_LocationRetryCount.Has(hwnd) ? g_LocationRetryCount[hwnd] : 0
+        if retries >= 5 {
+            g_LocationRetryCount.Delete(hwnd)
+            return
+        }
+        g_LocationRetryCount[hwnd] := retries + 1
         g_PendingLocationDirty[hwnd] := true
         remaining := g_MoveSuppressUntil[hwnd] - A_TickCount
         SetTimer(_FlushLocationDirty, -Max(remaining + 30, 50))
         return
     }
+    global g_LocationRetryCount
+    if g_LocationRetryCount.Has(hwnd)
+        g_LocationRetryCount.Delete(hwnd)
     layout := g_Layouts[hwnd]
     if _NeedsAutoRestore(hwnd, layout)
         _ScheduleAutoRestore(hwnd)
@@ -1618,7 +1638,18 @@ _CheckLayoutRestores() {
     if g_ScriptPaused
         return
     Perf_Increment("drift_reconciliations")
-    for hwnd, layout in g_Layouts {
+    ; Snapshot the tracked handles before iterating: the per-window work below yields,
+    ; and _ProcessDestroyEvent deletes from g_Layouts, which would otherwise mutate the
+    ; map mid-enumeration. Critical additionally keeps the snapshot itself indivisible.
+    Critical
+    trackedHandles := []
+    for hwnd, _ in g_Layouts
+        trackedHandles.Push(hwnd)
+    Critical "Off"
+    for hwnd in trackedHandles {
+        if !g_Layouts.Has(hwnd)
+            continue
+        layout := g_Layouts[hwnd]
         if !_IsLiveWindow(hwnd)
             continue
         ; Keep max-state cache fresh for all tracked windows
