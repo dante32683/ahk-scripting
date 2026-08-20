@@ -14,6 +14,12 @@ global g_AltTabOpen := false
 if !IsSet(CFG_GameProcesses)
     global CFG_GameProcesses := []
 
+ToggleMacAltRemaps() {
+    enabled := !State_GetMacAltRemaps()
+    State_SetMacAltRemaps(enabled)
+    ShowOSD("Mac Alt remaps " (enabled ? "enabled" : "disabled"), 2000)
+}
+
 ~!Tab:: {
     global g_AltTabOpen
     g_AltTabOpen := true
@@ -28,7 +34,7 @@ if !IsSet(CFG_GameProcesses)
 }
 #HotIf
 
-#HotIf !GetKeyState("CapsLock", "P")
+#HotIf !GetKeyState("CapsLock", "P") && State_GetMacAltRemaps()
 
 ; --- Basic Editing ---
 !c::Send "^c"      ; Copy
@@ -56,7 +62,7 @@ if !IsSet(CFG_GameProcesses)
 !,::Send "^,"      ; Preferences/Settings (Cmd+,)
 
 ; --- Window / Tab Management (Disabled in Games) ---
-#HotIf !GetKeyState("CapsLock", "P") && !_IsGameActive()
+#HotIf !GetKeyState("CapsLock", "P") && State_GetMacAltRemaps() && !_IsGameActive()
 
 !q:: {
     global g_AltTabOpen
@@ -115,7 +121,7 @@ if !IsSet(CFG_GameProcesses)
     }
 }
 
-#HotIf !GetKeyState("CapsLock", "P")
+#HotIf !GetKeyState("CapsLock", "P") && State_GetMacAltRemaps()
 
 !+q:: {
     try {

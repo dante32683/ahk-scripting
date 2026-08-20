@@ -86,6 +86,12 @@ Mitigation: the lock is only intended for short periods (e.g. cleaning a keyboar
 
 ## Resolved
 
+### ~~CapsLock plus Alt opened application menus~~ — RESOLVED
+
+Area: Hyper layer
+
+The shared dispatcher checked the physical Alt state after a CapsLock custom combination fired. AutoHotkey did not see Alt as a declared hotkey modifier. It therefore did not send its normal menu mask key. The dispatcher now sends one unused mask key for every CapsLock plus Alt action.
+
 ### ~~Multi-instance windows always skipped auto-snap~~ — RESOLVED
 
 Area: Tiling memory
@@ -109,4 +115,3 @@ Area: Focus navigation
 `CapsLock+H/J/K/L` could focus a fullscreen window behind tiled panes (e.g. a browser under side-by-side terminals) because scoring used center-to-center distance only.
 
 Fix: `FocusDirection` now uses edge-distance scoring with overlap penalty, center-distance fallback for shadow overlap, and excludes candidates whose axis overlap spans nearly the full active window. `CapsLock+T` minimize toggle now targets `"A"` only so multiple terminal windows are not minimized together.
-

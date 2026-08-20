@@ -42,7 +42,7 @@ FancyZones works well, but native tiling gives more direct control:
 - Positions are remembered per-app and restored automatically on focus without any external service.
 - The native engine can be extended (e.g., per-instance caching for multi-window apps) without depending on PowerToys internals.
 
-FancyZones mode is preserved for users who prefer it. `CFG_TilingMode` gates which hotkey block is active.
+FancyZones mode is preserved for users who prefer it. `CFG_TilingMode` selects the action inside the shared Hyper dispatcher.
 
 ## Why Fractional Coordinates
 
@@ -71,4 +71,4 @@ The autocorrect engine exists because Windows has no native system-wide autocorr
 
 ## The macOS Remap Layer
 
-`Remap.ahk` remaps Alt to Ctrl for common editing shortcuts (copy, paste, undo, save, close tab, etc.) to match macOS muscle memory on Windows. It is always active when CapsLock is not held. Smart logic distinguishes between closing a tab (Alt+W) and closing a window (Alt+Q) based on which app is focused.
+`Remap.ahk` remaps Alt to Ctrl for common editing shortcuts (copy, paste, undo, save, close tab, etc.) to match macOS muscle memory on Windows. `CapsLock+Alt+M` switches between this mode and normal Windows Alt behavior. The script saves the selected mode. Smart logic distinguishes between closing a tab (Alt+W) and closing a window (Alt+Q) based on which app is focused.

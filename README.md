@@ -33,8 +33,8 @@ A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock
 - **`Master.ahk`** — laptop entry point; includes virtual desktop support
 - **`Master-PC.ahk`** — PC entry point; uses monitor focus/move helpers instead of virtual desktops
 - **`lib/Core.ahk`** — all shared logic (tiling engine, VDA, focus tracking, CapsLock layer)
-- **`lib/WindowTiling_Native.ahk`** — native AHK tiling hotkeys (active when `CFG_TilingMode = "Native"`)
-- **`lib/WindowTiling_FancyZones.ahk`** — FancyZones passthrough hotkeys (active when `CFG_TilingMode = "FancyZones"`)
+- **`lib/WindowTiling_Native.ahk`** — native tiling actions selected by the shared Hyper dispatcher
+- **`lib/WindowTiling_FancyZones.ahk`** — FancyZones actions selected by the shared Hyper dispatcher
 - **`lib/Build_Autocorrect.ahk`** — rebuilds `lib/Autocorrect.ahk` from `Autocorrect_Database.txt` on startup when the database is newer; force-restarts automatically
 - **`lib/Autocorrect.ahk`** — **auto-generated**; all hotstrings wrapped in `#HotIf CFG_Autocorrect`. Never edit directly.
 - **`lib/Autocorrect_Logic.ahk`** — runtime: disable and persistence for autocorrect
@@ -45,7 +45,7 @@ A personal Windows automation script built on AutoHotkey v2. Includes a CapsLock
 - **`custom\Core_custom.ahk` / `custom\Master_custom.ahk` / `custom\Master-PC_custom.ahk`** — optional local extensions (gitignored)
 - **`custom\*.ahk`** — optional local extensions, usually included by `custom\Master_custom.ahk` or `custom\Master-PC_custom.ahk` (gitignored)
 
-Both tiling files are always included; `CFG_TilingMode` gates which hotkey set is active.
+Both tiling files are always included; `CFG_TilingMode` selects actions in the shared Hyper dispatcher.
 
 ## Hotkeys
 
@@ -63,6 +63,7 @@ Hold CapsLock to activate. CapsLock itself is disabled as a toggle — use `Shif
 | `Shift+B` | 20-20-20 eye break prompt |
 | `N` | Hide/show current window (toggle) |
 | `M` | Task Manager |
+| `Alt+M` | Toggle the persistent Mac Alt remaps |
 | `E` | File Explorer or FilePilot (new window) |
 | `V` | VS Code (new window) |
 | `Alt+V` | Cursor (new window) |
@@ -82,6 +83,9 @@ Hold CapsLock to activate. CapsLock itself is disabled as a toggle — use `Shif
 | `Delete` | Clear session tiling layout for the active window (does not forget app memory) |
 | `Shift+Delete` | Forget persistent remembered layout for the active app |
 | `Shift+Space` | Toggle script pause |
+
+`CapsLock+Alt+D` keeps the Native tile or FancyZones snap action. Use
+`CapsLock+Alt+Shift+D` to open the disabled-correction file.
 
 ### Tiling mode behavior
 
@@ -107,7 +111,8 @@ Hold `CapsLock`, then:
 | `Alt+O` | Tile right third |
 | `Alt+Y` | Tile left 60% |
 | `Alt+P` | Tile right 40% |
-| `Alt+F` / `Alt+Enter` | Toggle maximize |
+| `Alt+F` | Fill the work area without maximize |
+| `Alt+Enter` | Toggle maximize |
 | `Alt+G` | Float & center |
 | `H / J / K / L` | Focus left / down / up / right (skips occluded fullscreen windows behind tiles) |
 | `Backspace` | Focus previous window |
@@ -121,7 +126,7 @@ Hold `CapsLock`, then:
 |-----|--------|
 | `Z / X / P / O` | Apply FancyZones layout IDs `CFG_FZ_Z/X/P/O` (sends `Ctrl+Alt+Win+<n>`) |
 | `Y` | Focus/open Apple Music |
-| `F` | Toggle maximize |
+| `Alt+F` | Fill the work area without maximize |
 | `G` | Float & center |
 | `H / J / K / L` | Focus left / down / up / right (skips occluded fullscreen windows behind tiles) |
 | `Backspace` | Focus previous window |
@@ -149,9 +154,10 @@ Hold `CapsLock`, then:
 | `Alt+1 / 2 / 3` | Move active window to monitor 1 / 2 / 3 |
 | `Q` | Toggle microphone mute |
 
-### Global remaps (`Remap.ahk`) — active when CapsLock is not held
+### Global remaps (`Remap.ahk`) — active in Mac Alt mode when CapsLock is not held
 
 macOS-style `Alt` → `Ctrl` remapping, plus a few direct actions.
+Use `CapsLock+Alt+M` to switch between Mac Alt mode and normal Windows Alt behavior.
 
 **Editing**
 | Key | Action |
@@ -233,7 +239,7 @@ macOS-style `Alt` → `Ctrl` remapping, plus a few direct actions.
 | `Ctrl+Esc` | Kill script |
 | `Copilot key` (`Win+Shift+F23`) | Toggle camera on/off (requires `CFG_CameraID`) |
 | `CapsLock+Alt+Backspace` (within 15 s) | Permanently disable the last autocorrection |
-| `CapsLock+Alt+D` | Open `Autocorrect_Disabled.txt` to re-enable corrections |
+| `CapsLock+Alt+Shift+D` | Open `Autocorrect_Disabled.txt` to re-enable corrections |
 
 ## Notes
 

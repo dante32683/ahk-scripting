@@ -7,8 +7,10 @@ global g_StateDesktopWindows := Map()   ; desktop -> hwnd
 global g_StateDesktopIdentities := Map() ; desktop -> WindowIdentity map
 global g_StateSessionLayouts := Map()   ; hwnd -> {identity, layout, pid, proc, class}
 global g_StateAutocorrectDisabled := Map()
+global g_StateMacAltRemaps := true
 global g_StateDirtyAreas := Map()
 global g_StateFlushTimerActive := false
+global g_StateFlushInProgress := false
 global g_StateMigrationValidated := 0
 global g_StateHandoffPendingWrite := false
 global g_StateSchemaVersion := 2
@@ -17,8 +19,9 @@ global g_StateFutureVersionBlocked := false
 State_Init() {
     global g_StateDir, g_StateAppLayouts, g_StateAppMaximized, g_StateDesktopWindows
     global g_StateDesktopIdentities, g_StateSessionLayouts, g_StateAutocorrectDisabled
-    global g_StateDirtyAreas, g_StateFlushTimerActive, g_StateHandoffPendingWrite
-    global g_StateMigrationValidated, g_StateFutureVersionBlocked, CFG_TestMode
+    global g_StateDirtyAreas, g_StateFlushTimerActive, g_StateFlushInProgress, g_StateHandoffPendingWrite
+    global g_StateMigrationValidated, g_StateFutureVersionBlocked, g_StateMacAltRemaps
+    global CFG_TestMode, CFG_MacAltRemaps
 
     ; Always reset maps so a re-init (tests or SoftReset paths) cannot leak prior state.
     g_StateAppLayouts := Map()
@@ -27,8 +30,10 @@ State_Init() {
     g_StateDesktopIdentities := Map()
     g_StateSessionLayouts := Map()
     g_StateAutocorrectDisabled := Map()
+    g_StateMacAltRemaps := IsSet(CFG_MacAltRemaps) ? (CFG_MacAltRemaps ? true : false) : true
     g_StateDirtyAreas := Map()
     g_StateFlushTimerActive := false
+    g_StateFlushInProgress := false
     g_StateHandoffPendingWrite := false
     g_StateMigrationValidated := 0
     g_StateFutureVersionBlocked := false
@@ -114,7 +119,7 @@ State_UnescapeIni(value) {
 
 State_LoadStateFile(stateFile) {
     global g_StateAppLayouts, g_StateAppMaximized, g_StateDesktopWindows, g_StateDesktopIdentities
-    global g_StateSchemaVersion, g_StateFutureVersionBlocked
+    global g_StateSchemaVersion, g_StateFutureVersionBlocked, g_StateMacAltRemaps
 
     ; A state file with no schema version is not a valid v2 file; require it explicitly
     ; rather than assuming "2" and parsing potentially-incompatible content.
@@ -131,10 +136,14 @@ State_LoadStateFile(stateFile) {
         throw Error("Unsupported state schema version: " ver " (expected " g_StateSchemaVersion ")")
     g_StateFutureVersionBlocked := false
 
+    macAltValue := IniRead(stateFile, "Preferences", "mac_alt_remaps", "")
+    if macAltValue = "0" || macAltValue = "1"
+        g_StateMacAltRemaps := (macAltValue = "1")
+
     sectionsStr := IniRead(stateFile)
     loop parse, sectionsStr, "`n", "`r" {
         section := Trim(A_LoopField)
-        if section = "" || section = "Schema" || section = "DesktopLastWindow"
+        if section = "" || section = "Schema" || section = "Preferences" || section = "DesktopLastWindow"
             continue
         ; Isolate each section so one malformed record cannot abort the rest.
         try {
@@ -308,6 +317,20 @@ State_GetAppLayout(signature) {
     return g_StateAppLayouts.Has(signature) ? g_StateAppLayouts[signature] : ""
 }
 
+State_GetMacAltRemaps() {
+    global g_StateMacAltRemaps
+    return g_StateMacAltRemaps
+}
+
+State_SetMacAltRemaps(enabled) {
+    global g_StateMacAltRemaps
+    value := enabled ? true : false
+    if g_StateMacAltRemaps = value
+        return
+    g_StateMacAltRemaps := value
+    State_MarkDirty("state")
+}
+
 State_SetAppLayout(signature, record) {
     global g_StateAppLayouts
     if record is String {
@@ -477,19 +500,32 @@ State_PrepareHandoff() {
 }
 
 State_FlushNow(*) {
-    global g_StateDirtyAreas, g_StateFlushTimerActive, g_StateDir
+    global g_StateDirtyAreas, g_StateFlushTimerActive, g_StateFlushInProgress, g_StateDir
     global g_StateAppLayouts, g_StateAppMaximized, g_StateDesktopWindows, g_StateDesktopIdentities
     global g_StateSessionLayouts, g_StateAutocorrectDisabled, g_StateHandoffPendingWrite
-    global g_StateFutureVersionBlocked, CFG_TestMode
+    global g_StateFutureVersionBlocked, g_StateMacAltRemaps, CFG_TestMode
 
     ; Writing a state file yields, so a mutation can land mid-flush. Claim the dirty
     ; flags up front and re-set them only on failure: clearing them after the write
     ; would delete a flag set *during* the write and silently lose that change.
-    ; Critical keeps the claim, and the map enumerations below, indivisible.
+    ; Critical keeps the claim indivisible. It covers ONLY the claim: holding it across
+    ; the file writes below would buffer the keyboard hook for the duration of the I/O,
+    ; which delays hotstrings enough to corrupt typing.
     Critical
+    if g_StateFlushInProgress {
+        ; A slow write is still active. Keep one retry scheduled for any mutations
+        ; that arrived during that write, instead of running a second flush in parallel.
+        SetTimer(State_FlushNow, -500)
+        Critical "Off"
+        return false
+    }
+    g_StateFlushInProgress := true
     g_StateFlushTimerActive := false
-    if IsSet(CFG_TestMode) && CFG_TestMode
+    try {
+    if IsSet(CFG_TestMode) && CFG_TestMode {
+        Critical "Off"
         return true
+    }
 
     stateDirty := g_StateDirtyAreas.Has("state")
     autocorrectDirty := g_StateDirtyAreas.Has("autocorrect")
@@ -508,72 +544,56 @@ State_FlushNow(*) {
         g_PerfCounters["state_flushes"] := g_PerfCounters["state_flushes"] + 1
     ok := true
 
-    if stateDirty || autocorrectDirty {
-        if stateDirty {
-            if g_StateFutureVersionBlocked {
-                ; Preserve an unsupported future-format file; do not clobber it with v2.
-                State_LogError("write_state", "blocked: future schema on disk")
-                g_StateDirtyAreas["state"] := true
-                ok := false
-            } else {
-            stateFile := g_StateDir "\state-v2.ini"
-            content := "[Schema]`nversion=2`nwrite_time_utc=" State_UtcNowUnix() "`n`n"
+    ; --- Build phase (still Critical) ---------------------------------------
+    ; Serializing reads the shared state maps, and the mutators delete from them, so
+    ; the enumerations must not be interrupted. This is pure string work: no file I/O.
+    stateBlocked := stateDirty && g_StateFutureVersionBlocked
+    stateContent := ""
+    acContent := ""
+    sessionContent := ""
 
-            allSigs := Map()
-            for sig, _ in g_StateAppLayouts
-                allSigs[sig] := true
-            for sig, _ in g_StateAppMaximized
-                allSigs[sig] := true
+    if stateDirty && !stateBlocked {
+        stateContent := "[Schema]`nversion=2`nwrite_time_utc=" State_UtcNowUnix() "`n`n"
+        stateContent .= "[Preferences]`nmac_alt_remaps=" (g_StateMacAltRemaps ? "1" : "0") "`n`n"
 
-            for sig, _ in allSigs {
-                content .= "[" State_EscapeIni(sig) "]`n"
-                if g_StateAppLayouts.Has(sig)
-                    content .= "rect=" State_EscapeIni(Layout_Serialize(g_StateAppLayouts[sig])) "`n"
-                if g_StateAppMaximized.Has(sig)
-                    content .= "maximized=" (g_StateAppMaximized[sig] ? "1" : "0") "`n"
-                content .= "`n"
-            }
+        allSigs := Map()
+        for sig, _ in g_StateAppLayouts
+            allSigs[sig] := true
+        for sig, _ in g_StateAppMaximized
+            allSigs[sig] := true
 
-            content .= "[DesktopLastWindow]`n"
-            for desk, hwnd in g_StateDesktopWindows {
-                if hwnd && DllCall("IsWindow", "Ptr", hwnd) {
-                    id := g_StateDesktopIdentities.Has(desk) ? g_StateDesktopIdentities[desk] : Map()
-                    content .= "d" desk "=" hwnd
-                        . "|" (id.Has("pid") ? id["pid"] : 0)
-                        . "|" State_EscapeIni(id.Has("proc") ? id["proc"] : "")
-                        . "|" State_EscapeIni(id.Has("class") ? id["class"] : "")
-                        . "|" State_EscapeIni(id.Has("sig") ? id["sig"] : "") "`n"
-                }
-            }
-
-            ; Win32 IniRead only supports Unicode via UTF-16 INI files.
-            if !State_AtomicWrite(stateFile, content, "UTF-16") {
-                g_StateDirtyAreas["state"] := true
-                ok := false
-                State_LogError("write_state", "atomic write failed")
-            }
-            } ; end else (not future-blocked)
+        for sig, _ in allSigs {
+            stateContent .= "[" State_EscapeIni(sig) "]`n"
+            if g_StateAppLayouts.Has(sig)
+                stateContent .= "rect=" State_EscapeIni(Layout_Serialize(g_StateAppLayouts[sig])) "`n"
+            if g_StateAppMaximized.Has(sig)
+                stateContent .= "maximized=" (g_StateAppMaximized[sig] ? "1" : "0") "`n"
+            stateContent .= "`n"
         }
 
-        if autocorrectDirty {
-            disabledFile := g_StateDir "\autocorrect-disabled.txt"
-            acContent := ""
-            for , entry in g_StateAutocorrectDisabled
-                acContent .= entry "`n"
-            if !State_AtomicWrite(disabledFile, acContent, "UTF-8") {
-                g_StateDirtyAreas["autocorrect"] := true
-                ok := false
-                State_LogError("write_autocorrect", "atomic write failed")
+        stateContent .= "[DesktopLastWindow]`n"
+        for desk, hwnd in g_StateDesktopWindows {
+            if hwnd && DllCall("IsWindow", "Ptr", hwnd) {
+                id := g_StateDesktopIdentities.Has(desk) ? g_StateDesktopIdentities[desk] : Map()
+                stateContent .= "d" desk "=" hwnd
+                    . "|" (id.Has("pid") ? id["pid"] : 0)
+                    . "|" State_EscapeIni(id.Has("proc") ? id["proc"] : "")
+                    . "|" State_EscapeIni(id.Has("class") ? id["class"] : "")
+                    . "|" State_EscapeIni(id.Has("sig") ? id["sig"] : "") "`n"
             }
         }
     }
 
+    if autocorrectDirty {
+        for , entry in g_StateAutocorrectDisabled
+            acContent .= entry "`n"
+    }
+
     if sessionDirty {
-        sessionFile := g_StateDir "\session-handoff-v2.ini"
-        content := "[Schema]`n"
-        content .= "version=2`n"
-        content .= "write_time_utc=" State_UtcNowUnix() "`n"
-        content .= "source_pid=" DllCall("GetCurrentProcessId") "`n`n"
+        sessionContent := "[Schema]`n"
+        sessionContent .= "version=2`n"
+        sessionContent .= "write_time_utc=" State_UtcNowUnix() "`n"
+        sessionContent .= "source_pid=" DllCall("GetCurrentProcessId") "`n`n"
 
         for hwnd, item in g_StateSessionLayouts {
             if !DllCall("IsWindow", "Ptr", hwnd)
@@ -582,16 +602,46 @@ State_FlushNow(*) {
                 pid := item.Has("pid") ? item["pid"] : WinGetPID("ahk_id " hwnd)
                 procName := item.Has("proc") ? item["proc"] : WinGetProcessName("ahk_id " hwnd)
                 className := item.Has("class") ? item["class"] : WinGetClass("ahk_id " hwnd)
-                content .= "[" hwnd "]`n"
-                content .= "pid=" pid "`n"
-                content .= "proc=" State_EscapeIni(procName) "`n"
-                content .= "class=" State_EscapeIni(className) "`n"
-                content .= "sig=" State_EscapeIni(item["identity"]) "`n"
-                content .= "rect=" State_EscapeIni(Layout_Serialize(item["layout"])) "`n`n"
+                sessionContent .= "[" hwnd "]`n"
+                sessionContent .= "pid=" pid "`n"
+                sessionContent .= "proc=" State_EscapeIni(procName) "`n"
+                sessionContent .= "class=" State_EscapeIni(className) "`n"
+                sessionContent .= "sig=" State_EscapeIni(item["identity"]) "`n"
+                sessionContent .= "rect=" State_EscapeIni(Layout_Serialize(item["layout"])) "`n`n"
             }
         }
+    }
 
-        if !State_AtomicWrite(sessionFile, content, "UTF-16") {
+    ; --- Write phase --------------------------------------------------------
+    ; Every snapshot is now a local string, so nothing shared is read past this point.
+    ; Release the input hook: holding Critical across file I/O buffers the keyboard
+    ; long enough to delay hotstrings into mangling what the user is typing.
+    Critical "Off"
+
+    if stateBlocked {
+        ; Preserve an unsupported future-format file; do not clobber it with v2.
+        State_LogError("write_state", "blocked: future schema on disk")
+        g_StateDirtyAreas["state"] := true
+        ok := false
+    } else if stateDirty {
+        ; Win32 IniRead only supports Unicode via UTF-16 INI files.
+        if !State_AtomicWrite(g_StateDir "\state-v2.ini", stateContent, "UTF-16") {
+            g_StateDirtyAreas["state"] := true
+            ok := false
+            State_LogError("write_state", "atomic write failed")
+        }
+    }
+
+    if autocorrectDirty {
+        if !State_AtomicWrite(g_StateDir "\autocorrect-disabled.txt", acContent, "UTF-8") {
+            g_StateDirtyAreas["autocorrect"] := true
+            ok := false
+            State_LogError("write_autocorrect", "atomic write failed")
+        }
+    }
+
+    if sessionDirty {
+        if !State_AtomicWrite(g_StateDir "\session-handoff-v2.ini", sessionContent, "UTF-16") {
             g_StateDirtyAreas["session"] := true
             g_StateHandoffPendingWrite := true
             ok := false
@@ -607,6 +657,15 @@ State_FlushNow(*) {
         SetTimer(State_FlushNow, -2000)
     }
     return ok
+    } finally {
+        Critical
+        g_StateFlushInProgress := false
+        if (g_StateDirtyAreas.Count > 0 || g_StateHandoffPendingWrite) && !g_StateFlushTimerActive {
+            g_StateFlushTimerActive := true
+            SetTimer(State_FlushNow, -500)
+        }
+        Critical "Off"
+    }
 }
 
 State_AtomicWrite(filePath, content, encoding := "UTF-8") {

@@ -32,6 +32,9 @@ global CFG_FZ_O := "4"
 ; Autocorrect: automatically fix common Wikipedia misspellings
 global CFG_Autocorrect := true
 
+; Initial Alt key mode. CapsLock+Alt+M changes and saves the active mode.
+global CFG_MacAltRemaps := true
+
 ; Tiling enhancements (Native mode only)
 global CFG_TilingMemory    := true
 global CFG_TilePadding     := 4
@@ -75,4 +78,3 @@ global CFG_NetworkToolDir     := "C:\Tools\NetworkTool"
 global CFG_TunnelUser         := "your_tunnel_user"
 global CFG_TunnelHost         := "example.internal"
 global CFG_TunnelBinaryPath   := "C:\Tools\Tunnel\tunnel.exe"
-

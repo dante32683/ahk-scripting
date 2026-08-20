@@ -29,6 +29,7 @@
 | `CFG_TilingMode` | Yes | `"Native"` or `"FancyZones"` |
 | `CFG_TilingMemory` | Yes | `true` or `false` — enables per-app tiling memory in Native mode |
 | `CFG_Autocorrect` | Yes | `true` or `false` — enables the autocorrect engine |
+| `CFG_MacAltRemaps` | No | Initial Alt mode. `true` enables the macOS-style Alt remaps. The saved toggle overrides this value. |
 | `CFG_GameProcesses` | No | Array of game executable filenames (e.g. `["game.exe"]`) to disable `Alt+Q` and `Alt+W` remaps |
 | `CFG_FZ_Z` | FancyZones only | FancyZones layout ID for `CapsLock+Z` |
 | `CFG_FZ_X` | FancyZones only | FancyZones layout ID for `CapsLock+X` |
@@ -59,6 +60,7 @@ FancyZones layout IDs are GUIDs shown in the FancyZones editor under PowerToys s
 | Pause script | `CapsLock+Shift+Space` |
 | Kill script | `Ctrl+Esc` |
 | Toggle CapsLock | `Shift+CapsLock` or `Alt+Shift+CapsLock` |
+| Toggle Mac Alt mode | `CapsLock+Alt+M` |
 
 ## Spatial Focus (`CapsLock+H/J/K/L`)
 
@@ -68,16 +70,23 @@ FancyZones layout IDs are GUIDs shown in the FancyZones editor under PowerToys s
 
 All tiling is done by calling `_ApplyLayout(xf, yf, wf, hf, hwnd, persist)` where `xf/yf/wf/hf` are percentages (0–100) of monitor dimensions.
 
-To add a new layout in Native mode, open `lib/WindowTiling_Native.ahk` and add a hotkey inside the `#HotIf GetKeyState("CapsLock", "P")` block:
+To add a new Native layout, add an action function in `lib/WindowTiling_Native.ahk`.
+Then route one unused suffix in the Hyper dispatcher in `lib/Core.ahk`:
 
 ```ahk
-CapsLock & <key>::_ApplyLayout(xf, yf, wf, hf, "A", true)
+_HyperHandleLetter(key) {
+    if key = "<key>" && g_TilingMode = "Native" && _HyperAltDown() {
+        _ApplyLayout(xf, yf, wf, hf, "A", true)
+        return
+    }
+}
 ```
 
 Example — tile to the left 40%:
 
 ```ahk
-CapsLock & i::_ApplyLayout(0, 0, 40, 100, "A", true)
+if key = "i" && g_TilingMode = "Native" && _HyperAltDown()
+    _ApplyLayout(0, 0, 40, 100, "A", true)
 ```
 
 To adjust the gap between the window edge and the monitor edge, change the `g_TileGap` global at the top of `Core.ahk`.
@@ -93,13 +102,14 @@ The generated `lib/Autocorrect.ahk` is gitignored, and the script builds or rebu
 
 To re-enable a disabled correction:
 
-1. Press `CapsLock+Alt+D` to open `Autocorrect_Disabled.txt`.
+1. Press `CapsLock+Alt+Shift+D` to open `Autocorrect_Disabled.txt`.
 2. Delete the relevant line.
 3. Press `CapsLock+Esc` to reload.
 
 ## Adding An App Launcher
 
-App launcher hotkeys live in the `#HotIf GetKeyState("CapsLock", "P")` block in `Core.ahk` (shared) or the entry points (machine-specific). Use `_ActivateOrRunOnCurrentDesktop` so the launcher does not pull windows from other virtual desktops:
+App launcher actions live in the shared Hyper dispatcher in `Core.ahk`.
+Use `_ActivateOrRunOnCurrentDesktop` so a launcher does not pull windows from another virtual desktop:
 
 ```ahk
 CapsLock & <key>::_ActivateOrRunOnCurrentDesktop("AppName.exe", "shell:appsFolder\...")

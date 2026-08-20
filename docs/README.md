@@ -22,8 +22,8 @@ The docs here are the authoritative reference for all code in this repo.
 ### Core Library
 
 - `lib/Core.ahk` — all shared logic: tiling engine, VDA integration, focus tracking, CapsLock layer, app launchers, camera toggle, keyboard lock.
-- `lib/WindowTiling_Native.ahk` — native AHK tiling hotkeys. Active when `CFG_TilingMode = "Native"`.
-- `lib/WindowTiling_FancyZones.ahk` — FancyZones passthrough hotkeys. Active when `CFG_TilingMode = "FancyZones"`.
+- `lib/WindowTiling_Native.ahk` — native tiling actions selected by the shared Hyper dispatcher.
+- `lib/WindowTiling_FancyZones.ahk` — FancyZones actions selected by the shared Hyper dispatcher.
 - `lib/ShowOSD.ahk` — `ShowOSD(text, ms)` helper for user-facing notifications.
 
 ### Autocorrect System
@@ -36,7 +36,7 @@ The docs here are the authoritative reference for all code in this repo.
 
 ### Global Remaps
 
-- `Remap.ahk` — macOS-style Alt→Ctrl remapping and smart window/tab closing logic. Included by both entry points.
+- `Remap.ahk` — optional macOS-style Alt→Ctrl remaps and smart window/tab closing logic. Included by both entry points.
 
 ### Configuration
 

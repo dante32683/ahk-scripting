@@ -68,11 +68,13 @@ Adjust `g_TileGap` (global in `Core.ahk`) to change the pixel gap between window
 
 ## Hotkey Structure
 
-CapsLock hotkeys go inside a `#HotIf GetKeyState("CapsLock", "P")` block. This ensures CapsLock acts only as a modifier and does not toggle.
+CapsLock actions use one unconditional custom combination per suffix in `lib/Core.ahk`.
+The shared handler decides profile, tiling mode, Alt, and Shift behavior.
 
-Global remaps (always active) go outside any `#HotIf` block, typically in `Remap.ahk`.
+Global remaps go in `Remap.ahk`. A mode condition can enable or disable their hotkey blocks.
 
-Machine-specific hotkeys that use the same key as a shared hotkey should not be duplicated — restructure with a conditional inside the shared handler if needed.
+Machine-specific actions that use a shared suffix must be selected inside the shared handler.
+Do not add duplicate CapsLock hotkeys in entry points or tiling modules.
 
 ## WinEvent Callbacks
 
