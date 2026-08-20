@@ -80,73 +80,9 @@ if (IsSet(CFG_Autocorrect) && CFG_Autocorrect && !CFG_TestMode) {
         SafeReload()
 }
 #Include *i lib/Autocorrect.ahk
-; ============================================================
-; PROFILE-SPECIFIC HOTKEYS
-; ============================================================
-
-#HotIf GetKeyState("CapsLock", "P") && APP_Profile = "laptop"
-
-Left:: {
-    if VDA.isLoaded {
-        cur := VDA.GetCurrent()
-        if cur != VDA.DESKTOP_UNKNOWN
-            GotoDesktop(Max(1, cur - 1))
-        else
-            Send "^#{Left}"
-    } else
-        Send "^#{Left}"
-}
-Right:: {
-    if VDA.isLoaded {
-        cur := VDA.GetCurrent()
-        count := VDA.GetDesktopCount()
-        if cur != VDA.DESKTOP_UNKNOWN
-            ; Clamp to the real desktop count when known; otherwise advance by one
-            ; and let VDA.GoTo reject an out-of-range target.
-            GotoDesktop(count > 0 ? Min(count, cur + 1) : cur + 1)
-        else
-            Send "^#{Right}"
-    } else
-        Send "^#{Right}"
-}
-
-#HotIf GetKeyState("CapsLock", "P") && APP_Profile = "desktop"
-
-Left:: {
-    monitorCount := MonitorGetCount()
-    currentMonitorIndex := 1
-    if WinExist("A") {
-        WinGetPos(&windowX, &windowY, &windowWidth, &windowHeight, "A")
-        centerX := windowX + windowWidth // 2, centerY := windowY + windowHeight // 2
-        loop monitorCount {
-            MonitorGetWorkArea(A_Index, &monitorLeft, &monitorTop, &monitorRight, &monitorBottom)
-            if centerX >= monitorLeft && centerX < monitorRight && centerY >= monitorTop && centerY < monitorBottom {
-                currentMonitorIndex := A_Index
-                break
-            }
-        }
-    }
-    _FocusMonitor(Mod(currentMonitorIndex - 2 + monitorCount, monitorCount) + 1)
-}
-
-Right:: {
-    monitorCount := MonitorGetCount()
-    currentMonitorIndex := 1
-    if WinExist("A") {
-        WinGetPos(&windowX, &windowY, &windowWidth, &windowHeight, "A")
-        centerX := windowX + windowWidth // 2, centerY := windowY + windowHeight // 2
-        loop monitorCount {
-            MonitorGetWorkArea(A_Index, &monitorLeft, &monitorTop, &monitorRight, &monitorBottom)
-            if centerX >= monitorLeft && centerX < monitorRight && centerY >= monitorTop && centerY < monitorBottom {
-                currentMonitorIndex := A_Index
-                break
-            }
-        }
-    }
-    _FocusMonitor(Mod(currentMonitorIndex, monitorCount) + 1)
-}
-
-#HotIf
+; Profile-specific CapsLock combinations are dispatched by Core.ahk.
+; One unconditional custom combination per suffix avoids physical-state checks
+; in #HotIf and keeps laptop and desktop behavior in one decision point.
 
 ; Telemetry and initialization complete
 OnExit(App_Shutdown)

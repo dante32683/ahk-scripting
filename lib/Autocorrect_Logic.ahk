@@ -127,7 +127,9 @@ AC_StartInputHook() {
 
 AC_StopInputHook() {
     global AC_InputHook
-    if AC_InputHook {
+    ; Hotkeys can fire before (or instead of) the auto-execute assignment if an
+    ; earlier include aborts init, so never assume the global is assigned.
+    if IsSet(AC_InputHook) && AC_InputHook {
         try AC_InputHook.Stop()
         AC_InputHook := 0
     }
@@ -179,9 +181,7 @@ AC_OnHookEnd(boundGeneration, inputHook) {
 }
 #HotIf
 
-#HotIf GetKeyState("CapsLock", "P") && GetKeyState("Alt", "P")
-
-*Backspace:: {
+AC_DisableLastCorrection() {
     global AC_LastTrigger, AC_LastCorrection, AC_LastTypedTrigger, AC_LastTypedCorrection
     global AC_LastTick, AC_LastEndChar, AC_LastHwnd, AC_Generation, AC_HadSubsequentInput
     global g_StateAutocorrectDisabled, AC_TempSuppressed
@@ -207,7 +207,7 @@ AC_OnHookEnd(boundGeneration, inputHook) {
     AC_ClearLastCorrection()
 }
 
-*d:: {
+AC_OpenDisabledFile() {
     global g_StateDir
     disabledFile := g_StateDir "\autocorrect-disabled.txt"
     if !FileExist(disabledFile)
@@ -215,5 +215,3 @@ AC_OnHookEnd(boundGeneration, inputHook) {
     Run('"' disabledFile '"')
     ShowOSD("autocorrect-disabled.txt opened")
 }
-
-#HotIf

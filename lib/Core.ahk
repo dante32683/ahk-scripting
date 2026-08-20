@@ -67,6 +67,8 @@ global g_PendingDestroy := Map()
 ; hwnd -> number of suppression-deferred location-change retries (bounded)
 global g_LocationRetryCount := Map()
 global g_WinEventProcessScheduled := false
+; Re-entrancy guard for _ProcessWinEvents (replaces holding Critical across the drain)
+global g_WinEventProcessing := false
 global hFocusHook := 0
 global g_MoveStartHook := 0
 global g_MoveEndHook := 0
@@ -90,13 +92,21 @@ _ScheduleWinEventProcess() {
 _ProcessWinEvents() {
     global g_PendingForegroundHwnd, g_PendingLocationDirty, g_PendingMoveStart
     global g_PendingMoveEnd, g_PendingDestroy, g_WinEventProcessScheduled, g_AppShuttingDown
-    ; The handlers below move windows (a yield point), so without Critical a newly
-    ; scheduled _ProcessWinEvents can fire inside this drain and nest window moves.
-    ; Critical also keeps the pending-map swap below indivisible.
+    global g_WinEventProcessing
+    ; Critical must cover ONLY the pending-map swap. Holding it across the handlers
+    ; below would buffer the keyboard hook for the whole drain (window moves and
+    ; settle sleeps), which delays hotstrings badly enough to corrupt typing.
+    ; Re-entrancy is instead blocked by an explicit flag.
     Critical
     g_WinEventProcessScheduled := false
-    if g_AppShuttingDown
+    if g_AppShuttingDown || g_WinEventProcessing {
+        Critical "Off"
+        ; Something is still draining; make sure the new events get picked up after it.
+        if !g_AppShuttingDown
+            _ScheduleWinEventProcess()
         return
+    }
+    g_WinEventProcessing := true
 
     focusHwnd := g_PendingForegroundHwnd
     g_PendingForegroundHwnd := 0
@@ -108,31 +118,37 @@ _ProcessWinEvents() {
     g_PendingDestroy := Map()
     locationDirty := g_PendingLocationDirty
     g_PendingLocationDirty := Map()
+    ; Swap done — the maps below are thread-local now, so release the input hook.
+    Critical "Off"
 
-    for hwnd, _ in moveStarts {
-        try _ProcessMoveStartEvent(hwnd)
-        catch as e
-            _Dbg("event-error movestart hwnd=" hwnd " " e.Message)
-    }
-    for hwnd, _ in moveEnds {
-        try _ProcessMoveEndEvent(hwnd)
-        catch as e
-            _Dbg("event-error moveend hwnd=" hwnd " " e.Message)
-    }
-    for hwnd, info in destroys {
-        try _ProcessDestroyEvent(hwnd, info)
-        catch as e
-            _Dbg("event-error destroy hwnd=" hwnd " " e.Message)
-    }
-    if focusHwnd {
-        try _ProcessFocusEvent(focusHwnd)
-        catch as e
-            _Dbg("event-error focus hwnd=" focusHwnd " " e.Message)
-    }
-    for hwnd, _ in locationDirty {
-        try _ProcessLocationChangeEvent(hwnd)
-        catch as e
-            _Dbg("event-error location hwnd=" hwnd " " e.Message)
+    try {
+        for hwnd, _ in moveStarts {
+            try _ProcessMoveStartEvent(hwnd)
+            catch as e
+                _Dbg("event-error movestart hwnd=" hwnd " " e.Message)
+        }
+        for hwnd, _ in moveEnds {
+            try _ProcessMoveEndEvent(hwnd)
+            catch as e
+                _Dbg("event-error moveend hwnd=" hwnd " " e.Message)
+        }
+        for hwnd, info in destroys {
+            try _ProcessDestroyEvent(hwnd, info)
+            catch as e
+                _Dbg("event-error destroy hwnd=" hwnd " " e.Message)
+        }
+        if focusHwnd {
+            try _ProcessFocusEvent(focusHwnd)
+            catch as e
+                _Dbg("event-error focus hwnd=" focusHwnd " " e.Message)
+        }
+        for hwnd, _ in locationDirty {
+            try _ProcessLocationChangeEvent(hwnd)
+            catch as e
+                _Dbg("event-error location hwnd=" hwnd " " e.Message)
+        }
+    } finally {
+        g_WinEventProcessing := false
     }
 }
 
@@ -646,6 +662,14 @@ if !IsSet(CFG_DriftCorrection)
     global CFG_DriftCorrection := true
 if !IsSet(CFG_DriftCheckInterval)
     global CFG_DriftCheckInterval := 2000
+if !IsSet(CFG_FZ_Z)
+    global CFG_FZ_Z := "1"
+if !IsSet(CFG_FZ_X)
+    global CFG_FZ_X := "2"
+if !IsSet(CFG_FZ_P)
+    global CFG_FZ_P := "0"
+if !IsSet(CFG_FZ_O)
+    global CFG_FZ_O := "4"
 
 ; Master-PC.ahk sets CFG_NumberKeys := "monitors" before this include; laptop relies on
 ; config.ahk (default "desktops"). This fallback is a last-resort safety net only.
@@ -1844,6 +1868,7 @@ TileCenterThird() => _ApplyLayout(33, 0, 34, 100)
 TileRightThird()  => _ApplyLayout(67, 0, 33, 100)
 TileLeft60()      => _ApplyLayout(0, 0, 60, 100)
 TileRight40()     => _ApplyLayout(60, 0, 40, 100)
+TileFull()        => _ApplyLayout(0, 0, 100, 100)
 FloatCenter()     => _ApplyLayout(12, 12, 75, 75)
 
 ToggleMaximize() {
@@ -1937,10 +1962,18 @@ _RestoreFocusOnDesktop(n, gen := 0) {
             }
         }
         if canActivate {
-            if WinGetMinMax("ahk_id " hwnd) = -1
-                WinRestore("ahk_id " hwnd)
-            WinActivate("ahk_id " hwnd)
-            return
+            ; The VDA queries above yield, so the window may be gone by now — and a
+            ; desktop swipe fires this on windows that are actively closing. Re-check,
+            ; and still guard the calls: it can die between the check and the move.
+            if WinExist("ahk_id " hwnd) {
+                try {
+                    if WinGetMinMax("ahk_id " hwnd) = -1
+                        WinRestore("ahk_id " hwnd)
+                    WinActivate("ahk_id " hwnd)
+                }
+                return
+            }
+            ; Genuinely gone — fall through and drop the stale mapping.
         }
     }
     g_DesktopLastWindow.Delete(n)
@@ -2220,9 +2253,6 @@ CycleLayout() {
 ; PAUSE / RESUME
 ; ============================================================
 #SuspendExempt
-#HotIf GetKeyState("CapsLock", "P")
-+Space:: ToggleScriptPaused()
-#HotIf
 #SuspendExempt False
 
 ; ============================================================
@@ -2246,115 +2276,185 @@ CycleLayout() {
 }
 
 ; ============================================================
-; THE "HYPER" LAYER  (CapsLock held = Hyper)
+; THE "HYPER" LAYER (CapsLock held = Hyper)
 ; ============================================================
+;
+; Every suffix has one unconditional custom combination. The callback checks
+; Alt, Shift, profile, and tiling mode after AHK has matched the chord. This
+; avoids a physical CapsLock #HotIf query on the input path.
 
-#HotIf GetKeyState("CapsLock", "P")
+_HyperAltDown() {
+    return GetKeyState("LAlt", "P") || GetKeyState("RAlt", "P")
+}
 
-; --- Number keys: desktops or monitors (CFG_NumberKeys) ---
-1:: _NumberKey(1)
-2:: _NumberKey(2)
-3:: _NumberKey(3)
-4:: _NumberKey(4)
-5:: _NumberKey(5)
-6:: _NumberKey(6)
-7:: _NumberKey(7)
-8:: _NumberKey(8)
-9:: _NumberKey(9)
+_HyperShiftDown() {
+    return GetKeyState("LShift", "P") || GetKeyState("RShift", "P")
+}
 
-*!1:: _NumberKeyAlt(1)
-*!2:: _NumberKeyAlt(2)
-*!3:: _NumberKeyAlt(3)
-*!4:: _NumberKeyAlt(4)
-*!5:: _NumberKeyAlt(5)
-*!6:: _NumberKeyAlt(6)
-*!7:: _NumberKeyAlt(7)
-*!8:: _NumberKeyAlt(8)
-*!9:: _NumberKeyAlt(9)
+_HyperCtrlOrWinDown() {
+    return GetKeyState("LCtrl", "P") || GetKeyState("RCtrl", "P")
+        || GetKeyState("LWin", "P") || GetKeyState("RWin", "P")
+}
 
-; --- Arrow navigation ---
-w::Up
-a::Left
-s::Down
-d::Right
+_HyperPass(key) {
+    Send "{Blind}" . key
+}
 
-; --- Tab navigation ---
-f::Send "^{PgUp}"   ; Previous Tab
-g::Send "^{PgDn}"   ; Next Tab
-
-; --- Window control ---
-*b:: {
-    static _minimized := false
-    if _minimized {
-        WinMinimizeAllUndo()
-        _minimized := false
-    } else {
-        WinMinimizeAll()
-        _minimized := true
+_HyperHandleCustomCapsE() {
+    try {
+        return Func("Custom_CapsE").Call()
+    } catch {
+        return false
     }
 }
-*`:: Send("^#t")
-Delete:: _ClearWindowLayout(false)   ; session layout only
-+Delete:: _ClearWindowLayout(true)    ; also forget persistent app memory
 
-; --- Media ---
-*[:: Send "{Media_Prev}"
-*]:: Send "{Media_Next}"
-*Space:: Send "{Media_Play_Pause}"
-*c:: Send("!+c")
-*!l:: {
-    static _lastToggle := 0
-    if (A_TickCount - _lastToggle < 400)
-        return
-    _lastToggle := A_TickCount
-    g_KeyLockActive ? _KL_Off() : _KL_On()
+_HyperHandleCustomCapsQ() {
+    try {
+        return Func("Custom_CapsQ").Call()
+    } catch {
+        return false
+    }
 }
-*!k:: TogglePrivacyBlackout()
 
-; --- Apps ---
+_HyperOpenExplorer() {
+    _ActivateOrRunOnCurrentDesktop("ahk_exe explorer.exe ahk_class CabinetWClass", "explorer.exe")
+}
 
-*n:: {
-    global g_CapsN_LastHiddenHwnd
-    prevDetect := A_DetectHiddenWindows
-    DetectHiddenWindows True
-    if g_CapsN_LastHiddenHwnd
-        && WinExist("ahk_id " g_CapsN_LastHiddenHwnd)
-        && !DllCall("IsWindowVisible", "Ptr", g_CapsN_LastHiddenHwnd) {
-        WinShow(g_CapsN_LastHiddenHwnd)
-        WinActivate("ahk_id " g_CapsN_LastHiddenHwnd)
+_HyperPassKey(key) {
+    if key = "backtick" {
+        Send "{Blind}{sc029}"
+        return
+    }
+    if key = "left" || key = "right" || key = "backspace" || key = "tab"
+        || key = "enter" || key = "delete" || key = "space" || key = "escape" {
+        Send "{Blind}{" key "}"
+        return
+    }
+    _HyperPass(key)
+}
+
+_HyperKeyLockGate(key) {
+    global g_KeyLockActive
+    if !g_KeyLockActive
+        return false
+    if key = "l" && _HyperAltDown() {
+        _KL_Off()
+        return true
+    }
+    if key = "u" || key = "n" || key = "l" || key = "o" || key = "c" || key = "k" {
+        _KL_CheckUnlock(key)
+        return true
+    }
+    return true
+}
+
+_HyperHandleNumber(index) {
+    if _HyperAltDown() {
+        _NumberKeyAlt(index)
+    } else if _HyperShiftDown() {
+        _HyperPass(index)
     } else {
-        activeHwnd := WinActive("A")
-        if activeHwnd {
-            g_CapsN_LastHiddenHwnd := activeHwnd
-            WinHide(activeHwnd)
+        _NumberKey(index)
+    }
+}
+
+_HyperHandleWASD(key) {
+    global g_TilingMode
+    if _HyperShiftDown() && !_HyperAltDown() {
+        _HyperPass(key)
+        return
+    }
+    if _HyperAltDown() {
+        if g_TilingMode = "Native" {
+            if key = "w"
+                TileTop()
+            else if key = "a"
+                TileLeft()
+            else if key = "s"
+                TileBottom()
+            else
+                TileRight()
+        } else {
+            if key = "w"
+                Send "#{Up}"
+            else if key = "a"
+                Send "#{Left}"
+            else if key = "s"
+                Send "#{Down}"
+            else
+                Send "#{Right}"
+        }
+        return
+    }
+    if key = "w"
+        Send "{Blind}{Up}"
+    else if key = "a"
+        Send "{Blind}{Left}"
+    else if key = "s"
+        Send "{Blind}{Down}"
+    else
+        Send "{Blind}{Right}"
+}
+
+_HyperHandleProfileDirection(direction) {
+    global APP_Profile
+    if APP_Profile = "laptop" {
+        if direction = "left" {
+            if VDA.isLoaded {
+                currentDesktop := VDA.GetCurrent()
+                if currentDesktop != VDA.DESKTOP_UNKNOWN
+                    GotoDesktop(Max(1, currentDesktop - 1))
+                else
+                    Send "^#{Left}"
+            } else
+                Send "^#{Left}"
+        } else {
+            if VDA.isLoaded {
+                currentDesktop := VDA.GetCurrent()
+                desktopCount := VDA.GetDesktopCount()
+                if currentDesktop != VDA.DESKTOP_UNKNOWN
+                    GotoDesktop(desktopCount > 0 ? Min(desktopCount, currentDesktop + 1) : currentDesktop + 1)
+                else
+                    Send "^#{Right}"
+            } else
+                Send "^#{Right}"
+        }
+        return
+    }
+
+    monitorCount := MonitorGetCount()
+    currentMonitorIndex := 1
+    if WinExist("A") {
+        WinGetPos(&windowX, &windowY, &windowWidth, &windowHeight, "A")
+        centerX := windowX + windowWidth // 2
+        centerY := windowY + windowHeight // 2
+        loop monitorCount {
+            MonitorGetWorkArea(A_Index, &monitorLeft, &monitorTop, &monitorRight, &monitorBottom)
+            if centerX >= monitorLeft && centerX < monitorRight && centerY >= monitorTop && centerY < monitorBottom {
+                currentMonitorIndex := A_Index
+                break
+            }
         }
     }
-    DetectHiddenWindows prevDetect
+    if direction = "left"
+        _FocusMonitor(Mod(currentMonitorIndex - 2 + monitorCount, monitorCount) + 1)
+    else
+        _FocusMonitor(Mod(currentMonitorIndex, monitorCount) + 1)
 }
 
-*m:: _ActivateOrRunOnCurrentDesktop("ahk_exe Taskmgr.exe", "taskmgr.exe")
-
-*r:: {
-    if g_PrivacyBlackoutActive
-        _PrivacyBlackoutOff(false)
-    if BuildAutocorrect() {
-        ShowOSD("Autocorrect rebuilt — reloading...")
-        ReleaseModifiers()
-        Sleep(200)
-        SafeReload()
-    } else
-        SoftReset()
+_HyperHandleFancyZone(key) {
+    global CFG_FZ_Z, CFG_FZ_X, CFG_FZ_P, CFG_FZ_O
+    if key = "z"
+        Send "^!#" . CFG_FZ_Z
+    else if key = "x"
+        Send "^!#" . CFG_FZ_X
+    else if key = "p"
+        Send "^!#" . CFG_FZ_P
+    else
+        Send "^!#" . CFG_FZ_O
 }
 
-*+r:: {
-    if g_PrivacyBlackoutActive
-        _PrivacyBlackoutOff(false)
-    RunWait "taskkill.exe /F /IM explorer.exe", , "Hide"
-    Sleep(300)
-    Run A_WinDir "\explorer.exe"
-}
-
-Esc:: {
+_HyperReload() {
     ShowOSD("Building Autocorrect & Reloading...")
     if g_PrivacyBlackoutActive
         _PrivacyBlackoutOff(false)
@@ -2364,7 +2464,444 @@ Esc:: {
     SafeReload()
 }
 
-#HotIf
+_HyperHandleLetter(key) {
+    global g_TilingMode
+    if key = "w" || key = "a" || key = "s" || key = "d" {
+        if key = "d" && _HyperAltDown() && _HyperShiftDown()
+            AC_OpenDisabledFile()
+        else
+            _HyperHandleWASD(key)
+        return
+    }
+    if key = "f" {
+        if _HyperAltDown()
+            TileFull()
+        else
+            Send "{Blind}^{PgUp}"
+        return
+    }
+    if key = "g" {
+        if _HyperAltDown()
+            FloatCenter()
+        else
+            Send "{Blind}^{PgDn}"
+        return
+    }
+    if key = "b" {
+        static isMinimized := false
+        if isMinimized {
+            WinMinimizeAllUndo()
+            isMinimized := false
+        } else {
+            WinMinimizeAll()
+            isMinimized := true
+        }
+        return
+    }
+    if key = "c" {
+        if _HyperAltDown() && !_HyperShiftDown() && g_TilingMode = "Native"
+            TileBottomRight()
+        else
+            Send "!+c"
+        return
+    }
+    if key = "h" {
+        FocusDirection("left")
+        return
+    }
+    if key = "j" {
+        FocusDirection("down")
+        return
+    }
+    if key = "k" {
+        if _HyperAltDown()
+            TogglePrivacyBlackout()
+        else
+            FocusDirection("up")
+        return
+    }
+    if key = "l" {
+        if _HyperAltDown() {
+            static lastToggle := 0
+            if A_TickCount - lastToggle >= 400 {
+                lastToggle := A_TickCount
+                g_KeyLockActive ? _KL_Off() : _KL_On()
+            }
+        } else
+            FocusDirection("right")
+        return
+    }
+    if key = "n" {
+        global g_CapsN_LastHiddenHwnd
+        previousDetectHiddenWindows := A_DetectHiddenWindows
+        DetectHiddenWindows True
+        if g_CapsN_LastHiddenHwnd
+            && WinExist("ahk_id " g_CapsN_LastHiddenHwnd)
+            && !DllCall("IsWindowVisible", "Ptr", g_CapsN_LastHiddenHwnd) {
+            WinShow("ahk_id " g_CapsN_LastHiddenHwnd)
+            WinActivate("ahk_id " g_CapsN_LastHiddenHwnd)
+        } else {
+            activeWindowHandle := WinActive("A")
+            if activeWindowHandle {
+                g_CapsN_LastHiddenHwnd := activeWindowHandle
+                WinHide(activeWindowHandle)
+            }
+        }
+        DetectHiddenWindows previousDetectHiddenWindows
+        return
+    }
+    if key = "m" {
+        if _HyperAltDown()
+            ToggleMacAltRemaps()
+        else
+            _ActivateOrRunOnCurrentDesktop("ahk_exe Taskmgr.exe", "taskmgr.exe")
+        return
+    }
+    if key = "r" {
+        if _HyperShiftDown() {
+            if g_PrivacyBlackoutActive
+                _PrivacyBlackoutOff(false)
+            RunWait "taskkill.exe /F /IM explorer.exe", , "Hide"
+            Sleep(300)
+            Run A_WinDir "\explorer.exe"
+        } else {
+            if g_PrivacyBlackoutActive
+                _PrivacyBlackoutOff(false)
+            if BuildAutocorrect() {
+                ShowOSD("Autocorrect rebuilt — reloading...")
+                ReleaseModifiers()
+                Sleep(200)
+                SafeReload()
+            } else
+                SoftReset()
+        }
+        return
+    }
+    if key = "u" {
+        if g_TilingMode = "Native" && _HyperAltDown()
+            TileLeftThird()
+        else
+            _HyperPass(key)
+        return
+    }
+    if key = "i" {
+        if g_TilingMode = "Native" && _HyperAltDown()
+            TileCenterThird()
+        else
+            _HyperPass(key)
+        return
+    }
+    if key = "o" && g_TilingMode = "Native" && _HyperAltDown() {
+        TileRightThird()
+        return
+    }
+    if key = "y" {
+        if g_TilingMode = "Native" && _HyperAltDown()
+            TileLeft60()
+        else
+            _HyperPass(key)
+        return
+    }
+    if key = "q" {
+        if g_TilingMode = "Native" && _HyperAltDown()
+            TileTopLeft()
+        else if !_HyperHandleCustomCapsQ()
+            _HyperPass(key)
+        return
+    }
+    if key = "e" {
+        if g_TilingMode = "Native" && _HyperAltDown()
+            TileTopRight()
+        else if !_HyperHandleCustomCapsE()
+            _HyperOpenExplorer()
+        return
+    }
+    if key = "z" {
+        if g_TilingMode = "FancyZones"
+            _HyperHandleFancyZone(key)
+        else if _HyperAltDown()
+            TileBottomLeft()
+        else
+            _HyperPass(key)
+        return
+    }
+    if key = "x" {
+        if g_TilingMode = "FancyZones"
+            _HyperHandleFancyZone(key)
+        else
+            _HyperPass(key)
+        return
+    }
+    if key = "p" {
+        if g_TilingMode = "FancyZones"
+            _HyperHandleFancyZone(key)
+        else if _HyperAltDown()
+            TileRight40()
+        else
+            _HyperPass(key)
+        return
+    }
+    if key = "o" {
+        if g_TilingMode = "FancyZones"
+            _HyperHandleFancyZone(key)
+        else if _HyperAltDown()
+            TileRightThird()
+        else
+            _HyperPass(key)
+        return
+    }
+    if key = "enter" {
+        if g_TilingMode = "Native" && _HyperAltDown()
+            ToggleMaximize()
+        else
+            _HyperPass("{Enter}")
+        return
+    }
+    if key = "backspace" {
+        if _HyperAltDown()
+            AC_DisableLastCorrection()
+        else
+            FocusJumpBack()
+        return
+    }
+}
+
+_HyperDispatch(key) {
+    ; AHK does not see the dynamically checked Alt key as a hotkey modifier.
+    if _HyperAltDown()
+        Send "{Blind}{vkE8}"
+    if _HyperKeyLockGate(key)
+        return
+    if _HyperCtrlOrWinDown() && !_HyperAltDown() {
+        _HyperPassKey(key)
+        return
+    }
+    if key = "left" || key = "right" {
+        _HyperHandleProfileDirection(key)
+        return
+    }
+    if key = "space" {
+        if _HyperShiftDown()
+            ToggleScriptPaused()
+        else
+            Send "{Blind}{Media_Play_Pause}"
+        return
+    }
+    if key = "tab" {
+        global g_TilingMode
+        if g_TilingMode = "Native"
+            CycleLayout()
+        else
+            Send "{Blind}#{Right}"
+        return
+    }
+    if key = "delete" {
+        _ClearWindowLayout(_HyperShiftDown())
+        return
+    }
+    if key = "backtick" {
+        Send "^#t"
+        return
+    }
+    if key = "escape" {
+        _HyperReload()
+        return
+    }
+    if key = "[" {
+        Send "{Blind}{Media_Prev}"
+        return
+    }
+    if key = "]" {
+        Send "{Blind}{Media_Next}"
+        return
+    }
+    if key = "1" || key = "2" || key = "3" || key = "4" || key = "5" || key = "6" || key = "7" || key = "8" || key = "9" {
+        _HyperHandleNumber(Integer(key))
+        return
+    }
+    _HyperHandleLetter(key)
+}
+
+; One canonical binding per CapsLock suffix. The dispatcher reads Alt and
+; Shift state so it can choose the action without #HotIf.
+CapsLock & 1::
+{
+    _HyperDispatch("1")
+}
+CapsLock & 2::
+{
+    _HyperDispatch("2")
+}
+CapsLock & 3::
+{
+    _HyperDispatch("3")
+}
+CapsLock & 4::
+{
+    _HyperDispatch("4")
+}
+CapsLock & 5::
+{
+    _HyperDispatch("5")
+}
+CapsLock & 6::
+{
+    _HyperDispatch("6")
+}
+CapsLock & 7::
+{
+    _HyperDispatch("7")
+}
+CapsLock & 8::
+{
+    _HyperDispatch("8")
+}
+CapsLock & 9::
+{
+    _HyperDispatch("9")
+}
+CapsLock & w::
+{
+    _HyperDispatch("w")
+}
+CapsLock & a::
+{
+    _HyperDispatch("a")
+}
+CapsLock & s::
+{
+    _HyperDispatch("s")
+}
+CapsLock & d::
+{
+    _HyperDispatch("d")
+}
+CapsLock & f::
+{
+    _HyperDispatch("f")
+}
+CapsLock & g::
+{
+    _HyperDispatch("g")
+}
+CapsLock & b::
+{
+    _HyperDispatch("b")
+}
+CapsLock & c::
+{
+    _HyperDispatch("c")
+}
+CapsLock & h::
+{
+    _HyperDispatch("h")
+}
+CapsLock & j::
+{
+    _HyperDispatch("j")
+}
+CapsLock & k::
+{
+    _HyperDispatch("k")
+}
+CapsLock & l::
+{
+    _HyperDispatch("l")
+}
+CapsLock & n::
+{
+    _HyperDispatch("n")
+}
+CapsLock & m::
+{
+    _HyperDispatch("m")
+}
+CapsLock & r::
+{
+    _HyperDispatch("r")
+}
+CapsLock & q::
+{
+    _HyperDispatch("q")
+}
+CapsLock & e::
+{
+    _HyperDispatch("e")
+}
+CapsLock & u::
+{
+    _HyperDispatch("u")
+}
+CapsLock & i::
+{
+    _HyperDispatch("i")
+}
+CapsLock & o::
+{
+    _HyperDispatch("o")
+}
+CapsLock & p::
+{
+    _HyperDispatch("p")
+}
+CapsLock & x::
+{
+    _HyperDispatch("x")
+}
+CapsLock & y::
+{
+    _HyperDispatch("y")
+}
+CapsLock & z::
+{
+    _HyperDispatch("z")
+}
+CapsLock & Left::
+{
+    _HyperDispatch("left")
+}
+CapsLock & Right::
+{
+    _HyperDispatch("right")
+}
+CapsLock & Backspace::
+{
+    _HyperDispatch("backspace")
+}
+CapsLock & Tab::
+{
+    _HyperDispatch("tab")
+}
+CapsLock & Enter::
+{
+    _HyperDispatch("enter")
+}
+CapsLock & Delete::
+{
+    _HyperDispatch("delete")
+}
+#SuspendExempt
+CapsLock & Space::
+{
+    _HyperDispatch("space")
+}
+#SuspendExempt False
+CapsLock & [::
+{
+    _HyperDispatch("[")
+}
+CapsLock & ]::
+{
+    _HyperDispatch("]")
+}
+CapsLock & Escape::
+{
+    _HyperDispatch("escape")
+}
+CapsLock & sc029::
+{
+    _HyperDispatch("backtick")
+}
 
 ; ============================================================
 ; KEYBOARD LOCK — intercept keys while locked

@@ -7,8 +7,8 @@
 ├── docs/                          # Canonical documentation (this folder)
 ├── lib/
 │   ├── Core.ahk                   # All shared logic — see module breakdown below
-│   ├── WindowTiling_Native.ahk    # Native tiling hotkey block
-│   ├── WindowTiling_FancyZones.ahk # FancyZones passthrough hotkey block
+│   ├── WindowTiling_Native.ahk    # Native tiling actions
+│   ├── WindowTiling_FancyZones.ahk # FancyZones actions
 │   ├── Build_Autocorrect.ahk      # Autocorrect build step
 │   ├── Autocorrect.ahk            # Auto-generated hotstring list — never edit
 │   ├── Autocorrect_Logic.ahk      # Autocorrect runtime (disable, persist)
@@ -42,7 +42,7 @@ All entry points unify under `Main.ahk`:
 4. Apply performance settings (`ListLines false`, `KeyHistory`, `SetWinDelay 0`, `ProcessSetPriority`, `InstallKeybdHook`).
 5. `#Include lib/Core.ahk` — includes other core libraries.
 6. Initialize telemetry (`Perf_Init()`), StateStore (`State_Init()`), and VirtualDesktopAccessor (`VDA.Init()`).
-7. Bind conditional hotkeys based on machine profile.
+7. Bind unconditional CapsLock custom combinations and initialize the shared dispatcher.
 8. Show startup confirmation OSD message.
 
 ## Core.ahk Module Breakdown
@@ -113,6 +113,7 @@ Example: `xf=50, yf=0, wf=50, hf=100` = right half of the monitor.
 | `g_AutoRestoreTimers` | `Map` | `hwnd → timer` — pending drift correction timers |
 | `g_TilingMode` | `String` | `"Native"` or `"FancyZones"` — mirrors `CFG_TilingMode` |
 | `g_StateDir` | `String` | Central directory for files: `%LOCALAPPDATA%\AutoHotkeyMaster` |
+| `g_StateMacAltRemaps` | `Boolean` | Saved Mac Alt remap mode |
 | `g_LastDesktop` | `Int` | Most recently active virtual desktop number |
 | `g_FocusHistory` | `Array` | Ordered hwnd history for `CapsLock+Backspace` |
 | `g_DesktopLastWindow` | `Map` | `desktop → hwnd` — per-desktop focus memory |
@@ -121,11 +122,16 @@ Example: `xf=50, yf=0, wf=50, hf=100` = right half of the monitor.
 
 ### Hyper Layer (CapsLock)
 
-`#HotIf GetKeyState("CapsLock", "P")` wraps all CapsLock hotkeys. While CapsLock is held, it acts as a modifier. The block is in `Core.ahk` for shared hotkeys; machine-specific hotkeys (desktop/monitor navigation) are in the entry points.
+`Core.ahk` binds each CapsLock suffix once with an unconditional custom combination.
+The dispatcher reads Alt, Shift, profile, and tiling mode inside the handler.
+This keeps suppression independent of expression `#HotIf` evaluation.
+The dispatcher sends an unused mask key when Alt is down. This prevents a bare Alt release from opening an app menu.
 
 ### Spatial Focus
 
-`FocusDirection(dir)` in `lib/Core.ahk` handles `CapsLock+H/J/K/L` (hotkeys in `WindowTiling_Native.ahk` and `WindowTiling_FancyZones.ahk`). It scores visible windows on the current virtual desktop by direction, edge gap, overlap along the navigation axis, and z-order. Background windows that span the active pane (e.g. a fullscreen browser under tiled terminals) are filtered out so focus moves to the adjacent tile.
+`FocusDirection(dir)` in `lib/Core.ahk` handles `CapsLock+H/J/K/L` through the shared dispatcher.
+It scores visible windows on the current virtual desktop by direction, edge gap, overlap along the navigation axis, and z-order.
+Background windows that span the active pane are filtered out so focus moves to the adjacent tile.
 
 ### App Launchers
 
@@ -158,7 +164,7 @@ hotstrings active in all windows (calls AC_Proc in Autocorrect_Logic.ahk)
 Autocorrect_Logic.ahk
   ├── Checks _AC_IsNonTextArea() & AC_TempSuppressed
   ├── CapsLock+Alt+Backspace → add to g_StateAutocorrectDisabled via StateStore.ahk
-  └── CapsLock+Alt+D → open autocorrect-disabled.txt
+  └── CapsLock+Alt+Shift+D → open autocorrect-disabled.txt
 ```
 
 ## Tiling Focus Flow
@@ -187,8 +193,8 @@ TrackFocusHistory(hwnd)
 | Shared hotkeys / logic | `lib/Core.ahk` |
 | Virtual desktop navigation | `Master.ahk` |
 | Monitor navigation | `Master-PC.ahk` |
-| Native tiling hotkeys | `lib/WindowTiling_Native.ahk` |
-| FancyZones hotkeys | `lib/WindowTiling_FancyZones.ahk` |
+| Native tiling actions | `lib/WindowTiling_Native.ahk` and `lib/Core.ahk` |
+| FancyZones actions | `lib/WindowTiling_FancyZones.ahk` and `lib/Core.ahk` |
 | Alt→Ctrl remaps | `Remap.ahk` |
 | Central state storage | `lib/StateStore.ahk` |
 | Virtual Desktop logic | `lib/VDA.ahk` |

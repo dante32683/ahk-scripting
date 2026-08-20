@@ -36,6 +36,19 @@ RunStateHelpersTest() {
     AssertEq(State_GetAppLayout("clear-me.exe"), "", "cleared persistent layout is gone")
     AssertFalse(g_StateAppMaximized.Has("clear-me.exe"), "cleared maximized flag is gone")
 
+    ; --- Persistent Mac Alt mode ---
+    State_SetMacAltRemaps(false)
+    AssertFalse(State_GetMacAltRemaps(), "Mac Alt remaps disabled")
+    State_SetMacAltRemaps(true)
+    AssertTrue(State_GetMacAltRemaps(), "Mac Alt remaps enabled")
+
+    statePath := A_Temp "\ahk_state_mode_" DllCall("GetCurrentProcessId") ".ini"
+    try FileDelete(statePath)
+    FileAppend("[Schema]`nversion=2`n`n[Preferences]`nmac_alt_remaps=0`n`n[DesktopLastWindow]`n", statePath, "UTF-16")
+    State_LoadStateFile(statePath)
+    AssertFalse(State_GetMacAltRemaps(), "saved Mac Alt mode loaded")
+    FileDelete(statePath)
+
     ; --- INI escaping roundtrips (strict; no `|| true` escape hatch) ---
     AssertEq(State_UnescapeIni(State_EscapeIni("hello")), "hello", "plain roundtrip")
     AssertEq(State_UnescapeIni(State_EscapeIni("a=b[c]")), "a=b[c]", "special chars roundtrip")
