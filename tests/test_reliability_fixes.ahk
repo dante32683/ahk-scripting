@@ -128,6 +128,9 @@ RunReliabilityFixesTest() {
     AssertEq(AC_Generation, genBefore, "test-mode StartInputHook leaves generation intact")
     AssertEq(AC_InputHook, 0, "test-mode StartInputHook does not install a hook")
 
+    replacementKeys := _AC_BuildReplacementKeys("teh", "the", " ")
+    AssertEq(replacementKeys, "{Backspace 4}{Text}the ", "replacement erases trigger/end char in one input batch")
+
     ; Stale-hook generation guard: clear only matches current generation
     AC_HadSubsequentInput := false
     AC_OnHookEnd(genBefore - 1, 0)  ; stale
