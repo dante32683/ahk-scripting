@@ -30,7 +30,7 @@ BuildAutocorrect() {
                 f := FileOpen(outPath, "r", "UTF-8")
                 sample := f.Read(4000)
                 f.Close()
-                headerOk := InStr(sample, ":CX:") > 0
+                headerOk := InStr(sample, ":CXB0:") > 0
             }
             if headerOk {
                 Perf_Log("autocorrect_rebuild", "skip", A_TickCount - startTime)
@@ -48,11 +48,37 @@ BuildAutocorrect() {
         return false
     }
 
+    out := AC_RenderHotstrings(parseResult)
+
+    tempPath := outPath "." DllCall("GetCurrentProcessId") ".tmp"
+    try {
+        if FileExist(tempPath)
+            FileDelete(tempPath)
+        FileAppend(out, tempPath, "UTF-8")
+        if !InStr(FileRead(tempPath, "UTF-8"), ":CXB0:")
+            throw Error("Generated file missing :CXB0: hotstrings")
+        ; Atomic replace only. The temp file lives in the destination directory, so a
+        ; cross-volume move is not expected; on failure keep the existing good file and
+        ; report the error rather than a non-atomic FileCopy that could corrupt it.
+        if !DllCall("MoveFileExW", "Str", tempPath, "Str", outPath, "UInt", 9)
+            throw Error("MoveFileExW failed: " A_LastError)
+    } catch as e {
+        try FileDelete(tempPath)
+        if !(IsSet(CFG_TestMode) && CFG_TestMode)
+            MsgBox("Error writing Autocorrect.ahk: " e.Message)
+        Perf_Log("autocorrect_rebuild", "write_failed", A_TickCount - startTime)
+        return false
+    }
+    Perf_Log("autocorrect_rebuild", "success", A_TickCount - startTime)
+    return true
+}
+
+AC_RenderHotstrings(parseResult) {
     q := Chr(34)
     segments := []
     segments.Push("#Requires AutoHotkey v2.0+`n`n")
     segments.Push("; AUTO-GENERATED — edit Autocorrect_Database.txt, not this file.`n")
-    segments.Push("; schema=cx1 count=" parseResult["count"] "`n`n")
+    segments.Push("; schema=cxb0-atomic1 count=" parseResult["count"] "`n`n")
     segments.Push("#HotIf CFG_Autocorrect`n")
 
     for entry in parseResult["entries"] {
@@ -71,7 +97,7 @@ BuildAutocorrect() {
         for typedTrigger, typedCorrection in variants {
             sTypedTrig := _AC_EscapeStringLiteral(typedTrigger)
             sTypedCorr := _AC_EscapeStringLiteral(typedCorrection)
-            segments.Push(":CX:" typedTrigger "::AC_Proc(" q sCanonicalTrig q ", " q sCanonicalCorr q ", " q sTypedTrig q ", " q sTypedCorr q ")`n")
+            segments.Push(":CXB0:" typedTrigger "::AC_Proc(" q sCanonicalTrig q ", " q sCanonicalCorr q ", " q sTypedTrig q ", " q sTypedCorr q ")`n")
         }
     }
     segments.Push("#HotIf`n")
@@ -79,28 +105,7 @@ BuildAutocorrect() {
     out := ""
     for seg in segments
         out .= seg
-
-    tempPath := outPath "." DllCall("GetCurrentProcessId") ".tmp"
-    try {
-        if FileExist(tempPath)
-            FileDelete(tempPath)
-        FileAppend(out, tempPath, "UTF-8")
-        if !InStr(FileRead(tempPath, "UTF-8"), ":CX:")
-            throw Error("Generated file missing :CX: hotstrings")
-        ; Atomic replace only. The temp file lives in the destination directory, so a
-        ; cross-volume move is not expected; on failure keep the existing good file and
-        ; report the error rather than a non-atomic FileCopy that could corrupt it.
-        if !DllCall("MoveFileExW", "Str", tempPath, "Str", outPath, "UInt", 9)
-            throw Error("MoveFileExW failed: " A_LastError)
-    } catch as e {
-        try FileDelete(tempPath)
-        if !(IsSet(CFG_TestMode) && CFG_TestMode)
-            MsgBox("Error writing Autocorrect.ahk: " e.Message)
-        Perf_Log("autocorrect_rebuild", "write_failed", A_TickCount - startTime)
-        return false
-    }
-    Perf_Log("autocorrect_rebuild", "success", A_TickCount - startTime)
-    return true
+    return out
 }
 
 ; Strict parser shared by build and validator.

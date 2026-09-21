@@ -162,7 +162,9 @@ hotstrings active in all windows (calls AC_Proc in Autocorrect_Logic.ahk)
         │
         ▼ (correction fires)
 Autocorrect_Logic.ahk
-  ├── Checks _AC_IsNonTextArea() & AC_TempSuppressed
+  ├── Uses cached foreground context, disabled state, and AC_TempSuppressed
+  ├── Leaves typed text in place until checks pass (`B0` hotstrings)
+  ├── Erases trigger/end-char and inserts the correction in one SendInput batch
   ├── CapsLock+Alt+Backspace → add to g_StateAutocorrectDisabled via StateStore.ahk
   └── CapsLock+Alt+Shift+D → open autocorrect-disabled.txt
 ```

@@ -61,6 +61,12 @@ RunAutocorrectParserTest() {
     AssertEq(_AC_TitleCase("i'm"), "I'm", "title-case leaves apostrophes intact")
     AssertEq(StrUpper("teh"), "TEH", "upper variant")
 
+    ; --- Generated hotstrings leave input untouched until AC_Proc can replace it atomically ---
+    renderedHotstrings := AC_RenderHotstrings(validResult)
+    AssertTrue(InStr(renderedHotstrings, ":CXB0:teh::AC_Proc"), "generated hotstrings use B0 execute mode")
+    AssertFalse(InStr(renderedHotstrings, ":CX:teh::AC_Proc"), "legacy auto-backspacing form is absent")
+    AssertTrue(InStr(renderedHotstrings, "schema=cxb0-atomic1"), "atomic hotstring schema emitted")
+
     ; --- String-literal escaping for generated hotstrings ---
     escapedLiteral := _AC_EscapeStringLiteral('a"b')
     AssertTrue(InStr(escapedLiteral, Chr(96) Chr(34)), "double quote escaped with backtick")

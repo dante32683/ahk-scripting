@@ -86,6 +86,19 @@ Mitigation: the lock is only intended for short periods (e.g. cleaning a keyboar
 
 ## Resolved
 
+### ~~Rapid typing could interleave the next word with an autocorrection~~ — RESOLVED
+
+Area: Autocorrect
+
+Execute hotstrings automatically erased the misspelling before `AC_Proc` checked the
+foreground context, then the correction was sent separately. Fast physical input could
+therefore arrive between the erase and replacement and be inserted into the corrected word.
+
+Fix: generated hotstrings now use `B0`, leaving the original input untouched while eligibility
+is checked. `AC_Proc` erases the trigger plus ending character and inserts the replacement in one
+`SendInput` batch, which buffers physical input until the replacement completes. Foreground
+non-text classification is cached on focus changes so the pre-send path stays bounded.
+
 ### ~~CapsLock plus Alt opened application menus~~ — RESOLVED
 
 Area: Hyper layer

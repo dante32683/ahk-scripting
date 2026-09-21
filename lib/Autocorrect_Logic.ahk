@@ -12,13 +12,18 @@ global AC_HadSubsequentInput := false
 global AC_TempSuppressed := Map()
 global AC_InputHook := 0
 global AC_HookGeneration := 0
+global AC_ActiveContextHwnd := 0
+global AC_ActiveContextNonText := false
 
-_AC_IsNonTextArea() {
-    if !WinExist("A")
+_AC_IsNonTextArea(hwnd := 0) {
+    if !hwnd
+        hwnd := WinExist("A")
+    if !hwnd
         return false
     try {
-        className := WinGetClass("A")
-        procName := WinGetProcessName("A")
+        windowTitle := "ahk_id " hwnd
+        className := WinGetClass(windowTitle)
+        procName := WinGetProcessName(windowTitle)
 
         if (className = "VirtualConsoleClass" || className = "ConsoleWindowClass" || className = "TermWindow")
             return true
@@ -26,7 +31,7 @@ _AC_IsNonTextArea() {
         if (procName = "cmd.exe" || procName = "powershell.exe" || procName = "pwsh.exe" || procName = "wsl.exe" || procName = "WindowsTerminal.exe")
             return true
 
-        style := WinGetStyle("A")
+        style := WinGetStyle(windowTitle)
         if !(style & 0xC00000) { ; No WS_CAPTION
             if IsSet(CFG_GameProcesses) {
                 for game in CFG_GameProcesses {
@@ -39,24 +44,45 @@ _AC_IsNonTextArea() {
     return false
 }
 
+AC_RefreshWindowContext(hwnd := 0) {
+    global AC_ActiveContextHwnd, AC_ActiveContextNonText
+    if !hwnd
+        hwnd := WinExist("A")
+    AC_ActiveContextHwnd := hwnd
+    AC_ActiveContextNonText := _AC_IsNonTextArea(hwnd)
+}
+
+_AC_ActiveWindowIsNonText() {
+    global AC_ActiveContextHwnd, AC_ActiveContextNonText
+    hwnd := WinExist("A")
+    if hwnd != AC_ActiveContextHwnd
+        AC_RefreshWindowContext(hwnd)
+    return AC_ActiveContextNonText
+}
+
+_AC_BuildReplacementKeys(typedTrigger, typedCorrection, endChar) {
+    eraseCount := StrLen(typedTrigger) + StrLen(endChar)
+    return "{Backspace " eraseCount "}{Text}" typedCorrection endChar
+}
+
 AC_Proc(canonicalTrig, canonicalCorr, typedTrig, typedCorr) {
-    if _AC_IsNonTextArea() {
-        SendText(typedTrig . A_EndChar)
+    ; B0 hotstrings leave the trigger and ending character in place while these
+    ; checks run. Once approved, erase and replace them in one SendInput batch so
+    ; physical keystrokes typed immediately afterward are buffered until it ends.
+    if _AC_ActiveWindowIsNonText() {
         return
     }
     if AC_IsDisabled(canonicalTrig) {
-        SendText(typedTrig . A_EndChar)
         return
     }
     global AC_TempSuppressed
     if AC_TempSuppressed.Has(StrLower(canonicalTrig)) {
         if A_TickCount - AC_TempSuppressed[StrLower(canonicalTrig)] < 2000 {
-            SendText(typedTrig . A_EndChar)
             return
         }
         AC_TempSuppressed.Delete(StrLower(canonicalTrig))
     }
-    SendText(typedCorr . A_EndChar)
+    SendInput(_AC_BuildReplacementKeys(typedTrig, typedCorr, A_EndChar))
     AC_Reg(canonicalTrig, canonicalCorr, typedTrig, typedCorr)
     AC_StartInputHook()
 }
@@ -97,6 +123,7 @@ AC_ClearLastCorrection(*) {
 
 AC_OnFocusChanged(hwnd) {
     global AC_LastHwnd, AC_LastTrigger
+    AC_RefreshWindowContext(hwnd)
     if AC_LastTrigger = ""
         return
     if hwnd != AC_LastHwnd
@@ -201,8 +228,8 @@ AC_DisableLastCorrection() {
     State_MarkDirty("autocorrect")
     AC_TempSuppressed[StrLower(AC_LastTrigger)] := A_TickCount
 
-    Send("{Backspace " (StrLen(AC_LastTypedCorrection) + StrLen(AC_LastEndChar)) "}")
-    SendText(AC_LastTypedTrigger . AC_LastEndChar)
+    SendInput(_AC_BuildReplacementKeys(
+        AC_LastTypedCorrection, AC_LastTypedTrigger, AC_LastEndChar))
     ShowOSD("Autocorrect disabled: " AC_LastTrigger)
     AC_ClearLastCorrection()
 }

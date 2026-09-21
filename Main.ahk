@@ -72,6 +72,7 @@ State_Init()
 VDA.Init()
 Core_SessionInit()
 WindowEvents_Init()
+AC_RefreshWindowContext(WinExist("A"))
 
 ; Autocorrect: rebuild first if needed, then include generated hotstrings
 #Include lib/Build_Autocorrect.ahk
