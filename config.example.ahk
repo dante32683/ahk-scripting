@@ -32,6 +32,9 @@ global CFG_FZ_O := "4"
 ; Autocorrect: automatically fix common Wikipedia misspellings
 global CFG_Autocorrect := true
 
+; Keep keyboard hooks/hotstrings responsive while a foreground app is overloaded.
+global CFG_ProcessPriority := "High"
+
 ; Initial Alt key mode. CapsLock+Alt+M changes and saves the active mode.
 global CFG_MacAltRemaps := true
 

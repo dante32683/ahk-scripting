@@ -49,6 +49,12 @@ AC_RefreshWindowContext(hwnd := 0) {
     if !hwnd
         hwnd := WinExist("A")
     AC_ActiveContextHwnd := hwnd
+    ; Foreground classification is advisory. Avoid synchronous metadata queries
+    ; when the target GUI is hung, since they can delay every hotstring thread.
+    if hwnd && DllCall("user32\IsHungAppWindow", "Ptr", hwnd, "Int") {
+        AC_ActiveContextNonText := false
+        return
+    }
     AC_ActiveContextNonText := _AC_IsNonTextArea(hwnd)
 }
 

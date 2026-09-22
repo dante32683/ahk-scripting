@@ -29,6 +29,7 @@
 | `CFG_TilingMode` | Yes | `"Native"` or `"FancyZones"` |
 | `CFG_TilingMemory` | Yes | `true` or `false` — enables per-app tiling memory in Native mode |
 | `CFG_Autocorrect` | Yes | `true` or `false` — enables the autocorrect engine |
+| `CFG_ProcessPriority` | No | AutoHotkey process priority (`"High"` by default) so hooks remain responsive under foreground load |
 | `CFG_MacAltRemaps` | No | Initial Alt mode. `true` enables the macOS-style Alt remaps. The saved toggle overrides this value. |
 | `CFG_GameProcesses` | No | Array of game executable filenames (e.g. `["game.exe"]`) to disable `Alt+Q` and `Alt+W` remaps |
 | `CFG_FZ_Z` | FancyZones only | FancyZones layout ID for `CapsLock+Z` |
@@ -38,7 +39,7 @@
 | `CFG_FocusTeleportMouse` | No | `true` or `false` — enables mouse cursor teleportation to targeted window on CapsLock+h/j/k/l (Default: `true`) |
 | `CFG_MonitorFocusTeleportMouse` | No | `true` or `false` — enables mouse cursor teleportation to focused monitor on CapsLock+Left/Right (Default: `true`) |
 | `CFG_DriftCorrection` | No | `true` or `false` — enables layout drift correction loop (Default: `true`) |
-| `CFG_DriftCheckInterval` | No | Number (ms) — interval for drift correction checks (Default: `2000`) |
+| `CFG_DriftCheckInterval` | No | Number (ms) — slow fallback interval for drift correction checks (minimum/default: `20000`; location events are primary) |
 | `CFG_NetworkProfileName` | No | String — network profile name for optional local automation |
 | `CFG_NetworkToolExe` | No | String — executable name for an optional local network tool |
 | `CFG_NetworkToolPath` | No | String — full path to an optional local network tool |
