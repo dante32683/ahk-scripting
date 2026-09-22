@@ -22,6 +22,9 @@ For short tasks (one hotkey, one autocorrect entry), reading `ARCHITECTURE.md` a
 - **Tiling** → call `_ApplyLayout(xf, yf, wf, hf, hwnd, true)`. All values are percentages 0–100.
 - **OSD notifications** → `ShowOSD(text, ms)`. Never call `ToolTip` directly.
 - **Config values** → `custom\config.ahk`, prefixed `CFG_`. The whole `custom\` folder is gitignored. Never commit it.
+- **Tests** → run `tools/check.ps1` before committing. It uses `AHK_TEST_MODE=1` to avoid live hooks and user state.
+- **Shared state** → hold `Critical` or iterate a snapshot when a timer or WinEvent handler enumerates a shared `Map`.
+- **Window handles** → recheck `IsWindow` after any yield before acting; wrap `WinMove` and `WinActivate` in `try` because handles can go stale.
 
 ## Gemini Helper
 
