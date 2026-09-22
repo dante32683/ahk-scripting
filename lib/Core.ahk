@@ -1798,10 +1798,9 @@ _RememberDepartingDesktopFromHistory(fromDesk, excludeHwnd := 0) {
     }
 }
 
-; Focus restore timing:
-; - CapsLock+N is already on the target desktop quickly → short delay
-; - Trackpad/OS swipe needs more settle time → 150 ms (main-branch default)
-global g_DesktopFocusHotkeyDelay := 50
+; A switch can still be animating at 50 ms. Use the established 150 ms settle
+; point before restoring the destination window's existing child focus.
+global g_DesktopFocusHotkeyDelay := 150
 global g_DesktopFocusSwipeDelay := 150
 
 _ScheduleDesktopFocusRestore(desk, gen, delayMs) {
@@ -1946,7 +1945,7 @@ GotoDesktop(n) {
 
     g_LastDesktop := n
     g_DesktopFocusGeneration += 1
-    ; CapsLock+N: switch is intentional and already settling — restore sooner than swipe.
+    ; Restore after the shell's desktop transition has settled.
     _ScheduleDesktopFocusRestore(n, g_DesktopFocusGeneration, g_DesktopFocusHotkeyDelay)
     _ScheduleDesktopRestore(n)
     if VDA.hasHookRegistered
@@ -1987,12 +1986,14 @@ _RestoreFocusOnDesktop(n, gen := 0) {
             }
         }
         if canActivate {
-            ; The VDA queries above yield, so the window may be gone by now — and a
-            ; desktop swipe fires this on windows that are actively closing. Re-check,
-            ; and still guard the calls: it can die between the check and the move.
+            ; SetForegroundWindow alone is commonly rejected during a virtual-desktop
+            ; transition. Use AHK's activation path, but only after a bounded queue
+            ; probe so a stalled destination cannot freeze every hook/hotstring.
             if WinExist("ahk_id " hwnd) {
+                if !_IsWindowResponsive(hwnd)
+                    return
                 try {
-                    if WinGetMinMax("ahk_id " hwnd) = -1
+                    if _GetWindowState(hwnd) = -1
                         WinRestore("ahk_id " hwnd)
                     WinActivate("ahk_id " hwnd)
                 }
