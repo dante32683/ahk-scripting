@@ -661,7 +661,7 @@ if !IsSet(CFG_MonitorFocusTeleportMouse)
 if !IsSet(CFG_DriftCorrection)
     global CFG_DriftCorrection := true
 if !IsSet(CFG_DriftCheckInterval)
-    global CFG_DriftCheckInterval := 2000
+    global CFG_DriftCheckInterval := 20000
 if !IsSet(CFG_FZ_Z)
     global CFG_FZ_Z := "1"
 if !IsSet(CFG_FZ_X)
@@ -752,6 +752,19 @@ _IsLiveWindow(hwnd) {
     return true
 }
 
+_IsWindowResponsive(hwnd) {
+    if !(hwnd && DllCall("user32\IsWindow", "Ptr", hwnd, "Int"))
+        return false
+    ; Probe the target queue with a hard bound. Window-management calls can enter
+    ; an uninterruptible delay in AHK while a GUI thread is stalled; never let
+    ; background tiling/focus work hold the keyboard hook for seconds.
+    try return DllCall("user32\SendMessageTimeoutW"
+        , "Ptr", hwnd, "UInt", 0, "Ptr", 0, "Ptr", 0
+        , "UInt", 0x22, "UInt", 35, "Ptr", 0, "Ptr") != 0
+    catch
+        return true
+}
+
 _IsOnCurrentDesktop(hwnd) {
     if !VDA.isLoaded
         return true
@@ -775,8 +788,10 @@ _IsOnCurrentDesktop(hwnd) {
 _IsFocusEligible(hwnd) {
     if !_IsLiveWindow(hwnd)
         return false
+    if !_IsWindowResponsive(hwnd)
+        return false
     try {
-        if WinGetMinMax("ahk_id " hwnd) = -1
+        if _GetWindowState(hwnd) = -1
             return false
         if WinGetExStyle("ahk_id " hwnd) & 0x80  ; WS_EX_TOOLWINDOW
             return false
@@ -797,6 +812,8 @@ _IsFocusEligible(hwnd) {
 }
 
 _GetWindowState(hwnd, default := -2) {
+    if !_IsWindowResponsive(hwnd)
+        return default
     try return WinGetMinMax("ahk_id " hwnd)
     catch
         return default
@@ -1118,6 +1135,10 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
             Perf_Log("apply_layout", windowHandle, "invalid_hwnd", A_TickCount - startTime)
             return false
         }
+        if !_IsWindowResponsive(windowHandle) {
+            Perf_Log("apply_layout", windowHandle, "hung_window", A_TickCount - startTime)
+            return false
+        }
         ; Cancel any prior settle before skip/fail paths can leave a stale timer.
         _CancelGeometrySettle(windowHandle)
         state := _GetWindowState(windowHandle)
@@ -1136,6 +1157,10 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
             return false
         }
         windowHandle := WinGetID("A")
+        if !_IsWindowResponsive(windowHandle) {
+            Perf_Log("apply_layout", windowHandle, "hung_window", A_TickCount - startTime)
+            return false
+        }
         _CancelGeometrySettle(windowHandle)
         if !_IsOnCurrentDesktop(windowHandle) {
             Perf_Log("apply_layout", windowHandle, "wrong_desktop", A_TickCount - startTime)
@@ -2166,6 +2191,18 @@ _ProcessFocusEvent(hwnd) {
             return
         }
 
+        ; Preserve history for a temporarily hung app, but do not query or move it
+        ; from this background event thread.
+        if g_FocusHistory.Length = 0 || g_FocusHistory[g_FocusHistory.Length] != hwnd {
+            g_FocusHistory.Push(hwnd)
+            if g_FocusHistory.Length > 30
+                g_FocusHistory.RemoveAt(1)
+        }
+        if !_IsWindowResponsive(hwnd) {
+            Perf_Log("foreground_event", hwnd, "hung_window", A_TickCount - startTime)
+            return
+        }
+
         try {
             sig := g_WinSigCache.Has(hwnd) ? g_WinSigCache[hwnd] : _GetWinSignature(hwnd)
             if sig != "" {
@@ -2183,14 +2220,6 @@ _ProcessFocusEvent(hwnd) {
             if (WinGetStyle("ahk_id " hwnd) & 0xC00000) && (DllCall("GetWindow", "Ptr", hwnd, "UInt", 4) = 0)
                 _AutoSnapFromMemory(hwnd)
         }
-
-        if g_FocusHistory.Length > 0 && g_FocusHistory[g_FocusHistory.Length] = hwnd {
-            Perf_Log("foreground_event", hwnd, "duplicate", A_TickCount - startTime)
-            return
-        }
-        g_FocusHistory.Push(hwnd)
-        if g_FocusHistory.Length > 30
-            g_FocusHistory.RemoveAt(1)
 
         Perf_Log("foreground_event", hwnd, "success", A_TickCount - startTime)
     }

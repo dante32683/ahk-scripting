@@ -99,6 +99,10 @@ is checked. `AC_Proc` erases the trigger plus ending character and inserts the r
 `SendInput` batch, which buffers physical input until the replacement completes. Foreground
 non-text classification is cached on focus changes so the pre-send path stays bounded.
 
+Follow-up: background window reconciliation now probes and skips hung GUI threads
+before synchronous window operations. This prevents an unresponsive application from
+delaying the hotstring callback until later text has already reached the editor.
+
 ### ~~CapsLock plus Alt opened application menus~~ — RESOLVED
 
 Area: Hyper layer

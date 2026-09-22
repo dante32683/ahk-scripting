@@ -55,7 +55,10 @@ if !CFG_TestMode {
     ListLines false
     KeyHistory IsSet(CFG_DebugKeyHistory) && CFG_DebugKeyHistory ? 15 : 0
     SetWinDelay 0
-    ProcessSetPriority(IsSet(CFG_ProcessPriority) ? CFG_ProcessPriority : "AboveNormal")
+    ; The hook must stay schedulable while a foreground app is saturating the CPU;
+    ; this script is idle almost all of the time, so High restores the pre-overhaul
+    ; behavior without creating sustained load.
+    ProcessSetPriority(IsSet(CFG_ProcessPriority) ? CFG_ProcessPriority : "High")
     SetTitleMatchMode 2
     InstallKeybdHook()
 }
