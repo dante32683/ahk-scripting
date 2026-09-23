@@ -35,7 +35,9 @@ ShowOSD(text, ms := 1500) {
     if text == ""
         return
 
-    g_OsdGui := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner")
+    ; +E0x20 (WS_EX_TRANSPARENT) on a layered window lets clicks pass through to
+    ; whatever is underneath; otherwise the OSD eats clicks in the corner.
+    g_OsdGui := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner +E0x20")
     g_OsdGui.BackColor := "1F1F1F"
     g_OsdGui.SetFont("s10", "Segoe UI")
     g_OsdGui.Add("Text", "cFFFFFF +Wrap x24 y14 w260", text)
