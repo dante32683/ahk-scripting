@@ -30,7 +30,7 @@ BuildAutocorrect() {
                 f := FileOpen(outPath, "r", "UTF-8")
                 sample := f.Read(4000)
                 f.Close()
-                headerOk := InStr(sample, ":CXB0:") > 0
+                headerOk := InStr(sample, ":CXB0O:") > 0
             }
             if headerOk {
                 Perf_Log("autocorrect_rebuild", "skip", A_TickCount - startTime)
@@ -55,8 +55,8 @@ BuildAutocorrect() {
         if FileExist(tempPath)
             FileDelete(tempPath)
         FileAppend(out, tempPath, "UTF-8")
-        if !InStr(FileRead(tempPath, "UTF-8"), ":CXB0:")
-            throw Error("Generated file missing :CXB0: hotstrings")
+        if !InStr(FileRead(tempPath, "UTF-8"), ":CXB0O:")
+            throw Error("Generated file missing :CXB0O: hotstrings")
         ; Atomic replace only. The temp file lives in the destination directory, so a
         ; cross-volume move is not expected; on failure keep the existing good file and
         ; report the error rather than a non-atomic FileCopy that could corrupt it.
@@ -78,7 +78,7 @@ AC_RenderHotstrings(parseResult) {
     segments := []
     segments.Push("#Requires AutoHotkey v2.0+`n`n")
     segments.Push("; AUTO-GENERATED — edit Autocorrect_Database.txt, not this file.`n")
-    segments.Push("; schema=cxb0-atomic1 count=" parseResult["count"] "`n`n")
+    segments.Push("; schema=cxb0o-atomic2 count=" parseResult["count"] "`n`n")
     segments.Push("#HotIf CFG_Autocorrect`n")
 
     for entry in parseResult["entries"] {
@@ -97,7 +97,7 @@ AC_RenderHotstrings(parseResult) {
         for typedTrigger, typedCorrection in variants {
             sTypedTrig := _AC_EscapeStringLiteral(typedTrigger)
             sTypedCorr := _AC_EscapeStringLiteral(typedCorrection)
-            segments.Push(":CXB0:" typedTrigger "::AC_Proc(" q sCanonicalTrig q ", " q sCanonicalCorr q ", " q sTypedTrig q ", " q sTypedCorr q ")`n")
+            segments.Push(":CXB0O:" typedTrigger "::AC_Proc(" q sCanonicalTrig q ", " q sCanonicalCorr q ", " q sTypedTrig q ", " q sTypedCorr q ")`n")
         }
     }
     segments.Push("#HotIf`n")

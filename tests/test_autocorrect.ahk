@@ -63,9 +63,9 @@ RunAutocorrectParserTest() {
 
     ; --- Generated hotstrings leave input untouched until AC_Proc can replace it atomically ---
     renderedHotstrings := AC_RenderHotstrings(validResult)
-    AssertTrue(InStr(renderedHotstrings, ":CXB0:teh::AC_Proc"), "generated hotstrings use B0 execute mode")
+    AssertTrue(InStr(renderedHotstrings, ":CXB0O:teh::AC_Proc"), "generated hotstrings use B0O execute mode")
     AssertFalse(InStr(renderedHotstrings, ":CX:teh::AC_Proc"), "legacy auto-backspacing form is absent")
-    AssertTrue(InStr(renderedHotstrings, "schema=cxb0-atomic1"), "atomic hotstring schema emitted")
+    AssertTrue(InStr(renderedHotstrings, "schema=cxb0o-atomic2"), "atomic hotstring schema emitted")
 
     ; --- String-literal escaping for generated hotstrings ---
     escapedLiteral := _AC_EscapeStringLiteral('a"b')

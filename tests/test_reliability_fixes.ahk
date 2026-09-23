@@ -129,7 +129,10 @@ RunReliabilityFixesTest() {
     AssertEq(AC_InputHook, 0, "test-mode StartInputHook does not install a hook")
 
     replacementKeys := _AC_BuildReplacementKeys("teh", "the", " ")
-    AssertEq(replacementKeys, "{Backspace 4}{Text}the ", "replacement erases trigger/end char in one input batch")
+    AssertEq(replacementKeys, "{Backspace 4}the ", "replacement erases trigger/end char in one input batch")
+    AssertEq(_AC_BuildReplacementKeys("teh", "the", "`n", false), "{Backspace 3}the{Enter}", "held-back Enter is not erased and is replayed after the fix")
+    AssertEq(_AC_BuildReplacementKeys("teh", "the", "`n", false, true), "{Backspace 3}the+{Enter}", "Shift+Enter keeps Shift")
+    AssertEq(_AC_BuildReplacementKeys("x", "a+b{c}", "!"), "{Backspace 2}a{+}b{{}c{}}{!}", "Send metacharacters are escaped")
 
     ; Stale-hook generation guard: clear only matches current generation
     AC_HadSubsequentInput := false
