@@ -86,6 +86,34 @@ Mitigation: the lock is only intended for short periods (e.g. cleaning a keyboar
 
 ## Resolved
 
+### ~~Desktop switch skipped focus restore for busy apps~~ — RESOLVED
+
+Area: Virtual desktops / focus
+
+The hung-window guard used a 35 ms `WM_NULL` probe. Apps repainting right after a desktop
+switch (Chromium, Electron, Office) often miss that window, so focus restore silently
+returned, explicit tiling no-oped, and directional focus skipped them. User-initiated paths
+now use `IsHungAppWindow` (`_IsWindowHung`); the 35 ms probe remains only on background
+reconciliation.
+
+### ~~Autocorrect with Enter or Tab submitted or moved focus before correcting~~ — RESOLVED
+
+Area: Autocorrect
+
+`B0` hotstrings let the ending key through before `AC_Proc` ran, so Enter sent a chat
+message with the typo (then a second message with the fix) and Tab moved focus before the
+backspaces landed. Hotstrings now use `B0O`: the ending key is held back, replayed with its
+Shift state after the correction, and replayed alone when the correction is declined.
+
+### ~~Clicks lost under the OSD or delayed by the mouse hook~~ — RESOLVED
+
+Area: OSD / input
+
+The OSD was not click-through, so clicks in the bottom-right corner hit it while it was
+shown. The autocorrect mouse-button hotkeys also sat under `#HotIf`, making the mouse hook
+wait on the script thread for every click. The OSD now uses `WS_EX_TRANSPARENT` and the
+mouse hotkeys are unconditional.
+
 ### ~~Rapid typing could interleave the next word with an autocorrection~~ — RESOLVED
 
 Area: Autocorrect
