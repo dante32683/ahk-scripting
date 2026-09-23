@@ -66,29 +66,69 @@ _AC_ActiveWindowIsNonText() {
     return AC_ActiveContextNonText
 }
 
-_AC_BuildReplacementKeys(typedTrigger, typedCorrection, endChar) {
-    eraseCount := StrLen(typedTrigger) + StrLen(endChar)
-    return "{Backspace " eraseCount "}{Text}" typedCorrection endChar
+_AC_BuildReplacementKeys(typedTrigger, typedCorrection, endChar, endCharTyped := true, shifted := false) {
+    eraseCount := StrLen(typedTrigger) + (endCharTyped ? StrLen(endChar) : 0)
+    return "{Backspace " eraseCount "}" _AC_EscapeSendText(typedCorrection) _AC_EndCharKeys(endChar, shifted)
+}
+
+; Escape Send's special characters so the whole batch can stay in key mode and
+; still carry a modified end key such as Shift+Enter.
+_AC_EscapeSendText(text) {
+    out := ""
+    for ch in StrSplit(text) {
+        if InStr("^+!#{}", ch)
+            out .= "{" ch "}"
+        else if ch = "`n"
+            out .= "{Enter}"
+        else if ch = "`t"
+            out .= "{Tab}"
+        else if ch = "`r"
+            continue
+        else
+            out .= ch
+    }
+    return out
+}
+
+; Enter and Tab keep Shift when the user held it (Shift+Enter is a newline in
+; chat apps, not a send).
+_AC_EndCharKeys(endChar, shifted := false) {
+    if endChar = "`n"
+        return shifted ? "+{Enter}" : "{Enter}"
+    if endChar = "`t"
+        return shifted ? "+{Tab}" : "{Tab}"
+    return _AC_EscapeSendText(endChar)
+}
+
+; Hotstrings use B0O: the trigger stays typed and the end key is held back until
+; AC_Proc decides. Any path that declines the correction must replay the end key.
+_AC_ReplayEndChar() {
+    if A_EndChar != ""
+        SendInput(_AC_EndCharKeys(A_EndChar, GetKeyState("Shift", "P")))
 }
 
 AC_Proc(canonicalTrig, canonicalCorr, typedTrig, typedCorr) {
-    ; B0 hotstrings leave the trigger and ending character in place while these
-    ; checks run. Once approved, erase and replace them in one SendInput batch so
-    ; physical keystrokes typed immediately afterward are buffered until it ends.
+    ; B0O hotstrings leave the trigger typed and hold back the ending key while
+    ; these checks run, so Enter/Tab cannot submit or move focus before the fix.
+    ; Once approved, erase and replace in one SendInput batch so physical
+    ; keystrokes typed immediately afterward are buffered until it ends.
     if _AC_ActiveWindowIsNonText() {
+        _AC_ReplayEndChar()
         return
     }
     if AC_IsDisabled(canonicalTrig) {
+        _AC_ReplayEndChar()
         return
     }
     global AC_TempSuppressed
     if AC_TempSuppressed.Has(StrLower(canonicalTrig)) {
         if A_TickCount - AC_TempSuppressed[StrLower(canonicalTrig)] < 2000 {
+            _AC_ReplayEndChar()
             return
         }
         AC_TempSuppressed.Delete(StrLower(canonicalTrig))
     }
-    SendInput(_AC_BuildReplacementKeys(typedTrig, typedCorr, A_EndChar))
+    SendInput(_AC_BuildReplacementKeys(typedTrig, typedCorr, A_EndChar, false, GetKeyState("Shift", "P")))
     AC_Reg(canonicalTrig, canonicalCorr, typedTrig, typedCorr)
     AC_StartInputHook()
 }
@@ -191,8 +231,8 @@ AC_OnHookEnd(boundGeneration, inputHook) {
     AC_ClearLastCorrection()
 }
 
-#HotIf CFG_Autocorrect
-
+; Unconditional on purpose: a #HotIf here makes the mouse hook wait on the
+; script thread for every click. Clearing undo state is harmless when disabled.
 ~*LButton::
 ~*RButton::
 ~*MButton::
@@ -201,6 +241,7 @@ AC_OnHookEnd(boundGeneration, inputHook) {
     AC_ClearLastCorrection()
 }
 
+#HotIf CFG_Autocorrect
 ; Reset hotstring recognizer on text mutation shortcuts to prevent buffer desync
 ~^Backspace::
 ~^Delete::
