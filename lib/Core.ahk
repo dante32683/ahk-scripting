@@ -765,6 +765,16 @@ _IsWindowResponsive(hwnd) {
         return true
 }
 
+; Non-blocking check for a window Windows itself considers hung (~5 s without
+; pumping). User-initiated actions use this instead of the 35 ms probe above:
+; a busy-but-healthy app (Chrome, Electron, Office repainting after a desktop
+; switch) routinely misses 35 ms and must not be skipped.
+_IsWindowHung(hwnd) {
+    try return DllCall("user32\IsHungAppWindow", "Ptr", hwnd, "Int") != 0
+    catch
+        return false
+}
+
 _IsOnCurrentDesktop(hwnd) {
     if !VDA.isLoaded
         return true
@@ -788,10 +798,10 @@ _IsOnCurrentDesktop(hwnd) {
 _IsFocusEligible(hwnd) {
     if !_IsLiveWindow(hwnd)
         return false
-    if !_IsWindowResponsive(hwnd)
+    if _IsWindowHung(hwnd)
         return false
     try {
-        if _GetWindowState(hwnd) = -1
+        if WinGetMinMax("ahk_id " hwnd) = -1
             return false
         if WinGetExStyle("ahk_id " hwnd) & 0x80  ; WS_EX_TOOLWINDOW
             return false
@@ -1157,7 +1167,7 @@ _ApplyLayoutRecord(record, overrideHwnd := 0, persist := true, targetMonitor := 
             return false
         }
         windowHandle := WinGetID("A")
-        if !_IsWindowResponsive(windowHandle) {
+        if _IsWindowHung(windowHandle) {
             Perf_Log("apply_layout", windowHandle, "hung_window", A_TickCount - startTime)
             return false
         }
@@ -1987,13 +1997,14 @@ _RestoreFocusOnDesktop(n, gen := 0) {
         }
         if canActivate {
             ; SetForegroundWindow alone is commonly rejected during a virtual-desktop
-            ; transition. Use AHK's activation path, but only after a bounded queue
-            ; probe so a stalled destination cannot freeze every hook/hotstring.
+            ; transition. Use AHK's activation path, but skip a genuinely hung
+            ; destination so it cannot freeze every hook/hotstring. Do not use the
+            ; 35 ms probe: apps repainting after the switch often miss it.
             if WinExist("ahk_id " hwnd) {
-                if !_IsWindowResponsive(hwnd)
+                if _IsWindowHung(hwnd)
                     return
                 try {
-                    if _GetWindowState(hwnd) = -1
+                    if WinGetMinMax("ahk_id " hwnd) = -1
                         WinRestore("ahk_id " hwnd)
                     WinActivate("ahk_id " hwnd)
                 }
